@@ -1,6 +1,6 @@
 import React from 'react';
 import { SafeAreaView, Text, View, StatusBar } from 'react-native';
-import Routes from './src/Navigation/Routes';
+import Routes from './src/navigation/Routes';
 
 const App = () => {
   return (
