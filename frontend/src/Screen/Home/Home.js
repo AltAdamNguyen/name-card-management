@@ -13,6 +13,7 @@ const Home = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [modalFloatVisible, setModalFloatVisible] = useState(false);
     const [flag, setFlag] = useState();
+    const [sort, setSort] = useState(1);
 
     const handlePressButtonFlag = (item) => {
         setModalVisible(!modalVisible);
@@ -29,7 +30,7 @@ const Home = ({ navigation }) => {
                 <View style={styles.buttonFlag}>
                     <View style={[{ backgroundColor: flag.background }, styles.sectionFlag]}>
                         <Text style={[styles.labelFlag, { color: flag.color }]}>{flag.title}</Text>
-                        <TouchableOpacity onPress={() => { deleteFlag() }}>
+                        <TouchableOpacity onPress={() => { deleteFlag() }} activeOpacity={1}>
                             <Image source={iconPath.icClose} style={{ tintColor: flag.color }} />
                         </TouchableOpacity>
                     </View>
@@ -43,11 +44,6 @@ const Home = ({ navigation }) => {
                 </View>
             )
         }
-    }
-
-    const handlePressFloatButton = () => {
-        console.log('press')
-
     }
 
     const listFlag = [
@@ -84,6 +80,31 @@ const Home = ({ navigation }) => {
             value: 4
         },
     ]
+
+    const listSort = [
+        {
+            name: 'date',
+            title: 'Ngày',
+            icon: iconPath.icDate,
+            value: 1
+        },
+        {
+            name: 'name',
+            title: 'Tên',
+            icon: iconPath.icUser,
+            value: 2
+        },
+        {
+            name: 'company',
+            title: 'Công ty',
+            icon: iconPath.icOffice,
+            value: 3
+        },
+    ]
+
+    const handlePressSort = (item) => {
+        setSort(item.value);
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -165,64 +186,56 @@ const Home = ({ navigation }) => {
                 </ScrollView>
                 <View>
                     <Modal
-                        animationType="fade"
+                        animationType="slide"
                         transparent={true}
                         visible={modalFloatVisible}
                         onRequestClose={() => {
                             Alert.alert('Modal has been closed.');
-                            setModalFloatVisible(!modalVisible);
+                            setModalFloatVisible(!modalFloatVisible);
                         }}>
-                        <TouchableOpacity style={styles.containerOverlay} onPress={() => setModalFloatVisible(!modalVisible)}>
+                        <TouchableOpacity style={styles.containerOverlay} onPress={() => setModalFloatVisible(!modalFloatVisible)}>
                             <TouchableWithoutFeedback >
-                                <View style={styles.modalView}>
-                                    <View>
-                                        <Text>Sắp xếp</Text>
-                                        <View>
-                                            <TouchableOpacity>
-                                                <View>
-                                                    <Image source={iconPath.icDate} />
-                                                    <Text>Ngày</Text>
-                                                </View>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity>
-                                                <View>
-                                                    <Image source={iconPath.icUser} />
-                                                    <Text>Tên</Text>
-                                                </View>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity>
-                                                <View>
-                                                    <Image source={iconPath.icOffice} />
-                                                    <Text>Công ty</Text>
-                                                </View>
-                                            </TouchableOpacity>
+                                <View style={styles.modelViewFloat}>
+                                    <View style={styles.mb10}>
+                                        <Text style={[styles.modalLabel, styles.Bold, styles.mb10]}>Sắp xếp</Text>
+                                        <View style={styles.modalFloatSort}>
+                                            {listSort.map((item, index) => {
+                                                return (
+                                                    <TouchableOpacity key={index} onPress={()=> handlePressSort(item)}>
+                                                        <View style={[styles.modalItem, styles.modalFloatSortItem, {borderColor: item.value == sort ? '#1890FF':'#828282'}]}>
+                                                            <Image source={item.icon} style={{tintColor: item.value == sort ? '#1890FF':'#828282'}}/>
+                                                            <Text style={{color: item.value == sort ? '#1890FF':'#828282'}}>{item.title}</Text>
+                                                        </View>
+                                                    </TouchableOpacity>
+                                                )
+                                            })}
                                         </View>
                                     </View>
                                     <View>
-                                        <Text>Quản lí</Text>
+                                        <Text style={[styles.modalLabel, styles.Bold, styles.mb10]}>Quản lí</Text>
                                         <View>
                                             <TouchableOpacity>
-                                                <View>
+                                                <View style={[styles.modalFloatMange, styles.mb10]}>
                                                     <Image source={iconPath.icUserAdd} />
-                                                    <Text>Thêm danh thiếp</Text>
+                                                    <Text style={styles.modalLabel}>Thêm danh thiếp</Text>
                                                 </View>
                                             </TouchableOpacity>
                                             <TouchableOpacity>
-                                                <View>
+                                                <View style={[styles.modalFloatMange, styles.mb10]}>
                                                     <Image source={iconPath.icExport} />
-                                                    <Text>Xuất thông tin</Text>
+                                                    <Text style={styles.modalLabel}>Xuất thông tin</Text>
                                                 </View>
                                             </TouchableOpacity>
                                             <TouchableOpacity>
-                                                <View>
+                                                <View style={[styles.modalFloatMange, styles.mb10]}>
                                                     <Image source={iconPath.icSwap} />
-                                                    <Text>Chuyển danh thiếp</Text>
+                                                    <Text style={styles.modalLabel}>Chuyển danh thiếp</Text>
                                                 </View>
                                             </TouchableOpacity>
                                             <TouchableOpacity>
-                                                <View>
+                                                <View style={[styles.modalFloatMange, styles.mb10]}>
                                                     <Image source={iconPath.icUserDelete} />
-                                                    <Text>Vô hiệu hoá danh thiếp</Text>
+                                                    <Text style={styles.modalLabel}>Vô hiệu hoá danh thiếp</Text>
                                                 </View>
                                             </TouchableOpacity>
                                         </View>

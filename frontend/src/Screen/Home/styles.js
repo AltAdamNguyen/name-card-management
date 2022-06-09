@@ -2,6 +2,13 @@ import { StyleSheet } from 'react-native';
 
 // define your styles
 const styles = StyleSheet.create({
+    Bold: {
+        fontWeight: 'bold',
+    },
+    mb10: {
+        marginBottom: 10,
+    },
+
     containerOverlay: {
         fontfamily: 'Roboto',
         flex: 1,
@@ -17,18 +24,46 @@ const styles = StyleSheet.create({
             width: '50%',
             alignItems: 'flex-start',
         },
-        modalItem: {
-            flexDirection: 'row',
-            alignItems: 'center',
-        },
-            modalIcon: {
-                width: 32,
-                margin: 10
+            modalItem: {
+                flexDirection: 'row',
+                alignItems: 'center',
             },
-            modalText: {
-                fontSize: 15,
-            },
+                modalIcon: {
+                    width: 32,
+                    margin: 10
+                },
+                modalText: {
+                    fontSize: 15,
+                },
 
+        modelViewFloat: {
+            backgroundColor: '#ffff',
+            width: '100%',
+            position: 'absolute',
+            bottom: 0,
+            padding: 20,
+            borderTopLeftRadius: 10,
+            borderTopRightRadius: 10,
+        },
+            modalLabel: {
+                fontSize: 16,
+            },
+            modalFloatSort: {
+                flexDirection: 'row',
+                width: '100%',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+            },
+                modalFloatSortItem: {
+                    borderColor: '#828282',
+                    borderWidth: 1,
+                    borderRadius: 5,
+                    padding: 3,
+                },
+            modalFloatMange: {
+                flexDirection: 'row',
+                alignItems: 'center',
+            },
     container: {
         fontfamily: 'Roboto',
         flex: 1,
@@ -45,7 +80,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     sectionStyle: {
-        flex:1,
         width: '90%',
         flexDirection: 'row',
         justifyContent: 'center',
