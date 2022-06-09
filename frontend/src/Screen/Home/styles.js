@@ -8,7 +8,15 @@ const styles = StyleSheet.create({
     mb10: {
         marginBottom: 10,
     },
-
+    mr10:{
+        marginRight: 10,
+    },
+    w60: {
+        width: '60%',
+    },
+    buttongray3: {
+        tintColor: '#BDBDBD',
+    },
     containerOverlay: {
         fontfamily: 'Roboto',
         flex: 1,
@@ -57,8 +65,11 @@ const styles = StyleSheet.create({
                 modalFloatSortItem: {
                     borderColor: '#828282',
                     borderWidth: 1,
-                    borderRadius: 5,
-                    padding: 3,
+                    borderRadius: 15,
+                    paddingLeft: 20,
+                    paddingRight: 20,
+                    paddingTop: 3,
+                    paddingBottom: 3,
                 },
             modalFloatMange: {
                 flexDirection: 'row',

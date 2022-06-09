@@ -122,7 +122,7 @@ const Home = ({ navigation }) => {
                         onPress={() => setText("")}
                     >
                         <Image
-                            style={styles.closeButton}
+                            style={styles.buttongray3}
                             source={iconPath.icClose}
                         />
                     </TouchableOpacity>
@@ -203,7 +203,7 @@ const Home = ({ navigation }) => {
                                                 return (
                                                     <TouchableOpacity key={index} onPress={()=> handlePressSort(item)}>
                                                         <View style={[styles.modalItem, styles.modalFloatSortItem, {borderColor: item.value == sort ? '#1890FF':'#828282'}]}>
-                                                            <Image source={item.icon} style={{tintColor: item.value == sort ? '#1890FF':'#828282'}}/>
+                                                            <Image source={item.icon} style={[{tintColor: item.value == sort ? '#1890FF':'#828282'}, styles.mr10]}/>
                                                             <Text style={{color: item.value == sort ? '#1890FF':'#828282'}}>{item.title}</Text>
                                                         </View>
                                                     </TouchableOpacity>
@@ -213,28 +213,28 @@ const Home = ({ navigation }) => {
                                     </View>
                                     <View>
                                         <Text style={[styles.modalLabel, styles.Bold, styles.mb10]}>Quản lí</Text>
-                                        <View>
+                                        <View style={styles.w60}>
                                             <TouchableOpacity>
                                                 <View style={[styles.modalFloatMange, styles.mb10]}>
-                                                    <Image source={iconPath.icUserAdd} />
+                                                    <Image source={iconPath.icUserAdd} style={styles.mr10}/>
                                                     <Text style={styles.modalLabel}>Thêm danh thiếp</Text>
                                                 </View>
                                             </TouchableOpacity>
                                             <TouchableOpacity>
                                                 <View style={[styles.modalFloatMange, styles.mb10]}>
-                                                    <Image source={iconPath.icExport} />
+                                                    <Image source={iconPath.icExport} style={styles.mr10}/>
                                                     <Text style={styles.modalLabel}>Xuất thông tin</Text>
                                                 </View>
                                             </TouchableOpacity>
                                             <TouchableOpacity>
                                                 <View style={[styles.modalFloatMange, styles.mb10]}>
-                                                    <Image source={iconPath.icSwap} />
+                                                    <Image source={iconPath.icSwap} style={styles.mr10}/>
                                                     <Text style={styles.modalLabel}>Chuyển danh thiếp</Text>
                                                 </View>
                                             </TouchableOpacity>
                                             <TouchableOpacity>
                                                 <View style={[styles.modalFloatMange, styles.mb10]}>
-                                                    <Image source={iconPath.icUserDelete} />
+                                                    <Image source={iconPath.icUserDelete} style={styles.mr10}/>
                                                     <Text style={styles.modalLabel}>Vô hiệu hoá danh thiếp</Text>
                                                 </View>
                                             </TouchableOpacity>
