@@ -2,7 +2,7 @@ import React from 'react';
 import { Image, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { HomeStackScreen, GroupContact, Team, Setting, ScanScreen } from '../Screen/';
+import { HomeStackScreen, GroupContact, Team, Setting, ScanScreen } from '../screen/';
 import styles from './styles';
 
 import icHome from '../asset/icon/home.png';
@@ -10,7 +10,8 @@ import icGroup from '../asset/icon/credit_card.png';
 import icTeam from '../asset/icon/team.png';
 import icSetting from '../asset/icon/setting.png';
 import icCamera from '../asset/icon/camera.png';
-
+import SignIn from '../screen/SignIn/SignIn';
+import ForgotPassword from '../screen/ForgotPassword/ForgotPassword';
 const Tab = createBottomTabNavigator();
 
 
@@ -18,7 +19,7 @@ const Routes = () => {
   return (
     <NavigationContainer>
       <Tab.Navigator
-        initialRouteName='Home'
+        initialRouteName='SignIn'
         screenOptions={{
           tabBarShowLabel: false,
           headerShown: false,
@@ -29,6 +30,13 @@ const Routes = () => {
           tabBarHideOnKeyboard: true
         }}
       >
+
+      <Tab.Screen name="SignIn"
+          component={SignIn}
+        />
+       <Tab.Screen name="ForgotPassword"
+          component={ForgotPassword}
+        />
         <Tab.Screen name="Home"
           component={HomeStackScreen}
           options={{
