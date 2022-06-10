@@ -49,14 +49,6 @@ const ScanScreen = () => {
     let heightImage = newPhoto.height*0.4;
     let widthImage = newPhoto.width*0.9;
 
-    console.log(newPhoto.width);
-    console.log(newPhoto.height);
-
-    console.log(originXImage)
-    console.log(originYImage)
-    console.log(widthImage)
-    console.log(heightImage);
-
     const manipResult = await manipulateAsync(
       newPhoto.uri,
       [{
@@ -77,7 +69,7 @@ const ScanScreen = () => {
       console.log(photo.base64),
       <SafeAreaView style={styles.container}>
           <Image style={{
-            width: photo.width, height: photo.height,
+            width: photo.width, height: photo.height, resizeMode: 'contain',
           }} source={{ uri: "data:image/jpg;base64," + photo.base64 }} />
       </SafeAreaView>
     );
