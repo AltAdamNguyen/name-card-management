@@ -1,25 +1,19 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Image, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { HomeStackScreen, GroupContact, Team, Setting, ScanScreen } from '../screen/';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { HomeStackScreen, GroupContact, Team, Setting, ScanScreen, ForgotPassword, SignIn } from '../Screen';
 import styles from './styles';
 
-import icHome from '../asset/icon/home.png';
-import icGroup from '../asset/icon/credit_card.png';
-import icTeam from '../asset/icon/team.png';
-import icSetting from '../asset/icon/setting.png';
-import icCamera from '../asset/icon/camera.png';
-import SignIn from '../screen/SignIn/SignIn';
-import ForgotPassword from '../screen/ForgotPassword/ForgotPassword';
+import iconPath from '../constants/iconPath';
+
 const Tab = createBottomTabNavigator();
 
-
-const Routes = () => {
+const RouteNavigation = () => {
   return (
-    <NavigationContainer>
       <Tab.Navigator
-        initialRouteName='SignIn'
+        initialRouteName='Home'
         screenOptions={{
           tabBarShowLabel: false,
           headerShown: false,
@@ -30,13 +24,6 @@ const Routes = () => {
           tabBarHideOnKeyboard: true
         }}
       >
-
-      <Tab.Screen name="SignIn"
-          component={SignIn}
-        />
-       <Tab.Screen name="ForgotPassword"
-          component={ForgotPassword}
-        />
         <Tab.Screen name="Home"
           component={HomeStackScreen}
           options={{
@@ -45,7 +32,7 @@ const Routes = () => {
                 <View style={styles(focused).container}>
                   <Image
                     style={styles(focused).icon}
-                    source={icHome}
+                    source={iconPath.icHome}
                   />
                   <Text style={styles(focused).label}>
                     Trang chủ
@@ -65,7 +52,7 @@ const Routes = () => {
                 <View style={styles(focused).container}>
                   <Image
                     style={styles(focused).icon}
-                    source={icGroup}
+                    source={iconPath.icGroup}
                   />
                   <Text style={styles(focused).label}>
                     Nhóm
@@ -80,15 +67,15 @@ const Routes = () => {
           options={{
             tabBarIcon: ({ focused }) => {
               return (
-                  <View style={styles(focused).containerScan}>
-                    <Image
-                      style={styles(focused).iconScan}
-                      source={icCamera}
-                    />
-                    <Text style={styles(focused).labelScan}>
-                      Quét
-                    </Text>
-                  </View>
+                <View style={styles(focused).containerScan}>
+                  <Image
+                    style={styles(focused).iconScan}
+                    source={iconPath.icCamera}
+                  />
+                  <Text style={styles(focused).labelScan}>
+                    Quét
+                  </Text>
+                </View>
               )
             },
             tabBarStyle: { display: 'none' }
@@ -102,7 +89,7 @@ const Routes = () => {
                 <View style={styles(focused).container}>
                   <Image
                     style={styles(focused).icon}
-                    source={icTeam}
+                    source={iconPath.icTeam}
                   />
                   <Text style={styles(focused).label}>
                     Đội
@@ -120,7 +107,7 @@ const Routes = () => {
                 <View style={styles(focused).container}>
                   <Image
                     style={styles(focused).icon}
-                    source={icSetting}
+                    source={iconPath.icSetting}
                   />
                   <Text style={styles(focused).label}>
                     Cài đặt
@@ -132,8 +119,37 @@ const Routes = () => {
           }}
         />
       </Tab.Navigator>
-    </NavigationContainer>
   );
 };
 
-export default Routes;
+const AuthStack = createNativeStackNavigator();
+
+const RouteAuthentication = () => {
+  return (
+    <AuthStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <AuthStack.Screen name="SignIn" component={SignIn} />
+      <AuthStack.Screen name="ForgotPassword" component={ForgotPassword} />
+    </AuthStack.Navigator>
+  );
+}
+
+const Route = () => {
+  const [isSignIn, setIsSignIn] = useState(null);
+
+  // React.useEffect(() => {
+  //   setTimeout(() => {
+  //     setIsSignIn({})
+  //   }, 500)
+  // }, [])
+
+  return (
+    <NavigationContainer>
+      { isSignIn ? <RouteNavigation/> : <RouteAuthentication/> }
+    </NavigationContainer>
+  );
+}
+export default Route;

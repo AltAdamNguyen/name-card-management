@@ -12,20 +12,14 @@ import icUserDelete from '../asset/icon/user-delete.png';
 import icExport from '../asset/icon/export.png';
 import icSwap from '../asset/icon/swap.png';
 
+import icHome from '../asset/icon/home.png';
+import icGroup from '../asset/icon/credit_card.png';
+import icTeam from '../asset/icon/team.png';
+import icSetting from '../asset/icon/setting.png';
+import icCamera from '../asset/icon/camera.png';
+
 const iconPath = {
-    icDown,
-    icClose,
-    icFilter,
-    icBookMark,
-    icSearch,
-    icDot,
-    icDate,
-    icOffice,
-    icUser,
-    icUserAdd,
-    icUserDelete,
-    icExport,
-    icSwap
+    icDown,icClose,icFilter,icBookMark,icSearch,icDot,icDate,icOffice,icUser,icUserAdd,icUserDelete,icExport,icSwap,icHome,icGroup,icTeam,icSetting,icCamera
 }
 
 export default iconPath;

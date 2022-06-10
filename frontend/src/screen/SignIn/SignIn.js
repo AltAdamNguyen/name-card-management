@@ -1,6 +1,8 @@
 import { View, Text, Image, StyleSheet, useWindowDimensions } from 'react-native'
 import React, {useState} from 'react'
 
+import styles from './styles'
+
 import CustomInputs from '../../components/CustomInputs'
 import CustomButtons from '../../components/CustomButtons'
 import CustemHeaders from '../../components/CustomHeaders/CustemHeaders'
@@ -9,8 +11,9 @@ const SignIn = ({ navigation }) => {
     const {password, setPassword} = useState(''); 
     const {height} = useWindowDimensions();
     const onSignInPressed = () => {
-        console.warn('Sign in successfully');
-        navigation.navigate('Home')
+        // console.warn('Sign in successfully');
+        // navigation.navigate('RouteNavigation')
+        console.log(navigation)
 
     }
     const onForgotPasswordPressed = () => {
@@ -27,14 +30,4 @@ const SignIn = ({ navigation }) => {
   )
 }
 
-const styles = StyleSheet.create({
-    root: {
-        alignItems: 'center',
-        marginTop: '30%'
-    },
-    header: {
-        
-    },
-
-})
 export default SignIn
