@@ -1,13 +1,19 @@
 //import liraries
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity } from 'react-native';
 
 // create a component
 const Setting = () => {
     return (
-        <View style={styles.container}>
-            <Text>Setting</Text>
-        </View>
+        <SafeAreaView style={styles.container}>
+            <TouchableOpacity style={styles.button}>
+                <Text style={styles.label}>Đổi mật khẩu</Text>
+            </TouchableOpacity>
+            <TouchableOpacity >
+                <Text>Đăng xuất</Text>
+            </TouchableOpacity>
+        </SafeAreaView>
+
     );
 };
 
@@ -19,6 +25,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#2c3e50',
     },
+    button: {
+        width: '40%',
+        borderRadius: 10,
+        backgroundColor: '#1890FF'
+    }
 });
 
 //make this component available to the app
