@@ -1,5 +1,5 @@
 
-const FetchApi = (url,method,contentType,param, callback) => {
+export const FetchApi = (url,method,contentType,param) => {
     fetch(url, {
         method: method,
         header: {
@@ -9,8 +9,6 @@ const FetchApi = (url,method,contentType,param, callback) => {
     })
     .then(response => response.json())
     .then(data => {
-        callback(data);
+        console.log(data);
     })
 }
-
-export default FetchApi;

@@ -1,10 +1,10 @@
 //import liraries
-import { Text, View, SafeAreaView, Image, useWindowDimensions, TouchableOpacity , Dimensions } from 'react-native';
+import { Text, View, SafeAreaView, Image, useWindowDimensions, TouchableOpacity, Dimensions } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import { Camera } from 'expo-camera';
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 import { useIsFocused } from '@react-navigation/native';
-
+import { FetchAPI } from '../../api/FetchAPI';
 import icOverlay from '../..//asset/icon/overlay.png';
 import icCamera from '../../asset/icon/camera.png';
 import icClose from '../../asset/icon/close.png';
@@ -46,8 +46,8 @@ const ScanScreen = () => {
 
     let originXImage = newPhoto.width * 0.05;
     let originYImage = newPhoto.height * 0.3;
-    let heightImage = newPhoto.height*0.4;
-    let widthImage = newPhoto.width*0.9;
+    let heightImage = newPhoto.height * 0.4;
+    let widthImage = newPhoto.width * 0.9;
 
     const manipResult = await manipulateAsync(
       newPhoto.uri,
@@ -62,15 +62,20 @@ const ScanScreen = () => {
       { compress: 1, base64: true }
     );
     setPhoto(manipResult);
+
+    fetch('https://type.fit/api/quotes').then(res => res.json()).then(data => console.log(data)).catch(e => console.log(e));
   };
+
+  const callbackTakePic = (data) => {
+    console.log(data);
+  }
 
   if (photo) {
     return (
-      console.log(photo.base64),
       <SafeAreaView style={styles.container}>
-          <Image style={{
-            width: photo.width, height: photo.height, resizeMode: 'contain',
-          }} source={{ uri: "data:image/jpg;base64," + photo.base64 }} />
+        <Image style={{
+          width: photo.width, height: photo.height, resizeMode: 'contain',
+        }} source={{ uri: "data:image/jpg;base64," + photo.base64 }} />
       </SafeAreaView>
     );
   }

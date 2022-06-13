@@ -47,6 +47,13 @@ namespace NCMSystem.Controllers
             return scanResult;
         }
 
+        [HttpGet]
+        [Route("api/test")]
+        public string Get()
+        {
+            return "123";
+        }
+
         public string UploadCloud(string path)
         {
             // get account from cloudinary
