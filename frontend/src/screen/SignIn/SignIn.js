@@ -1,8 +1,9 @@
-import { View, Text, Image, StyleSheet, useWindowDimensions } from 'react-native'
+import { View, Text, Image, StyleSheet, useWindowDimensions, TouchableOpacity } from 'react-native'
 import React, { useState, useContext } from 'react'
 import AuthContext from '../../store/AuthContext';
 
 import styles from './styles'
+import iconPath from '../../constants/iconPath';
 
 import CustomInputs from '../../components/CustomInputs'
 import CustomButtons from '../../components/CustomButtons'
@@ -25,6 +26,17 @@ const SignIn = ({ navigation }) => {
         <CustomInputs placeholder='Mật khẩu' value={password} setValue={setPassword} secureTextEntry={true} icon='visibility-off' />
         <CustomButtons text='Quên mật khẩu' onPress={onForgotPasswordPressed} type="TERTIARY" />
         <CustomButtons text='Đăng nhập' onPress={authCtx.onLogin} />
+        <View style={styles.language}>
+          <TouchableOpacity>
+            <Image source={iconPath.icVN} style={[styles.icon,styles.mr20]}/>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <Image source={iconPath.icUK} style={styles.icon}/>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.title}>
+          <Text>@2022 Phát triển bởi NCM Team</Text>
+        </View>
       </View >
 
 

@@ -1,15 +1,29 @@
 //import liraries
-import React, { Component } from 'react';
-import { View, Text} from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, SafeAreaView, Image, TextInput, TouchableOpacity} from 'react-native';
+import iconPath from '../../constants/iconPath';
 import styles from './styles';
 
 
 // create a component
 const GroupContact = () => {
+    const [text, setText] = useState('')
+
     return (
-        <View style={styles.container}>
-            <Text>Group</Text>
-        </View>
+        <SafeAreaView style={styles.container}>
+            <View style={styles.sectionStyle}>
+                <Image  source={iconPath.icSearch}/>
+                <TextInput
+                style={styles.input}
+                    placeholder="Tìm kiếm thông tin"
+                    value={text}
+                    onChangeText={(value) => setText(value)}
+                />
+                <TouchableOpacity>
+                    <Image source={iconPath.icClose}/>
+                </TouchableOpacity>
+            </View>
+        </SafeAreaView>
     );
 };
 

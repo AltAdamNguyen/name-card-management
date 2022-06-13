@@ -18,8 +18,11 @@ import icTeam from '../asset/icon/team.png';
 import icSetting from '../asset/icon/setting.png';
 import icCamera from '../asset/icon/camera.png';
 
+import icVN from '../asset/icon/VN.png';
+import icUK from '../asset/icon/Uk.png';
+
 const iconPath = {
-    icDown,icClose,icFilter,icBookMark,icSearch,icDot,icDate,icOffice,icUser,icUserAdd,icUserDelete,icExport,icSwap,icHome,icGroup,icTeam,icSetting,icCamera
+    icDown,icClose,icFilter,icBookMark,icSearch,icDot,icDate,icOffice,icUser,icUserAdd,icUserDelete,icExport,icSwap,icHome,icGroup,icTeam,icSetting,icCamera,icVN,icUK
 }
 
 export default iconPath;
