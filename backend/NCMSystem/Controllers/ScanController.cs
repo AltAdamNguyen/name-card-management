@@ -8,8 +8,8 @@ using System.Text.RegularExpressions;
 using System.Web.Http;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
-using IronOcr;
 using NCMSystem.Models.CallAPI.ScanNC;
+using Tesseract;
 
 namespace NCMSystem.Controllers
 {
@@ -33,17 +33,23 @@ namespace NCMSystem.Controllers
 
             ScanNCResponse scanResult = new ScanNCResponse();
 
-            var ocr = new IronTesseract();
-            ocr.Language = OcrLanguage.Vietnamese;
-            ocr.AddSecondaryLanguage(OcrLanguage.English);
-            string rs;
-            using (var input = new OcrInput(fileName))
+            using (var engine = new TesseractEngine(AppDomain.CurrentDomain.BaseDirectory + "tessdata", "vie",
+                       EngineMode.Default))
             {
-                var result = ocr.Read(input);
-                rs = result.Text;
-                ExtractText(rs, fileName, scanResult);
+                using (var imgScan = new Bitmap(fileName))
+                {
+                    using (var pix = PixConverter.ToPix(imgScan))
+                    {
+                        using (var page = engine.Process(pix))
+                        {
+                            var text = page.GetText();
+                            ExtractText(text.Trim(), scanResult);
+                            Console.Out.WriteLine("---------------------" + text);
+                        }
+                    }
+                }
             }
-
+            scanResult.imgUrl = UploadCloud(fileName);
             return scanResult;
         }
 
@@ -59,14 +65,14 @@ namespace NCMSystem.Controllers
             cloudinary.Api.Secure = true;
 
             // Upload images to cloudinary
-            string arrayString = "";
+            string arrayString;
             var uploadResult = cloudinary.Upload(new ImageUploadParams()
             {
                 File = new FileDescription(path),
             });
             arrayString = uploadResult.SecureUrl.ToString();
 
-            System.IO.File.Delete(path);
+            File.Delete(path);
 
             return arrayString;
         }
@@ -87,22 +93,22 @@ namespace NCMSystem.Controllers
             return result;
         }
 
-        public void ExtractText(string originText, string path, ScanNCResponse scanResult)
+        public void ExtractText(string originText, ScanNCResponse scanResult)
         {
-            scanResult.imgUrl = UploadCloud(path);
+            
             string[] rsArray = Regex.Split(originText, @"\r\n|\r|\n");
 
             //remove empty string
             rsArray = rsArray.Where(s => !string.IsNullOrEmpty(s)).ToArray();
 
-            TextInfo myTI = new CultureInfo("vi-VN", false).TextInfo;
+            TextInfo myTi = new CultureInfo("vi-VN", false).TextInfo;
             scanResult.items = new List<string>();
 
             for (int i = 0; i < rsArray.Length; i++)
             {
                 if (!rsArray[i].Contains("."))
                 {
-                    rsArray[i] = myTI.ToTitleCase(rsArray[i].ToLower());
+                    rsArray[i] = myTi.ToTitleCase(rsArray[i].ToLower());
 
                     if (Regex.IsMatch(rsArray[i], @"\d"))
                     {
