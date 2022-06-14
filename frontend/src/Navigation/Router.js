@@ -1,13 +1,36 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useLayoutEffect } from 'react';
 import { Image, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { HomeStackScreen, GroupContact, Team, Setting, ScanScreen, ForgotPassword, SignIn, Splash } from '../Screen';
+import { Home, GroupContact, Team, Setting, ScanScreen, ForgotPassword, SignIn, Splash, ViewContact } from '../Screen';
 import styles from './styles';
 
 import iconPath from '../constants/iconPath';
 import AuthContext from '../store/AuthContext';
+
+const Stack = createNativeStackNavigator()
+
+// useLayoutEffect(() => {
+//   Tab.setOptions({tabBarStyle: {display: 'none'}})
+// }, [Stack])
+
+const RouteMovingBetweenScreen = () => {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarStyle: { display: 'none' }
+      }}
+    >
+      <Stack.Screen name="Home" component={Home} />
+      <Stack.Screen name="ViewContact"
+        component={ViewContact}
+      />
+    </Stack.Navigator>
+  )
+
+}
 
 const Tab = createBottomTabNavigator();
 
@@ -26,7 +49,7 @@ const RouteNavigation = () => {
       }}
     >
       <Tab.Screen name="Home"
-        component={HomeStackScreen}
+        component={RouteMovingBetweenScreen}
         options={{
           tabBarIcon: ({ focused }) => {
             return (
@@ -42,7 +65,6 @@ const RouteNavigation = () => {
 
             )
           },
-
         }}
       />
       <Tab.Screen name="Group Contact"
@@ -144,7 +166,7 @@ const Route = () => {
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false)
-    }, 800)
+    }, 2000)
   }, [])
 
 

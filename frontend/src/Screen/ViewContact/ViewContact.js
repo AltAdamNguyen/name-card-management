@@ -9,7 +9,7 @@ import styles from './styles';
 const ViewContact = () => {
     return (
         <SafeAreaView style={styles.container}>
-            <View style={{flex:1}}>
+            {/* <View style={styles.header}>
                 <Text>Back</Text>
                 <Text>...</Text>
             </View>
@@ -75,6 +75,15 @@ const ViewContact = () => {
                 <View>
                     <Text>Ngày khởi tạo</Text>
                     <Text>Ngày</Text>
+                </View>
+            </View> */}
+            <Text>a</Text>
+            <View style={styles.imgView}>
+                <Image source={imgPath.imgContact} style={styles.imgContact}/>
+            </View>
+            <View>
+                <View>
+
                 </View>
             </View>
         </SafeAreaView>

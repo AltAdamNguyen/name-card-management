@@ -165,7 +165,7 @@ const Home = ({ navigation }) => {
             </View>
             <View style={styles.listContainer}>
                 <ScrollView>
-                    <TouchableOpacity onPress={() => { navigation.navigate('ViewContactScreen') }}>
+                    <TouchableOpacity onPress={() => { navigation.navigate('ViewContact') }}>
                         <View style={styles.item}>
                             <View style={styles.imgContact}>
                                 <Image source={imgPath.imgContact} style={styles.image} />

@@ -4,8 +4,16 @@ import {StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    imgView: {
+        flex: 1,
+        backgroundColor: '#1890FF'
+    },
+    imgContact:{
+        width: 200,
     },
 });
 
