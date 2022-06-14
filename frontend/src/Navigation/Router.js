@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useLayoutEffect } from 'react';
 import { Image, View, Text } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigationState } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Home, GroupContact, Team, Setting, ScanScreen, ForgotPassword, SignIn, Splash, ViewContact } from '../Screen';
@@ -11,16 +11,20 @@ import AuthContext from '../store/AuthContext';
 
 const Stack = createNativeStackNavigator()
 
-// useLayoutEffect(() => {
-//   Tab.setOptions({tabBarStyle: {display: 'none'}})
-// }, [Stack])
+const getTabBarVisible = (route) => {
+  const state = useNavigationState(route => route);
+  const indexTab = state.routes[0].state ? state.routes[0].state.index : 0
+  if (indexTab == 0) {
+    return { height: '9%', borderTopColor: '#E0E3E3' }
+  }
+  return { display: 'none' }
+}
 
 const RouteMovingBetweenScreen = () => {
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarStyle: { display: 'none' }
       }}
     >
       <Stack.Screen name="Home" component={Home} />
@@ -34,10 +38,11 @@ const RouteMovingBetweenScreen = () => {
 
 const Tab = createBottomTabNavigator();
 
+
 const RouteNavigation = () => {
   return (
     <Tab.Navigator
-      initialRouteName='Home'
+      initialRouteName='HomeScreen'
       screenOptions={{
         tabBarShowLabel: false,
         headerShown: false,
@@ -48,9 +53,9 @@ const RouteNavigation = () => {
         tabBarHideOnKeyboard: true
       }}
     >
-      <Tab.Screen name="Home"
+      <Tab.Screen name="HomeScreen"
         component={RouteMovingBetweenScreen}
-        options={{
+        options={({ route }) => ({
           tabBarIcon: ({ focused }) => {
             return (
               <View style={styles(focused).container}>
@@ -62,10 +67,10 @@ const RouteNavigation = () => {
                   Trang chủ
                 </Text>
               </View>
-
             )
           },
-        }}
+          tabBarStyle: getTabBarVisible(route)
+        })}
       />
       <Tab.Screen name="Group Contact"
         component={GroupContact}

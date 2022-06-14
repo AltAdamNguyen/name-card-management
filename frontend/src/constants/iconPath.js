@@ -11,6 +11,9 @@ import icUserAdd from '../asset/icon/user-add.png';
 import icUserDelete from '../asset/icon/user-delete.png';
 import icExport from '../asset/icon/export.png';
 import icSwap from '../asset/icon/swap.png';
+import icArrow_Left from '../asset/icon/arrow-left.png';
+import icRight from '../asset/icon/right.png';
+import icPlus from '../asset/icon/plus.png';
 
 import icHome from '../asset/icon/home.png';
 import icGroup from '../asset/icon/credit_card.png';
@@ -21,8 +24,17 @@ import icCamera from '../asset/icon/camera.png';
 import icVN from '../asset/icon/VN.png';
 import icUK from '../asset/icon/Uk.png';
 
+import icMobile from '../asset/icon/mobile.png';
+import icMail from '../asset/icon/mail.png';
+import icPhone from '../asset/icon/phone.png';
+import icPrinter from '../asset/icon/printer.png';
+
 const iconPath = {
-    icDown,icClose,icFilter,icBookMark,icSearch,icDot,icDate,icOffice,icUser,icUserAdd,icUserDelete,icExport,icSwap,icHome,icGroup,icTeam,icSetting,icCamera,icVN,icUK
+    icFilter,icBookMark,icSearch,icDate,icOffice,icUser,icUserAdd,icUserDelete,icExport,icSwap,
+    icArrow_Left,icDown,icDot,icClose,icRight,icPlus,
+    icHome,icGroup,icTeam,icSetting,icCamera,
+    icVN,icUK,
+    icMobile,icMail,icPhone,icPrinter
 }
 
 export default iconPath;

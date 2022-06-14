@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
         width: '60%',
     },
     buttongray3: {
-        tintColor: '#BDBDBD',
+        tintColor: '#82828250',
     },
     containerOverlay: {
         fontfamily: 'Roboto',
@@ -85,7 +85,6 @@ const styles = StyleSheet.create({
     },
 
     header: {
-        flex: 1.5,
         flexDirection: 'column',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -119,7 +118,7 @@ const styles = StyleSheet.create({
     },
 
     titleContainer: {
-        flex: 1,
+        marginTop: 20,
         width: '90%',
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -155,7 +154,8 @@ const styles = StyleSheet.create({
                 },
 
     listContainer: {
-        flex: 8.5,
+        marginTop: 20,
+        flex: 1,
         width: '90%',
         flexDirection: 'column',
     },
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
         height: 50,
         alignItems: 'center',
         justifyContent: 'center',
-        right: 10,
+        left: '30%',
         bottom: 20,
         backgroundColor: '#1890FF',
         borderRadius: 25,

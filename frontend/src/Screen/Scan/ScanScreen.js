@@ -63,22 +63,30 @@ const ScanScreen = () => {
     );
     setPhoto(manipResult);
 
-    fetch('https://type.fit/api/quotes').then(res => res.json()).then(data => console.log(data)).catch(e => console.log(e));
+    fetch('https://ncmsystem.azurewebsites.net/api/scan',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({image: "data:image/jpg;base64," + manipResult.base64})
+    }).then(response => response.json())
+    .then(data => {console.log(data)})
+    .catch(error => console.log(error));
   };
 
   const callbackTakePic = (data) => {
     console.log(data);
   }
 
-  if (photo) {
-    return (
-      <SafeAreaView style={styles.container}>
-        <Image style={{
-          width: photo.width, height: photo.height, resizeMode: 'contain',
-        }} source={{ uri: "data:image/jpg;base64," + photo.base64 }} />
-      </SafeAreaView>
-    );
-  }
+  // if (photo) {
+  //   return (
+  //     <SafeAreaView style={styles.container}>
+  //       <Image style={{
+  //         width: photo.width, height: photo.height, resizeMode: 'contain',
+  //       }} source={{ uri: "data:image/jpg;base64," + photo.base64 }} />
+  //     </SafeAreaView>
+  //   );
+  // }
 
 
   return (
