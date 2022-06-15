@@ -1,0 +1,613 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="NCMSystemModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="contacts">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="255" />
+          <Property Name="email" Type="nvarchar" MaxLength="255" />
+          <Property Name="image_url" Type="nvarchar" MaxLength="255" />
+          <Property Name="company" Type="nvarchar" MaxLength="255" />
+          <Property Name="job_title" Type="nvarchar" MaxLength="255" />
+          <Property Name="phone" Type="nvarchar" MaxLength="255" />
+          <Property Name="address" Type="nvarchar" MaxLength="255" />
+          <Property Name="website" Type="nvarchar" MaxLength="255" />
+          <Property Name="fax" Type="nvarchar" MaxLength="255" />
+          <Property Name="reason" Type="nvarchar" MaxLength="255" />
+          <Property Name="user_id" Type="int" Nullable="false" />
+          <Property Name="flag_id" Type="int" />
+          <Property Name="status_id" Type="int" Nullable="false" />
+          <Property Name="isActive" Type="bit" Nullable="false" />
+          <Property Name="create_date" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="flags">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="group">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="user_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="group_contacts">
+          <Key>
+            <PropertyRef Name="group_id" />
+            <PropertyRef Name="contact_id" />
+          </Key>
+          <Property Name="group_id" Type="int" Nullable="false" />
+          <Property Name="contact_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="roles">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="status">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="token">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="refresh_token" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="user_id" Type="int" Nullable="false" />
+          <Property Name="created_date" Type="datetime" Nullable="false" />
+          <Property Name="expired_date" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="users">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="password" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="email" Type="nvarchar" MaxLength="255" />
+          <Property Name="isActive" Type="bit" />
+          <Property Name="role_id" Type="int" Nullable="false" />
+          <Property Name="manager_id" Type="int" />
+        </EntityType>
+        <Association Name="contacts_flags_id_fk">
+          <End Role="flags" Type="Self.flags" Multiplicity="0..1" />
+          <End Role="contacts" Type="Self.contacts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="flags">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="contacts">
+              <PropertyRef Name="flag_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="contacts_status_id_fk">
+          <End Role="status" Type="Self.status" Multiplicity="1" />
+          <End Role="contacts" Type="Self.contacts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="status">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="contacts">
+              <PropertyRef Name="status_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="contacts_users_id_fk">
+          <End Role="users" Type="Self.users" Multiplicity="1" />
+          <End Role="contacts" Type="Self.contacts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="contacts">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="group_contacts_contacts_id_fk">
+          <End Role="contacts" Type="Self.contacts" Multiplicity="1" />
+          <End Role="group_contacts" Type="Self.group_contacts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="contacts">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="group_contacts">
+              <PropertyRef Name="contact_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="group_contacts_group_id_fk">
+          <End Role="group" Type="Self.group" Multiplicity="1" />
+          <End Role="group_contacts" Type="Self.group_contacts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="group">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="group_contacts">
+              <PropertyRef Name="group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="group_users_id_fk">
+          <End Role="users" Type="Self.users" Multiplicity="1" />
+          <End Role="group" Type="Self.group" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="group">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="token_users_id_fk">
+          <End Role="users" Type="Self.users" Multiplicity="1" />
+          <End Role="token" Type="Self.token" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="token">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="users_roles_id_fk">
+          <End Role="roles" Type="Self.roles" Multiplicity="1" />
+          <End Role="users" Type="Self.users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="roles">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="users">
+              <PropertyRef Name="role_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="users_users_id_fk">
+          <End Role="users" Type="Self.users" Multiplicity="0..1" />
+          <End Role="users1" Type="Self.users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="users1">
+              <PropertyRef Name="manager_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="NCMSystemModelStoreContainer">
+          <EntitySet Name="contacts" EntityType="Self.contacts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="flags" EntityType="Self.flags" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="group" EntityType="Self.group" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="group_contacts" EntityType="Self.group_contacts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="roles" EntityType="Self.roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="status" EntityType="Self.status" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="token" EntityType="Self.token" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="users" EntityType="Self.users" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="contacts_flags_id_fk" Association="Self.contacts_flags_id_fk">
+            <End Role="flags" EntitySet="flags" />
+            <End Role="contacts" EntitySet="contacts" />
+          </AssociationSet>
+          <AssociationSet Name="contacts_status_id_fk" Association="Self.contacts_status_id_fk">
+            <End Role="status" EntitySet="status" />
+            <End Role="contacts" EntitySet="contacts" />
+          </AssociationSet>
+          <AssociationSet Name="contacts_users_id_fk" Association="Self.contacts_users_id_fk">
+            <End Role="users" EntitySet="users" />
+            <End Role="contacts" EntitySet="contacts" />
+          </AssociationSet>
+          <AssociationSet Name="group_contacts_contacts_id_fk" Association="Self.group_contacts_contacts_id_fk">
+            <End Role="contacts" EntitySet="contacts" />
+            <End Role="group_contacts" EntitySet="group_contacts" />
+          </AssociationSet>
+          <AssociationSet Name="group_contacts_group_id_fk" Association="Self.group_contacts_group_id_fk">
+            <End Role="group" EntitySet="group" />
+            <End Role="group_contacts" EntitySet="group_contacts" />
+          </AssociationSet>
+          <AssociationSet Name="group_users_id_fk" Association="Self.group_users_id_fk">
+            <End Role="users" EntitySet="users" />
+            <End Role="group" EntitySet="group" />
+          </AssociationSet>
+          <AssociationSet Name="token_users_id_fk" Association="Self.token_users_id_fk">
+            <End Role="users" EntitySet="users" />
+            <End Role="token" EntitySet="token" />
+          </AssociationSet>
+          <AssociationSet Name="users_roles_id_fk" Association="Self.users_roles_id_fk">
+            <End Role="roles" EntitySet="roles" />
+            <End Role="users" EntitySet="users" />
+          </AssociationSet>
+          <AssociationSet Name="users_users_id_fk" Association="Self.users_users_id_fk">
+            <End Role="users" EntitySet="users" />
+            <End Role="users1" EntitySet="users" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="NCMSystemModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="contact">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="image_url" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="company" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="job_title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="phone" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="website" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="fax" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="reason" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="user_id" Type="Int32" Nullable="false" />
+          <Property Name="flag_id" Type="Int32" />
+          <Property Name="status_id" Type="Int32" Nullable="false" />
+          <Property Name="isActive" Type="Boolean" Nullable="false" />
+          <Property Name="create_date" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="flag" Relationship="Self.contacts_flags_id_fk" FromRole="contacts" ToRole="flags" />
+          <NavigationProperty Name="status" Relationship="Self.contacts_status_id_fk" FromRole="contacts" ToRole="status" />
+          <NavigationProperty Name="user" Relationship="Self.contacts_users_id_fk" FromRole="contacts" ToRole="users" />
+          <NavigationProperty Name="groups" Relationship="Self.group_contacts" FromRole="contacts" ToRole="group" />
+        </EntityType>
+        <EntityType Name="flag">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="contacts" Relationship="Self.contacts_flags_id_fk" FromRole="flags" ToRole="contacts" />
+        </EntityType>
+        <EntityType Name="group">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="user_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="user" Relationship="Self.group_users_id_fk" FromRole="group" ToRole="users" />
+          <NavigationProperty Name="contacts" Relationship="Self.group_contacts" FromRole="group" ToRole="contacts" />
+        </EntityType>
+        <EntityType Name="role">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="users" Relationship="Self.users_roles_id_fk" FromRole="roles" ToRole="users" />
+        </EntityType>
+        <EntityType Name="status">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <NavigationProperty Name="contacts" Relationship="Self.contacts_status_id_fk" FromRole="status" ToRole="contacts" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="token">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="refresh_token" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="user_id" Type="Int32" Nullable="false" />
+          <Property Name="created_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="expired_date" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="user" Relationship="Self.token_users_id_fk" FromRole="token" ToRole="users" />
+        </EntityType>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="password" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="isActive" Type="Boolean" />
+          <Property Name="role_id" Type="Int32" Nullable="false" />
+          <Property Name="manager_id" Type="Int32" />
+          <NavigationProperty Name="contacts" Relationship="Self.contacts_users_id_fk" FromRole="users" ToRole="contacts" />
+          <NavigationProperty Name="groups" Relationship="Self.group_users_id_fk" FromRole="users" ToRole="group" />
+          <NavigationProperty Name="role" Relationship="Self.users_roles_id_fk" FromRole="users" ToRole="roles" />
+          <NavigationProperty Name="tokens" Relationship="Self.token_users_id_fk" FromRole="users" ToRole="token" />
+          <NavigationProperty Name="users1" Relationship="Self.users_users_id_fk" FromRole="users" ToRole="users1" />
+          <NavigationProperty Name="user1" Relationship="Self.users_users_id_fk" FromRole="users1" ToRole="users" />
+        </EntityType>
+        <Association Name="contacts_flags_id_fk">
+          <End Role="flags" Type="Self.flag" Multiplicity="0..1" />
+          <End Role="contacts" Type="Self.contact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="flags">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="contacts">
+              <PropertyRef Name="flag_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="contacts_status_id_fk">
+          <End Role="status" Type="Self.status" Multiplicity="1" />
+          <End Role="contacts" Type="Self.contact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="status">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="contacts">
+              <PropertyRef Name="status_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="contacts_users_id_fk">
+          <End Role="users" Type="Self.user" Multiplicity="1" />
+          <End Role="contacts" Type="Self.contact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="contacts">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="group_users_id_fk">
+          <End Role="users" Type="Self.user" Multiplicity="1" />
+          <End Role="group" Type="Self.group" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="group">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="users_roles_id_fk">
+          <End Role="roles" Type="Self.role" Multiplicity="1" />
+          <End Role="users" Type="Self.user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="roles">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="users">
+              <PropertyRef Name="role_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="token_users_id_fk">
+          <End Role="users" Type="Self.user" Multiplicity="1" />
+          <End Role="token" Type="Self.token" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="token">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="users_users_id_fk">
+          <End Role="users" Type="Self.user" Multiplicity="0..1" />
+          <End Role="users1" Type="Self.user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="users">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="users1">
+              <PropertyRef Name="manager_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="group_contacts">
+          <End Role="contacts" Type="Self.contact" Multiplicity="*" />
+          <End Role="group" Type="Self.group" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="NCMSystemEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="contacts" EntityType="Self.contact" />
+          <EntitySet Name="flags" EntityType="Self.flag" />
+          <EntitySet Name="groups" EntityType="Self.group" />
+          <EntitySet Name="roles" EntityType="Self.role" />
+          <EntitySet Name="status" EntityType="Self.status" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="tokens" EntityType="Self.token" />
+          <EntitySet Name="users" EntityType="Self.user" />
+          <AssociationSet Name="contacts_flags_id_fk" Association="Self.contacts_flags_id_fk">
+            <End Role="flags" EntitySet="flags" />
+            <End Role="contacts" EntitySet="contacts" />
+          </AssociationSet>
+          <AssociationSet Name="contacts_status_id_fk" Association="Self.contacts_status_id_fk">
+            <End Role="status" EntitySet="status" />
+            <End Role="contacts" EntitySet="contacts" />
+          </AssociationSet>
+          <AssociationSet Name="contacts_users_id_fk" Association="Self.contacts_users_id_fk">
+            <End Role="users" EntitySet="users" />
+            <End Role="contacts" EntitySet="contacts" />
+          </AssociationSet>
+          <AssociationSet Name="group_users_id_fk" Association="Self.group_users_id_fk">
+            <End Role="users" EntitySet="users" />
+            <End Role="group" EntitySet="groups" />
+          </AssociationSet>
+          <AssociationSet Name="users_roles_id_fk" Association="Self.users_roles_id_fk">
+            <End Role="roles" EntitySet="roles" />
+            <End Role="users" EntitySet="users" />
+          </AssociationSet>
+          <AssociationSet Name="token_users_id_fk" Association="Self.token_users_id_fk">
+            <End Role="users" EntitySet="users" />
+            <End Role="token" EntitySet="tokens" />
+          </AssociationSet>
+          <AssociationSet Name="users_users_id_fk" Association="Self.users_users_id_fk">
+            <End Role="users" EntitySet="users" />
+            <End Role="users1" EntitySet="users" />
+          </AssociationSet>
+          <AssociationSet Name="group_contacts" Association="Self.group_contacts">
+            <End Role="contacts" EntitySet="contacts" />
+            <End Role="group" EntitySet="groups" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="NCMSystemModelStoreContainer" CdmEntityContainer="NCMSystemEntities">
+          <EntitySetMapping Name="contacts">
+            <EntityTypeMapping TypeName="NCMSystemModel.contact">
+              <MappingFragment StoreEntitySet="contacts">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="image_url" ColumnName="image_url" />
+                <ScalarProperty Name="company" ColumnName="company" />
+                <ScalarProperty Name="job_title" ColumnName="job_title" />
+                <ScalarProperty Name="phone" ColumnName="phone" />
+                <ScalarProperty Name="address" ColumnName="address" />
+                <ScalarProperty Name="website" ColumnName="website" />
+                <ScalarProperty Name="fax" ColumnName="fax" />
+                <ScalarProperty Name="reason" ColumnName="reason" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="flag_id" ColumnName="flag_id" />
+                <ScalarProperty Name="status_id" ColumnName="status_id" />
+                <ScalarProperty Name="isActive" ColumnName="isActive" />
+                <ScalarProperty Name="create_date" ColumnName="create_date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="flags">
+            <EntityTypeMapping TypeName="NCMSystemModel.flag">
+              <MappingFragment StoreEntitySet="flags">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="groups">
+            <EntityTypeMapping TypeName="NCMSystemModel.group">
+              <MappingFragment StoreEntitySet="group">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="roles">
+            <EntityTypeMapping TypeName="NCMSystemModel.role">
+              <MappingFragment StoreEntitySet="roles">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="status">
+            <EntityTypeMapping TypeName="NCMSystemModel.status">
+              <MappingFragment StoreEntitySet="status">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="NCMSystemModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tokens">
+            <EntityTypeMapping TypeName="NCMSystemModel.token">
+              <MappingFragment StoreEntitySet="token">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="refresh_token" ColumnName="refresh_token" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="created_date" ColumnName="created_date" />
+                <ScalarProperty Name="expired_date" ColumnName="expired_date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="users">
+            <EntityTypeMapping TypeName="NCMSystemModel.user">
+              <MappingFragment StoreEntitySet="users">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="isActive" ColumnName="isActive" />
+                <ScalarProperty Name="role_id" ColumnName="role_id" />
+                <ScalarProperty Name="manager_id" ColumnName="manager_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="group_contacts" TypeName="NCMSystemModel.group_contacts" StoreEntitySet="group_contacts">
+            <EndProperty Name="contacts">
+              <ScalarProperty Name="id" ColumnName="contact_id" />
+            </EndProperty>
+            <EndProperty Name="group">
+              <ScalarProperty Name="id" ColumnName="group_id" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
