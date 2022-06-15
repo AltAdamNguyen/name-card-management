@@ -6,10 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Http;
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
-using IronOcr;
 using NCMSystem.Models.CallAPI.ScanNC;
+using Tesseract;
 
 namespace NCMSystem.Controllers
 {
@@ -19,63 +17,60 @@ namespace NCMSystem.Controllers
         [Route("api/scan")]
         public ScanNCResponse Post([FromBody] ScanNCRequest image)
         {
-            string[] imageArray = image.image.Split(',');
-            byte[] bytes = Convert.FromBase64String(imageArray[1]);
-
-            Image img;
-            string fileName = AppDomain.CurrentDomain.BaseDirectory + "Images\\nameCard.jpg";
-
-            using (MemoryStream ms = new MemoryStream(bytes))
+            try
             {
-                img = Image.FromStream(ms);
-                img.Save(fileName, System.Drawing.Imaging.ImageFormat.Jpeg);
+                string[] imageArray = image.image.Split(',');
+                byte[] bytes = Convert.FromBase64String(imageArray[1]);
+
+                Image img;
+                long timeStart = DateTime.Now.Ticks;
+                string fileName = AppDomain.CurrentDomain.BaseDirectory + "Images\\nameCard_" + timeStart + ".jpg";
+
+                using (MemoryStream ms = new MemoryStream(bytes))
+                {
+                    img = Image.FromStream(ms);
+                    img.Save(fileName, System.Drawing.Imaging.ImageFormat.Jpeg);
+                }
+
+                ScanNCResponse scanResult = new ScanNCResponse();
+                InfoNC info = new InfoNC
+                {
+                    imgUrl = $"https://{Request.RequestUri.Host}/Images/nameCard_{timeStart}.jpg"
+                };
+                using (var engine = new TesseractEngine(AppDomain.CurrentDomain.BaseDirectory + "tessdata", "vie",
+                           EngineMode.Default))
+                {
+                    using (var imgScan = new Bitmap(fileName))
+                    {
+                        using (var pix = PixConverter.ToPix(imgScan))
+                        {
+                            using (var page = engine.Process(pix))
+                            {
+                                var text = page.GetText();
+                                scanResult.data = ExtractText(text.Trim(), info, scanResult);
+                            }
+                        }
+                    }
+                }
+
+                return scanResult;
             }
-
-            ScanNCResponse scanResult = new ScanNCResponse();
-
-            var ocr = new IronTesseract();
-            ocr.Language = OcrLanguage.Vietnamese;
-            ocr.AddSecondaryLanguage(OcrLanguage.English);
-            string rs;
-            using (var input = new OcrInput(fileName))
+            catch (Exception e)
             {
-                var result = ocr.Read(input);
-                rs = result.Text;
-                ExtractText(rs, fileName, scanResult);
+                Console.WriteLine(e);
+                throw;
             }
-
-            return scanResult;
         }
 
-        [HttpGet]
-        [Route("api/test")]
-        public string Get()
+        public static bool HasSpecialChar(string input)
         {
-            return "123";
-        }
-
-        public string UploadCloud(string path)
-        {
-            // get account from cloudinary
-            Account a = new Account(
-                "trungdang",
-                "573991769983678",
-                "p03uFAEsd3TTDLZ53clPxVHo9vA");
-
-            Cloudinary cloudinary = new Cloudinary(a);
-            cloudinary.Api.Secure = true;
-
-            // Upload images to cloudinary
-            string arrayString = "";
-            var uploadResult = cloudinary.Upload(new ImageUploadParams()
+            if (Regex.IsMatch(input, @"|!#%&=»«@£§€};<>_,"))
             {
-                File = new FileDescription(path),
-            });
-            arrayString = uploadResult.SecureUrl.ToString();
-
-            System.IO.File.Delete(path);
-
-            return arrayString;
+                return false;
+            }else
+            {
+                return true;
+            }
         }
 
         public string SplitNumber(string str)
@@ -94,22 +89,36 @@ namespace NCMSystem.Controllers
             return result;
         }
 
-        public void ExtractText(string originText, string path, ScanNCResponse scanResult)
+        public string IsEmpty(string str)
         {
-            scanResult.imgUrl = UploadCloud(path);
+            return (str.Trim() == "") ? null : str;
+        }
+
+        public InfoNC ExtractText(string originText, InfoNC info, ScanNCResponse scanResult)
+        {
+            List<string> listI = new List<string>();
             string[] rsArray = Regex.Split(originText, @"\r\n|\r|\n");
 
             //remove empty string
             rsArray = rsArray.Where(s => !string.IsNullOrEmpty(s)).ToArray();
 
-            TextInfo myTI = new CultureInfo("vi-VN", false).TextInfo;
-            scanResult.items = new List<string>();
+            if (rsArray.Length == 0 || rsArray.Length < 3)
+            {
+                scanResult.message = "Fail";
+            }
+            else
+            {
+                scanResult.message = "Success";
+            }
+
+            TextInfo myTi = new CultureInfo("vi-VN", false).TextInfo;
 
             for (int i = 0; i < rsArray.Length; i++)
             {
+                bool has = false;
                 if (!rsArray[i].Contains("."))
                 {
-                    rsArray[i] = myTI.ToTitleCase(rsArray[i].ToLower());
+                    rsArray[i] = myTi.ToTitleCase(rsArray[i].ToLower()).Trim();
 
                     if (Regex.IsMatch(rsArray[i], @"\d"))
                     {
@@ -117,26 +126,40 @@ namespace NCMSystem.Controllers
                         str = Regex.Replace(str, @"[(),-]", String.Empty);
                         if (Regex.IsMatch(rsArray[i], @"Fax"))
                         {
-                            scanResult.fax = SplitNumber(str);
+                            string fax = SplitNumber(str);
+                            info.fax = IsEmpty(fax);
+                            has = true;
                         }
                         else if (Regex.IsMatch(rsArray[i], @"Tel|Office|Off|Telephone"))
                         {
-                            scanResult.telephone = SplitNumber(str);
+                            string tele = SplitNumber(str);
+                            info.telephone = IsEmpty(tele);
+                            has = true;
                         }
-                        else if (Regex.IsMatch(rsArray[i], @"Mobile|Mob|Mobi"))
+                        else if (Regex.IsMatch(rsArray[i], @"Mobile|Mob|Mobi|Đt|Di Động|ĐTDĐ|Di động"))
                         {
-                            scanResult.mobile = SplitNumber(str);
+                            string mobile = SplitNumber(str);
+                            info.mobile = IsEmpty(mobile);
+                            has = true;
                         }
                     }
 
-                    try
+                    //split number and character ':' from string 
+                    if (has == false)
                     {
-                        scanResult.items.Add(rsArray[i]);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine(e);
-                        throw;
+                        string[] separate = Regex.Split(rsArray[i], @":");
+                        if (!HasSpecialChar(rsArray[i]))
+                        {
+                            scanResult.message = "Fail";
+                        }
+                        if (separate.Length > 1)
+                        {
+                            listI.Add(SplitNumber(separate[1].Replace(" ", "").Trim()));
+                        }
+                        else
+                        {
+                            listI.Add(rsArray[i].Trim());
+                        }
                     }
                 }
                 else if (rsArray[i].Contains("."))
@@ -148,15 +171,18 @@ namespace NCMSystem.Controllers
                     {
                         if (eStr.Contains("@"))
                         {
-                            scanResult.email = eStr;
+                            info.email = IsEmpty(eStr);
                         }
                         else if (eStr.Contains("www"))
                         {
-                            scanResult.website = eStr;
+                            info.website = IsEmpty(eStr);
                         }
                     }
                 }
             }
+
+            info.items = listI;
+            return info;
         }
     }
 }
