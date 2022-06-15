@@ -3,7 +3,7 @@ import { Image, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { HomeStackScreen, GroupContact, Team, Setting, ScanScreen, ForgotPassword, SignIn, Splash } from '../Screen';
+import { HomeStackScreen, GroupContact, Team, Setting, ScanScreen, ForgotPassword, SignIn, Splash } from '../screen';
 import styles from './styles';
 
 import iconPath from '../constants/iconPath';
