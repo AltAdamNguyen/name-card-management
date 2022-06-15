@@ -1,25 +1,28 @@
 //import liraries
-import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React, { useContext } from 'react';
+import { Text, SafeAreaView, TouchableOpacity } from 'react-native';
+import AuthContext from '../../store/AuthContext';
+import styles from './styles';
 
 // create a component
 const Setting = () => {
+    const authCtx = useContext(AuthContext);
     return (
-        <View style={styles.container}>
-            <Text>Setting</Text>
-        </View>
+        <SafeAreaView style={styles.container}>
+            <Text style={styles.title}>Cài đặt</Text>
+            <TouchableOpacity style={[styles.button,styles.mb20]}>
+                <Text style={styles.label}>Đổi mật khẩu</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={authCtx.onLogout}>
+                <Text style={styles.label}>Đăng xuất</Text>
+            </TouchableOpacity>
+        </SafeAreaView>
+
     );
 };
 
 // define your styles
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#2c3e50',
-    },
-});
+
 
 //make this component available to the app
 export default Setting;

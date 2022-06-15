@@ -8,7 +8,15 @@ const styles = StyleSheet.create({
     mb10: {
         marginBottom: 10,
     },
-
+    mr10:{
+        marginRight: 10,
+    },
+    w60: {
+        width: '60%',
+    },
+    buttongray3: {
+        tintColor: '#82828250',
+    },
     containerOverlay: {
         fontfamily: 'Roboto',
         flex: 1,
@@ -57,8 +65,11 @@ const styles = StyleSheet.create({
                 modalFloatSortItem: {
                     borderColor: '#828282',
                     borderWidth: 1,
-                    borderRadius: 5,
-                    padding: 3,
+                    borderRadius: 15,
+                    paddingLeft: 20,
+                    paddingRight: 20,
+                    paddingTop: 3,
+                    paddingBottom: 3,
                 },
             modalFloatMange: {
                 flexDirection: 'row',
@@ -74,7 +85,6 @@ const styles = StyleSheet.create({
     },
 
     header: {
-        flex: 1.5,
         flexDirection: 'column',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -108,7 +118,7 @@ const styles = StyleSheet.create({
     },
 
     titleContainer: {
-        flex: 1,
+        marginTop: 20,
         width: '90%',
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -144,7 +154,8 @@ const styles = StyleSheet.create({
                 },
 
     listContainer: {
-        flex: 8.5,
+        marginTop: 20,
+        flex: 1,
         width: '90%',
         flexDirection: 'column',
     },
@@ -152,7 +163,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 80,
         borderWidth: 1,
-        borderColor: '#828282',
+        borderColor: '#82828225',
         borderRadius: 10,
         padding: 5,
         marginBottom: 8,
@@ -200,7 +211,7 @@ const styles = StyleSheet.create({
         height: 50,
         alignItems: 'center',
         justifyContent: 'center',
-        right: 10,
+        left: '30%',
         bottom: 20,
         backgroundColor: '#1890FF',
         borderRadius: 25,

@@ -3,6 +3,9 @@ import React, {useState} from 'react'
 import CustomInputs from '../../components/CustomInputs'
 import CustomButtons from '../../components/CustomButtons'
 import CustemHeaders from '../../components/CustomHeaders/CustemHeaders'
+
+import styles  from './styles'
+
 const ForgotPassword = () => {
     const {email, setEmail} = useState('');
 
@@ -18,13 +21,4 @@ const ForgotPassword = () => {
   )
 }
 
-const styles = StyleSheet.create({
-    root: {
-        alignItems: 'center',
-        marginTop: '30%'
-    },
-    header: {
-        
-    }
-})
 export default ForgotPassword
