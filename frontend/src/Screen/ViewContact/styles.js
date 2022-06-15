@@ -44,9 +44,6 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         margin: 10,
     },
-    imgView: {
-        backgroundColor: '#1890FF'
-    },
     image:{
         width: '95%',
         maxHeight: '32%',

@@ -4,7 +4,6 @@ import { View, Text, StyleSheet, SafeAreaView, Image, ScrollView, Modal, Touchab
 import iconPath from '../../constants/iconPath';
 import imgPath from '../../constants/imgPath';
 
-import { CommonActions } from '@react-navigation/native';
 import styles from './styles';
 
 // create a component
@@ -58,7 +57,7 @@ const ViewContact = ({navigation}) => {
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.dispatch(CommonActions.goBack())}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Image source={iconPath.icArrow_Left} />
                 </TouchableOpacity>
                 <View>
