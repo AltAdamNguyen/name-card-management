@@ -7,8 +7,8 @@ const styles = StyleSheet.create({
 
     root: {
         alignItems: 'center',
-        marginTop: '30%',
         flex: 1,
+        backgroundColor: 'white'
     },
     language: {
         flexDirection: 'row',

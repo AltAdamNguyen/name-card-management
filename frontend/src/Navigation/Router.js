@@ -3,8 +3,7 @@ import { Image, View, Text } from 'react-native';
 import { NavigationContainer, useNavigationState } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Home, GroupContact, Team, Setting, ScanScreen, ForgotPassword, SignIn, Splash, ViewContact, AddContact } from '../screen';
-import SkeletonAddContact from '../components/Skeleton/SkeletonViewContact';
+import { Home, GroupContact, Team, Setting, ScanScreen, ForgotPassword, SignIn, Splash, ViewContact,ChangePassword, AddContact } from '../screen';
 import styles from './styles';
 
 import iconPath from '../constants/iconPath';
@@ -171,6 +170,7 @@ const RouteAuthentication = () => {
     >
       <AuthStack.Screen name="SignIn" component={SignIn} />
       <AuthStack.Screen name="ForgotPassword" component={ForgotPassword} />
+      <AuthStack.Screen name="ChangePassword" component={ChangePassword} />
     </AuthStack.Navigator>
   );
 }
