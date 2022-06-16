@@ -2,8 +2,11 @@ import React, { useContext, useEffect, useState, useLayoutEffect } from 'react';
 import { Image, View, Text } from 'react-native';
 import { NavigationContainer, useNavigationState } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Home, GroupContact, Team, Setting, ScanScreen, ForgotPassword, SignIn, Splash, ViewContact,ChangePassword, AddContact } from '../screen';
+
+import { GroupContact, Team, Setting, Splash} from '../screen';
+
+import {RouteMovingBetweenHomeScreen, RouteMovingBetweenScanScreen, RouteAuthentication} from '../components/RouteMovingBetweenScreen/index'
+
 import styles from './styles';
 
 import iconPath from '../constants/iconPath';
@@ -16,34 +19,6 @@ const getTabBarVisible = (route) => {
     return { height: '9%', borderTopColor: '#E0E3E3' }
   }
   return { display: 'none' }
-}
-
-const HomeStack = createNativeStackNavigator()
-
-const RouteMovingBetweenHomeScreen = () => {
-  return (
-    <HomeStack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <HomeStack.Screen name="Home" component={Home} />
-      <HomeStack.Screen name="ViewContact" component={ViewContact} />
-    </HomeStack.Navigator>
-  )
-}
-
-const ScanStack = createNativeStackNavigator()
-
-const RouteMovingBetweenScanScreen = () => {
-  return (
-    <ScanStack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}>
-      <ScanStack.Screen name="Scan" component={ScanScreen} />
-      <ScanStack.Screen name="AddContact" component={SkeletonAddContact} />
-    </ScanStack.Navigator>
-  )
 }
 
 const Tab = createBottomTabNavigator();
@@ -159,22 +134,6 @@ const RouteNavigation = () => {
   );
 };
 
-const AuthStack = createNativeStackNavigator();
-
-const RouteAuthentication = () => {
-  return (
-    <AuthStack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <AuthStack.Screen name="SignIn" component={SignIn} />
-      <AuthStack.Screen name="ForgotPassword" component={ForgotPassword} />
-      <AuthStack.Screen name="ChangePassword" component={ChangePassword} />
-    </AuthStack.Navigator>
-  );
-}
-
 const Route = () => {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -190,7 +149,6 @@ const Route = () => {
   return (
     <NavigationContainer>
       {isLoading ? <Splash /> : (authCtx.isLogin ? <RouteNavigation /> : <RouteAuthentication />)}
-
     </NavigationContainer>
   );
 }
