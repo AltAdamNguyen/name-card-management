@@ -1,16 +1,52 @@
 //import liraries
-import React, { useEffect, useState } from 'react';
+import React, { useState, useReducer } from 'react';
 import { View, Text, SafeAreaView, TextInput, Image, TouchableOpacity, Modal, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import iconPath from '../../constants/iconPath';
 import styles from './styles';
 
 import ModalAddContact from '../../components/ModalAddContact/ModalAddContact';
 // create a component
+
+const initialTodos = [
+    {
+        name: 'name',
+        visible: false,
+    },{
+        name: 'jobTitle',
+        visible: false,
+    }
+];
+
 const AddContact = ({ contact, navigation }) => {
-    const [modalVisible, setModalVisible] = useState(false);
     const [value, setValue] = useState({
         name: '',
     });
+
+    const visableReducer = (visible, action) => {
+        switch (action.name) {
+          case 'name':
+            return visible.map(item => {
+              if (item.name === action.name) {
+                return { ...item, visible: true };
+              } else {
+                return item;
+              }
+            });
+          case 'jobTitle':
+            return visible.map(item => {
+                if (item.name === action.name) {
+                  return { ...item, visible: true };
+                } else {
+                  return item;
+                }
+              });
+          default:
+            return visible;
+        }
+      };
+
+    const [modalVisible, setModalVisible] = useReducer(visableReducer, initialTodos);
+
     const handelerModal = (item, name) => {
         setValue({
             ...value,
@@ -27,6 +63,12 @@ const AddContact = ({ contact, navigation }) => {
         }
     }
 
+    const handleVisable = (item) => {
+        setModalVisible({
+            name: item.name,
+            visible: !item.visible
+        })
+    }
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -50,7 +92,7 @@ const AddContact = ({ contact, navigation }) => {
                     <View style={styles.formInput_item}>
                         <TextInput placeholder='Họ và tên' style={styles.formInput_item_input} value={value.name} onChangeText={handleChange('name')}/>
                         <View>
-                            <ModalAddContact listItem={contact.items} title={'Họ và tên'} visible={modalVisible} name={'name'} value={value.name} onPress={handelerModal} onPressVisable={() => setModalVisible(!modalVisible)}/>
+                            <ModalAddContact listItem={contact.items} title={'Họ và tên'} visible={modalVisible} name={'name'} value={value.name} onPress={handelerModal} onPressVisable={handleVisable}/>
                             <TouchableOpacity onPress={() => setModalVisible(true)}>
                                 <Image source={iconPath.icRight} />
                             </TouchableOpacity>
