@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     imgContact: {
         width: "90%",
         height: "30%",
-        // justifyContent: "center",
+        justifyContent: "center",
         padding: 5,
     },
     image:{
@@ -43,6 +43,11 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         paddingLeft: 10,
         paddingRight: 10,
+    },
+    formInput_label: {
+        fontSize: 14,
+        fontWeight: "bold",
+        marginBottom: 5,
     },
     formInput_item: {
         flexDirection: 'row',

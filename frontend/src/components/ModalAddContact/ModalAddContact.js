@@ -3,17 +3,16 @@ import { RadioButton } from 'react-native-paper';
 import styles from "./styles";
 
 const ModalAddContact = ({listItem, title, name, value, visible, onPress, onPressVisable}) => {
-
     return (
         <Modal
             animationType="fade"
             transparent={true}
-            visible={visible}
+            visible={visible[name]}
             onRequestClose={() => {
                 Alert.alert('Modal has been closed.');
-                // setModalVisible(!modalVisible);
+                // setModalVisible(!visible[name]);
             }}>
-            <TouchableOpacity style={styles.containerOverlay} onPress={() => onPressVisable()}>
+            <TouchableOpacity style={styles.containerOverlay} onPress={() => onPressVisable(name)}>
                 <TouchableWithoutFeedback>
                     <View style={styles.modalView}>
                         <View>

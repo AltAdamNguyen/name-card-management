@@ -1,5 +1,5 @@
 //import liraries
-import React, { useState, useReducer } from 'react';
+import React, { useState } from 'react';
 import { View, Text, SafeAreaView, TextInput, Image, TouchableOpacity, Modal, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import iconPath from '../../constants/iconPath';
 import styles from './styles';
@@ -7,68 +7,91 @@ import styles from './styles';
 import ModalAddContact from '../../components/ModalAddContact/ModalAddContact';
 // create a component
 
-const initialTodos = [
+const formInput = [
     {
         name: 'name',
-        visible: false,
-    },{
+        title: 'Họ và tên',
+    },
+    {
         name: 'jobTitle',
-        visible: false,
+        title: 'Chức vụ',
+    },
+    {
+        name: 'company',
+        title: 'Công ty',
+    },
+    {
+        name: 'mobile',
+        title: 'Số điện thoại di động',
+    },
+    {
+        name: 'email',
+        title: 'Email',
+    },
+    {
+        name: 'fax',
+        title: 'Fax',
+    },
+    {
+        name: 'address',
+        title: 'Địa chỉ',
+    },
+    {
+        name: 'website',
+        title: 'Website',
     }
-];
+]
 
 const AddContact = ({ contact, navigation }) => {
     const [value, setValue] = useState({
         name: '',
+        jobTitle: '',
+        company: '',
+        mobile: '',
+        phone: '',
+        email: '',
+        fax: '',
+        address: '',
+        website: ''
     });
 
-    const visableReducer = (visible, action) => {
-        switch (action.name) {
-          case 'name':
-            return visible.map(item => {
-              if (item.name === action.name) {
-                return { ...item, visible: true };
-              } else {
-                return item;
-              }
-            });
-          case 'jobTitle':
-            return visible.map(item => {
-                if (item.name === action.name) {
-                  return { ...item, visible: true };
-                } else {
-                  return item;
-                }
-              });
-          default:
-            return visible;
-        }
-      };
-
-    const [modalVisible, setModalVisible] = useReducer(visableReducer, initialTodos);
+    const [modalVisible, setModalVisible] = useState({
+        name: false,
+        jobTitle: false,
+        company: false,
+        mobile: false,
+        phone: false,
+        email: false,
+        fax: false,
+        address: false,
+        website: false
+    });
 
     const handelerModal = (item, name) => {
         setValue({
             ...value,
             [name]: item
         })
-        setModalVisible(!modalVisible);
+        setModalVisible({
+            ...modalVisible,
+            [name]: false
+        })
     }
     const handleChange = (name) => {
-        return (text) =>{
+        return (text) => {
             setValue({
                 ...value,
                 [name]: text
             })
         }
     }
-
     const handleVisable = (item) => {
         setModalVisible({
-            name: item.name,
-            visible: !item.visible
+            ...modalVisible,
+            [item]: false
         })
     }
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -89,43 +112,23 @@ const AddContact = ({ contact, navigation }) => {
             </View>
             <ScrollView>
                 <View style={styles.formInput}>
-                    <View style={styles.formInput_item}>
-                        <TextInput placeholder='Họ và tên' style={styles.formInput_item_input} value={value.name} onChangeText={handleChange('name')}/>
-                        <View>
-                            <ModalAddContact listItem={contact.items} title={'Họ và tên'} visible={modalVisible} name={'name'} value={value.name} onPress={handelerModal} onPressVisable={handleVisable}/>
-                            <TouchableOpacity onPress={() => setModalVisible(true)}>
-                                <Image source={iconPath.icRight} />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                    <View style={styles.formInput_item}>
-                        <TextInput placeholder='Chức danh' style={styles.formInput_item_input} />
-                        <Image source={iconPath.icRight} />
-                    </View>
-                    <View style={styles.formInput_item}>
-                        <TextInput placeholder='Công ty' style={styles.formInput_item_input} />
-                        <Image source={iconPath.icRight} />
-                    </View>
-                    <View style={styles.formInput_item}>
-                        <TextInput placeholder='Số điện thoại di động' style={styles.formInput_item_input} />
-                        <Image source={iconPath.icRight} />
-                    </View>
-                    <View style={styles.formInput_item}>
-                        <TextInput placeholder='Số điện thoại bàn' style={styles.formInput_item_input} />
-                        <Image source={iconPath.icRight} />
-                    </View>
-                    <View style={styles.formInput_item}>
-                        <TextInput placeholder='Email' style={styles.formInput_item_input} />
-                        <Image source={iconPath.icRight} />
-                    </View>
-                    <View style={styles.formInput_item}>
-                        <TextInput placeholder='Địa chỉ' style={styles.formInput_item_input} />
-                        <Image source={iconPath.icRight} />
-                    </View>
-                    <View style={styles.formInput_item}>
-                        <TextInput placeholder='Website' style={styles.formInput_item_input} />
-                        <Image source={iconPath.icRight} />
-                    </View>
+                    {formInput.map((item, index) => {
+                        return (
+                            <View key={index}>
+                                <Text style={styles.formInput_label}>{item.title}</Text>
+                                <View style={styles.formInput_item}>
+                                    <TextInput placeholder={item.title} style={styles.formInput_item_input} value={value[item.name]} onChangeText={handleChange(item.name)} />
+                                    <View>
+                                        <ModalAddContact listItem={contact.items} title={item.title} visible={modalVisible} name={item.name} value={value[item.name]} onPress={handelerModal} onPressVisable={handleVisable} />
+                                        <TouchableOpacity onPress={() => setModalVisible({ ...modalVisible, [item.name]: true })}>
+                                            <Image source={iconPath.icRight} />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+                        )
+                    })}
+
                 </View>
             </ScrollView>
         </SafeAreaView>
