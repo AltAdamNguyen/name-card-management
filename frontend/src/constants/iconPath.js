@@ -31,7 +31,7 @@ import icPhone from '../asset/icon/phone.png';
 import icPrinter from '../asset/icon/printer.png';
 
 const iconPath = {
-    icDown,icEye,icEye_invisible,icCloseCircle,icClose,icFilter,icBookMark,icSearch,icDot,icDate,icOffice,icUser,icUserAdd,icUserDelete,icExport,icSwap,icHome,icGroup,icTeam,icSetting,icCamera,icVN,icUK
+    icDown,icMobile,icMail,icPhone, icPrinter,icEye,icEye_invisible,icCloseCircle,icClose,icFilter,icBookMark,icSearch,icDot,icDate,icOffice,icUser,icUserAdd,icUserDelete,icExport,icSwap,icHome,icGroup,icTeam,icSetting,icCamera,icVN,icUK
 }
 
 export default iconPath;
