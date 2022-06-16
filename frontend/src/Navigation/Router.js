@@ -3,13 +3,11 @@ import { Image, View, Text } from 'react-native';
 import { NavigationContainer, useNavigationState } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Home, GroupContact, Team, Setting, ScanScreen, ForgotPassword, SignIn, Splash, ViewContact,ChangePassword } from '../screen';
+import { Home, GroupContact, Team, Setting, ScanScreen, ForgotPassword, SignIn, Splash, ViewContact,ChangePassword, AddContact } from '../screen';
 import styles from './styles';
 
 import iconPath from '../constants/iconPath';
 import AuthContext from '../store/AuthContext';
-
-const Stack = createNativeStackNavigator()
 
 const getTabBarVisible = (route) => {
   const state = useNavigationState(route => route);
@@ -20,24 +18,35 @@ const getTabBarVisible = (route) => {
   return { display: 'none' }
 }
 
-const RouteMovingBetweenScreen = () => {
+const HomeStack = createNativeStackNavigator()
+
+const RouteMovingBetweenHomeScreen = () => {
   return (
-    <Stack.Navigator
+    <HomeStack.Navigator
       screenOptions={{
         headerShown: false,
-      }}
-    >
-      <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen name="ViewContact"
-        component={ViewContact}
-      />
-    </Stack.Navigator>
+      }}>
+      <HomeStack.Screen name="Home" component={Home} />
+      <HomeStack.Screen name="ViewContact" component={ViewContact} />
+    </HomeStack.Navigator>
   )
+}
 
+const ScanStack = createNativeStackNavigator()
+
+const RouteMovingBetweenScanScreen = () => {
+  return (
+    <ScanStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
+      <ScanStack.Screen name="Scan" component={ScanScreen} />
+      <ScanStack.Screen name="AddContact" component={SkeletonAddContact} />
+    </ScanStack.Navigator>
+  )
 }
 
 const Tab = createBottomTabNavigator();
-
 
 const RouteNavigation = () => {
   return (
@@ -54,7 +63,7 @@ const RouteNavigation = () => {
       }}
     >
       <Tab.Screen name="HomeScreen"
-        component={RouteMovingBetweenScreen}
+        component={RouteMovingBetweenHomeScreen}
         options={({ route }) => ({
           tabBarIcon: ({ focused }) => {
             return (
@@ -90,8 +99,8 @@ const RouteNavigation = () => {
           }
         }}
       />
-      <Tab.Screen name="Scan"
-        component={ScanScreen}
+      <Tab.Screen name="ScanScreen"
+        component={RouteMovingBetweenScanScreen}
         options={{
           tabBarIcon: ({ focused }) => {
             return (

@@ -16,12 +16,12 @@ const styles = (focused) => StyleSheet.create({
         textAlign: 'center'
     },
     containerScan: {
-        width: 60,
-        height: 60,
+        width: '80%',
+        height: '80%',
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#1890FF',
-        borderRadius: 30,
+        borderRadius: 1000,
     },
     iconScan: {
         tintColor: '#ffff',
