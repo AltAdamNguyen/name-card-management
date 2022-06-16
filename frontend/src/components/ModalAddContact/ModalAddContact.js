@@ -2,7 +2,7 @@ import { Modal, View, TouchableOpacity, TouchableWithoutFeedback, Text } from "r
 import { RadioButton } from 'react-native-paper';
 import styles from "./styles";
 
-const ModalAddContact = ({listItem, title, value, visible, onPress, onPressVisable}) => {
+const ModalAddContact = ({listItem, title, name, value, visible, onPress, onPressVisable}) => {
 
     return (
         <Modal
@@ -21,7 +21,7 @@ const ModalAddContact = ({listItem, title, value, visible, onPress, onPressVisab
                         </View>
                         {listItem.map((item, index) => {
                             return (
-                                <TouchableOpacity key={index} onPress={() => onPress(item)}>
+                                <TouchableOpacity key={index} onPress={() => onPress(item, name)}>
                                     <View style={styles.modalView_item}>
                                         <RadioButton
                                             value={item}

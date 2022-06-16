@@ -8,14 +8,23 @@ import ModalAddContact from '../../components/ModalAddContact/ModalAddContact';
 // create a component
 const AddContact = ({ contact, navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
-    const [value, setValue] = useState({});
-    const handelerModal = (item) => {
-        setValue(item)
+    const [value, setValue] = useState({
+        name: '',
+    });
+    const handelerModal = (item, name) => {
+        setValue({
+            ...value,
+            [name]: item
+        })
         setModalVisible(!modalVisible);
     }
-    const handleChange = (event) => {
-        console.log(event.targeet)
-        // setValue({ ...value, [event.target.name]: event.target.value });
+    const handleChange = (name) => {
+        return (text) =>{
+            setValue({
+                ...value,
+                [name]: text
+            })
+        }
     }
 
     return (
@@ -39,9 +48,9 @@ const AddContact = ({ contact, navigation }) => {
             <ScrollView>
                 <View style={styles.formInput}>
                     <View style={styles.formInput_item}>
-                        <TextInput placeholder='Họ và tên' style={styles.formInput_item_input} value={value} onChangeText={setValue}/>
+                        <TextInput placeholder='Họ và tên' style={styles.formInput_item_input} value={value.name} onChangeText={handleChange('name')}/>
                         <View>
-                            <ModalAddContact listItem={contact.items} title={'Họ và tên'} visible={modalVisible} value={value} onPress={handelerModal} onPressVisable={() => setModalVisible(!modalVisible)}/>
+                            <ModalAddContact listItem={contact.items} title={'Họ và tên'} visible={modalVisible} name={'name'} value={value.name} onPress={handelerModal} onPressVisable={() => setModalVisible(!modalVisible)}/>
                             <TouchableOpacity onPress={() => setModalVisible(true)}>
                                 <Image source={iconPath.icRight} />
                             </TouchableOpacity>
