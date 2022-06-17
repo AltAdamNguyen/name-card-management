@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text.RegularExpressions;
 using System.Web.Http;
 using NCMSystem.Models.CallAPI.ScanNC;
@@ -62,9 +63,14 @@ namespace NCMSystem.Controllers
             }
         }
 
+        public void Error()
+        {
+            throw new HttpResponseException(HttpStatusCode.BadRequest);
+        }
+        
         public static bool HasSpecialChar(string input)
         {
-            if (Regex.IsMatch(input, @"|!#%&=»«@£§€};<>_,"))
+            if (Regex.IsMatch(input, @"|!#%&=»«@£§€;<>_"))
             {
                 return false;
             }else
@@ -105,6 +111,7 @@ namespace NCMSystem.Controllers
             if (rsArray.Length == 0 || rsArray.Length < 3)
             {
                 scanResult.message = "Fail";
+                this.BadRequest();
             }
             else
             {
@@ -150,7 +157,6 @@ namespace NCMSystem.Controllers
                         string[] separate = Regex.Split(rsArray[i], @":");
                         if (!HasSpecialChar(rsArray[i]))
                         {
-                            scanResult.message = "Fail";
                         }
                         if (separate.Length > 1)
                         {

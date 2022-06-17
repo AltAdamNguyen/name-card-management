@@ -1,5 +1,5 @@
 ﻿using System.Web.Http;
-using NCMSystem.Models.CallAPI.Contacts;
+using NCMSystem.Models.CallAPI.Contact;
 
 namespace NCMSystem.Controllers
 {
@@ -8,9 +8,9 @@ namespace NCMSystem.Controllers
         // GET
         [HttpGet]
         [Route("api/contact/view")]
-        public ContactsResponse Get(ContactsRequest request)
+        public ContactResponse Get(ContactRequest request)
         {
-            ContactsResponse response = new ContactsResponse();
+            ContactResponse response = new ContactResponse();
             
             
             return response; 
@@ -19,9 +19,9 @@ namespace NCMSystem.Controllers
         // POST
         [HttpPost]
         [Route("api/contact/add")]
-        public ContactsResponse Post([FromBody] ContactsRequest request)
+        public ContactResponse Post([FromBody] ContactRequest request)
         { 
-            ContactsResponse response = new ContactsResponse();
+            ContactResponse response = new ContactResponse();
             
             
             return response;
@@ -30,9 +30,9 @@ namespace NCMSystem.Controllers
         // PUT
         [HttpPut]
         [Route("api/contact/update")]
-        public ContactsResponse Put(int id, [FromBody] string value)
+        public ContactResponse Put(int id, [FromBody] string value)
         {   
-            ContactsResponse response = new ContactsResponse();
+            ContactResponse response = new ContactResponse();
             
             
             return response;

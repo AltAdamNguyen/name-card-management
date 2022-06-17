@@ -20,7 +20,7 @@ namespace NCMSystem.Models
             this.contacts = new HashSet<contact>();
             this.groups = new HashSet<group>();
             this.tokens = new HashSet<token>();
-            this.users1 = new HashSet<user>();
+            this.user1 = new HashSet<user>();
         }
     
         public int id { get; set; }
@@ -39,7 +39,7 @@ namespace NCMSystem.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<token> tokens { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<user> users1 { get; set; }
-        public virtual user user1 { get; set; }
+        public virtual ICollection<user> user1 { get; set; }
+        public virtual user user2 { get; set; }
     }
 }
