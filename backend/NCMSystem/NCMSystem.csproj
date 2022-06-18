@@ -190,15 +190,18 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\CallAPI\CommonResponse.cs" />
     <Compile Include="Models\CallAPI\Contact\Contact.cs" />
     <Compile Include="Models\CallAPI\Contact\ContactRequest.cs" />
     <Compile Include="Models\CallAPI\Contact\ContactResponse.cs" />
     <Compile Include="Models\CallAPI\ScanNC\InfoNC.cs" />
     <Compile Include="Models\CallAPI\ScanNC\ScanNCRequest.cs" />
     <Compile Include="Models\CallAPI\ScanNC\ScanNCResponse.cs" />
-    <Compile Include="Models\CallAPI\User\User.cs" />
-    <Compile Include="Models\CallAPI\User\UserRequest.cs" />
-    <Compile Include="Models\CallAPI\User\UserResponse.cs" />
+    <Compile Include="Models\CallAPI\User\RefreshToken\RefreshTokenRequest.cs" />
+    <Compile Include="Models\CallAPI\User\RefreshToken\RefreshTokenResponse.cs" />
+    <Compile Include="Models\CallAPI\User\UserLogin\UserToken.cs" />
+    <Compile Include="Models\CallAPI\User\UserLogin\UserRequest.cs" />
+    <Compile Include="Models\CallAPI\User\UserLogin\UserResponse.cs" />
     <Compile Include="Models\contact.cs">
       <DependentUpon>NcmModel.tt</DependentUpon>
     </Compile>
