@@ -19,12 +19,14 @@
           <Property Name="address" Type="nvarchar" MaxLength="255" />
           <Property Name="website" Type="nvarchar" MaxLength="255" />
           <Property Name="fax" Type="nvarchar" MaxLength="255" />
-          <Property Name="reason" Type="nvarchar" MaxLength="255" />
-          <Property Name="user_id" Type="int" Nullable="false" />
+          <Property Name="reasonStatus" Type="nvarchar" MaxLength="255" />
+          <Property Name="owner_id" Type="int" Nullable="false" />
           <Property Name="flag_id" Type="int" />
           <Property Name="status_id" Type="int" Nullable="false" />
           <Property Name="isActive" Type="bit" Nullable="false" />
           <Property Name="create_date" Type="datetime" Nullable="false" />
+          <Property Name="createdBy" Type="int" Nullable="false" />
+          <Property Name="resonDeactive" Type="nvarchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="flag">
           <Key>
@@ -127,7 +129,19 @@
               <PropertyRef Name="id" />
             </Principal>
             <Dependent Role="contact">
-              <PropertyRef Name="user_id" />
+              <PropertyRef Name="owner_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="contact_user_id_fk_2">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
+          <End Role="contact" Type="Self.contact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="contact">
+              <PropertyRef Name="createdBy" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -225,6 +239,10 @@
             <End Role="user" EntitySet="user" />
             <End Role="contact" EntitySet="contact" />
           </AssociationSet>
+          <AssociationSet Name="contact_user_id_fk_2" Association="Self.contact_user_id_fk_2">
+            <End Role="user" EntitySet="user" />
+            <End Role="contact" EntitySet="contact" />
+          </AssociationSet>
           <AssociationSet Name="group_contact_contact_id_fk" Association="Self.group_contact_contact_id_fk">
             <End Role="contact" EntitySet="contact" />
             <End Role="group_contact" EntitySet="group_contact" />
@@ -269,15 +287,18 @@
           <Property Name="address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="website" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="fax" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="reason" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="user_id" Type="Int32" Nullable="false" />
+          <Property Name="reasonStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="owner_id" Type="Int32" Nullable="false" />
           <Property Name="flag_id" Type="Int32" />
           <Property Name="status_id" Type="Int32" Nullable="false" />
           <Property Name="isActive" Type="Boolean" Nullable="false" />
           <Property Name="create_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="createdBy" Type="Int32" Nullable="false" />
+          <Property Name="resonDeactive" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="flag" Relationship="Self.contact_flag_id_fk" FromRole="contact" ToRole="flag" />
           <NavigationProperty Name="status" Relationship="Self.contact_status_id_fk" FromRole="contact" ToRole="status" />
           <NavigationProperty Name="user" Relationship="Self.contact_user_id_fk" FromRole="contact" ToRole="user" />
+          <NavigationProperty Name="user1" Relationship="Self.contact_user_id_fk_2" FromRole="contact" ToRole="user" />
           <NavigationProperty Name="groups" Relationship="Self.group_contact" FromRole="contact" ToRole="group" />
         </EntityType>
         <EntityType Name="flag">
@@ -347,6 +368,7 @@
           <Property Name="role_id" Type="Int32" Nullable="false" />
           <Property Name="manager_id" Type="Int32" />
           <NavigationProperty Name="contacts" Relationship="Self.contact_user_id_fk" FromRole="user" ToRole="contact" />
+          <NavigationProperty Name="contacts1" Relationship="Self.contact_user_id_fk_2" FromRole="user" ToRole="contact" />
           <NavigationProperty Name="groups" Relationship="Self.group_user_id_fk" FromRole="user" ToRole="group" />
           <NavigationProperty Name="role" Relationship="Self.user_role_id_fk" FromRole="user" ToRole="role" />
           <NavigationProperty Name="tokens" Relationship="Self.token_user_id_fk" FromRole="user" ToRole="token" />
@@ -385,7 +407,19 @@
               <PropertyRef Name="id" />
             </Principal>
             <Dependent Role="contact">
-              <PropertyRef Name="user_id" />
+              <PropertyRef Name="owner_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="contact_user_id_fk_2">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
+          <End Role="contact" Type="Self.contact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="contact">
+              <PropertyRef Name="createdBy" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -462,6 +496,10 @@
             <End Role="user" EntitySet="users" />
             <End Role="contact" EntitySet="contacts" />
           </AssociationSet>
+          <AssociationSet Name="contact_user_id_fk_2" Association="Self.contact_user_id_fk_2">
+            <End Role="user" EntitySet="users" />
+            <End Role="contact" EntitySet="contacts" />
+          </AssociationSet>
           <AssociationSet Name="group_user_id_fk" Association="Self.group_user_id_fk">
             <End Role="user" EntitySet="users" />
             <End Role="group" EntitySet="groups" />
@@ -502,12 +540,14 @@
                 <ScalarProperty Name="address" ColumnName="address" />
                 <ScalarProperty Name="website" ColumnName="website" />
                 <ScalarProperty Name="fax" ColumnName="fax" />
-                <ScalarProperty Name="reason" ColumnName="reason" />
-                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="reasonStatus" ColumnName="reasonStatus" />
+                <ScalarProperty Name="owner_id" ColumnName="owner_id" />
                 <ScalarProperty Name="flag_id" ColumnName="flag_id" />
                 <ScalarProperty Name="status_id" ColumnName="status_id" />
                 <ScalarProperty Name="isActive" ColumnName="isActive" />
                 <ScalarProperty Name="create_date" ColumnName="create_date" />
+                <ScalarProperty Name="createdBy" ColumnName="createdBy" />
+                <ScalarProperty Name="resonDeactive" ColumnName="resonDeactive" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

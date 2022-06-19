@@ -7,6 +7,7 @@ using System.Text;
 using System.Web.Http;
 using System.Web.Http.Results;
 using Jose;
+using NCMSystem.Filter;
 using NCMSystem.Models;
 using NCMSystem.Models.CallAPI;
 using NCMSystem.Models.CallAPI.User.RefreshToken;
@@ -186,6 +187,21 @@ namespace NCMSystem.Controllers
                     {
                         Token = token,
                     },
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+        
+        [HttpGet]
+        [Route("api/auth/test")]
+        [JwtAuthorizeFilter(NcmRoles = new []{NcmRole.Admin, NcmRole.Manager, NcmRole.Staff})]
+        public ResponseMessageResult Test()
+        {
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Test success " + ((JwtToken)Request.Properties["payload"]).Uid,
                 }), Encoding.UTF8, "application/json")
             });
         }

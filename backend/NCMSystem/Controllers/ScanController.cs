@@ -111,7 +111,6 @@ namespace NCMSystem.Controllers
             if (rsArray.Length == 0 || rsArray.Length < 3)
             {
                 scanResult.message = "Fail";
-                this.BadRequest();
             }
             else
             {
