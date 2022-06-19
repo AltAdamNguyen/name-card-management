@@ -197,6 +197,7 @@
     <Compile Include="Models\CallAPI\ScanNC\InfoNC.cs" />
     <Compile Include="Models\CallAPI\ScanNC\ScanNCRequest.cs" />
     <Compile Include="Models\CallAPI\ScanNC\ScanNCResponse.cs" />
+    <Compile Include="Models\CallAPI\User\ChangePassword\ChangePasswordRequest.cs" />
     <Compile Include="Models\CallAPI\User\RefreshToken\RefreshTokenRequest.cs" />
     <Compile Include="Models\CallAPI\User\RefreshToken\RefreshTokenResponse.cs" />
     <Compile Include="Models\CallAPI\User\UserLogin\UserToken.cs" />
