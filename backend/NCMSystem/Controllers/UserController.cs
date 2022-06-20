@@ -12,6 +12,7 @@ using NCMSystem.Filter;
 using NCMSystem.Models;
 using NCMSystem.Models.CallAPI;
 using NCMSystem.Models.CallAPI.User.ChangePassword;
+using NCMSystem.Models.CallAPI.User.ForgotPassword;
 using NCMSystem.Models.CallAPI.User.RefreshToken;
 using NCMSystem.Models.CallAPI.User.UserLogin;
 using Newtonsoft.Json;
@@ -200,7 +201,7 @@ namespace NCMSystem.Controllers
         {
             string newPassword = request.NewPassword;
             string oldPassword = request.OldPassword;
-            
+
             // check null new password
             if (string.IsNullOrWhiteSpace(newPassword) || string.IsNullOrWhiteSpace(oldPassword))
             {
@@ -209,7 +210,7 @@ namespace NCMSystem.Controllers
 
             newPassword = newPassword.Trim();
             oldPassword = oldPassword.Trim();
-            
+
             // check match new password and old password
             if (newPassword == oldPassword)
             {
@@ -219,9 +220,10 @@ namespace NCMSystem.Controllers
             // check new password regex
             if (!Regex.IsMatch(newPassword, @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}$"))
             {
-                return Common.ResponseMessage.BadRequest("New password must be at least 8 characters, contain at least one lowercase letter, one uppercase letter, one number and one special character");
+                return Common.ResponseMessage.BadRequest(
+                    "New password must be at least 8 characters, contain at least one lowercase letter, one uppercase letter, one number and one special character");
             }
-            
+
             int userId = ((JwtToken)Request.Properties["payload"]).Uid;
             var selectUser = db.users.FirstOrDefault(e => e.id == userId);
 
@@ -232,7 +234,7 @@ namespace NCMSystem.Controllers
 
             selectUser.password = newPassword;
             db.tokens.RemoveRange(db.tokens.Where(e => e.user_id == userId));
-            
+
             // generate token
             Jwk keyToken =
                 new Jwk(Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings["JWT_SecretKeyToken"]));
@@ -267,7 +269,7 @@ namespace NCMSystem.Controllers
                 created_date = dateCreateToken.DateTime,
                 expired_date = dateExpireRefreshToken.DateTime
             });
-            
+
             db.SaveChanges();
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -287,22 +289,132 @@ namespace NCMSystem.Controllers
 
         [HttpPost]
         [Route("api/auth/forgot-password/send-email")]
-        public ResponseMessageResult ForgotPasswordSendEmail()
+        public ResponseMessageResult ForgotPasswordSendEmail([FromBody] ForgotPasswordSendEmailRequest request)
         {
-            return null;
-        }
+            if (request == null)
+                return Common.ResponseMessage.BadRequest("Request must contain body");
 
-        [HttpGet]
-        [Route("api/auth/test")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin, NcmRole.Manager, NcmRole.Staff })]
-        public ResponseMessageResult Test()
-        {
+            string email = request.Email;
+
+            // check null email
+            if (string.IsNullOrWhiteSpace(email))
+                return Common.ResponseMessage.BadRequest("Request must contain email");
+
+            email = email.Trim();
+
+            // check email regex
+            var isValidate = Validator.Validator.CheckEmail(email);
+
+            if (!isValidate)
+                return Common.ResponseMessage.BadRequest("Email is invalid");
+
+            var selectUser = db.users.FirstOrDefault(e => e.email == email);
+
+            if (selectUser == null)
+                return Common.ResponseMessage.NotFound("User not found");
+
+            // random number length 6
+            var randomNumber = new Random().Next(100000, 999999).ToString();
+            var expireTime = DateTime.Now.AddMinutes(10);
+
+            // add forgot password to database
+            selectUser.code_resetPw = randomNumber;
+            selectUser.exp_code = expireTime;
+
+            db.SaveChanges();
+
+            // send email
+            SendGridConfig.SendCodeResetPassword(email, randomNumber);
+
             return new ResponseMessageResult(new HttpResponseMessage()
             {
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Test success " + ((JwtToken)Request.Properties["payload"]).Uid,
+                    Message = "Send email success",
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpPost]
+        [Route("api/auth/forgot-password/check-code")]
+        public ResponseMessageResult ForgotPasswordCheckCode([FromBody] ForgotPasswordCheckCodeRequest request)
+        {
+            if (request == null)
+                return Common.ResponseMessage.BadRequest("Request must contain body");
+            
+            string code = request.Code;
+            string email = request.Email;
+            
+            // check null code
+            if (string.IsNullOrWhiteSpace(code) || string.IsNullOrWhiteSpace(email))
+                return Common.ResponseMessage.BadRequest("Request must contain code and email");
+            
+            code = code.Trim();
+            email = email.Trim();
+            
+            // get user by email
+            var selectUser = db.users.FirstOrDefault(e => e.email == email && e.code_resetPw == code);
+            if (selectUser == null)
+                return Common.ResponseMessage.NotFound("User not found or code is incorrect");
+            
+            if (selectUser.exp_code < DateTime.Now)
+                return Common.ResponseMessage.BadRequest("Code is expired");
+            
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Code is correct",
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+        
+        [HttpPost]
+        [Route("api/auth/forgot-password/submit")]
+        public ResponseMessageResult ForgotPasswordSubmit([FromBody] ForgotPasswordSubmitRequest request)
+        {
+            if (request == null)
+                return Common.ResponseMessage.BadRequest("Request must contain body");
+            
+            string code = request.Code;
+            string email = request.Email;
+            string password = request.Password;
+            
+            // check null code or email or password
+            if (string.IsNullOrWhiteSpace(code) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+                return Common.ResponseMessage.BadRequest("Request must contain code, email and password");
+            
+            code = code.Trim();
+            email = email.Trim();
+            password = password.Trim();
+            
+            // get user by email
+            var selectUser = db.users.FirstOrDefault(e => e.email == email && e.code_resetPw == code);
+            if (selectUser == null)
+                return Common.ResponseMessage.NotFound("User not found or code is incorrect");
+
+            if (selectUser.exp_code < DateTime.Now)
+                return Common.ResponseMessage.BadRequest("Code is expired");
+            
+            // check password regex
+            if (!Regex.IsMatch(password, @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}$"))
+                return Common.ResponseMessage.BadRequest(
+                    "New password must be at least 8 characters, contain at least one lowercase letter, one uppercase letter, one number and one special character");
+
+            selectUser.password = password;
+            selectUser.code_resetPw = null;
+            selectUser.exp_code = null;
+            
+            db.SaveChanges();
+            
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Change password success",
                 }), Encoding.UTF8, "application/json")
             });
         }

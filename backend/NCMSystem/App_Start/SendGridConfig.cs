@@ -16,7 +16,7 @@ namespace NCMSystem
             var client = new SendGridClient(apiKey);
             
             // setup Sender (Warning: Don't Change)
-            var from = new EmailAddress("admin@nmtung.xyz", "SWP391 - OnlineShop");
+            var from = new EmailAddress("admin@nmtung.xyz", "Name Card Management | No Reply");
             
             var to = new EmailAddress(email);
             
@@ -26,12 +26,12 @@ namespace NCMSystem
             var response = await client.SendEmailAsync(msg).ConfigureAwait(false);
         }
 
-        public static void SendEmailActive(string email, string code)
+        public static async void SendCodeResetPassword(string email, string code)
         {
-            string subject = "Active your account";
-            string content = "Link for active your account here: <a href='https://localhost:44365/Auth/Active?code=" + code + "'>Here<a/>";
+            string subject = "Reset Password";
+            string content = "Code for reset password: " + code;
 
-            SendEmail(email, content, subject);
+            await SendEmail(email, content, subject);
         }
     }
 }
