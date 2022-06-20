@@ -2,14 +2,14 @@
 {
     public class ContactRequest
     {
-        public string imgUrl { get; set; }
-        public string name { get; set; }
-        public string job_title { get; set; }
-        public string company { get; set; }
-        public string mobile { get; set; }
-        public string email { get; set; }
-        public string address { get; set; }
-        public string website { get; set; }
-        public string fax { get; set; }
+        public string ImgUrl { get; set; }
+        public string Name { get; set; }
+        public string JobTitle { get; set; }
+        public string Company { get; set; }
+        public string Mobile { get; set; }
+        public string Email { get; set; }
+        public string Address { get; set; }
+        public string Website { get; set; }
+        public string Fax { get; set; }
     }
 }
