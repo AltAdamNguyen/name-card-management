@@ -20,13 +20,15 @@ namespace NCMSystem.Controllers
         // GET
         [HttpGet]
         [Route("api/contact/view")]
-        [JwtAuthorizeFilter ]
-        public ResponseMessageResult Get(ContactRequest request)
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
+        public ResponseMessageResult Get()
         {
             List<ContactRequest> list = new List<ContactRequest>();
             
-            // get data from database
-            var data = db.contacts.Where(x => x.createdBy == 2).ToList();
+            // get data from contact database
+            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+            var contact = db.contacts.Where(c => c.createdBy == userId).ToList();
+            
 
             return new ResponseMessageResult(new HttpResponseMessage()
             {
@@ -34,9 +36,9 @@ namespace NCMSystem.Controllers
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
                     Message = "",
-                    Data = new ContactRequest()
+                    Data = new List<int>()
                     {
-                        
+                        1,2,3,4,
                     },
                 }), Encoding.UTF8, "application/json")
             });

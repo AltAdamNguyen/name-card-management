@@ -31,6 +31,8 @@ namespace NCMSystem.Models
         public Nullable<bool> isActive { get; set; }
         public int role_id { get; set; }
         public Nullable<int> manager_id { get; set; }
+        public string code_resetPw { get; set; }
+        public Nullable<System.DateTime> exp_code { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<contact> contacts { get; set; }
