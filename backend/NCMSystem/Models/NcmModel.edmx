@@ -34,6 +34,7 @@
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="code" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="group">
           <Key>
@@ -64,6 +65,7 @@
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="code" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -309,6 +311,7 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="contacts" Relationship="Self.contact_flag_id_fk" FromRole="flag" ToRole="contact" />
+          <Property Name="code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="group">
           <Key>
@@ -335,6 +338,7 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="contacts" Relationship="Self.contact_status_id_fk" FromRole="status" ToRole="contact" />
+          <Property Name="code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
@@ -557,6 +561,7 @@
           <EntitySetMapping Name="flags">
             <EntityTypeMapping TypeName="NCMSystemModel.flag">
               <MappingFragment StoreEntitySet="flag">
+                <ScalarProperty Name="code" ColumnName="code" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
@@ -582,6 +587,7 @@
           <EntitySetMapping Name="status">
             <EntityTypeMapping TypeName="NCMSystemModel.status">
               <MappingFragment StoreEntitySet="status">
+                <ScalarProperty Name="code" ColumnName="code" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>

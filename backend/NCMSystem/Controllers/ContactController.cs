@@ -30,7 +30,7 @@ namespace NCMSystem.Controllers
             var contact = db.contacts.Where(c => c.createdBy == userId).ToList();
             if (contact.Count == 0)
             {
-                return Common.ResponseMessage.BadRequest("Faild to get contact");
+                return Common.ResponseMessage.BadRequest("No contact found");
             }
 
             // add data to listCt from var contact
@@ -42,7 +42,7 @@ namespace NCMSystem.Controllers
                 hc.Name = c.name;
                 hc.JobTitle = c.job_title;
                 hc.Company = c.company;
-                hc.Flag = c.flag.name;
+                hc.Flag = c.flag?.code;
                 hc.CreatedAt = c.create_date;
                 listCt.Add(hc);
             }
@@ -79,7 +79,7 @@ namespace NCMSystem.Controllers
             dc.Name = contact.name;
             dc.JobTitle = contact.job_title;
             dc.Company = contact.company;
-            dc.Flag = contact.flag?.name;
+            dc.Flag = contact.flag?.code;
             dc.Phone = contact.phone;
             dc.Fax = contact.fax;
             dc.Email = contact.email;
