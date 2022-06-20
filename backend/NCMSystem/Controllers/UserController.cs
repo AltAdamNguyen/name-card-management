@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 using System.Web.Http;
 using System.Web.Http.Results;
 using Jose;
-using Jose.native;
 using NCMSystem.Filter;
 using NCMSystem.Models;
 using NCMSystem.Models.CallAPI;
@@ -207,6 +206,9 @@ namespace NCMSystem.Controllers
             {
                 return Common.ResponseMessage.BadRequest("Request must contain new_password and old_password");
             }
+
+            newPassword = newPassword.Trim();
+            oldPassword = oldPassword.Trim();
             
             // check match new password and old password
             if (newPassword == oldPassword)
@@ -281,6 +283,13 @@ namespace NCMSystem.Controllers
                     },
                 }), Encoding.UTF8, "application/json")
             });
+        }
+
+        [HttpPost]
+        [Route("api/auth/forgot-password/send-email")]
+        public ResponseMessageResult ForgotPasswordSendEmail()
+        {
+            return null;
         }
 
         [HttpGet]
