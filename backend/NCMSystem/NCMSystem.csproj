@@ -65,6 +65,12 @@
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="SendGrid, Version=9.28.0.0, Culture=neutral, PublicKeyToken=4f047e93159395ca, processorArchitecture=MSIL">
+      <HintPath>..\packages\SendGrid.9.28.0\lib\net452\SendGrid.dll</HintPath>
+    </Reference>
+    <Reference Include="StarkbankEcdsa, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b2e6337a5d77bfbc, processorArchitecture=MSIL">
+      <HintPath>..\packages\starkbank-ecdsa.1.3.3\lib\net452\StarkbankEcdsa.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -154,6 +160,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\SendGridConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\HelpPage\ApiDescriptionExtensions.cs" />
     <Compile Include="Areas\HelpPage\App_Start\HelpPageConfig.cs" />
@@ -199,6 +206,10 @@
     <Compile Include="Models\CallAPI\ScanNC\InfoNC.cs" />
     <Compile Include="Models\CallAPI\ScanNC\ScanNCRequest.cs" />
     <Compile Include="Models\CallAPI\ScanNC\ScanNCResponse.cs" />
+    <Compile Include="Models\CallAPI\User\ChangePassword\ChangePasswordRequest.cs" />
+    <Compile Include="Models\CallAPI\User\ForgotPassword\ForgotPasswordCheckCodeRequest.cs" />
+    <Compile Include="Models\CallAPI\User\ForgotPassword\ForgotPasswordSendEmailRequest.cs" />
+    <Compile Include="Models\CallAPI\User\ForgotPassword\ForgotPasswordSubmitRequest.cs" />
     <Compile Include="Models\CallAPI\User\RefreshToken\RefreshTokenRequest.cs" />
     <Compile Include="Models\CallAPI\User\RefreshToken\RefreshTokenResponse.cs" />
     <Compile Include="Models\CallAPI\User\UserLogin\UserToken.cs" />
