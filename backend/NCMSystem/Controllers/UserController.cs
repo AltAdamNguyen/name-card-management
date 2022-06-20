@@ -70,32 +70,14 @@ namespace NCMSystem.Controllers
                     }), Encoding.UTF8, "application/json")
                 });
             }
-
-            // generate token
-            Jwk keyToken =
-                new Jwk(Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings["JWT_SecretKeyToken"]));
-            Jwk keyRefreshToken =
-                new Jwk(Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings["JWT_SecretKeyRefreshToken"]));
-
             // init date create-expire for token and refresh token
             DateTimeOffset dateCreateToken = DateTimeOffset.Now;
 
             DateTimeOffset dateExpireToken = dateCreateToken.AddMinutes(30);
             DateTimeOffset dateExpireRefreshToken = dateCreateToken.AddMonths(1);
 
-            string token = Jose.JWT.Encode(new Dictionary<string, object>()
-            {
-                { "uid", user.id },
-                { "iat", dateCreateToken.ToUnixTimeSeconds() },
-                { "exp", dateExpireToken.ToUnixTimeSeconds() }
-            }, keyToken, JwsAlgorithm.HS256);
-
-            string refreshToken = Jose.JWT.Encode(new Dictionary<string, object>()
-            {
-                { "uid", user.id },
-                { "iat", dateCreateToken.ToUnixTimeSeconds() },
-                { "exp", dateExpireRefreshToken.ToUnixTimeSeconds() }
-            }, keyRefreshToken, JwsAlgorithm.HS256);
+            var token = GenerateToken(user.id, dateCreateToken.ToUnixTimeSeconds(), dateExpireToken.ToUnixTimeSeconds());
+            var refreshToken = GenerateRefreshToken(user.id, dateCreateToken.ToUnixTimeSeconds(), dateExpireRefreshToken.ToUnixTimeSeconds());
 
             // add refresh token to database
             db.tokens.Add(new token()
@@ -235,31 +217,14 @@ namespace NCMSystem.Controllers
             selectUser.password = newPassword;
             db.tokens.RemoveRange(db.tokens.Where(e => e.user_id == userId));
 
-            // generate token
-            Jwk keyToken =
-                new Jwk(Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings["JWT_SecretKeyToken"]));
-            Jwk keyRefreshToken =
-                new Jwk(Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings["JWT_SecretKeyRefreshToken"]));
-
             // init date create-expire for token and refresh token
             DateTimeOffset dateCreateToken = DateTimeOffset.Now;
 
             DateTimeOffset dateExpireToken = dateCreateToken.AddMinutes(30);
             DateTimeOffset dateExpireRefreshToken = dateCreateToken.AddMonths(1);
 
-            string token = Jose.JWT.Encode(new Dictionary<string, object>()
-            {
-                { "uid", userId },
-                { "iat", dateCreateToken.ToUnixTimeSeconds() },
-                { "exp", dateExpireToken.ToUnixTimeSeconds() }
-            }, keyToken, JwsAlgorithm.HS256);
-
-            string refreshToken = Jose.JWT.Encode(new Dictionary<string, object>()
-            {
-                { "uid", userId },
-                { "iat", dateCreateToken.ToUnixTimeSeconds() },
-                { "exp", dateExpireRefreshToken.ToUnixTimeSeconds() }
-            }, keyRefreshToken, JwsAlgorithm.HS256);
+            var token = GenerateToken(userId, dateCreateToken.ToUnixTimeSeconds(), dateExpireToken.ToUnixTimeSeconds());
+            var refreshToken = GenerateRefreshToken(userId, dateCreateToken.ToUnixTimeSeconds(), dateExpireRefreshToken.ToUnixTimeSeconds());
 
             // add refresh token to database
             db.tokens.Add(new token()
@@ -407,6 +372,25 @@ namespace NCMSystem.Controllers
             selectUser.code_resetPw = null;
             selectUser.exp_code = null;
             
+            db.tokens.RemoveRange(db.tokens.Where(e => e.user_id == selectUser.id));
+            
+            // generate new token
+            DateTimeOffset dateCreateToken = DateTimeOffset.Now;
+
+            DateTimeOffset dateExpireToken = dateCreateToken.AddMinutes(30);
+            DateTimeOffset dateExpireRefreshToken = dateCreateToken.AddMonths(1);
+
+            var token = GenerateToken(selectUser.id, dateCreateToken.ToUnixTimeSeconds(), dateExpireToken.ToUnixTimeSeconds());
+            var refreshToken = GenerateRefreshToken(selectUser.id, dateCreateToken.ToUnixTimeSeconds(), dateExpireRefreshToken.ToUnixTimeSeconds());
+            
+            db.tokens.Add(new token()
+            {
+                user_id = selectUser.id,
+                refresh_token = refreshToken,
+                created_date = dateCreateToken.DateTime,
+                expired_date = dateExpireRefreshToken.DateTime
+            });
+            
             db.SaveChanges();
             
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -414,9 +398,51 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Change password success",
+                    Message = "Reset password success",
+                    Data = new UserToken()
+                    {
+                        Token = token,
+                        RefreshToken = refreshToken
+                    }
                 }), Encoding.UTF8, "application/json")
             });
+        }
+        
+        private string GenerateToken(int userId, long createTime, long expireTime)
+        {
+            Jwk keyToken =
+                new Jwk(Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings["JWT_SecretKeyToken"]));
+
+            // init date create-expire for token and refresh token
+
+            string token = Jose.JWT.Encode(new Dictionary<string, object>()
+            {
+                { "uid", userId },
+                { "iat", createTime },
+                { "exp", expireTime }
+            }, keyToken, JwsAlgorithm.HS256);
+            
+            return token;
+        }
+        
+        private string GenerateRefreshToken (int userId, long createTime, long expireTime)
+        {
+            Jwk keyRefreshToken =
+                new Jwk(Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings["JWT_SecretKeyRefreshToken"]));
+
+            // init date create-expire for token and refresh token
+            DateTimeOffset dateCreateToken = DateTimeOffset.Now;
+
+            DateTimeOffset dateExpireRefreshToken = dateCreateToken.AddMonths(1);
+
+            string refreshToken = Jose.JWT.Encode(new Dictionary<string, object>()
+            {
+                { "uid", userId },
+                { "iat", createTime },
+                { "exp", expireTime }
+            }, keyRefreshToken, JwsAlgorithm.HS256);
+
+            return refreshToken;
         }
     }
 }
