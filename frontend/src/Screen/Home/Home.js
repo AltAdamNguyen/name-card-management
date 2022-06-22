@@ -1,45 +1,45 @@
 //import liraries
-import React, { useState } from 'react';
-import { SafeAreaView, View, Text, TextInput, Image, TouchableOpacity, ScrollView, Modal, Pressable, TouchableWithoutFeedback, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, View, Text, Image, TouchableOpacity, ScrollView, Modal, TouchableWithoutFeedback, Alert } from 'react-native';
+import { TextInput } from 'react-native-paper';
 import styles from './styles';
 
 import iconPath from '../../constants/iconPath';
-import imgPath from '../../constants/imgPath';
+
+import { FetchApi } from '../../service/api/FetchAPI';
+import { ContactAPI, ContentType, Method } from '../../constants/ListAPI';
+
 // create a component
-const listFlag = [
-    {
+const listFlag = {
+    F0001: {
         name: 'very-important',
         title: 'Rất quan trọng',
         icon: iconPath.icBookMark,
         color: '#EB5757',
         background: 'rgba(235, 87, 87, 0.2)',
-        value: 1
     },
-    {
+    F0002: {
         name: 'important',
         title: 'Quan trọng',
         icon: iconPath.icBookMark,
         color: '#F2994A',
         background: 'rgba(242, 153, 74, 0.2)',
-        value: 2
     },
-    {
-        name: 'not important',
+    F0003: {
+        name: 'not-important',
         title: 'Không quan trọng',
         icon: iconPath.icBookMark,
         color: '#F2C94C',
         background: 'rgba(242, 201, 76, 0.2)',
-        value: 3
     },
-    {
+    F0004: {
         name: 'dont-care',
         title: 'Không quan tâm',
         icon: iconPath.icBookMark,
         color: '#2D9CDB',
         background: 'rgba(45, 156, 219, 0.2)',
-        value: 4
-    },
-]
+    }
+}
 
 const listSort = [
     {
@@ -62,14 +62,25 @@ const listSort = [
     },
 ]
 
-const Home = ({ navigation }) => {
+const Home = ({ route, navigation }) => {
 
     const [countContact, setContContact] = useState(0);
+    const [listContact, setListContact] = useState();
     const [text, setText] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
     const [modalFloatVisible, setModalFloatVisible] = useState(false);
     const [flag, setFlag] = useState();
     const [sort, setSort] = useState(1);
+
+    useEffect(() => {
+        FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
+    }, []);
+
+    const getContact = (data) => {
+        if (data.data.length > 0) {
+            setListContact(data.data);
+        } 
+    }
 
     const handlePressButtonFlag = (item) => {
         setModalVisible(!modalVisible);
@@ -87,7 +98,7 @@ const Home = ({ navigation }) => {
                     <View style={[{ backgroundColor: flag.background }, styles.sectionFlag]}>
                         <Text style={[styles.labelFlag, { color: flag.color }]}>{flag.title}</Text>
                         <TouchableOpacity onPress={() => { deleteFlag() }} activeOpacity={1}>
-                            <Image source={iconPath.icClose} style={{ tintColor: flag.color }} />
+                            <Image source={iconPath.icClose} style={{ tintColor: flag.color, width: 16, height: 16 }} />
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -106,26 +117,25 @@ const Home = ({ navigation }) => {
         setSort(item.value);
     };
 
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <View style={styles.sectionStyle}>
-                    <Image source={iconPath.icSearch} style={styles.icSearch} />
                     <TextInput
-                        style={styles.input}
-                        placeholder="Tìm kiếm thông tin"
+                        mode='outlined'
+                        dense={true}
+                        placeholder='Tìm kiếm danh thiếp'
                         value={text}
                         onChangeText={(value) => setText(value)}
+                        left={<TextInput.Icon name="magnify" color="#828282"/>}
+                        right={<TextInput.Icon name="close-circle" color="#828282" onPress={() => setText('')}/>}
+                        style={styles.input}
+                        theme={{ 
+                            roundness: 10,
+                            colors: {primary: '#1890FF'} 
+                        }} 
                     />
-                    <TouchableOpacity
-                        style={styles.closeButtonParent}
-                        onPress={() => setText("")}
-                    >
-                        <Image
-                            style={styles.buttongray3}
-                            source={iconPath.icClose}
-                        />
-                    </TouchableOpacity>
                 </View>
                 <View style={styles.titleContainer}>
                     <Text style={styles.labelList}>Danh thiếp ({countContact})</Text>
@@ -141,7 +151,7 @@ const Home = ({ navigation }) => {
                             <TouchableOpacity style={styles.containerOverlay} onPress={() => setModalVisible(!modalVisible)}>
                                 <TouchableWithoutFeedback>
                                     <View style={styles.modalView}>
-                                        {listFlag.map((item, index) => {
+                                        {Object.values(listFlag).map((item, index) => {
                                             return (
                                                 <TouchableOpacity
                                                     style={styles.modalItem}
@@ -164,23 +174,27 @@ const Home = ({ navigation }) => {
                 </View>
             </View>
             <View style={styles.listContainer}>
+                {listContact == null &&
+                    <View style={styles.listContainer_view}>
+                        <Text style={styles.listContainer_label}>Không có danh thiếp</Text>
+                    </View>}
                 <ScrollView>
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item, index) => {
+                    {listContact != null && listContact.map((item, index) => {
                         return (
-                            <TouchableOpacity key={index} onPress={() => { navigation.navigate('ViewContact') }}>
+                            <TouchableOpacity key={index} onPress={() => { navigation.navigate('ViewContact',{'idContact':item.id}) }}>
                                 <View style={styles.item}>
                                     <View style={styles.imgContact}>
-                                        <Image source={imgPath.imgContact} style={styles.image} />
+                                        <Image source={{ uri: item.img_url }} style={styles.image} />
                                     </View>
                                     <View style={styles.txtContact}>
                                         <View style={styles.title}>
-                                            <Text style={styles.nameContact}>Đặng Vũ Hoàng Trung</Text>
-                                            <Image source={iconPath.icBookMark} />
+                                            <Text style={styles.nameContact}>{item.name}</Text>
+                                            <Image source={iconPath.icBookMark} style={{tintColor: listFlag[item.flag].color}}/>
                                         </View>
-                                        <Text style={styles.titleContact}>Nhóm trưởng</Text>
+                                        <Text style={styles.titleContact}>{item.job_title}</Text>
                                         <View style={styles.title}>
-                                            <Text style={styles.companyContact}>Đại học FPT</Text>
-                                            <Text style={styles.date}>30 - 05 - 2022</Text>
+                                            <Text style={styles.companyContact}>{item.company}</Text>
+                                            <Text style={styles.date}>{item.created_at}</Text>
                                         </View>
                                     </View>
                                 </View>

@@ -7,13 +7,12 @@ const styles = StyleSheet.create({
 
     root: {
         alignItems: 'center',
-        marginTop: '30%',
         flex: 1,
+        backgroundColor: 'white'
     },
     language: {
-        flexDirection: 'row',
-        position: 'absolute',
-        bottom: '10%',
+        paddingTop: '5%',
+        width: '35%'
     },
     icon: {
         width: 50,
@@ -21,8 +20,10 @@ const styles = StyleSheet.create({
     title: {
         position: 'absolute',
         bottom: '2%',
+    },
+    SwitchSelector: {
+        fontSize: 13
     }
-
 })
 
 export default styles

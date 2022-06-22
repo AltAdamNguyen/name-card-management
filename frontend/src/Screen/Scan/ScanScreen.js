@@ -1,23 +1,18 @@
 //import liraries
-import { Text, View, SafeAreaView, Image, useWindowDimensions, TouchableOpacity, Dimensions } from 'react-native';
+import { Text, View, SafeAreaView, Image, useWindowDimensions, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
-import { Camera } from 'expo-camera';
-import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
+import { Camera, FlashMode } from 'expo-camera';
 import { useIsFocused } from '@react-navigation/native';
-import { FetchAPI } from '../../api/FetchAPI';
-import icOverlay from '../..//asset/icon/overlay.png';
-import icCamera from '../../asset/icon/camera.png';
-import icClose from '../../asset/icon/close.png';
+import iconPath from '../../constants/iconPath';
 
 import styles from './styles';
 
 // create a component
-const ScanScreen = () => {
+const ScanScreen = ({ navigation }) => {
   const isFocused = useIsFocused();
 
   let cameraRef = useRef();
   const [hasCameraPermission, setHasCameraPermission] = useState();
-  const [photo, setPhoto] = useState();
 
   const { width } = useWindowDimensions();
   const height = Math.round((width * 4) / 3);
@@ -37,84 +32,49 @@ const ScanScreen = () => {
 
   const takePic = async () => {
     let options = {
-      quality: 1,
+      quality: 0.5,
       base64: true,
       exif: false
     };
 
     let newPhoto = await cameraRef.current.takePictureAsync(options);
 
-    let originXImage = newPhoto.width * 0.05;
-    let originYImage = newPhoto.height * 0.3;
-    let heightImage = newPhoto.height * 0.4;
-    let widthImage = newPhoto.width * 0.9;
-
-    const manipResult = await manipulateAsync(
-      newPhoto.uri,
-      [{
-        crop: {
-          height: heightImage,
-          width: widthImage,
-          originX: originXImage,
-          originY: originYImage,
-        }
-      }],
-      { compress: 1, base64: true }
-    );
-    setPhoto(manipResult);
-
-    fetch('https://ncmsystem.azurewebsites.net/api/scan',{
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({image: "data:image/jpg;base64," + manipResult.base64})
-    }).then(response => response.json())
-    .then(data => {console.log(data)})
-    .catch(error => console.log(error));
+    navigation.navigate('AddContact', { newPhoto: newPhoto });
   };
-
-  const callbackTakePic = (data) => {
-    console.log(data);
-  }
-
-  // if (photo) {
-  //   return (
-  //     <SafeAreaView style={styles.container}>
-  //       <Image style={{
-  //         width: photo.width, height: photo.height, resizeMode: 'contain',
-  //       }} source={{ uri: "data:image/jpg;base64," + photo.base64 }} />
-  //     </SafeAreaView>
-  //   );
-  // }
-
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity>
-          <Image style={styles.iconClose} source={icClose} />
-        </TouchableOpacity>
+        <View style={styles.header_content}>
+          <TouchableOpacity style={styles.header_content_buttonClose} onPress={() => navigation.goBack()}>
+            <Image style={styles.header_content_buttonClose_iconClose} source={iconPath.icClose} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.header_content_buttonClose} onPress={() => navigation.goBack()}>
+            <Image style={styles.header_content_buttonClose_iconClose} source={iconPath.icClose} />
+          </TouchableOpacity>
+        </View>
+
       </View>
       <View style={styles.preview}>
         {
           isFocused &&
-          <Camera style={{ height: height, width: "100%" }} ref={cameraRef} ratio="4:3" >
-            <View style={styles.overlay}>
-              <View style={styles.suggest}>
-                <Text>Đặt thẻ vào đúng khung hình</Text>
-              </View>
-
-              <Image style={styles.iconOverlay} source={icOverlay} />
+          <Camera style={{ height: height, width: "100%", backgroundColor: "#ffff", justifyContent: 'center', alignItems: 'center' }} ref={cameraRef} ratio="4:3" flashMode={FlashMode.on}>
+            <View style={styles.preview_suggest}>
+              <Text>Đặt thẻ vào đúng khung hình</Text>
+            </View>
+            <View style={styles.preview_overlay}>
+              <Image style={styles.preview_iconOverlay} source={iconPath.icOverlay} />
             </View>
           </Camera>
         }
       </View>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.containerScan} onPress={takePic}>
-          <Image style={styles.iconScan} source={icCamera} />
-        </TouchableOpacity>
+      <View style={styles.footer}>
+        <View style={styles.footer_content}>
+          <TouchableOpacity style={styles.footer_buttonScan} onPress={takePic}>
+            <Image style={styles.footer_buttonScan_iconScan} source={iconPath.icCamera} />
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
 

@@ -1,19 +1,13 @@
 import {View, Text, Image, StyleSheet, useWindowDimensions} from 'react-native';
 import React from 'react';
-import Logo from '../../asset/image/FIS_logo.png';
-const CustemHeaders = ({text_PRIMARY, text_TERTIARY, text_title}) => {
+const CustemHeaders = ({text_PRIMARY, text_title, Logo}) => {
   const {height} = useWindowDimensions();
   return (
     <View style={styles.root}>
       <View style={styles.headline}>
-        <Image
-          source={Logo}
-          style={[styles.logo, {height: height * 0.1}]}
-          resizeMode="contain"
-        />
+        <Image source={Logo} style={[styles.logo, {height: height * 0.3}]} resizeMode='contain'/>
         <View>
           <Text style={styles.text_PRIMARY}>{text_PRIMARY}</Text>
-          <Text style={styles.text_TERTIARY}>{text_TERTIARY}</Text>
         </View>
       </View>
       <View>
@@ -26,31 +20,20 @@ const CustemHeaders = ({text_PRIMARY, text_TERTIARY, text_title}) => {
 const styles = StyleSheet.create({
   root: {
     width: '90%',
-    marginBottom: 15
-  },
-  headline: {
-    flexWrap: 'wrap',
-    alignItems: 'flex-start',
-    flexDirection: 'row',
-    marginBottom: 10,
+    alignItems:'center'
   },
   logo: {
-    width: '30%',
-    maxWidth: 50,
-    maxHeight: 50,
-    borderRadius: 10,
-    marginRight: 20,
-    marginLeft: 20
-    
+    width: 300,
+    maxWidth: 300,
+    height: 80,
+    marginBottom: 30,
+    marginTop: '10%'
   },
   text_PRIMARY: {
     fontWeight: 'bold',
-    fontSize: 17,
-    color: '#000000'
-  },
-  text_TERTIARY: {
-    fontSize: 13,
-    color: '#000000'
+    fontSize: 20,
+    color: '#2F80ED',
+    textAlign:'center'
   },
   text_title: {
     textAlign: 'center',

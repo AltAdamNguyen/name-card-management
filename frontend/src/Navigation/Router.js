@@ -2,14 +2,15 @@ import React, { useContext, useEffect, useState, useLayoutEffect } from 'react';
 import { Image, View, Text } from 'react-native';
 import { NavigationContainer, useNavigationState } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Home, GroupContact, Team, Setting, ScanScreen, ForgotPassword, SignIn, Splash, ViewContact } from '../Screen';
+
+import { GroupContact, Team, Setting, Splash} from '../screen';
+
+import {RouteMovingBetweenHomeScreen, RouteMovingBetweenScanScreen, RouteAuthentication} from '../components/navigation/index';
+
 import styles from './styles';
 
 import iconPath from '../constants/iconPath';
 import AuthContext from '../store/AuthContext';
-
-const Stack = createNativeStackNavigator()
 
 const getTabBarVisible = (route) => {
   const state = useNavigationState(route => route);
@@ -20,24 +21,7 @@ const getTabBarVisible = (route) => {
   return { display: 'none' }
 }
 
-const RouteMovingBetweenScreen = () => {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen name="ViewContact"
-        component={ViewContact}
-      />
-    </Stack.Navigator>
-  )
-
-}
-
 const Tab = createBottomTabNavigator();
-
 
 const RouteNavigation = () => {
   return (
@@ -47,14 +31,14 @@ const RouteNavigation = () => {
         tabBarShowLabel: false,
         headerShown: false,
         tabBarStyle: {
-          height: '9%',
+          height: '10%',
           borderTopColor: '#E0E3E3',
         },
         tabBarHideOnKeyboard: true
       }}
     >
       <Tab.Screen name="HomeScreen"
-        component={RouteMovingBetweenScreen}
+        component={RouteMovingBetweenHomeScreen}
         options={({ route }) => ({
           tabBarIcon: ({ focused }) => {
             return (
@@ -90,8 +74,8 @@ const RouteNavigation = () => {
           }
         }}
       />
-      <Tab.Screen name="Scan"
-        component={ScanScreen}
+      <Tab.Screen name="ScanScreen"
+        component={RouteMovingBetweenScanScreen}
         options={{
           tabBarIcon: ({ focused }) => {
             return (
@@ -150,21 +134,6 @@ const RouteNavigation = () => {
   );
 };
 
-const AuthStack = createNativeStackNavigator();
-
-const RouteAuthentication = () => {
-  return (
-    <AuthStack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <AuthStack.Screen name="SignIn" component={SignIn} />
-      <AuthStack.Screen name="ForgotPassword" component={ForgotPassword} />
-    </AuthStack.Navigator>
-  );
-}
-
 const Route = () => {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -180,7 +149,6 @@ const Route = () => {
   return (
     <NavigationContainer>
       {isLoading ? <Splash /> : (authCtx.isLogin ? <RouteNavigation /> : <RouteAuthentication />)}
-
     </NavigationContainer>
   );
 }

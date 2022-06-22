@@ -1,6 +1,6 @@
 import React from 'react';
 import { SafeAreaView, Text, View, StatusBar } from 'react-native';
-import Route from './src/Navigation/Router';
+import Route from './src/navigation/Router';
 import { AuthProvider } from './src/store/AuthContext';
 
 const App = () => {

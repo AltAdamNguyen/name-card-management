@@ -20,21 +20,24 @@ import icGroup from '../asset/icon/credit_card.png';
 import icTeam from '../asset/icon/team.png';
 import icSetting from '../asset/icon/setting.png';
 import icCamera from '../asset/icon/camera.png';
-
+import icCloseCircle from '../asset/icon/close-circle.png'
 import icVN from '../asset/icon/VN.png';
 import icUK from '../asset/icon/Uk.png';
-
+import icEye from '../asset/icon/eye.png';
+import icEye_invisible from '../asset/icon/eye-invisible.png'
 import icMobile from '../asset/icon/mobile.png';
 import icMail from '../asset/icon/mail.png';
 import icPhone from '../asset/icon/phone.png';
 import icPrinter from '../asset/icon/printer.png';
 
+import icOverlay from '../asset/icon/overlay.png';
+
 const iconPath = {
-    icFilter,icBookMark,icSearch,icDate,icOffice,icUser,icUserAdd,icUserDelete,icExport,icSwap,
-    icArrow_Left,icDown,icDot,icClose,icRight,icPlus,
-    icHome,icGroup,icTeam,icSetting,icCamera,
+    icDown,icMobile,icMail,icPhone, icPrinter,icEye,icEye_invisible,icCloseCircle,icClose,icFilter,
+    icBookMark,icSearch,icDot,icDate,icOffice,icUser,icUserAdd,icUserDelete,icExport,icSwap,
+    icHome,icGroup,icTeam,icSetting,icCamera,icOverlay,
     icVN,icUK,
-    icMobile,icMail,icPhone,icPrinter
+    icArrow_Left,icRight,icPlus
 }
 
 export default iconPath;
