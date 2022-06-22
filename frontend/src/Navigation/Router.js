@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 import { GroupContact, Team, Setting, Splash} from '../screen';
 
-import {RouteMovingBetweenHomeScreen, RouteMovingBetweenScanScreen, RouteAuthentication} from '../components/RouteMovingBetweenScreen/index'
+import {RouteMovingBetweenHomeScreen, RouteMovingBetweenScanScreen, RouteAuthentication} from '../components/navigation/index';
 
 import styles from './styles';
 
@@ -31,7 +31,7 @@ const RouteNavigation = () => {
         tabBarShowLabel: false,
         headerShown: false,
         tabBarStyle: {
-          height: '9%',
+          height: '10%',
           borderTopColor: '#E0E3E3',
         },
         tabBarHideOnKeyboard: true

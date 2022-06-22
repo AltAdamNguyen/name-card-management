@@ -12,13 +12,28 @@ const styles = StyleSheet.create({
     modalView: {
         backgroundColor: '#ffff',
         borderRadius: 10,
-        width: '60%',
-        alignItems: 'flex-start',
+    },
+    modalView_title: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    modalView_title_label: {
+        fontSize: 16,
+        fontWeight: 'bold',
     },
     modalView_item: {
+        width: '70%',
+    },
+    modalView_item_content: {
         flexDirection: 'row',
         alignItems: 'center',
+        padding: 5,
     },
+    modalView_item_content_label: {
+        fontSize: 14,
+        width: '90%',
+    }
 })
 
 export default styles;

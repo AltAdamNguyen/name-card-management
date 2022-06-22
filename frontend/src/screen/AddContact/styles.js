@@ -10,6 +10,7 @@ const styles = StyleSheet.create({
         width: '90%',
         flexDirection: "row",
         justifyContent: "space-between",
+        alignItems: "center",
         margin: 10
     },
     header_titleButton: {
@@ -30,6 +31,7 @@ const styles = StyleSheet.create({
         height: "30%",
         justifyContent: "center",
         padding: 5,
+        marginBottom: 10,
     },
     image:{
         flex: 1,
@@ -43,25 +45,16 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         paddingLeft: 10,
         paddingRight: 10,
-    },
-    formInput_label: {
-        fontSize: 14,
-        fontWeight: "bold",
-        marginBottom: 5,
+        width: "100%",
+
     },
     formInput_item: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        borderWidth: 1,
-        borderColor: '#82828225',
-        borderRadius: 10,
-        height: 56,
         alignItems: 'center',
-        paddingLeft: 10,
-        marginBottom: 10,
+        marginBottom: 14,
+        width: '100%',
     },
     formInput_item_input: {
-        width: '90%',
+        width: '100%',
     }
 })
 

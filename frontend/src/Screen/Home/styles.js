@@ -16,6 +16,8 @@ const styles = StyleSheet.create({
     },
     buttongray3: {
         tintColor: '#82828250',
+        width: 20,
+        height: 20,
     },
     containerOverlay: {
         fontfamily: 'Roboto',
@@ -86,40 +88,21 @@ const styles = StyleSheet.create({
 
     header: {
         flexDirection: 'column',
-        justifyContent: 'space-between',
         alignItems: 'center',
+        width: '95%',
     },
     sectionStyle: {
-        width: '90%',
-        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 10,
-        borderColor: '#F3F3F3',
-        height: 40,
-        borderWidth: 1,
-        borderRadius: 10,
-        paddingLeft: 10,
-        paddingRight: 10,
-    },
-    icSearch: {
-        padding: 10,
-        margin: 5,
-        height: 16,
-        width: 16,
-        resizeMode: 'stretch',
-        alignItems: 'center'
+        width: '100%',
     },
     input: {
-        flex: 1,
-        height: 40,
-        fontSize: 16,
-        color: '#828282',
+        width: '100%',
     },
 
     titleContainer: {
         marginTop: 20,
-        width: '90%',
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -156,8 +139,17 @@ const styles = StyleSheet.create({
     listContainer: {
         marginTop: 20,
         flex: 1,
-        width: '90%',
+        width: '95%',
         flexDirection: 'column',
+    },
+    listContainer_view: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
+    listContainer_label: {
+        color: '#828282',
+        fontSize: 16,
     },
     item: {
         width: '100%',
@@ -214,7 +206,7 @@ const styles = StyleSheet.create({
         left: '30%',
         bottom: 20,
         backgroundColor: '#1890FF',
-        borderRadius: 25,
+        borderRadius: 1000,
     },
 
 

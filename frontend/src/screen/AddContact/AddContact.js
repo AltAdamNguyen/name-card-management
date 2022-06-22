@@ -1,66 +1,80 @@
 //import liraries
 import React, { useState } from 'react';
-import { View, Text, SafeAreaView, TextInput, Image, TouchableOpacity, Modal, TouchableWithoutFeedback, ScrollView } from 'react-native';
+import { View, Text, SafeAreaView, Image, TouchableOpacity, ScrollView, Keyboard } from 'react-native';
+import { TextInput } from 'react-native-paper';
+
 import iconPath from '../../constants/iconPath';
 import styles from './styles';
-
-import ModalAddContact from '../../components/ModalAddContact/ModalAddContact';
+import { FetchApi } from '../../service/api/FetchAPI';
+import { API, Method, ContentType } from '../../constants/ListAPI';
+import ModalAddContact from '../../components/addcontact/ModalAddContact';
 // create a component
+
 
 const formInput = [
     {
         name: 'name',
-        title: 'Họ và tên',
+        title: 'Họ và tên (bắt buộc)',
+        placeholder: 'Nhập họ và tên',
+        required: true
     },
     {
-        name: 'jobTitle',
+        name: 'job_title',
         title: 'Chức vụ',
+        placeholder: 'Nhập chức vụ',
     },
     {
         name: 'company',
         title: 'Công ty',
+        placeholder: 'Nhập công ty',
     },
     {
         name: 'mobile',
-        title: 'Số điện thoại di động',
+        title: 'Số điện thoại',
+        placeholder: 'Nhập số điện thoại',
     },
     {
         name: 'email',
-        title: 'Email',
+        title: 'Email (bắt buộc)',
+        placeholder: 'Nhập email',
+        required: true
     },
     {
         name: 'fax',
         title: 'Fax',
+        placeholder: 'Nhập fax',
     },
     {
         name: 'address',
         title: 'Địa chỉ',
+        placeholder: 'Nhập địa chỉ',
     },
     {
         name: 'website',
         title: 'Website',
+        placeholder: 'Nhập website',
     }
 ]
 
 const AddContact = ({ contact, navigation }) => {
+    console.log(contact)
     const [value, setValue] = useState({
         name: '',
-        jobTitle: '',
+        job_title: '',
         company: '',
-        mobile: '',
-        phone: '',
-        email: '',
-        fax: '',
+        mobile: contact.mobile,
+        email: contact.email,
+        fax: contact.fax,
         address: '',
-        website: ''
+        website: contact.website,
+        imgUrl: contact.imgUrl
     });
 
     const [modalVisible, setModalVisible] = useState({
         name: false,
-        jobTitle: false,
+        job_title: false,
         company: false,
         mobile: false,
-        phone: false,
         email: false,
         fax: false,
         address: false,
@@ -92,6 +106,33 @@ const AddContact = ({ contact, navigation }) => {
         })
     }
 
+    const removeEmpty = (obj) => {
+        return obj.length >= 3
+    }
+
+    const handlePressAdd = () => {
+        FetchApi(API.AddContact, Method.POST, ContentType.JSON, value, getMessage)
+    }
+
+    const getMessage = (data) => {
+        console.log(data)
+        // if(data.message === "Add Successfully"){
+        //     return (
+        //         <View style={{
+        //             flex: 1,
+        //             flexDirection: 'column',
+        //             justifyContent: 'center',
+        //             alignItems: 'center',
+        //             backgroundColor: 'rgba(130, 130, 130,0.5)',
+        //         }}>
+        //             <Modal style={{ justifyContent: 'center', alignItems: 'center' }}><Text style={{ fontSize: 20 }}>{data.message}</Text></Modal>
+        //         </View>
+        //     )
+        // }
+
+    }
+
+    console.log(value)
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -102,27 +143,39 @@ const AddContact = ({ contact, navigation }) => {
                     </View>
                 </TouchableOpacity>
                 <View style={styles.header_modal}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={handlePressAdd}>
                         <Text style={styles.header_modal_label}>Thêm</Text>
                     </TouchableOpacity>
                 </View>
             </View>
-            <View style={styles.imgContact}>
+            <TouchableOpacity style={styles.imgContact} onPress={() => Keyboard.dismiss()}>
                 <Image source={{ uri: contact.imgUrl }} style={styles.image} />
-            </View>
+            </TouchableOpacity>
             <ScrollView>
                 <View style={styles.formInput}>
                     {formInput.map((item, index) => {
                         return (
                             <View key={index}>
-                                <Text style={styles.formInput_label}>{item.title}</Text>
                                 <View style={styles.formInput_item}>
-                                    <TextInput placeholder={item.title} style={styles.formInput_item_input} value={value[item.name]} onChangeText={handleChange(item.name)} />
+                                    <TextInput
+                                        mode='outlined'
+                                        label={item.title}
+                                        placeholder={item.placeholder}
+                                        style={styles.formInput_item_input}
+                                        value={value[item.name]}
+                                        onChangeText={handleChange(item.name)}
+                                        right={<TextInput.Icon name='chevron-right'
+                                            onPress={() =>{ 
+                                                setModalVisible({ ...modalVisible, [item.name]: true })
+                                                Keyboard.dismiss()
+                                            }}
+                                            style={{backgroundColor: '#1890FF'}} 
+                                            />
+                                        }
+                                        theme={{ roundness: 10 ,colors: {primary: '#1890FF'} }}
+                                    />
                                     <View>
-                                        <ModalAddContact listItem={contact.items} title={item.title} visible={modalVisible} name={item.name} value={value[item.name]} onPress={handelerModal} onPressVisable={handleVisable} />
-                                        <TouchableOpacity onPress={() => setModalVisible({ ...modalVisible, [item.name]: true })}>
-                                            <Image source={iconPath.icRight} />
-                                        </TouchableOpacity>
+                                        <ModalAddContact listItem={contact.items.filter(removeEmpty)} title={item.title} visible={modalVisible} name={item.name} value={value[item.name]} onPress={handelerModal} onPressVisable={handleVisable} />
                                     </View>
                                 </View>
                             </View>

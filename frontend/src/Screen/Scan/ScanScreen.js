@@ -1,12 +1,9 @@
 //import liraries
 import { Text, View, SafeAreaView, Image, useWindowDimensions, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
-import { Camera, FlashMode} from 'expo-camera';
+import { Camera, FlashMode } from 'expo-camera';
 import { useIsFocused } from '@react-navigation/native';
-import { FetchAPI } from '../../api/FetchAPI';
-import icOverlay from '../..//asset/icon/overlay.png';
-import icCamera from '../../asset/icon/camera.png';
-import icClose from '../../asset/icon/close.png';
+import iconPath from '../../constants/iconPath';
 
 import styles from './styles';
 
@@ -48,28 +45,36 @@ const ScanScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Image style={styles.iconClose} source={icClose} />
-        </TouchableOpacity>
+        <View style={styles.header_content}>
+          <TouchableOpacity style={styles.header_content_buttonClose} onPress={() => navigation.goBack()}>
+            <Image style={styles.header_content_buttonClose_iconClose} source={iconPath.icClose} />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.header_content_buttonClose} onPress={() => navigation.goBack()}>
+            <Image style={styles.header_content_buttonClose_iconClose} source={iconPath.icClose} />
+          </TouchableOpacity>
+        </View>
+
       </View>
       <View style={styles.preview}>
         {
           isFocused &&
-            <Camera style={{ height: height, width: "100%" }} ref={cameraRef} ratio="4:3" flashMode={FlashMode.on}>
-              <View style={styles.overlay}>
-                <View style={styles.suggest}>
-                  <Text>Đặt thẻ vào đúng khung hình</Text>
-                </View>
-                <Image style={styles.iconOverlay} source={icOverlay} />
-              </View>
-            </Camera>
+          <Camera style={{ height: height, width: "100%", backgroundColor: "#ffff", justifyContent: 'center', alignItems: 'center' }} ref={cameraRef} ratio="4:3" flashMode={FlashMode.on}>
+            <View style={styles.preview_suggest}>
+              <Text>Đặt thẻ vào đúng khung hình</Text>
+            </View>
+            <View style={styles.preview_overlay}>
+              <Image style={styles.preview_iconOverlay} source={iconPath.icOverlay} />
+            </View>
+          </Camera>
         }
       </View>
 
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.containerScan} onPress={takePic}>
-          <Image style={styles.iconScan} source={icCamera} />
-        </TouchableOpacity>
+      <View style={styles.footer}>
+        <View style={styles.footer_content}>
+          <TouchableOpacity style={styles.footer_buttonScan} onPress={takePic}>
+            <Image style={styles.footer_buttonScan_iconScan} source={iconPath.icCamera} />
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
 

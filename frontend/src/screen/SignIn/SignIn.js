@@ -8,9 +8,15 @@ import CustomInputs from '../../components/CustomInputs'
 import CustomButtons from '../../components/CustomButtons'
 import CustemHeaders from '../../components/CustomHeaders/CustemHeaders'
 import Logo_Login from '../../asset/image/login.png'
+import { FetchApiAuth } from '../../service/api/FetchAPI';
+
+import { AuthAPI, ContentType, Method } from '../../constants/ListAPI';
 const SignIn = ({ navigation }) => {
-  const [ username, setUsername ] = useState('');
-  const [ password, setPassword ] = useState('');
+
+  const [user,setUser] = useState({
+    email: '',
+    password: ''
+  })
   const [ isSecureEntry, setIsSecureEntry] = useState(true)
   const authCtx = useContext(AuthContext);
   const onVisibilityPasswordPressed = () => {
@@ -20,17 +26,38 @@ const SignIn = ({ navigation }) => {
     navigation.navigate('ForgotPassword')
   }
 
+  const onSignInPressed = () => {
+    FetchApiAuth(AuthAPI.Login, Method.POST, ContentType.JSON, user, getMessage)
+  }
+
+  const getMessage = (data) => {
+    console.log(data)
+    if(data.message === "Get token success"){
+      authCtx.onLogin(data.data.access_token, data.data.refresh_token)
+    }
+
+  }
+
+  const handleChange = (name) => {
+    return (text) => {
+        setUser({
+            ...user,
+            [name]: text
+        })
+    }
+}
+
   const onClearUsernamePressed = () => {
-    setUsername('')
+    setUser(...user, {email: ''})
   }
   return (
       <View style={styles.root}>
         <CustemHeaders text_PRIMARY='Name Card Management' Logo={Logo_Login}   />
-        <CustomInputs placeholder='Tên dăng nhập' value={username} setValue={setUsername} icon={iconPath.icCloseCircle} onpress={onClearUsernamePressed}/>
-        <CustomInputs placeholder='Mật khẩu' value={password} setValue={setPassword} secureTextEntry={isSecureEntry} icon={isSecureEntry ? iconPath.icEye : iconPath.icEye_invisible} 
+        <CustomInputs placeholder='Tên dăng nhập' value={user.email} setValue={handleChange('email')} icon={iconPath.icCloseCircle} onpress={onClearUsernamePressed}/>
+        <CustomInputs placeholder='Mật khẩu' value={user.password} setValue={handleChange('password')} secureTextEntry={isSecureEntry} icon={isSecureEntry ? iconPath.icEye : iconPath.icEye_invisible} 
         onpress = {onVisibilityPasswordPressed}/>
         <CustomButtons text='Quên mật khẩu' onPress={onForgotPasswordPressed} type="TERTIARY" />
-        <CustomButtons text='Đăng nhập' onPress={authCtx.onLogin} />
+        <CustomButtons text='Đăng nhập' onPress={onSignInPressed} />
         <View style={styles.language}>
           <TouchableOpacity>
             <Image source={iconPath.icVN} style={[styles.icon,styles.mr20]}/>

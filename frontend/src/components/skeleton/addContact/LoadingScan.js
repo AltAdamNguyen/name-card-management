@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { SafeAreaView, ActivityIndicator } from "react-native";
 import { manipulateAsync } from 'expo-image-manipulator';
-import { AddContact } from "../../screen";
+import { AddContact } from "../../../screen";
+import { FetchApi } from "../../../service/api/FetchAPI";
+import { Method, ContentType, ContactAPI } from "../../../constants/ListAPI";
 
 const SkeletonAddContact = ({route, navigation}) => {
+    console.log(route)
     const [contact, setContact] = useState();
     const crop = async () => {
         const image = route.params.newPhoto
@@ -30,16 +33,11 @@ const SkeletonAddContact = ({route, navigation}) => {
     useEffect(() => {
         crop()
             .then((e) => {
-
-                fetch('https://ncmsystem.azurewebsites.net/api/scan', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ image: "data:image/jpg;base64," + e.base64 })
-                }).then(response => response.json())
-                    .then(data => { getData(data) })
-                    .catch(error => console.log(error));
+                FetchApi(ContactAPI.Scan, 
+                    Method.POST, 
+                    ContentType.JSON,
+                    { image: "data:image/jpg;base64," + e.base64 },
+                    getData)
             })
             .catch()
     }, [])

@@ -16,7 +16,7 @@ const styles = (focused) => StyleSheet.create({
         textAlign: 'center'
     },
     containerScan: {
-        width: '80%',
+        width: '75%',
         height: '80%',
         alignItems: 'center',
         justifyContent: 'center',
@@ -25,6 +25,8 @@ const styles = (focused) => StyleSheet.create({
     },
     iconScan: {
         tintColor: '#ffff',
+        height: '50%',
+        width: '50%',
     },
     labelScan: {
         fontSize: 12,

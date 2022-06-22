@@ -44,15 +44,19 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         margin: 10,
     },
-    image:{
-        width: '95%',
-        maxHeight: '32%',
-        resizeMode: 'contain',
+    body: {
+        flex: 1,
+    },
+    body_imgContact: {
+        flex: 0.4,
+        padding: 5,
+    },
+    body_imgContact_image:{
+        width: '100%',
+        height: '100%',
         borderRadius: 10,
-        margin: 10,
     },
     info: {
-        flex: 1,
         flexDirection: 'column',
         paddingLeft: 10,
         paddingRight: 10,

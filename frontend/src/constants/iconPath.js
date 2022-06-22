@@ -30,10 +30,12 @@ import icMail from '../asset/icon/mail.png';
 import icPhone from '../asset/icon/phone.png';
 import icPrinter from '../asset/icon/printer.png';
 
+import icOverlay from '../asset/icon/overlay.png';
+
 const iconPath = {
     icDown,icMobile,icMail,icPhone, icPrinter,icEye,icEye_invisible,icCloseCircle,icClose,icFilter,
     icBookMark,icSearch,icDot,icDate,icOffice,icUser,icUserAdd,icUserDelete,icExport,icSwap,
-    icHome,icGroup,icTeam,icSetting,icCamera,
+    icHome,icGroup,icTeam,icSetting,icCamera,icOverlay,
     icVN,icUK,
     icArrow_Left,icRight,icPlus
 }
