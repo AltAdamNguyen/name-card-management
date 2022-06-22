@@ -1,0 +1,9 @@
+{
+    "translation" : {
+        "placeholder_Username": "Username",
+        "placeholder_Password": "Password",
+        "button_ForgorPassword": "Forgot Password",
+        "button_Login": "Login",
+        "signature_login": "@2022 Developed by FIS"
+    }
+}
