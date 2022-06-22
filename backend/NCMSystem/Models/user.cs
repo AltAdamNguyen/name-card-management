@@ -18,9 +18,10 @@ namespace NCMSystem.Models
         public user()
         {
             this.contacts = new HashSet<contact>();
+            this.contacts1 = new HashSet<contact>();
             this.groups = new HashSet<group>();
             this.tokens = new HashSet<token>();
-            this.users1 = new HashSet<user>();
+            this.user1 = new HashSet<user>();
         }
     
         public int id { get; set; }
@@ -30,16 +31,20 @@ namespace NCMSystem.Models
         public Nullable<bool> isActive { get; set; }
         public int role_id { get; set; }
         public Nullable<int> manager_id { get; set; }
+        public string code_resetPw { get; set; }
+        public Nullable<System.DateTime> exp_code { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<contact> contacts { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<contact> contacts1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<group> groups { get; set; }
         public virtual role role { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<token> tokens { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<user> users1 { get; set; }
-        public virtual user user1 { get; set; }
+        public virtual ICollection<user> user1 { get; set; }
+        public virtual user user2 { get; set; }
     }
 }
