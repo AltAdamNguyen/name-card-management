@@ -31,5 +31,17 @@ namespace NCMSystem.Common
                 }), Encoding.UTF8, "application/json")
             });
         }
+        
+        public static ResponseMessageResult Good (string message)
+        {
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = message
+                }), Encoding.UTF8, "application/json")
+            });
+        }
     }
 }

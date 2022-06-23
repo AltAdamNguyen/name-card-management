@@ -203,6 +203,7 @@
     <Compile Include="Models\CallAPI\Contact\ContactRequest.cs" />
     <Compile Include="Models\CallAPI\Contact\DetailContact.cs" />
     <Compile Include="Models\CallAPI\Contact\HomeContact.cs" />
+    <Compile Include="Models\CallAPI\Contact\OwnerContact.cs" />
     <Compile Include="Models\CallAPI\ScanNC\InfoNC.cs" />
     <Compile Include="Models\CallAPI\ScanNC\ScanNCRequest.cs" />
     <Compile Include="Models\CallAPI\ScanNC\ScanNCResponse.cs" />

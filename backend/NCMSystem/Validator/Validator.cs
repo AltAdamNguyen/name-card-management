@@ -88,6 +88,7 @@ namespace NCMSystem.Validator
                     return true;
                 }
             }
+
             return true;
         }
 
@@ -99,6 +100,21 @@ namespace NCMSystem.Validator
             }
 
             return true;
+        }
+
+        public static bool CheckCompany(string value)
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                if (value.Length > 255)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+
+            return false;
         }
     }
 }
