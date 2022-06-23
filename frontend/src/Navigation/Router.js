@@ -31,7 +31,7 @@ const RouteNavigation = () => {
         tabBarShowLabel: false,
         headerShown: false,
         tabBarStyle: {
-          height: '10%',
+          height: '9%',
           borderTopColor: '#E0E3E3',
         },
         tabBarHideOnKeyboard: true

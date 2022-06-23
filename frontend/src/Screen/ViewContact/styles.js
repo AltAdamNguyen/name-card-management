@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
+        backgroundColor: '#ffff',
     },
     header: {
         flexDirection: 'row',
@@ -67,14 +68,8 @@ const styles = StyleSheet.create({
         marginBottom: '2%',
     },
     info_flag_button: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        borderWidth: 1,
-        borderColor: '#82828225',
         borderRadius: 10,
-        width: '40%',
-        padding: 5,
+        // width: '40%',
         marginTop: 10
     },
     info_component: {
