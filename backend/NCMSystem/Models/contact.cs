@@ -30,16 +30,19 @@ namespace NCMSystem.Models
         public string address { get; set; }
         public string website { get; set; }
         public string fax { get; set; }
-        public string reason { get; set; }
-        public int user_id { get; set; }
+        public string reasonStatus { get; set; }
+        public int owner_id { get; set; }
         public Nullable<int> flag_id { get; set; }
         public int status_id { get; set; }
         public bool isActive { get; set; }
         public System.DateTime create_date { get; set; }
+        public int createdBy { get; set; }
+        public string resonDeactive { get; set; }
     
         public virtual flag flag { get; set; }
         public virtual status status { get; set; }
         public virtual user user { get; set; }
+        public virtual user user1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<group> groups { get; set; }
     }

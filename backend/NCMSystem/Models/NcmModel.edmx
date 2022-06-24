@@ -4,8 +4,8 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="NCMSystemModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <EntityType Name="contacts">
+    <Schema Namespace="NCMSystemModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="contact">
           <Key>
             <PropertyRef Name="id" />
           </Key>
@@ -15,23 +15,26 @@
           <Property Name="image_url" Type="nvarchar" MaxLength="255" />
           <Property Name="company" Type="nvarchar" MaxLength="255" />
           <Property Name="job_title" Type="nvarchar" MaxLength="255" />
-          <Property Name="phone" Type="nvarchar" MaxLength="255" />
+          <Property Name="phone" Type="nvarchar" MaxLength="11" />
           <Property Name="address" Type="nvarchar" MaxLength="255" />
           <Property Name="website" Type="nvarchar" MaxLength="255" />
           <Property Name="fax" Type="nvarchar" MaxLength="255" />
-          <Property Name="reason" Type="nvarchar" MaxLength="255" />
-          <Property Name="user_id" Type="int" Nullable="false" />
+          <Property Name="reasonStatus" Type="nvarchar" MaxLength="255" />
+          <Property Name="owner_id" Type="int" Nullable="false" />
           <Property Name="flag_id" Type="int" />
           <Property Name="status_id" Type="int" Nullable="false" />
           <Property Name="isActive" Type="bit" Nullable="false" />
           <Property Name="create_date" Type="datetime" Nullable="false" />
+          <Property Name="createdBy" Type="int" Nullable="false" />
+          <Property Name="resonDeactive" Type="nvarchar" MaxLength="255" />
         </EntityType>
-        <EntityType Name="flags">
+        <EntityType Name="flag">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="code" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="group">
           <Key>
@@ -41,7 +44,7 @@
           <Property Name="name" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="user_id" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="group_contacts">
+        <EntityType Name="group_contact">
           <Key>
             <PropertyRef Name="group_id" />
             <PropertyRef Name="contact_id" />
@@ -49,7 +52,7 @@
           <Property Name="group_id" Type="int" Nullable="false" />
           <Property Name="contact_id" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="roles">
+        <EntityType Name="role">
           <Key>
             <PropertyRef Name="id" />
           </Key>
@@ -62,6 +65,7 @@
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="code" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
@@ -83,7 +87,7 @@
           <Property Name="created_date" Type="datetime" Nullable="false" />
           <Property Name="expired_date" Type="datetime" Nullable="false" />
         </EntityType>
-        <EntityType Name="users">
+        <EntityType Name="user">
           <Key>
             <PropertyRef Name="id" />
           </Key>
@@ -94,72 +98,86 @@
           <Property Name="isActive" Type="bit" />
           <Property Name="role_id" Type="int" Nullable="false" />
           <Property Name="manager_id" Type="int" />
+          <Property Name="code_resetPw" Type="nvarchar" MaxLength="6" />
+          <Property Name="exp_code" Type="datetime" />
         </EntityType>
-        <Association Name="contacts_flags_id_fk">
-          <End Role="flags" Type="Self.flags" Multiplicity="0..1" />
-          <End Role="contacts" Type="Self.contacts" Multiplicity="*" />
+        <Association Name="contact_flag_id_fk">
+          <End Role="flag" Type="Self.flag" Multiplicity="0..1" />
+          <End Role="contact" Type="Self.contact" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="flags">
+            <Principal Role="flag">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="contacts">
+            <Dependent Role="contact">
               <PropertyRef Name="flag_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="contacts_status_id_fk">
+        <Association Name="contact_status_id_fk">
           <End Role="status" Type="Self.status" Multiplicity="1" />
-          <End Role="contacts" Type="Self.contacts" Multiplicity="*" />
+          <End Role="contact" Type="Self.contact" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="status">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="contacts">
+            <Dependent Role="contact">
               <PropertyRef Name="status_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="contacts_users_id_fk">
-          <End Role="users" Type="Self.users" Multiplicity="1" />
-          <End Role="contacts" Type="Self.contacts" Multiplicity="*" />
+        <Association Name="contact_user_id_fk">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
+          <End Role="contact" Type="Self.contact" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="users">
+            <Principal Role="user">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="contacts">
-              <PropertyRef Name="user_id" />
+            <Dependent Role="contact">
+              <PropertyRef Name="owner_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="group_contacts_contacts_id_fk">
-          <End Role="contacts" Type="Self.contacts" Multiplicity="1" />
-          <End Role="group_contacts" Type="Self.group_contacts" Multiplicity="*" />
+        <Association Name="contact_user_id_fk_2">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
+          <End Role="contact" Type="Self.contact" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="contacts">
+            <Principal Role="user">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="group_contacts">
+            <Dependent Role="contact">
+              <PropertyRef Name="createdBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="group_contact_contact_id_fk">
+          <End Role="contact" Type="Self.contact" Multiplicity="1" />
+          <End Role="group_contact" Type="Self.group_contact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="contact">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="group_contact">
               <PropertyRef Name="contact_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="group_contacts_group_id_fk">
+        <Association Name="group_contact_group_id_fk">
           <End Role="group" Type="Self.group" Multiplicity="1" />
-          <End Role="group_contacts" Type="Self.group_contacts" Multiplicity="*" />
+          <End Role="group_contact" Type="Self.group_contact" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="group">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="group_contacts">
+            <Dependent Role="group_contact">
               <PropertyRef Name="group_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="group_users_id_fk">
-          <End Role="users" Type="Self.users" Multiplicity="1" />
+        <Association Name="group_user_id_fk">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
           <End Role="group" Type="Self.group" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="users">
+            <Principal Role="user">
               <PropertyRef Name="id" />
             </Principal>
             <Dependent Role="group">
@@ -167,11 +185,11 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="token_users_id_fk">
-          <End Role="users" Type="Self.users" Multiplicity="1" />
+        <Association Name="token_user_id_fk">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
           <End Role="token" Type="Self.token" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="users">
+            <Principal Role="user">
               <PropertyRef Name="id" />
             </Principal>
             <Dependent Role="token">
@@ -179,79 +197,82 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="users_roles_id_fk">
-          <End Role="roles" Type="Self.roles" Multiplicity="1" />
-          <End Role="users" Type="Self.users" Multiplicity="*" />
+        <Association Name="user_role_id_fk">
+          <End Role="role" Type="Self.role" Multiplicity="1" />
+          <End Role="user" Type="Self.user" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="roles">
+            <Principal Role="role">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="users">
+            <Dependent Role="user">
               <PropertyRef Name="role_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="users_users_id_fk">
-          <End Role="users" Type="Self.users" Multiplicity="0..1" />
-          <End Role="users1" Type="Self.users" Multiplicity="*" />
+        <Association Name="user_user_id_fk">
+          <End Role="user" Type="Self.user" Multiplicity="0..1" />
+          <End Role="user1" Type="Self.user" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="users">
+            <Principal Role="user">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="users1">
+            <Dependent Role="user1">
               <PropertyRef Name="manager_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="NCMSystemModelStoreContainer">
-          <EntitySet Name="contacts" EntityType="Self.contacts" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="flags" EntityType="Self.flags" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="contact" EntityType="Self.contact" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="flag" EntityType="Self.flag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="group" EntityType="Self.group" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="group_contacts" EntityType="Self.group_contacts" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="roles" EntityType="Self.roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="group_contact" EntityType="Self.group_contact" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="role" EntityType="Self.role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="status" EntityType="Self.status" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="token" EntityType="Self.token" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="users" EntityType="Self.users" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="contacts_flags_id_fk" Association="Self.contacts_flags_id_fk">
-            <End Role="flags" EntitySet="flags" />
-            <End Role="contacts" EntitySet="contacts" />
+          <EntitySet Name="user" EntityType="Self.user" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="contact_flag_id_fk" Association="Self.contact_flag_id_fk">
+            <End Role="flag" EntitySet="flag" />
+            <End Role="contact" EntitySet="contact" />
           </AssociationSet>
-          <AssociationSet Name="contacts_status_id_fk" Association="Self.contacts_status_id_fk">
+          <AssociationSet Name="contact_status_id_fk" Association="Self.contact_status_id_fk">
             <End Role="status" EntitySet="status" />
-            <End Role="contacts" EntitySet="contacts" />
+            <End Role="contact" EntitySet="contact" />
           </AssociationSet>
-          <AssociationSet Name="contacts_users_id_fk" Association="Self.contacts_users_id_fk">
-            <End Role="users" EntitySet="users" />
-            <End Role="contacts" EntitySet="contacts" />
+          <AssociationSet Name="contact_user_id_fk" Association="Self.contact_user_id_fk">
+            <End Role="user" EntitySet="user" />
+            <End Role="contact" EntitySet="contact" />
           </AssociationSet>
-          <AssociationSet Name="group_contacts_contacts_id_fk" Association="Self.group_contacts_contacts_id_fk">
-            <End Role="contacts" EntitySet="contacts" />
-            <End Role="group_contacts" EntitySet="group_contacts" />
+          <AssociationSet Name="contact_user_id_fk_2" Association="Self.contact_user_id_fk_2">
+            <End Role="user" EntitySet="user" />
+            <End Role="contact" EntitySet="contact" />
           </AssociationSet>
-          <AssociationSet Name="group_contacts_group_id_fk" Association="Self.group_contacts_group_id_fk">
+          <AssociationSet Name="group_contact_contact_id_fk" Association="Self.group_contact_contact_id_fk">
+            <End Role="contact" EntitySet="contact" />
+            <End Role="group_contact" EntitySet="group_contact" />
+          </AssociationSet>
+          <AssociationSet Name="group_contact_group_id_fk" Association="Self.group_contact_group_id_fk">
             <End Role="group" EntitySet="group" />
-            <End Role="group_contacts" EntitySet="group_contacts" />
+            <End Role="group_contact" EntitySet="group_contact" />
           </AssociationSet>
-          <AssociationSet Name="group_users_id_fk" Association="Self.group_users_id_fk">
-            <End Role="users" EntitySet="users" />
+          <AssociationSet Name="group_user_id_fk" Association="Self.group_user_id_fk">
+            <End Role="user" EntitySet="user" />
             <End Role="group" EntitySet="group" />
           </AssociationSet>
-          <AssociationSet Name="token_users_id_fk" Association="Self.token_users_id_fk">
-            <End Role="users" EntitySet="users" />
+          <AssociationSet Name="token_user_id_fk" Association="Self.token_user_id_fk">
+            <End Role="user" EntitySet="user" />
             <End Role="token" EntitySet="token" />
           </AssociationSet>
-          <AssociationSet Name="users_roles_id_fk" Association="Self.users_roles_id_fk">
-            <End Role="roles" EntitySet="roles" />
-            <End Role="users" EntitySet="users" />
+          <AssociationSet Name="user_role_id_fk" Association="Self.user_role_id_fk">
+            <End Role="role" EntitySet="role" />
+            <End Role="user" EntitySet="user" />
           </AssociationSet>
-          <AssociationSet Name="users_users_id_fk" Association="Self.users_users_id_fk">
-            <End Role="users" EntitySet="users" />
-            <End Role="users1" EntitySet="users" />
+          <AssociationSet Name="user_user_id_fk" Association="Self.user_user_id_fk">
+            <End Role="user" EntitySet="user" />
+            <End Role="user1" EntitySet="user" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="NCMSystemModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -265,20 +286,23 @@
           <Property Name="image_url" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="company" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="job_title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="phone" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="phone" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
           <Property Name="address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="website" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="fax" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="reason" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <Property Name="user_id" Type="Int32" Nullable="false" />
+          <Property Name="reasonStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="owner_id" Type="Int32" Nullable="false" />
           <Property Name="flag_id" Type="Int32" />
           <Property Name="status_id" Type="Int32" Nullable="false" />
           <Property Name="isActive" Type="Boolean" Nullable="false" />
           <Property Name="create_date" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="flag" Relationship="Self.contacts_flags_id_fk" FromRole="contacts" ToRole="flags" />
-          <NavigationProperty Name="status" Relationship="Self.contacts_status_id_fk" FromRole="contacts" ToRole="status" />
-          <NavigationProperty Name="user" Relationship="Self.contacts_users_id_fk" FromRole="contacts" ToRole="users" />
-          <NavigationProperty Name="groups" Relationship="Self.group_contacts" FromRole="contacts" ToRole="group" />
+          <Property Name="createdBy" Type="Int32" Nullable="false" />
+          <Property Name="resonDeactive" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="flag" Relationship="Self.contact_flag_id_fk" FromRole="contact" ToRole="flag" />
+          <NavigationProperty Name="status" Relationship="Self.contact_status_id_fk" FromRole="contact" ToRole="status" />
+          <NavigationProperty Name="user" Relationship="Self.contact_user_id_fk" FromRole="contact" ToRole="user" />
+          <NavigationProperty Name="user1" Relationship="Self.contact_user_id_fk_2" FromRole="contact" ToRole="user" />
+          <NavigationProperty Name="groups" Relationship="Self.group_contact" FromRole="contact" ToRole="group" />
         </EntityType>
         <EntityType Name="flag">
           <Key>
@@ -286,7 +310,8 @@
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="contacts" Relationship="Self.contacts_flags_id_fk" FromRole="flags" ToRole="contacts" />
+          <NavigationProperty Name="contacts" Relationship="Self.contact_flag_id_fk" FromRole="flag" ToRole="contact" />
+          <Property Name="code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="group">
           <Key>
@@ -295,8 +320,8 @@
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="user_id" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="user" Relationship="Self.group_users_id_fk" FromRole="group" ToRole="users" />
-          <NavigationProperty Name="contacts" Relationship="Self.group_contacts" FromRole="group" ToRole="contacts" />
+          <NavigationProperty Name="user" Relationship="Self.group_user_id_fk" FromRole="group" ToRole="user" />
+          <NavigationProperty Name="contacts" Relationship="Self.group_contact" FromRole="group" ToRole="contact" />
         </EntityType>
         <EntityType Name="role">
           <Key>
@@ -304,7 +329,7 @@
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="users" Relationship="Self.users_roles_id_fk" FromRole="roles" ToRole="users" />
+          <NavigationProperty Name="users" Relationship="Self.user_role_id_fk" FromRole="role" ToRole="user" />
         </EntityType>
         <EntityType Name="status">
           <Key>
@@ -312,7 +337,8 @@
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="contacts" Relationship="Self.contacts_status_id_fk" FromRole="status" ToRole="contacts" />
+          <NavigationProperty Name="contacts" Relationship="Self.contact_status_id_fk" FromRole="status" ToRole="contact" />
+          <Property Name="code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
@@ -333,7 +359,7 @@
           <Property Name="user_id" Type="Int32" Nullable="false" />
           <Property Name="created_date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="expired_date" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="user" Relationship="Self.token_users_id_fk" FromRole="token" ToRole="users" />
+          <NavigationProperty Name="user" Relationship="Self.token_user_id_fk" FromRole="token" ToRole="user" />
         </EntityType>
         <EntityType Name="user">
           <Key>
@@ -346,54 +372,69 @@
           <Property Name="isActive" Type="Boolean" />
           <Property Name="role_id" Type="Int32" Nullable="false" />
           <Property Name="manager_id" Type="Int32" />
-          <NavigationProperty Name="contacts" Relationship="Self.contacts_users_id_fk" FromRole="users" ToRole="contacts" />
-          <NavigationProperty Name="groups" Relationship="Self.group_users_id_fk" FromRole="users" ToRole="group" />
-          <NavigationProperty Name="role" Relationship="Self.users_roles_id_fk" FromRole="users" ToRole="roles" />
-          <NavigationProperty Name="tokens" Relationship="Self.token_users_id_fk" FromRole="users" ToRole="token" />
-          <NavigationProperty Name="users1" Relationship="Self.users_users_id_fk" FromRole="users" ToRole="users1" />
-          <NavigationProperty Name="user1" Relationship="Self.users_users_id_fk" FromRole="users1" ToRole="users" />
+          <NavigationProperty Name="contacts" Relationship="Self.contact_user_id_fk" FromRole="user" ToRole="contact" />
+          <NavigationProperty Name="contacts1" Relationship="Self.contact_user_id_fk_2" FromRole="user" ToRole="contact" />
+          <NavigationProperty Name="groups" Relationship="Self.group_user_id_fk" FromRole="user" ToRole="group" />
+          <NavigationProperty Name="role" Relationship="Self.user_role_id_fk" FromRole="user" ToRole="role" />
+          <NavigationProperty Name="tokens" Relationship="Self.token_user_id_fk" FromRole="user" ToRole="token" />
+          <NavigationProperty Name="user1" Relationship="Self.user_user_id_fk" FromRole="user" ToRole="user1" />
+          <NavigationProperty Name="user2" Relationship="Self.user_user_id_fk" FromRole="user1" ToRole="user" />
+          <Property Name="code_resetPw" Type="String" MaxLength="6" FixedLength="false" Unicode="true" />
+          <Property Name="exp_code" Type="DateTime" Precision="3" />
         </EntityType>
-        <Association Name="contacts_flags_id_fk">
-          <End Role="flags" Type="Self.flag" Multiplicity="0..1" />
-          <End Role="contacts" Type="Self.contact" Multiplicity="*" />
+        <Association Name="contact_flag_id_fk">
+          <End Role="flag" Type="Self.flag" Multiplicity="0..1" />
+          <End Role="contact" Type="Self.contact" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="flags">
+            <Principal Role="flag">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="contacts">
+            <Dependent Role="contact">
               <PropertyRef Name="flag_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="contacts_status_id_fk">
+        <Association Name="contact_status_id_fk">
           <End Role="status" Type="Self.status" Multiplicity="1" />
-          <End Role="contacts" Type="Self.contact" Multiplicity="*" />
+          <End Role="contact" Type="Self.contact" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="status">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="contacts">
+            <Dependent Role="contact">
               <PropertyRef Name="status_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="contacts_users_id_fk">
-          <End Role="users" Type="Self.user" Multiplicity="1" />
-          <End Role="contacts" Type="Self.contact" Multiplicity="*" />
+        <Association Name="contact_user_id_fk">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
+          <End Role="contact" Type="Self.contact" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="users">
+            <Principal Role="user">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="contacts">
-              <PropertyRef Name="user_id" />
+            <Dependent Role="contact">
+              <PropertyRef Name="owner_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="group_users_id_fk">
-          <End Role="users" Type="Self.user" Multiplicity="1" />
+        <Association Name="contact_user_id_fk_2">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
+          <End Role="contact" Type="Self.contact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="contact">
+              <PropertyRef Name="createdBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="group_user_id_fk">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
           <End Role="group" Type="Self.group" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="users">
+            <Principal Role="user">
               <PropertyRef Name="id" />
             </Principal>
             <Dependent Role="group">
@@ -401,23 +442,23 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="users_roles_id_fk">
-          <End Role="roles" Type="Self.role" Multiplicity="1" />
-          <End Role="users" Type="Self.user" Multiplicity="*" />
+        <Association Name="user_role_id_fk">
+          <End Role="role" Type="Self.role" Multiplicity="1" />
+          <End Role="user" Type="Self.user" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="roles">
+            <Principal Role="role">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="users">
+            <Dependent Role="user">
               <PropertyRef Name="role_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="token_users_id_fk">
-          <End Role="users" Type="Self.user" Multiplicity="1" />
+        <Association Name="token_user_id_fk">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
           <End Role="token" Type="Self.token" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="users">
+            <Principal Role="user">
               <PropertyRef Name="id" />
             </Principal>
             <Dependent Role="token">
@@ -425,20 +466,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="users_users_id_fk">
-          <End Role="users" Type="Self.user" Multiplicity="0..1" />
-          <End Role="users1" Type="Self.user" Multiplicity="*" />
+        <Association Name="user_user_id_fk">
+          <End Role="user" Type="Self.user" Multiplicity="0..1" />
+          <End Role="user1" Type="Self.user" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="users">
+            <Principal Role="user">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="users1">
+            <Dependent Role="user1">
               <PropertyRef Name="manager_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="group_contacts">
-          <End Role="contacts" Type="Self.contact" Multiplicity="*" />
+        <Association Name="group_contact">
+          <End Role="contact" Type="Self.contact" Multiplicity="*" />
           <End Role="group" Type="Self.group" Multiplicity="*" />
         </Association>
         <EntityContainer Name="NCMSystemEntities" annotation:LazyLoadingEnabled="true">
@@ -450,36 +491,40 @@
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="tokens" EntityType="Self.token" />
           <EntitySet Name="users" EntityType="Self.user" />
-          <AssociationSet Name="contacts_flags_id_fk" Association="Self.contacts_flags_id_fk">
-            <End Role="flags" EntitySet="flags" />
-            <End Role="contacts" EntitySet="contacts" />
+          <AssociationSet Name="contact_flag_id_fk" Association="Self.contact_flag_id_fk">
+            <End Role="flag" EntitySet="flags" />
+            <End Role="contact" EntitySet="contacts" />
           </AssociationSet>
-          <AssociationSet Name="contacts_status_id_fk" Association="Self.contacts_status_id_fk">
+          <AssociationSet Name="contact_status_id_fk" Association="Self.contact_status_id_fk">
             <End Role="status" EntitySet="status" />
-            <End Role="contacts" EntitySet="contacts" />
+            <End Role="contact" EntitySet="contacts" />
           </AssociationSet>
-          <AssociationSet Name="contacts_users_id_fk" Association="Self.contacts_users_id_fk">
-            <End Role="users" EntitySet="users" />
-            <End Role="contacts" EntitySet="contacts" />
+          <AssociationSet Name="contact_user_id_fk" Association="Self.contact_user_id_fk">
+            <End Role="user" EntitySet="users" />
+            <End Role="contact" EntitySet="contacts" />
           </AssociationSet>
-          <AssociationSet Name="group_users_id_fk" Association="Self.group_users_id_fk">
-            <End Role="users" EntitySet="users" />
+          <AssociationSet Name="contact_user_id_fk_2" Association="Self.contact_user_id_fk_2">
+            <End Role="user" EntitySet="users" />
+            <End Role="contact" EntitySet="contacts" />
+          </AssociationSet>
+          <AssociationSet Name="group_user_id_fk" Association="Self.group_user_id_fk">
+            <End Role="user" EntitySet="users" />
             <End Role="group" EntitySet="groups" />
           </AssociationSet>
-          <AssociationSet Name="users_roles_id_fk" Association="Self.users_roles_id_fk">
-            <End Role="roles" EntitySet="roles" />
-            <End Role="users" EntitySet="users" />
+          <AssociationSet Name="user_role_id_fk" Association="Self.user_role_id_fk">
+            <End Role="role" EntitySet="roles" />
+            <End Role="user" EntitySet="users" />
           </AssociationSet>
-          <AssociationSet Name="token_users_id_fk" Association="Self.token_users_id_fk">
-            <End Role="users" EntitySet="users" />
+          <AssociationSet Name="token_user_id_fk" Association="Self.token_user_id_fk">
+            <End Role="user" EntitySet="users" />
             <End Role="token" EntitySet="tokens" />
           </AssociationSet>
-          <AssociationSet Name="users_users_id_fk" Association="Self.users_users_id_fk">
-            <End Role="users" EntitySet="users" />
-            <End Role="users1" EntitySet="users" />
+          <AssociationSet Name="user_user_id_fk" Association="Self.user_user_id_fk">
+            <End Role="user" EntitySet="users" />
+            <End Role="user1" EntitySet="users" />
           </AssociationSet>
-          <AssociationSet Name="group_contacts" Association="Self.group_contacts">
-            <End Role="contacts" EntitySet="contacts" />
+          <AssociationSet Name="group_contact" Association="Self.group_contact">
+            <End Role="contact" EntitySet="contacts" />
             <End Role="group" EntitySet="groups" />
           </AssociationSet>
         </EntityContainer>
@@ -491,7 +536,7 @@
         <EntityContainerMapping StorageEntityContainer="NCMSystemModelStoreContainer" CdmEntityContainer="NCMSystemEntities">
           <EntitySetMapping Name="contacts">
             <EntityTypeMapping TypeName="NCMSystemModel.contact">
-              <MappingFragment StoreEntitySet="contacts">
+              <MappingFragment StoreEntitySet="contact">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="email" ColumnName="email" />
@@ -502,18 +547,21 @@
                 <ScalarProperty Name="address" ColumnName="address" />
                 <ScalarProperty Name="website" ColumnName="website" />
                 <ScalarProperty Name="fax" ColumnName="fax" />
-                <ScalarProperty Name="reason" ColumnName="reason" />
-                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="reasonStatus" ColumnName="reasonStatus" />
+                <ScalarProperty Name="owner_id" ColumnName="owner_id" />
                 <ScalarProperty Name="flag_id" ColumnName="flag_id" />
                 <ScalarProperty Name="status_id" ColumnName="status_id" />
                 <ScalarProperty Name="isActive" ColumnName="isActive" />
                 <ScalarProperty Name="create_date" ColumnName="create_date" />
+                <ScalarProperty Name="createdBy" ColumnName="createdBy" />
+                <ScalarProperty Name="resonDeactive" ColumnName="resonDeactive" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="flags">
             <EntityTypeMapping TypeName="NCMSystemModel.flag">
-              <MappingFragment StoreEntitySet="flags">
+              <MappingFragment StoreEntitySet="flag">
+                <ScalarProperty Name="code" ColumnName="code" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
@@ -530,7 +578,7 @@
           </EntitySetMapping>
           <EntitySetMapping Name="roles">
             <EntityTypeMapping TypeName="NCMSystemModel.role">
-              <MappingFragment StoreEntitySet="roles">
+              <MappingFragment StoreEntitySet="role">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
@@ -539,6 +587,7 @@
           <EntitySetMapping Name="status">
             <EntityTypeMapping TypeName="NCMSystemModel.status">
               <MappingFragment StoreEntitySet="status">
+                <ScalarProperty Name="code" ColumnName="code" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
@@ -568,7 +617,9 @@
           </EntitySetMapping>
           <EntitySetMapping Name="users">
             <EntityTypeMapping TypeName="NCMSystemModel.user">
-              <MappingFragment StoreEntitySet="users">
+              <MappingFragment StoreEntitySet="user">
+                <ScalarProperty Name="exp_code" ColumnName="exp_code" />
+                <ScalarProperty Name="code_resetPw" ColumnName="code_resetPw" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="password" ColumnName="password" />
@@ -579,8 +630,8 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <AssociationSetMapping Name="group_contacts" TypeName="NCMSystemModel.group_contacts" StoreEntitySet="group_contacts">
-            <EndProperty Name="contacts">
+          <AssociationSetMapping Name="group_contact" TypeName="NCMSystemModel.group_contact" StoreEntitySet="group_contact">
+            <EndProperty Name="contact">
               <ScalarProperty Name="id" ColumnName="contact_id" />
             </EndProperty>
             <EndProperty Name="group">

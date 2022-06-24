@@ -17,6 +17,7 @@ const listFlag = {
         icon: iconPath.icBookMark,
         color: '#EB5757',
         background: 'rgba(235, 87, 87, 0.2)',
+        value: 'F0001',
     },
     F0002: {
         name: 'important',
@@ -24,6 +25,7 @@ const listFlag = {
         icon: iconPath.icBookMark,
         color: '#F2994A',
         background: 'rgba(242, 153, 74, 0.2)',
+        value: 'F0002',
     },
     F0003: {
         name: 'not-important',
@@ -31,6 +33,7 @@ const listFlag = {
         icon: iconPath.icBookMark,
         color: '#F2C94C',
         background: 'rgba(242, 201, 76, 0.2)',
+        value: 'F0003',
     },
     F0004: {
         name: 'dont-care',
@@ -38,6 +41,7 @@ const listFlag = {
         icon: iconPath.icBookMark,
         color: '#2D9CDB',
         background: 'rgba(45, 156, 219, 0.2)',
+        value: 'F0004',
     }
 }
 
@@ -66,6 +70,7 @@ const Home = ({ route, navigation }) => {
 
     const [countContact, setContContact] = useState(0);
     const [listContact, setListContact] = useState();
+    const [listFilter, setListFilter] = useState([]);
     const [text, setText] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
     const [modalFloatVisible, setModalFloatVisible] = useState(false);
@@ -79,16 +84,21 @@ const Home = ({ route, navigation }) => {
     const getContact = (data) => {
         if (data.data.length > 0) {
             setListContact(data.data);
+            setListFilter(data.data);
+            setContContact(data.data.length);
         } 
     }
 
     const handlePressButtonFlag = (item) => {
         setModalVisible(!modalVisible);
         setFlag(item);
+        let newList = listContact.filter(items => items.flag == item.value)
+        setListFilter(newList); 
     }
 
     const deleteFlag = () => {
         setFlag()
+        setListFilter(listContact);
     }
 
     const changeTextButtonFlag = (flag) => {
@@ -117,7 +127,7 @@ const Home = ({ route, navigation }) => {
         setSort(item.value);
     };
 
-
+    console.log(listFilter)
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -174,12 +184,12 @@ const Home = ({ route, navigation }) => {
                 </View>
             </View>
             <View style={styles.listContainer}>
-                {listContact == null &&
+                {listFilter.length == 0 &&
                     <View style={styles.listContainer_view}>
                         <Text style={styles.listContainer_label}>Không có danh thiếp</Text>
                     </View>}
                 <ScrollView>
-                    {listContact != null && listContact.map((item, index) => {
+                    {listFilter.length != 0 && listFilter.map((item, index) => {
                         return (
                             <TouchableOpacity key={index} onPress={() => { navigation.navigate('ViewContact',{'idContact':item.id}) }}>
                                 <View style={styles.item}>
