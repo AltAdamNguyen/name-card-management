@@ -11,18 +11,14 @@ const CustomButtons = ({onPress, text, type = "PRIMARY"}) => {
 
 const styles = StyleSheet.create({
     container: {
-        width: '80%',
+        width: '85%',
         padding: 15,
         marginVertical: 5,
-        // alignItems: 'center',
         borderRadius: 10,
         backgroundColor: 'white'
     },
     container_PRIMARY: {
         backgroundColor: '#1890FF',
-    },
-    container_TERTIARY: {
-        
     },
     text: {
         fontWeight: 'bold',

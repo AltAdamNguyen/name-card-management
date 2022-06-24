@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     width: 300,
     maxWidth: 300,
     height: 80,
-    marginBottom: 30,
+    marginBottom: 10,
     marginTop: '10%'
   },
   text_PRIMARY: {
