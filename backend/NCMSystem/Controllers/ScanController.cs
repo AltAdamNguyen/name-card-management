@@ -39,7 +39,7 @@ namespace NCMSystem.Controllers
 
                 InfoNC info = new InfoNC
                 {
-                    imgUrl = $"https://{Request.RequestUri.Host}/Images/nameCard_{timeStart}.jpg"
+                    ImgUrl = $"https://{Request.RequestUri.Host}/Images/nameCard_{timeStart}.jpg"
                 };
 
                 ScanResponse response = new ScanResponse();
@@ -138,19 +138,13 @@ namespace NCMSystem.Controllers
                         if (Regex.IsMatch(rsArray[i], @"Fax"))
                         {
                             string fax = SplitNumber(str);
-                            info.fax = IsEmpty(fax);
-                            has = true;
-                        }
-                        else if (Regex.IsMatch(rsArray[i], @"Tel|Office|Off|Telephone"))
-                        {
-                            string tele = SplitNumber(str);
-                            info.telephone = IsEmpty(tele);
+                            info.Fax = IsEmpty(fax);
                             has = true;
                         }
                         else if (Regex.IsMatch(rsArray[i], @"Mobile|Mob|Mobi|Đt|Di Động|ĐTDĐ|Di động"))
                         {
                             string mobile = SplitNumber(str);
-                            info.mobile = IsEmpty(mobile);
+                            info.Phone = IsEmpty(mobile);
                             has = true;
                         }
                     }
@@ -182,17 +176,17 @@ namespace NCMSystem.Controllers
                     {
                         if (eStr.Contains("@"))
                         {
-                            info.email = IsEmpty(eStr);
+                            info.Email = IsEmpty(eStr);
                         }
                         else if (eStr.Contains("www"))
                         {
-                            info.website = IsEmpty(eStr);
+                            info.Website = IsEmpty(eStr);
                         }
                     }
                 }
             }
 
-            info.items = listI;
+            info.Items = listI;
             return info;
         }
     }
