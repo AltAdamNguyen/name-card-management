@@ -6,8 +6,8 @@ import { FetchApi } from "../../../service/api/FetchAPI";
 import { Method, ContentType, ContactAPI } from "../../../constants/ListAPI";
 
 const SkeletonAddContact = ({route, navigation}) => {
-    console.log(route)
     const [contact, setContact] = useState();
+    const [visible, setVisible] = useState(false);
     const crop = async () => {
         const image = route.params.newPhoto
 
@@ -31,7 +31,8 @@ const SkeletonAddContact = ({route, navigation}) => {
         return manipResult
     }
     useEffect(() => {
-        crop()
+        if(route.params.newPhoto) {
+            crop()
             .then((e) => {
                 FetchApi(ContactAPI.Scan, 
                     Method.POST, 
@@ -40,16 +41,26 @@ const SkeletonAddContact = ({route, navigation}) => {
                     getData)
             })
             .catch()
+        }
+        if(route.params.pickPhoto) {
+            FetchApi(ContactAPI.Scan, 
+                Method.POST, 
+                ContentType.JSON,
+                { image: "data:image/jpg;base64," + route.params.pickPhoto.base64 },
+                getData)
+        }
+        
     }, [])
 
     const getData = (data) => {
         setContact(data.data)
+        setVisible(true)
     }
 
     console.log(contact)
     return(
         <SafeAreaView style={{flex: 1}}>
-            {contact ? <AddContact contact={contact} navigation={navigation} /> : <ActivityIndicator size="large" color="#0000ff" />}
+            <AddContact contact={contact} loading={visible} navigation={navigation} />
         </SafeAreaView>
     )
 }

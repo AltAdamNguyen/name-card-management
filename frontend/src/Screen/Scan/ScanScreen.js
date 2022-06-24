@@ -2,6 +2,8 @@
 import { Text, View, SafeAreaView, Image, useWindowDimensions, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import { Camera, FlashMode } from 'expo-camera';
+import * as ImagePicker from 'expo-image-picker';
+import { IconButton } from 'react-native-paper';
 import { useIsFocused } from '@react-navigation/native';
 import iconPath from '../../constants/iconPath';
 
@@ -42,6 +44,19 @@ const ScanScreen = ({ navigation }) => {
     navigation.navigate('AddContact', { newPhoto: newPhoto });
   };
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      quality: 1,
+      base64: true,
+    });
+    if(!result.cancelled){
+      navigation.navigate('AddContact', { pickPhoto: result});
+    }
+
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -71,9 +86,19 @@ const ScanScreen = ({ navigation }) => {
 
       <View style={styles.footer}>
         <View style={styles.footer_content}>
+          <IconButton
+            icon='image'
+            size={50}
+            color='#BDBDBD'
+            onPress={pickImage}
+          />
           <TouchableOpacity style={styles.footer_buttonScan} onPress={takePic}>
             <Image style={styles.footer_buttonScan_iconScan} source={iconPath.icCamera} />
           </TouchableOpacity>
+          <IconButton
+            icon='image'
+            size={50}
+          />
         </View>
       </View>
     </SafeAreaView>
