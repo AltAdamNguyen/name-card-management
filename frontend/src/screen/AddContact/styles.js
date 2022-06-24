@@ -1,9 +1,9 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // justifyContent: "center",
+        justifyContent: "center",
         // alignItems: "center",
     },
     header: {
@@ -27,8 +27,8 @@ const styles = StyleSheet.create({
         color: "#1890FF",
     },
     imgContact: {
-        width: "90%",
-        height: "30%",
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height*0.3,
         justifyContent: "center",
         padding: 5,
         marginBottom: 10,
@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
     image:{
         flex: 1,
         width: '100%',
+        height: '100%',
         aspectRatio: 1.63185185185,
         resizeMode: 'contain',
         borderRadius: 10,
@@ -55,6 +56,14 @@ const styles = StyleSheet.create({
     },
     formInput_item_input: {
         width: '100%',
+    },
+    formInput_item_error: {
+        width: '100%',
+        justifyContent: 'flex-start',
+    },
+    formInput_item_error_label:{
+        color: '#B22D1D',
+        fontSize: 12,
     }
 })
 

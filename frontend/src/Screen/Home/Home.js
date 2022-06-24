@@ -199,7 +199,7 @@ const Home = ({ route, navigation }) => {
                                     <View style={styles.txtContact}>
                                         <View style={styles.title}>
                                             <Text style={styles.nameContact}>{item.name}</Text>
-                                            <Image source={iconPath.icBookMark} style={{tintColor: listFlag[item.flag].color}}/>
+                                            {item.flag !== null && <Image source={iconPath.icBookMark} style={{tintColor: listFlag[item.flag].color}}/>}
                                         </View>
                                         <Text style={styles.titleContact}>{item.job_title}</Text>
                                         <View style={styles.title}>

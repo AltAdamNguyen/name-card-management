@@ -58,8 +58,10 @@ const styles = StyleSheet.create({
     footer_content: {
         width: '100%',
         height: '100%',
-        justifyContent: 'center',
+        justifyContent: 'space-around',
         alignItems: 'center',
+        flexDirection: 'row',
+        
     },
     footer_buttonScan: {
         width: '20%',
