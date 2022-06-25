@@ -51,7 +51,7 @@ namespace NCMSystem.Controllers
 
             if (sortBy.Equals("create_date"))
             {
-                query = query.OrderBy(x => x.create_date);
+                query = query.OrderByDescending(x => x.create_date);
             }
 
             List<contact> contact;
