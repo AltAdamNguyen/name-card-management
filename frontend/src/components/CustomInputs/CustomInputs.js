@@ -1,46 +1,34 @@
-import { View, Text, Image,TextInput, StyleSheet, TouchableOpacity} from 'react-native'
-import React from 'react'
-
-const CustomInputs = ({value, setValue, placeholder, secureTextEntry, icon, onpress}) => {
-   
+import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import React from "react";
+import { TextInput } from "react-native-paper";
+const CustomInputs = ({
+  value,
+  setValue,
+  secureTextEntry,
+  label,
+  icon,
+  onpress,
+}) => {
   return (
-    <View style={styles.container}>
-      <TextInput 
-        placeholder={placeholder} 
-        style={styles.input}
-        value={value}
-        onChangeText={setValue}
-        secureTextEntry={secureTextEntry}
-        
-      />
-      <TouchableOpacity onPress={onpress}>
-      <Image source={icon} style={styles.icon} resizeMode='contain'/>
-      </TouchableOpacity>
-      
-
-    </View>
-  )
-}
+      <TextInput
+          mode='outlined'
+          label={label}
+          value={value}
+          onChangeText={setValue}
+          secureTextEntry={secureTextEntry}
+          style={styles.input}
+          theme={{ roundness: 10, colors: { primary: '#1890FF', error: '#B22D1D' } }}
+          right={<TextInput.Icon name={icon} onPress={onpress} />}
+        />
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: 'white',
-        width: '80%',
-        height: 50,
-        borderColor: '#E8E8E8',
-        borderWidth: 1,
-        borderRadius: 10,
-        paddingHorizontal: 10,
-        paddingVertical: 10,
-        marginVertical: 5,
-        flexDirection:'row',
-        flexWrap:'wrap',
-        justifyContent: 'space-between'
-    },
-    input:{
-      fontSize: 10
-    },
-    icon:{
-    }
-})
-export default CustomInputs
+  input:{
+    width: '85%',
+    marginBottom: 5,
+    backgroundColor: 'white'
+  },
+  icon: {},
+});
+export default CustomInputs;

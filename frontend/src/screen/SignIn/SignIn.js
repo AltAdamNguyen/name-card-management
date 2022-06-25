@@ -9,8 +9,8 @@ import {
 } from "react-native";
 import React, { useState, useContext } from "react";
 import AuthContext from "../../store/AuthContext";
-import i18next from '../../language/i18n'
-import {useTranslation} from 'react-i18next'
+import i18next from "../../language/i18n";
+import { useTranslation } from "react-i18next";
 import styles from "./styles";
 import iconPath from "../../constants/iconPath";
 import CustomInputs from "../../components/CustomInputs";
@@ -25,7 +25,7 @@ const SignIn = ({ navigation }) => {
     { label: "VN", value: "vn" },
     { label: "EN", value: "en" },
   ];
-  const {t, i18n} = useTranslation()
+  const { t, i18n } = useTranslation();
   const [user, setUser] = useState({
     email: "anhnc@gmail.com",
     password: "trung123@",
@@ -66,26 +66,54 @@ const SignIn = ({ navigation }) => {
   };
 
   const onClearUsernamePressed = () => {
-    setUser(...user, { email: "" });
+    setUser({
+      ...user,
+     email: '',
+    });
   };
   return (
     <View style={styles.root}>
-      <CustemHeaders text_PRIMARY='Name Card Management' Logo={Logo_Login}   />
-        <CustomInputs placeholder={t('placeholder_Username')} value={user.email} setValue={handleChange('email')} icon={iconPath.icCloseCircle} onpress={onClearUsernamePressed}/>
-        <CustomInputs placeholder={t('placeholder_Password')} value={user.password} setValue={handleChange('password')} secureTextEntry={isSecureEntry} icon={isSecureEntry ? iconPath.icEye : iconPath.icEye_invisible} 
-        onpress = {onVisibilityPasswordPressed}/>
-        <CustomButtons text={t('button_ForgorPassword')} onPress={onForgotPasswordPressed} type="TERTIARY" />
-        <CustomButtons text={t('button_Login')} onPress={onSignInPressed} />
-      <SwitchSelector style={styles.language}
+      <View>
+        <CustemHeaders text_PRIMARY="Name Card Management" Logo={Logo_Login} />
+      </View>
+      <View style={styles.input}>
+        <CustomInputs
+          value={user.email}
+          setValue={handleChange("email")}
+          icon={"close-circle-outline"}
+          label={t("placeholder_Username")}
+          onpress={onClearUsernamePressed}
+        />
+        <CustomInputs
+          value={user.password}
+          setValue={handleChange("password")}
+          label={t("placeholder_Password")}
+          secureTextEntry={isSecureEntry}
+          icon={isSecureEntry ? "eye" : "eye-off"}
+          onpress={onVisibilityPasswordPressed}
+        />
+      </View>
+      <View style={styles.button_forgotPassword}>
+        <CustomButtons
+          text={t("button_ForgotPassword")}
+          onPress={onForgotPasswordPressed}
+          type="TERTIARY"
+        />
+      </View>
+      <View style={styles.button_login}>
+      <CustomButtons text={t("button_Login")} onPress={onSignInPressed} />
+      </View>
+      <SwitchSelector
+        style={styles.language}
         options={options}
         initial={0}
         hasPadding
-        buttonColor = "#2F80ED"
+        buttonColor="#2F80ED"
         onPress={(language) => i18n.changeLanguage(language)}
       />
       <View style={styles.title}>
-          <Text>{t('signature_login')}</Text>
-        </View>
+        <Text>{t("signature_login")}</Text>
+      </View>
     </View>
   );
 };

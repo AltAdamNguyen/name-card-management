@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="NCMSystemModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="NCMSystemModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="contact">
           <Key>
             <PropertyRef Name="id" />
@@ -21,8 +21,8 @@
           <Property Name="fax" Type="nvarchar" MaxLength="255" />
           <Property Name="reasonStatus" Type="nvarchar" MaxLength="255" />
           <Property Name="owner_id" Type="int" Nullable="false" />
-          <Property Name="flag_id" Type="int" />
-          <Property Name="status_id" Type="int" Nullable="false" />
+          <Property Name="flag_id" Type="nvarchar" MaxLength="10" />
+          <Property Name="status_id" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="isActive" Type="bit" Nullable="false" />
           <Property Name="create_date" Type="datetime" Nullable="false" />
           <Property Name="createdBy" Type="int" Nullable="false" />
@@ -101,30 +101,12 @@
           <Property Name="code_resetPw" Type="nvarchar" MaxLength="6" />
           <Property Name="exp_code" Type="datetime" />
         </EntityType>
-        <Association Name="contact_flag_id_fk">
-          <End Role="flag" Type="Self.flag" Multiplicity="0..1" />
-          <End Role="contact" Type="Self.contact" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="flag">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="contact">
-              <PropertyRef Name="flag_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="contact_status_id_fk">
-          <End Role="status" Type="Self.status" Multiplicity="1" />
-          <End Role="contact" Type="Self.contact" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="status">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="contact">
-              <PropertyRef Name="status_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
+        <!--Errors Found During Generation:
+warning 6035: The relationship 'contact_flag_code_fk' has columns that are not part of the key of the table on the primary side of the relationship. The relationship was excluded.
+        <Association Name="contact_flag_code_fk" />-->
+        <!--Errors Found During Generation:
+warning 6035: The relationship 'contact_status_code_fk' has columns that are not part of the key of the table on the primary side of the relationship. The relationship was excluded.
+        <Association Name="contact_status_code_fk" />-->
         <Association Name="contact_user_id_fk">
           <End Role="user" Type="Self.user" Multiplicity="1" />
           <End Role="contact" Type="Self.contact" Multiplicity="*" />
@@ -231,14 +213,6 @@
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="token" EntityType="Self.token" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="user" EntityType="Self.user" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="contact_flag_id_fk" Association="Self.contact_flag_id_fk">
-            <End Role="flag" EntitySet="flag" />
-            <End Role="contact" EntitySet="contact" />
-          </AssociationSet>
-          <AssociationSet Name="contact_status_id_fk" Association="Self.contact_status_id_fk">
-            <End Role="status" EntitySet="status" />
-            <End Role="contact" EntitySet="contact" />
-          </AssociationSet>
           <AssociationSet Name="contact_user_id_fk" Association="Self.contact_user_id_fk">
             <End Role="user" EntitySet="user" />
             <End Role="contact" EntitySet="contact" />
@@ -272,7 +246,8 @@
             <End Role="user1" EntitySet="user" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="NCMSystemModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -292,14 +267,12 @@
           <Property Name="fax" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="reasonStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="owner_id" Type="Int32" Nullable="false" />
-          <Property Name="flag_id" Type="Int32" />
-          <Property Name="status_id" Type="Int32" Nullable="false" />
+          <Property Name="flag_id" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="status_id" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="isActive" Type="Boolean" Nullable="false" />
           <Property Name="create_date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="createdBy" Type="Int32" Nullable="false" />
           <Property Name="resonDeactive" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="flag" Relationship="Self.contact_flag_id_fk" FromRole="contact" ToRole="flag" />
-          <NavigationProperty Name="status" Relationship="Self.contact_status_id_fk" FromRole="contact" ToRole="status" />
           <NavigationProperty Name="user" Relationship="Self.contact_user_id_fk" FromRole="contact" ToRole="user" />
           <NavigationProperty Name="user1" Relationship="Self.contact_user_id_fk_2" FromRole="contact" ToRole="user" />
           <NavigationProperty Name="groups" Relationship="Self.group_contact" FromRole="contact" ToRole="group" />
@@ -310,7 +283,6 @@
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="contacts" Relationship="Self.contact_flag_id_fk" FromRole="flag" ToRole="contact" />
           <Property Name="code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="group">
@@ -337,7 +309,6 @@
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="contacts" Relationship="Self.contact_status_id_fk" FromRole="status" ToRole="contact" />
           <Property Name="code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="sysdiagram">
@@ -372,6 +343,8 @@
           <Property Name="isActive" Type="Boolean" />
           <Property Name="role_id" Type="Int32" Nullable="false" />
           <Property Name="manager_id" Type="Int32" />
+          <Property Name="code_resetPw" Type="String" MaxLength="6" FixedLength="false" Unicode="true" />
+          <Property Name="exp_code" Type="DateTime" Precision="3" />
           <NavigationProperty Name="contacts" Relationship="Self.contact_user_id_fk" FromRole="user" ToRole="contact" />
           <NavigationProperty Name="contacts1" Relationship="Self.contact_user_id_fk_2" FromRole="user" ToRole="contact" />
           <NavigationProperty Name="groups" Relationship="Self.group_user_id_fk" FromRole="user" ToRole="group" />
@@ -379,33 +352,7 @@
           <NavigationProperty Name="tokens" Relationship="Self.token_user_id_fk" FromRole="user" ToRole="token" />
           <NavigationProperty Name="user1" Relationship="Self.user_user_id_fk" FromRole="user" ToRole="user1" />
           <NavigationProperty Name="user2" Relationship="Self.user_user_id_fk" FromRole="user1" ToRole="user" />
-          <Property Name="code_resetPw" Type="String" MaxLength="6" FixedLength="false" Unicode="true" />
-          <Property Name="exp_code" Type="DateTime" Precision="3" />
         </EntityType>
-        <Association Name="contact_flag_id_fk">
-          <End Role="flag" Type="Self.flag" Multiplicity="0..1" />
-          <End Role="contact" Type="Self.contact" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="flag">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="contact">
-              <PropertyRef Name="flag_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="contact_status_id_fk">
-          <End Role="status" Type="Self.status" Multiplicity="1" />
-          <End Role="contact" Type="Self.contact" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="status">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="contact">
-              <PropertyRef Name="status_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="contact_user_id_fk">
           <End Role="user" Type="Self.user" Multiplicity="1" />
           <End Role="contact" Type="Self.contact" Multiplicity="*" />
@@ -491,14 +438,6 @@
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="tokens" EntityType="Self.token" />
           <EntitySet Name="users" EntityType="Self.user" />
-          <AssociationSet Name="contact_flag_id_fk" Association="Self.contact_flag_id_fk">
-            <End Role="flag" EntitySet="flags" />
-            <End Role="contact" EntitySet="contacts" />
-          </AssociationSet>
-          <AssociationSet Name="contact_status_id_fk" Association="Self.contact_status_id_fk">
-            <End Role="status" EntitySet="status" />
-            <End Role="contact" EntitySet="contacts" />
-          </AssociationSet>
           <AssociationSet Name="contact_user_id_fk" Association="Self.contact_user_id_fk">
             <End Role="user" EntitySet="users" />
             <End Role="contact" EntitySet="contacts" />
@@ -561,9 +500,9 @@
           <EntitySetMapping Name="flags">
             <EntityTypeMapping TypeName="NCMSystemModel.flag">
               <MappingFragment StoreEntitySet="flag">
-                <ScalarProperty Name="code" ColumnName="code" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="code" ColumnName="code" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -587,9 +526,9 @@
           <EntitySetMapping Name="status">
             <EntityTypeMapping TypeName="NCMSystemModel.status">
               <MappingFragment StoreEntitySet="status">
-                <ScalarProperty Name="code" ColumnName="code" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="code" ColumnName="code" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -618,8 +557,6 @@
           <EntitySetMapping Name="users">
             <EntityTypeMapping TypeName="NCMSystemModel.user">
               <MappingFragment StoreEntitySet="user">
-                <ScalarProperty Name="exp_code" ColumnName="exp_code" />
-                <ScalarProperty Name="code_resetPw" ColumnName="code_resetPw" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="password" ColumnName="password" />
@@ -627,6 +564,8 @@
                 <ScalarProperty Name="isActive" ColumnName="isActive" />
                 <ScalarProperty Name="role_id" ColumnName="role_id" />
                 <ScalarProperty Name="manager_id" ColumnName="manager_id" />
+                <ScalarProperty Name="code_resetPw" ColumnName="code_resetPw" />
+                <ScalarProperty Name="exp_code" ColumnName="exp_code" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

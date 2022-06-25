@@ -1,14 +1,20 @@
 ﻿using System.Collections.Generic;
+using Newtonsoft.Json;
+
 namespace NCMSystem.Models.CallAPI.ScanNC
 {
     public class InfoNC
     {
-        public string imgUrl { get; set; }
-        public string email { get; set; }
-        public string website { get; set; }
-        public string mobile { get; set; }
-        public string telephone { get; set; }
-        public string fax { get; set; }
-        public List<string> items { get; set; }
+        [JsonProperty("img_url")]
+        public string ImgUrl { get; set; }
+        [JsonProperty("email")]
+        public string Email { get; set; }
+        [JsonProperty("website")]
+        public string Website { get; set; }
+        [JsonProperty("phone")]
+        public string Phone { get; set; }
+        [JsonProperty("fax")]
+        public string Fax { get; set; }
+        public List<string> Items { get; set; }
     }
 }
