@@ -5,6 +5,7 @@ export const Method = {
     POST: 'POST',
     PUT: 'PUT',
     DELETE: 'DELETE',
+    PATCH: 'PATCH'
 }
 
 export const ContentType = {
@@ -18,6 +19,9 @@ export const AuthAPI = {
 
 export const ContactAPI = {
     Scan: "/api/scan",
-    AddContact: "/api/contact/add",
+    AddContact: "/api/contacts",
     ViewContact: "/api/contacts",
+    UpdateContact: "/api/contacts",
+    SetFlag: "/api/contacts/flag",
+    SetStatus: "/api/contacts/status"
 }

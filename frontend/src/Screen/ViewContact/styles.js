@@ -1,4 +1,4 @@
-import {StyleSheet, useWindowDimensions } from 'react-native';
+import {StyleSheet, Dimensions } from 'react-native';
 
 
 // define your styles
@@ -10,18 +10,14 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     containerOverlay: {
-        fontfamily: 'Roboto',
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
         backgroundColor: 'rgba(130, 130, 130,0.5)',
     },
     info_flag_modalView: {
         backgroundColor: '#ffff',
         borderRadius: 10,
-        width: '50%',
+        width: '70%',
         alignItems: 'flex-start',
+        padding: 5
     },
     info_flag_modalItem: {
             flexDirection: 'row',
@@ -34,7 +30,19 @@ const styles = StyleSheet.create({
             info_flag_modalText: {
                 fontSize: 15,
             },
-
+    info_status_modalView: {
+        backgroundColor: '#ffff',
+        borderRadius: 10,
+        width: '90%',
+        alignItems: 'flex-start',
+        padding: 10
+    },
+    info_status_modalItem_button: {
+        flexDirection:'row', 
+        justifyContent: 'space-around', 
+        width: '100%', 
+        marginTop: 10
+    },
     container: {
         flex: 1,
         flexDirection: 'column',
@@ -49,12 +57,17 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     body_imgContact: {
-        flex: 0.4,
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height*0.3,
+        justifyContent: "center",
         padding: 5,
+        marginBottom: 10,
     },
     body_imgContact_image:{
         width: '100%',
         height: '100%',
+        aspectRatio: 1.63185185185,
+        resizeMode: 'contain',
         borderRadius: 10,
     },
     info: {
@@ -69,7 +82,6 @@ const styles = StyleSheet.create({
     },
     info_flag_button: {
         borderRadius: 10,
-        // width: '40%',
         marginTop: 10
     },
     info_component: {
@@ -102,7 +114,16 @@ const styles = StyleSheet.create({
     info_component_label: {
         fontSize: 16,
         color: '#828282',
-    }
+    },
+    modelViewFloat: {
+        backgroundColor: '#ffff',
+        width: '100%',
+        position: 'absolute',
+        bottom: 0,
+        padding: 20,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+    },
 
 });
 

@@ -1,14 +1,18 @@
 //import liraries
-import React, { useContext, useState } from 'react';
-import { Text, SafeAreaView, TouchableOpacity, View, Image, StyleSheet, useWindowDimensions } from 'react-native';
+import React, { useContext } from 'react';
+import { Text, SafeAreaView, TouchableOpacity } from 'react-native';
+import { StackActions } from '@react-navigation/native';
 import AuthContext from '../../store/AuthContext';
 import styles from './styles'
-import ChangePassword from '../ChangePassword/ChangePassword';
 // create a component
 const Setting = ({navigation}) => {
     const authCtx = useContext(AuthContext);
     const onChangePasswordPressed = () => {
         navigation.navigate('ChangePassword')
+    }
+    const onLogoutPressed = () => {
+        navigation.dispatch(StackActions.popToTop());
+        authCtx.onLogout();     
     }
     return (
         <SafeAreaView style={styles.container}>
@@ -16,7 +20,7 @@ const Setting = ({navigation}) => {
             <TouchableOpacity style={[styles.button,styles.mb20]} onPress={onChangePasswordPressed}>
                 <Text style={styles.label}>Đổi mật khẩu</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={authCtx.onLogout}>
+            <TouchableOpacity style={styles.button} onPress={onLogoutPressed}>
                 <Text style={styles.label}>Đăng xuất</Text>
             </TouchableOpacity>
         </SafeAreaView>

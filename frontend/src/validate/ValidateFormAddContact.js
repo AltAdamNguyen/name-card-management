@@ -1,6 +1,8 @@
 import * as Yup from 'yup';
 
-const phoneRegex = /^((0[3|5|7|8|9])+([0-9]{8})|(84[3|5|7|8|9])+([0-9]{8}))$/;
+const phoneRegex = /^((0[3|4|5|7|8|9])+([0-9]{8})|(84[3|4|5|7|8|9])+([0-9]{8}))$/;
+
+const websiteRegex = /^(http:\/\/|https:\/\/)?(www.)?([a-zA-Z0-9]+).[a-zA-Z0-9]*.[‌​a-z]{3}\.([a-z]+)?$/
 
 const AddContactSchema = Yup.object().shape({
     name: Yup.string()
@@ -22,7 +24,7 @@ const AddContactSchema = Yup.object().shape({
         .max(255, 'Too Long!'),
     website: Yup.string()
         .max(255, 'Too Long!')
-        .url('Invalid url!'),
+        .matches(websiteRegex, 'Invalid website address!'),
 });
 
 export default AddContactSchema;
