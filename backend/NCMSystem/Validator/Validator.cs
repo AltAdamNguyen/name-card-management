@@ -81,13 +81,14 @@ namespace NCMSystem.Validator
 
                 //regex check url
                 string phoneFaxRegex =
-                    @"^((0[3|5|7|8|9])+([0-9]{8})|(84[3|5|7|8|9])+([0-9]{8}))$";
+                    @"^((0[3|4|5|7|8|9])+([0-9]{8})|(84[3|4|5|7|8|9])+([0-9]{8}))$";
 
                 if (Regex.IsMatch(value, phoneFaxRegex))
                 {
                     return true;
                 }
             }
+
             return true;
         }
 
@@ -99,6 +100,21 @@ namespace NCMSystem.Validator
             }
 
             return true;
+        }
+
+        public static bool CheckEmptyvLength(string value)
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                if (value.Length > 255)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+
+            return false;
         }
     }
 }
