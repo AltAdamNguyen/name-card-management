@@ -194,6 +194,7 @@
     <Compile Include="Controllers\ContactController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ScanController.cs" />
+    <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Filter\JwtAuthorizeFilter.cs" />
     <Compile Include="Global.asax.cs">
@@ -202,10 +203,14 @@
     <Compile Include="Models\CallAPI\CommonResponse.cs" />
     <Compile Include="Models\CallAPI\Contact\ContactRequest.cs" />
     <Compile Include="Models\CallAPI\Contact\DetailContact.cs" />
+    <Compile Include="Models\CallAPI\Contact\FlagContact.cs" />
     <Compile Include="Models\CallAPI\Contact\HomeContact.cs" />
+    <Compile Include="Models\CallAPI\Contact\OwnerContact.cs" />
+    <Compile Include="Models\CallAPI\Contact\ReasonDAContact.cs" />
+    <Compile Include="Models\CallAPI\Contact\StatusContact.cs" />
     <Compile Include="Models\CallAPI\ScanNC\InfoNC.cs" />
     <Compile Include="Models\CallAPI\ScanNC\ScanNCRequest.cs" />
-    <Compile Include="Models\CallAPI\ScanNC\ScanNCResponse.cs" />
+    <Compile Include="Models\CallAPI\ScanNC\ScanResponse.cs" />
     <Compile Include="Models\CallAPI\User\ChangePassword\ChangePasswordRequest.cs" />
     <Compile Include="Models\CallAPI\User\ForgotPassword\ForgotPasswordCheckCodeRequest.cs" />
     <Compile Include="Models\CallAPI\User\ForgotPassword\ForgotPasswordSendEmailRequest.cs" />
