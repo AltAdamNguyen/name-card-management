@@ -7,7 +7,6 @@ import iconPath from '../../constants/iconPath';
 import styles from './styles';
 import { FetchApi } from '../../service/api/FetchAPI';
 import { ContactAPI, Method, ContentType } from '../../constants/ListAPI';
-import ModalAddContact from '../../components/addcontact/ModalAddContact';
 import { Formik } from 'formik';
 import AddContactSchema from '../../validate/ValidateFormAddContact';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
@@ -19,7 +18,7 @@ import ModalContact from '../../components/addcontact/ModelContact';
 const formInput = [
     {
         name: 'name',
-        title: 'Họ và tên (bắt buộc)',
+        title: 'Họ và tên',
         placeholder: 'Nhập họ và tên',
     },
     {
@@ -39,7 +38,7 @@ const formInput = [
     },
     {
         name: 'email',
-        title: 'Email (bắt buộc)',
+        title: 'Email',
         placeholder: 'Nhập email',
     },
     {
@@ -71,11 +70,12 @@ const contextOnSubmit = {
     cancel: 'Hủy',
     submit: 'Lưu',
 }
-const AddContact = ({ contact, loading, navigation }) => {
+const AddContact = ({ route, navigation }) => {
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
     const formRef = useRef();
     const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient)
+    const [loading, setLoading] = useState(false);
     const [value, setValue] = useState({
         name: '',
         job_title: '',
@@ -85,65 +85,26 @@ const AddContact = ({ contact, loading, navigation }) => {
         fax: '',
         address: '',
         website: '',
-        img_url: ''
     });
     useEffect(() => {
-        if (contact && formRef.current) {
+        if (route.params && formRef.current) {
             formRef.current.setValues({
-                name: contact.data.name,
-                job_title: contact.data.job_title,
-                company: contact.data.company,
-                phone: contact.data.phone,
-                email: contact.data.email,
-                fax: contact.data.fax,
-                address: contact.data.address,
-                website: contact.data.website,
-                img_url: contact.data.img_url
+                name: route.params.contact.name,
+                job_title: route.params.contact.job_title,
+                company: route.params.contact.company,
+                phone: route.params.contact.phone,
+                email: route.params.contact.email,
+                fax: route.params.contact.fax,
+                address: route.params.contact.address,
+                website: route.params.contact.website,
             })
+            setLoading(true)
         }
 
-    }, [contact])
-
-    const [modalVisible, setModalVisible] = useState({
-        name: false,
-        job_title: false,
-        company: false,
-        phone: false,
-        email: false,
-        fax: false,
-        address: false,
-        website: false
-    });
+    }, [route.params])
 
     const [goBack, setGoBack] = useState(false);
     const [onSubmit, setOnSubmit] = useState(false);
-
-    const handelerModal = (item, name) => {
-        if (formRef.current) {
-            formRef.current.setValues({
-                ...formRef.current.values,
-                [name]: item
-            })
-        }
-
-        setModalVisible({
-            ...modalVisible,
-            [name]: false
-        })
-
-    }
-
-    const handleVisable = (item) => {
-        setModalVisible({
-            ...modalVisible,
-            [item]: false
-        })
-    }
-
-
-    const removeEmpty = (obj) => {
-        return obj.length >= 3
-    }
 
     const handlePressAdd = () => {
         if (formRef.current) {
@@ -152,7 +113,8 @@ const AddContact = ({ contact, loading, navigation }) => {
     }
 
     const handleSubmit = (values) => {
-        FetchApi(ContactAPI.AddContact, Method.POST, ContentType.JSON, values, getMessage)
+        console.log(route.params.idContact)
+        FetchApi(`${ContactAPI.UpdateContact}/${route.params.idContact}`, Method.PUT, ContentType.JSON, values, getMessage)
     }
 
     const getMessage = (data) => {
@@ -168,17 +130,17 @@ const AddContact = ({ contact, loading, navigation }) => {
             <View style={styles.header}>
                 <View style={styles.header_titleButton}>
                     <IconButton icon="arrow-left" size={20} onPress={() => setGoBack(!goBack)}/>
-                    <Text style={styles.header_titleButton_label}>Thêm liên hệ</Text>
+                    <Text style={styles.header_titleButton_label}>Chỉnh sửa liên hệ</Text>
                 </View>
 
                 <View style={styles.header_modal}>
-                    <Button color='#1890FF' onPress={() => setOnSubmit(!onSubmit)}>Thêm</Button>
+                    <Button color='#1890FF' onPress={() => setOnSubmit(!onSubmit)}>Sửa</Button>
                 </View>
             </View>
             <View style={{ alignItems: 'center' }}>
                 <ShimmerPlaceholder visible={loading} width={windowWidth * 0.95} height={windowHeight * 0.3} shimmerStyle={{ borderRadius: 10, marginBottom: 10, }}>
                     <TouchableOpacity style={styles.imgContact} onPress={() => Keyboard.dismiss()}>
-                        {contact && <Image source={{ uri: contact.data.img_url }} style={styles.image} />}
+                        {route.params && <Image source={{ uri: route.params.contact.img_url }} style={styles.image} />}
                     </TouchableOpacity>
                 </ShimmerPlaceholder>
             </View>
@@ -207,13 +169,6 @@ const AddContact = ({ contact, loading, navigation }) => {
                                                         onChangeText={handleChange(item.name)}
                                                         onBlur={handleBlur(item.name)}
                                                         error={errors[item.name] && touched[item.name]}
-                                                        right={<TextInput.Icon name='chevron-right'
-                                                            onPress={() => {
-                                                                setModalVisible({ ...modalVisible, [item.name]: true })
-                                                            }}
-                                                            forceTextInputFocus={false}
-                                                        />
-                                                        }
                                                         theme={{ roundness: 10, colors: { primary: '#1890FF', error: '#B22D1D' } }}
                                                     />
                                                 </ShimmerPlaceholder>
@@ -222,9 +177,6 @@ const AddContact = ({ contact, loading, navigation }) => {
                                                         <Text style={styles.formInput_item_error_label}>{errors[item.name]}</Text>
                                                     </View>
                                                 ) : null}
-                                                <View>
-                                                    {contact && <ModalAddContact listItem={contact.data.Items.filter(removeEmpty)} title={item.title} visible={modalVisible} name={item.name} value={values[item.name]} onPress={handelerModal} onPressVisable={handleVisable} />}
-                                                </View>
                                             </View>
                                         </View>
                                     )
