@@ -6,8 +6,8 @@ using System.Web;
 
 namespace NCMSystem.Models.CallAPI.Group_Contact
 {
-    public class GroupContactRequest
+    public class RenameGroupContact
     {
-        [JsonProperty("group_name")] public string GroupName { get; set; }
+        [JsonProperty("name")] public string GroupName { get; set; }
     }
 }
