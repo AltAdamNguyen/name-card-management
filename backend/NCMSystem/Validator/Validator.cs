@@ -14,7 +14,7 @@ namespace NCMSystem.Validator
                 }
 
                 string emailRegex =
-                    @"^(([^<>()[\]\\.,;:\s@\""]+(\.[^<>()[\]\\.,;:\s@\""]+)*)|(\"".+\""))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$";
+                    @"^[a-zA-Z0-9\.]+@([a-zA-Z0-9]+\.)+[\w-]{2,4}$";
 
                 if (Regex.IsMatch(value, emailRegex))
                 {
@@ -94,9 +94,14 @@ namespace NCMSystem.Validator
 
         public static bool CheckInputLength(string value)
         {
-            if (value.Length > 255)
+            if (!string.IsNullOrEmpty(value))
             {
-                return false;
+                if (value.Length > 255)
+                {
+                    return false;
+                }
+
+                return true;
             }
 
             return true;
