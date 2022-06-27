@@ -192,14 +192,9 @@ const styles = StyleSheet.create({
     },
     floatButton: {
         position: 'absolute',
-        width: 50,
-        height: 50,
-        alignItems: 'center',
-        justifyContent: 'center',
-        left: '30%',
-        bottom: 20,
-        backgroundColor: '#1890FF',
-        borderRadius: 1000,
+        margin: 16,
+        right: 0,
+        bottom: 0,
     },
 
 

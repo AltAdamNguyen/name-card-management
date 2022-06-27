@@ -15,7 +15,7 @@ const ScanScreen = ({ navigation }) => {
 
   let cameraRef = useRef();
   const [hasCameraPermission, setHasCameraPermission] = useState();
-
+  const [flashMode, setFlashMode] = useState(FlashMode.off);
   const { width } = useWindowDimensions();
   const height = Math.round((width * 4) / 3);
 
@@ -61,19 +61,25 @@ const ScanScreen = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.header_content}>
-          <TouchableOpacity style={styles.header_content_buttonClose} onPress={() => navigation.goBack()}>
+          {/* <TouchableOpacity style={styles.header_content_buttonClose} onPress={() => navigation.goBack()}>
             <Image style={styles.header_content_buttonClose_iconClose} source={iconPath.icClose} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.header_content_buttonClose} onPress={() => navigation.goBack()}>
             <Image style={styles.header_content_buttonClose_iconClose} source={iconPath.icClose} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+          <IconButton icon="close-circle" size={30} color="#fff" onPress={() => navigation.goBack()} />
+          <IconButton icon={flashMode===FlashMode.on?"flash":"flash-off"} size={30} color="#fff" onPress={() => setFlashMode(flashMode === FlashMode.off ?FlashMode.on:FlashMode.off)} />
         </View>
 
       </View>
       <View style={styles.preview}>
         {
           isFocused &&
-          <Camera style={{ height: height, width: "100%", backgroundColor: "#ffff", justifyContent: 'center', alignItems: 'center' }} ref={cameraRef} ratio="4:3" flashMode={FlashMode.on}>
+          <Camera 
+          style={{ height: height, width: "100%", backgroundColor: "#ffff", justifyContent: 'center', alignItems: 'center' }} 
+          ref={cameraRef} 
+          ratio="4:3" 
+          flashMode={flashMode}>
             <View style={styles.preview_suggest}>
               <Text>Đặt thẻ vào đúng khung hình</Text>
             </View>
