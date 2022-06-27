@@ -65,7 +65,7 @@ const contextGoBack = {
 }
 
 const contextOnSubmit = {
-    title: 'Thêm liên hệ',
+    title: 'Chỉnh sửa liên hệ',
     message: 'Bạn có muốn lưu thay đổi không?',
     cancel: 'Hủy',
     submit: 'Lưu',
@@ -119,7 +119,7 @@ const AddContact = ({ route, navigation }) => {
 
     const getMessage = (data) => {
         navigation.dispatch(StackActions.popToTop());
-        navigation.navigate('HomeScreen', { screen: 'Home', params: { visibleModal: true } })
+        navigation.navigate('Home', { screen: 'HomeScreen', params: { visibleModal: true } })
     }
 
 
@@ -153,6 +153,7 @@ const AddContact = ({ route, navigation }) => {
                     innerRef={formRef}
                 >
                     {({ handleChange, handleBlur, values, errors, touched }) => {
+                        console.log(errors)
                         return (
                             <View style={styles.formInput}>
                                 {formInput.map((item, index) => {

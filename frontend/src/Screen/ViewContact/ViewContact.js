@@ -1,6 +1,6 @@
 //import liraries
 import React, { useState, useEffect } from 'react';
-import { View, Text, SafeAreaView, Image, ScrollView, Modal, TouchableOpacity, TouchableWithoutFeedback, Platform } from 'react-native';
+import { View, Text, SafeAreaView, Image, ScrollView, Platform, WebView, Linking } from 'react-native';
 
 import iconPath from '../../constants/iconPath';
 
@@ -12,6 +12,7 @@ import { FetchApi } from '../../service/api/FetchAPI';
 import ModalStatus from '../../components/viewcontact/modal/ModalStatus';
 import ModalFlag from '../../components/viewcontact/modal/ModalFlag';
 import { FormatDate } from '../../validate/FormatDate';
+import OpenURLButton from '../../components/viewcontact/OpenUrl';
 
 import styles from './styles';
 import BottomSheetContact from '../../components/viewcontact/bottomsheet/BottomSheetContact';
@@ -85,7 +86,6 @@ const ViewContact = ({ navigation, route }) => {
     const isFocused = useIsFocused()
 
     const onSubmitStatus = (values) => {
-        console.log(values);
         setStatus(values)
         FetchApi(`${ContactAPI.SetStatus}/${route.params.idContact}`, Method.PATCH, ContentType.JSON, values, getFlag)
         setModalStatusVisible(!modalStatusVisible)
@@ -102,6 +102,7 @@ const ViewContact = ({ navigation, route }) => {
         console.log(data)
     }
     useEffect(() => {
+        console.log(route.params.idContact)
         FetchApi(`${ContactAPI.ViewContact}/${route.params.idContact}`, Method.GET, ContentType.JSON, undefined, getContact)
     }, [])
 
@@ -128,7 +129,6 @@ const ViewContact = ({ navigation, route }) => {
         navigation.navigate('UpdateContact', { 'contact': contact, 'idContact': route.params.idContact })
     }
 
-    console.log(contact)
     return (
         <SafeAreaView style={styles.container}>
             <Appbar.Header theme={{ colors: { primary: "transparent" } }} statusBarHeight={1}>
@@ -162,22 +162,18 @@ const ViewContact = ({ navigation, route }) => {
                                 </Button>
                             </View>
                             <View style={styles.info_component}>
-                                {contact.phone &&
-                                    <View style={[styles.info_contact_des, styles.mb10]}>
-                                        <Image source={iconPath.icMobile} />
-                                        <Text style={styles.info_contact_des_label}>{contact.phone}</Text>
-                                    </View>
-                                }
+                                <View style={[styles.info_contact_des, styles.mb10]}>
+                                    <Image source={iconPath.icMobile} />
+                                    <Text style={styles.info_contact_des_label}>{contact.phone}</Text>
+                                </View>
                                 <View style={[styles.info_contact_des, styles.mb10]}>
                                     <Image source={iconPath.icMail} />
                                     <Text style={styles.info_contact_des_label}>{contact.email}</Text>
                                 </View>
-                                {contact.fax &&
-                                    <View style={styles.info_contact_des}>
-                                        <Image source={iconPath.icPrinter} />
-                                        <Text style={styles.info_contact_des_label}>{contact.fax}</Text>
-                                    </View>
-                                }
+                                <View style={styles.info_contact_des}>
+                                    <Image source={iconPath.icPrinter} />
+                                    <Text style={styles.info_contact_des_label}>{contact.fax}</Text>
+                                </View>
                             </View>
                             <View style={styles.info_component}>
                                 <Text style={styles.info_component_title}>Địa chỉ</Text>
@@ -185,7 +181,7 @@ const ViewContact = ({ navigation, route }) => {
                             </View>
                             <View style={styles.info_component}>
                                 <Text style={styles.info_component_title}>Website</Text>
-                                <Text style={styles.info_component_des}>{contact.website}</Text>
+                                <OpenURLButton url={contact.website} >{contact.website}</OpenURLButton>
                             </View>
                             <View style={styles.info_component}>
                                 <Text style={styles.info_component_title}>Nhóm</Text>
@@ -196,7 +192,7 @@ const ViewContact = ({ navigation, route }) => {
                             </View>
                             <View style={styles.info_component}>
                                 {status && <ModalStatus listStatus={Object.values(listStatus)} visible={modalStatusVisible} status={status} onPressSubmit={onSubmitStatus} onPressVisable={() => setModalStatusVisible(!modalStatusVisible)} />}
-                                <View style={{flexDirection:'row',alignItems: 'center' }}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                                     <Text style={styles.info_component_title}>Trạng thái:</Text>
                                     {status &&
                                         <Button
@@ -207,7 +203,6 @@ const ViewContact = ({ navigation, route }) => {
                                         </Button>
                                     }
                                 </View>
-
                                 {status && <Text style={styles.info_component_label}>{status.reason_status}</Text>}
                             </View>
                             <View style={styles.info_component}>

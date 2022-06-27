@@ -152,10 +152,12 @@ const AddContact = ({ contact, loading, navigation }) => {
     }
 
     const handleSubmit = (values) => {
+        console.log(values)
         FetchApi(ContactAPI.AddContact, Method.POST, ContentType.JSON, values, getMessage)
     }
 
     const getMessage = (data) => {
+        console.log(data)
         navigation.dispatch(StackActions.popToTop());
         navigation.navigate('HomeScreen', { screen: 'Home', params: { visibleModal: true } })
     }

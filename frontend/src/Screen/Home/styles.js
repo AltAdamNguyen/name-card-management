@@ -124,7 +124,6 @@ const styles = StyleSheet.create({
                 alignItems:'center', 
                 borderRadius:10, 
                 paddingLeft: 5, 
-                paddingRight: 5
             },
                 labelFlag: {
                     fontWeight: 'bold',

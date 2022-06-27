@@ -10,16 +10,16 @@ const AuthContext = React.createContext({
 export const AuthProvider = ({ children }) => {
     const [isLogin, setIsLogin] = useState(false);
 
-    const handleLogin = async(accessToken, refreshToken) => {
+    const handleLogin = async (accessToken, refreshToken) => {
         setIsLogin(true);
-        await SecureStore.setItemAsync('access_token',accessToken)
-        await SecureStore.setItemAsync('refresh_token',refreshToken)
+        SecureStore.setItemAsync('access_token',accessToken)
+        SecureStore.setItemAsync('refresh_token',refreshToken)
     }
 
     const handleLogout = async() => {
         setIsLogin(false);
-        await SecureStore.deleteItemAsync('access_token')
-        await SecureStore.deleteItemAsync('refresh_token')
+        SecureStore.deleteItemAsync('access_token')
+        SecureStore.deleteItemAsync('refresh_token')
     }
 
     return (

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, SafeAreaView, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import { TextInput } from 'react-native-paper';
+import { TextInput, IconButton, Searchbar } from 'react-native-paper';
 import styles from './styles';
 
 import iconPath from '../../constants/iconPath';
@@ -53,17 +53,21 @@ const Home = ({ route, navigation }) => {
     const [text, setText] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
     const [modalFloatVisible, setModalFloatVisible] = useState(false);
-    const [flag, setFlag] = useState();
+    const [flag, setFlag] = useState('null');
     const [sort, setSort] = useState('create_date');
     const isFocused = useIsFocused()
 
     useEffect(() => {
         FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
+    }, [])
+
+    useEffect(() => {
+        FetchApi(`${ContactAPI.ViewContact}?sortBy=${sort}&flag=${flag}`, Method.GET, ContentType.JSON, undefined, getContactFilter)
     }, [route.params, navigation]);
 
     useEffect(() => {
-        isFocused && FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
-      },[isFocused]);
+        FetchApi(`${ContactAPI.ViewContact}?sortBy=${sort}&flag=${flag}`, Method.GET, ContentType.JSON, undefined, getContactFilter)
+    }, [isFocused]);
 
     useEffect(() => {
         if (route.params) {
@@ -79,45 +83,57 @@ const Home = ({ route, navigation }) => {
         }
     }
 
+    const handlePressSort = (item) => {
+        FetchApi(`${ContactAPI.ViewContact}?sortBy=${item.value}&flag=${flag}`, Method.GET, ContentType.JSON, undefined, getContactFilter)
+        setSort(item.value);
+        setModalFloatVisible(!modalFloatVisible);
+    };
+
     const handlePressButtonFlag = (item) => {
         setModalVisible(!modalVisible);
-        setFlag(item);
-        let newList = listContact.filter(items => items.flag == item.value)
-        setListFilter(newList);
+        setFlag(item.value);
+        FetchApi(`${ContactAPI.ViewContact}?sortBy=${sort}&flag=${item.value}`, Method.GET, ContentType.JSON, undefined, getContactFilter)
     }
 
+    const getContactFilter = (data) => {
+        if (data.data) {
+            if (data.data.length > 0) {
+                setListFilter(data.data);
+                setContContact(data.data.length);
+            }
+        } else {
+            setListFilter([]);
+            setContContact(0);
+        }
+    }
     const deleteFlag = () => {
-        setFlag()
+        setFlag('null')
         setListFilter(listContact);
     }
 
     const changeTextButtonFlag = (flag) => {
-        if (flag) {
+        if (flag !== 'null') {
             return (
                 <View style={styles.buttonFlag}>
-                    <View style={[{ backgroundColor: flag.background }, styles.sectionFlag]}>
-                        <Text style={[styles.labelFlag, { color: flag.color }]}>{flag.title}</Text>
-                        <TouchableOpacity onPress={() => { deleteFlag() }} activeOpacity={1}>
-                            <Image source={iconPath.icClose} style={{ tintColor: flag.color, width: 16, height: 16 }} />
-                        </TouchableOpacity>
+                    <View style={[{ backgroundColor: listFlag[flag].background }, styles.sectionFlag]}>
+                        <Text style={[styles.labelFlag, { color: listFlag[flag].color }]}>{listFlag[flag].title}</Text>
+                        <IconButton icon="close-circle" size={16} onPress={() => { deleteFlag() }} />
                     </View>
                 </View>
             )
         } else {
             return (
                 <View style={styles.buttonFlag}>
-                    <Text style={styles.labelFlag}>Phân loại</Text>
-                    <Image source={iconPath.icDown} />
+                    <View style={[{ backgroundColor: '#82828250' },styles.sectionFlag]}>
+                        <Text style={styles.labelFlag}>Phân loại</Text>
+                        <IconButton icon="chevron-down" size={16}/>
+                    </View>
                 </View>
             )
         }
     }
 
-    const handlePressSort = (item) => {
-        FetchApi(`${ContactAPI.ViewContact}?sortBy=${item.value}`, Method.GET, ContentType.JSON, undefined, getContact)
-        setSort(item.value);
-        setModalFloatVisible(!modalFloatVisible);
-    };
+    console.log(listFilter)
 
     return (
         <SafeAreaView style={[styles.container, modalFloatVisible ? styles.containerOverlay : null, modalVisible ? styles.containerOverlay : null]}>
@@ -156,20 +172,20 @@ const Home = ({ route, navigation }) => {
                 <ScrollView>
                     {listFilter.length != 0 && listFilter.map((item, index) => {
                         return (
-                            <TouchableOpacity key={index} onPress={() => { navigation.navigate('ViewContact', { 'idContact': item.id }) }}>
+                            <TouchableOpacity key={index} onPress={() => { navigation.navigate('HomeSwap', { screen:'ViewContact',params: {idContact: item.id} }) }}>
                                 <View style={styles.item}>
                                     <View style={styles.imgContact}>
                                         <Image source={{ uri: item.img_url }} style={styles.image} />
                                     </View>
                                     <View style={styles.txtContact}>
-                                        <View style={[styles.title,{flexDirection:'row', justifyContent: 'space-between'}]}>
+                                        <View style={[styles.title, { flexDirection: 'row', justifyContent: 'space-between' }]}>
                                             <Text style={styles.nameContact}>{item.name}</Text>
                                             {item.flag !== null && <Image source={iconPath.icBookMark} style={{ tintColor: listFlag[item.flag].color }} />}
                                         </View>
                                         <Text style={styles.titleContact}>{item.job_title}</Text>
                                         <View style={styles.title}>
                                             <Text numberOfLines={1} style={styles.companyContact}>{item.company}</Text>
-                                            <View style={{alignItems: 'flex-end'}}>
+                                            <View style={{ alignItems: 'flex-end' }}>
                                                 <Text style={styles.date}>{FormatDate(item.created_at)}</Text>
                                             </View>
 
