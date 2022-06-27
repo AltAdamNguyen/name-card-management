@@ -10,12 +10,14 @@ using NCMSystem.Models;
 using NCMSystem.Models.CallAPI;
 using NCMSystem.Models.CallAPI.Contact;
 using Newtonsoft.Json;
+using Serilog;
 
 namespace NCMSystem.Controllers
 {
     public class ContactController : ApiController
     {
         private NCMSystemEntities db = new NCMSystemEntities();
+        private LogException _log = new LogException();
 
         // GET
         [HttpGet]
@@ -28,64 +30,62 @@ namespace NCMSystem.Controllers
             int userId = ((JwtToken)Request.Properties["payload"]).Uid;
 
             List<HomeContact> listCt = new List<HomeContact>();
-            var query = db.contacts.Where(c => c.createdBy == userId);
-            if (!string.IsNullOrEmpty(flag))
-            {
-                if (!flag.Equals("null"))
-                {
-                    query = query.Where(c => c.flag_id.Equals(flag));
-                }
-            }
-
-            if (string.IsNullOrEmpty(sortBy))
-            {
-                return Common.ResponseMessage.BadRequest("sortBy is not valid");
-            }
-
-            if (sortBy.Equals("name"))
-            {
-                query = query.OrderBy(x => x.name);
-            }
-
-            if (sortBy.Equals("company"))
-            {
-                query = query.OrderBy(x => x.company);
-            }
-
-            if (sortBy.Equals("create_date"))
-            {
-                query = query.OrderByDescending(x => x.create_date);
-            }
-
-            List<contact> contact;
-
             try
             {
+                var query = db.contacts.Where(c => c.createdBy == userId);
+                if (!string.IsNullOrEmpty(flag))
+                {
+                    if (!flag.Equals("null"))
+                    {
+                        query = query.Where(c => c.flag_id.Equals(flag));
+                    }
+                }
+
+                if (string.IsNullOrEmpty(sortBy))
+                {
+                    return Common.ResponseMessage.BadRequest("sortBy is not valid");
+                }
+
+                if (sortBy.Equals("name"))
+                {
+                    query = query.OrderBy(x => x.name);
+                }
+
+                if (sortBy.Equals("company"))
+                {
+                    query = query.OrderBy(x => x.company);
+                }
+
+                if (sortBy.Equals("create_date"))
+                {
+                    query = query.OrderByDescending(x => x.create_date);
+                }
+
+                List<contact> contact;
+
                 contact = query.Skip((page - 1) * pageSize)
                     .Take(pageSize).ToList();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                return Common.ResponseMessage.BadRequest("Failed to get contact list");
-            }
 
-            if (contact.Count == 0)
-            {
-                return Common.ResponseMessage.Good("No contact");
+                if (contact.Count != 0)
+                {
+                    foreach (var c in contact)
+                    {
+                        HomeContact hc = new HomeContact();
+                        hc.Id = c.id;
+                        hc.ImgUrl = c.image_url;
+                        hc.Name = c.name;
+                        hc.JobTitle = c.job_title;
+                        hc.Company = c.company;
+                        hc.Flag = c.flag_id;
+                        hc.CreatedAt = c.create_date;
+                        listCt.Add(hc);
+                    }
+                }
             }
-
-            foreach (var c in contact)
+            catch (Exception ex)
             {
-                HomeContact hc = new HomeContact();
-                hc.Id = c.id;
-                hc.ImgUrl = c.image_url;
-                hc.Name = c.name;
-                hc.JobTitle = c.job_title;
-                hc.Company = c.company;
-                hc.Flag = c.flag_id;
-                hc.CreatedAt = c.create_date;
-                listCt.Add(hc);
+                Log.Error(ex, "C00001");
+                Log.CloseAndFlush();
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -104,6 +104,9 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
         public ResponseMessageResult GetDetail(int id)
         {
+            List<string> listGr = new List<string>();
+            DetailContact dc = new DetailContact();
+
             try
             {
                 var contact = db.contacts.FirstOrDefault(c => c.id == id);
@@ -112,7 +115,6 @@ namespace NCMSystem.Controllers
                     return Common.ResponseMessage.Good("No contact");
                 }
 
-                List<string> listGr = new List<string>();
                 Array.ForEach(contact.groups.ToArray(), g => { listGr.Add(g.name); });
 
                 string flag = contact.flag_id;
@@ -121,7 +123,6 @@ namespace NCMSystem.Controllers
                     flag = null;
                 }
 
-                DetailContact dc = new DetailContact();
                 dc.Id = contact.id;
                 dc.ImgUrl = contact.image_url;
                 dc.Name = contact.name;
@@ -137,28 +138,22 @@ namespace NCMSystem.Controllers
                 dc.Status = contact.status_id;
                 dc.ReasonStatus = contact.reasonStatus;
                 dc.CreatedAt = contact.create_date;
-
-                return new ResponseMessageResult(new HttpResponseMessage()
-                {
-                    StatusCode = System.Net.HttpStatusCode.OK,
-                    Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
-                    {
-                        Message = "Get detail successfully",
-                        Data = dc
-                    }), Encoding.UTF8, "application/json")
-                });
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return new ResponseMessageResult(new HttpResponseMessage()
-                {
-                    StatusCode = System.Net.HttpStatusCode.BadRequest,
-                    Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
-                    {
-                        Message = "Something went wrong",
-                    }), Encoding.UTF8, "application/json")
-                });
+                Log.Error(ex, "C00001");
+                Log.CloseAndFlush();
             }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Get detail successfully",
+                    Data = dc
+                }), Encoding.UTF8, "application/json")
+            });
         }
 
         // POST
@@ -179,31 +174,47 @@ namespace NCMSystem.Controllers
             string website = request.Website;
             string fax = request.Fax;
 
-            if (Validator.Validator.CheckName(name) == false || Validator.Validator.CheckEmail(email) == false ||
-                Validator.Validator.CheckUrl(imageUrl) == false ||
-                Validator.Validator.CheckPhoneOrFax(phone) == false ||
-                Validator.Validator.CheckEmptyvLength(company) == false ||
-                Validator.Validator.CheckInputLength(jobTitle) == false ||
-                Validator.Validator.CheckInputLength(address) == false ||
-                Validator.Validator.CheckInputLength(website) == false ||
-                Validator.Validator.CheckPhoneOrFax(fax) == false)
+            try
             {
-                return Common.ResponseMessage.BadRequest("Information is not valid");
-            }
-
-            // check if email is already exist
-            var contact = db.contacts.FirstOrDefault(c => c.email == email);
-
-            if (contact != null)
-            {
-                if (contact.isActive)
+                if (Validator.Validator.CheckName(name) == false || Validator.Validator.CheckEmail(email) == false ||
+                    Validator.Validator.CheckUrl(imageUrl) == false ||
+                    Validator.Validator.CheckPhoneOrFax(phone) == false ||
+                    Validator.Validator.CheckEmptyvLength(company) == false ||
+                    Validator.Validator.CheckInputLength(jobTitle) == false ||
+                    Validator.Validator.CheckInputLength(address) == false ||
+                    Validator.Validator.CheckInputLength(website) == false ||
+                    Validator.Validator.CheckPhoneOrFax(fax) == false)
                 {
+                    return Common.ResponseMessage.BadRequest("Information is not valid");
+                }
+
+                // check if email is already exist
+                var contact = db.contacts.FirstOrDefault(c => c.email == email);
+
+                if (contact != null)
+                {
+                    if (contact.isActive)
+                    {
+                        return new ResponseMessageResult(new HttpResponseMessage()
+                        {
+                            StatusCode = System.Net.HttpStatusCode.OK,
+                            Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                            {
+                                Message = "D0001",
+                                Data = new OwnerContact()
+                                {
+                                    Id = contact.id,
+                                }
+                            }), Encoding.UTF8, "application/json")
+                        });
+                    }
+
                     return new ResponseMessageResult(new HttpResponseMessage()
                     {
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "D0001",
+                            Message = "D0002",
                             Data = new OwnerContact()
                             {
                                 Id = contact.id,
@@ -212,45 +223,30 @@ namespace NCMSystem.Controllers
                     });
                 }
 
-                return new ResponseMessageResult(new HttpResponseMessage()
+                db.contacts.Add(new contact()
                 {
-                    StatusCode = System.Net.HttpStatusCode.OK,
-                    Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
-                    {
-                        Message = "D0002",
-                        Data = new OwnerContact()
-                        {
-                            Id = contact.id,
-                        }
-                    }), Encoding.UTF8, "application/json")
+                    name = name,
+                    email = email,
+                    image_url = imageUrl,
+                    company = company,
+                    job_title = jobTitle,
+                    phone = phone,
+                    address = address,
+                    website = website,
+                    fax = fax,
+                    owner_id = userId,
+                    status_id = "S0002",
+                    isActive = true,
+                    create_date = dateCreated,
+                    createdBy = userId
                 });
-            }
 
-            db.contacts.Add(new contact()
-            {
-                name = name,
-                email = email,
-                image_url = imageUrl,
-                company = company,
-                job_title = jobTitle,
-                phone = phone,
-                address = address,
-                website = website,
-                fax = fax,
-                owner_id = userId,
-                status_id = "S0002",
-                isActive = true,
-                create_date = dateCreated,
-                createdBy = userId
-            });
-
-            try
-            {
                 db.SaveChanges();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e);
+                Log.Error(ex, "C00001");
+                Log.CloseAndFlush();
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -269,48 +265,49 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
         public ResponseMessageResult Put(int id, ContactRequest request)
         {
-            var contact = db.contacts.FirstOrDefault(c => c.id == id);
-            if (contact == null)
-            {
-                return Common.ResponseMessage.NotFound("Not found contact");
-            }
-
-            string name = request.Name;
-            string email = request.Email;
-            string company = request.Company;
-            string jobTitle = request.JobTitle;
-            string phone = request.Phone;
-            string address = request.Address;
-            string website = request.Website;
-            string fax = request.Fax;
-
-            if (Validator.Validator.CheckName(name) == false || Validator.Validator.CheckEmail(email) == false ||
-                Validator.Validator.CheckPhoneOrFax(phone) == false ||
-                Validator.Validator.CheckEmptyvLength(company) == false ||
-                Validator.Validator.CheckInputLength(jobTitle) == false ||
-                Validator.Validator.CheckInputLength(address) == false ||
-                Validator.Validator.CheckInputLength(website) == false ||
-                Validator.Validator.CheckPhoneOrFax(fax) == false)
-            {
-                return Common.ResponseMessage.BadRequest("Information is not valid");
-            }
-
-            contact.name = name;
-            contact.job_title = jobTitle;
-            contact.company = company;
-            contact.phone = phone;
-            contact.fax = fax;
-            contact.email = email;
-            contact.address = address;
-            contact.website = website;
-
             try
             {
+                var contact = db.contacts.FirstOrDefault(c => c.id == id);
+                if (contact == null)
+                {
+                    return Common.ResponseMessage.NotFound("Not found contact");
+                }
+
+                string name = request.Name;
+                string email = request.Email;
+                string company = request.Company;
+                string jobTitle = request.JobTitle;
+                string phone = request.Phone;
+                string address = request.Address;
+                string website = request.Website;
+                string fax = request.Fax;
+
+                if (Validator.Validator.CheckName(name) == false || Validator.Validator.CheckEmail(email) == false ||
+                    Validator.Validator.CheckPhoneOrFax(phone) == false ||
+                    Validator.Validator.CheckEmptyvLength(company) == false ||
+                    Validator.Validator.CheckInputLength(jobTitle) == false ||
+                    Validator.Validator.CheckInputLength(address) == false ||
+                    Validator.Validator.CheckInputLength(website) == false ||
+                    Validator.Validator.CheckPhoneOrFax(fax) == false)
+                {
+                    return Common.ResponseMessage.BadRequest("Information is not valid");
+                }
+
+                contact.name = name;
+                contact.job_title = jobTitle;
+                contact.company = company;
+                contact.phone = phone;
+                contact.fax = fax;
+                contact.email = email;
+                contact.address = address;
+                contact.website = website;
+
                 db.SaveChanges();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e);
+                Log.Error(ex, "C00001");
+                Log.CloseAndFlush();
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -329,24 +326,24 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
         public ResponseMessageResult PatchFlag(int id, [FromBody] FlagContact requestFlag)
         {
-            var contact = db.contacts.FirstOrDefault(c => c.id == id);
-            if (contact == null)
+            try
             {
-                return Common.ResponseMessage.NotFound("Not found contact");
-            }
-
-            if (requestFlag.Flag != null)
-            {
-                contact.flag_id = requestFlag.Flag;
-                try
+                var contact = db.contacts.FirstOrDefault(c => c.id == id);
+                if (contact == null)
                 {
+                    return Common.ResponseMessage.NotFound("Not found contact");
+                }
+
+                if (requestFlag.Flag != null)
+                {
+                    contact.flag_id = requestFlag.Flag;
                     db.SaveChanges();
                 }
-                catch (Exception e)
-                {
-                    Console.Out.WriteLine("Error: " + e);
-                    return Common.ResponseMessage.BadRequest("Flag is not valid");
-                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C00001");
+                Log.CloseAndFlush();
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -365,35 +362,35 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
         public ResponseMessageResult PatchStatus(int id, [FromBody] StatusContact statusCt)
         {
-            var contact = db.contacts.FirstOrDefault(c => c.id == id);
-            if (contact == null)
+            try
             {
-                return Common.ResponseMessage.NotFound("Not found contact");
-            }
-
-            if (statusCt.Status == null)
-            {
-                return Common.ResponseMessage.BadRequest("Failed to set status");
-            }
-
-            if (!statusCt.Status.Equals("S0002"))
-            {
-                contact.status_id = statusCt.Status;
-                if (!Validator.Validator.CheckEmptyvLength(statusCt.ReasonStatus))
+                var contact = db.contacts.FirstOrDefault(c => c.id == id);
+                if (contact == null)
                 {
-                    return Common.ResponseMessage.BadRequest("Reason Status is not valid");
+                    return Common.ResponseMessage.NotFound("Not found contact");
                 }
 
-                contact.reasonStatus = statusCt.ReasonStatus;
-                try
+                if (statusCt.Status == null)
                 {
+                    return Common.ResponseMessage.BadRequest("Failed to set status");
+                }
+
+                if (!statusCt.Status.Equals("S0002"))
+                {
+                    contact.status_id = statusCt.Status;
+                    if (!Validator.Validator.CheckEmptyvLength(statusCt.ReasonStatus))
+                    {
+                        return Common.ResponseMessage.BadRequest("Reason Status is not valid");
+                    }
+
+                    contact.reasonStatus = statusCt.ReasonStatus;
                     db.SaveChanges();
                 }
-                catch (Exception e)
-                {
-                    Console.Out.WriteLine("Error: " + e);
-                    return Common.ResponseMessage.BadRequest("Status or Reason Status is not valid");
-                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C00001");
+                Log.CloseAndFlush();
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -412,27 +409,27 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
         public ResponseMessageResult PatchDeActive(int id, [FromBody] ReasonDaContact reasonDaContact)
         {
-            var contact = db.contacts.FirstOrDefault(c => c.id == id);
-            if (contact == null)
-            {
-                return Common.ResponseMessage.NotFound("Not found contact");
-            }
-
-            if (string.IsNullOrEmpty(reasonDaContact.ReasonDa))
-            {
-                return Common.ResponseMessage.BadRequest("Reason is not valid");
-            }
-
-            contact.isActive = false;
-            contact.resonDeactive = reasonDaContact.ReasonDa;
             try
             {
+                var contact = db.contacts.FirstOrDefault(c => c.id == id);
+                if (contact == null)
+                {
+                    return Common.ResponseMessage.NotFound("Not found contact");
+                }
+
+                if (string.IsNullOrEmpty(reasonDaContact.ReasonDa))
+                {
+                    return Common.ResponseMessage.BadRequest("Reason is not valid");
+                }
+
+                contact.isActive = false;
+                contact.resonDeactive = reasonDaContact.ReasonDa;
                 db.SaveChanges();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.Out.WriteLine("Error: " + e);
-                return Common.ResponseMessage.BadRequest("DeActive Failed");
+                Log.Error(ex, "C00001");
+                Log.CloseAndFlush();
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -451,22 +448,22 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
         public ResponseMessageResult PatchActive(int id)
         {
-            var contact = db.contacts.FirstOrDefault(c => c.id == id);
-            if (contact == null)
-            {
-                return Common.ResponseMessage.NotFound("Not found contact");
-            }
-
-            contact.isActive = true;
-            contact.resonDeactive = null;
             try
             {
+                var contact = db.contacts.FirstOrDefault(c => c.id == id);
+                if (contact == null)
+                {
+                    return Common.ResponseMessage.NotFound("Not found contact");
+                }
+
+                contact.isActive = true;
+                contact.resonDeactive = null;
                 db.SaveChanges();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.Out.WriteLine("Error: " + e);
-                return Common.ResponseMessage.BadRequest("Active Failed");
+                Log.Error(ex, "C00001");
+                Log.CloseAndFlush();
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
