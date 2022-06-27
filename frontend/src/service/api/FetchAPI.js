@@ -11,6 +11,27 @@ const isTokenExpired = (token) => {
     return false;
 }
 
+export const FetchApiAuth = (url, method, contentType, param, callback) => {
+    fetch(`${BaseUrl}${url}`,
+        {
+            method: method,
+            headers: {
+                'Content-Type': contentType,
+            },
+            body: JSON.stringify(param),
+        })
+        .then((response) => {
+            console.log(response)
+            return response.json()
+        })
+        .then((data) => {
+            callback(data)
+        })
+        .catch((error) => {
+            console.log(error)
+        })
+}
+
 export const FetchApi = async (url, method, contentType, param, callback) => {
     let token = await SecureStore.getItemAsync('access_token');
     if (token && isTokenExpired(token)) {
@@ -43,27 +64,6 @@ export const FetchApi = async (url, method, contentType, param, callback) => {
             headers: {
                 'Content-Type': contentType,
                 'Authorization': 'Bearer ' + token
-            },
-            body: JSON.stringify(param),
-        })
-        .then((response) => {
-            console.log(response)
-            return response.json()
-        })
-        .then((data) => {
-            callback(data)
-        })
-        .catch((error) => {
-            console.log(error)
-        })
-}
-
-export const FetchApiAuth = (url, method, contentType, param, callback) => {
-    fetch(`${BaseUrl}${url}`,
-        {
-            method: method,
-            headers: {
-                'Content-Type': contentType,
             },
             body: JSON.stringify(param),
         })

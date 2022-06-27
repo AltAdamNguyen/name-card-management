@@ -4,15 +4,28 @@ const styles = StyleSheet.create({
     mr20: {
         marginRight: 20
     },
-
+    button_login:{
+        width:'100%',
+        alignItems:'center'
+    },
+    button_forgotPassword:{
+        width:'100%',
+        textAlign: 'right',
+        alignItems:'center'
+        
+    },  
     root: {
         alignItems: 'center',
         flex: 1,
         backgroundColor: 'white'
     },
+    button: {
+        width: '100%'
+    },
     language: {
-        paddingTop: '5%',
-        width: '35%'
+        position: 'absolute',
+        width: '35%',
+        bottom: '6%'
     },
     icon: {
         width: 50,
@@ -23,6 +36,10 @@ const styles = StyleSheet.create({
     },
     SwitchSelector: {
         fontSize: 13
+    },
+    input:{
+        width: '100%',
+        alignItems: 'center'
     }
 })
 

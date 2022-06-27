@@ -1,8 +1,8 @@
 {
     "translation" : {
-        "placeholder_Username": "Tên đăng nhập",
+        "placeholder_Username": "Email",
         "placeholder_Password": "Mật Khẩu",
-        "button_ForgorPassword": "Quên mật khẩu",
+        "button_ForgotPassword": "Quên mật khẩu",
         "button_Login": "Đăng nhập",
         "signature_login": "@2022 Phát triển bởi FIS"
     }

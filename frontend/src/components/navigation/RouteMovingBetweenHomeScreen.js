@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Home, ViewContact } from "../../screen"
+import { Home, ViewContact, UpdateContact } from "../../screen"
 const HomeStack = createNativeStackNavigator()
 
 const RouteMovingBetweenHomeScreen = () => {
@@ -10,6 +10,7 @@ const RouteMovingBetweenHomeScreen = () => {
       }}>
       <HomeStack.Screen name="Home" component={Home} />
       <HomeStack.Screen name="ViewContact" component={ViewContact} />
+      <HomeStack.Screen name="UpdateContact" component={UpdateContact} />
     </HomeStack.Navigator>
   )
 }
