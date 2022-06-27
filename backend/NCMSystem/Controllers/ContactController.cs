@@ -31,7 +31,10 @@ namespace NCMSystem.Controllers
             var query = db.contacts.Where(c => c.createdBy == userId);
             if (!string.IsNullOrEmpty(flag))
             {
-                query = query.Where(c => c.flag_id.Equals(flag));
+                if (!flag.Equals("null"))
+                {
+                    query = query.Where(c => c.flag_id.Equals(flag));
+                }
             }
 
             if (string.IsNullOrEmpty(sortBy))
@@ -101,42 +104,61 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
         public ResponseMessageResult GetDetail(int id)
         {
-            // get data from contact database
-            var contact = db.contacts.FirstOrDefault(c => c.id == id);
-            if (contact == null)
+            try
             {
-                return Common.ResponseMessage.Good("No contact");
-            }
-
-            List<string> listGr = new List<string>();
-            Array.ForEach(contact.groups.ToArray(), g => { listGr.Add(g.name); });
-
-            DetailContact dc = new DetailContact();
-            dc.Id = contact.id;
-            dc.ImgUrl = contact.image_url;
-            dc.Name = contact.name;
-            dc.JobTitle = contact.job_title;
-            dc.Company = contact.company;
-            dc.Flag = contact.flag_id;
-            dc.Phone = contact.phone;
-            dc.Fax = contact.fax;
-            dc.Email = contact.email;
-            dc.Address = contact.address;
-            dc.Website = contact.website;
-            dc.GroupName = listGr.ToArray();
-            dc.Status = contact.status_id;
-            dc.ReasonStatus = contact.reasonStatus;
-            dc.CreatedAt = contact.create_date;
-
-            return new ResponseMessageResult(new HttpResponseMessage()
-            {
-                StatusCode = System.Net.HttpStatusCode.OK,
-                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                var contact = db.contacts.FirstOrDefault(c => c.id == id);
+                if (contact == null)
                 {
-                    Message = "Get detail successfully",
-                    Data = dc
-                }), Encoding.UTF8, "application/json")
-            });
+                    return Common.ResponseMessage.Good("No contact");
+                }
+
+                List<string> listGr = new List<string>();
+                Array.ForEach(contact.groups.ToArray(), g => { listGr.Add(g.name); });
+
+                string flag = contact.flag_id;
+                if (flag != null && flag.Equals("null"))
+                {
+                    flag = null;
+                }
+
+                DetailContact dc = new DetailContact();
+                dc.Id = contact.id;
+                dc.ImgUrl = contact.image_url;
+                dc.Name = contact.name;
+                dc.JobTitle = contact.job_title;
+                dc.Company = contact.company;
+                dc.Flag = flag;
+                dc.Phone = contact.phone;
+                dc.Fax = contact.fax;
+                dc.Email = contact.email;
+                dc.Address = contact.address;
+                dc.Website = contact.website;
+                dc.GroupName = listGr.ToArray();
+                dc.Status = contact.status_id;
+                dc.ReasonStatus = contact.reasonStatus;
+                dc.CreatedAt = contact.create_date;
+
+                return new ResponseMessageResult(new HttpResponseMessage()
+                {
+                    StatusCode = System.Net.HttpStatusCode.OK,
+                    Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                    {
+                        Message = "Get detail successfully",
+                        Data = dc
+                    }), Encoding.UTF8, "application/json")
+                });
+            }
+            catch (Exception e)
+            {
+                return new ResponseMessageResult(new HttpResponseMessage()
+                {
+                    StatusCode = System.Net.HttpStatusCode.BadRequest,
+                    Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                    {
+                        Message = "Something went wrong",
+                    }), Encoding.UTF8, "application/json")
+                });
+            }
         }
 
         // POST
@@ -181,7 +203,7 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "Request update contact",
+                            Message = "D0001",
                             Data = new OwnerContact()
                             {
                                 Id = contact.id,
@@ -195,7 +217,7 @@ namespace NCMSystem.Controllers
                     StatusCode = System.Net.HttpStatusCode.OK,
                     Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                     {
-                        Message = "Request active and update contact",
+                        Message = "D0002",
                         Data = new OwnerContact()
                         {
                             Id = contact.id,
@@ -264,7 +286,7 @@ namespace NCMSystem.Controllers
 
             if (Validator.Validator.CheckName(name) == false || Validator.Validator.CheckEmail(email) == false ||
                 Validator.Validator.CheckPhoneOrFax(phone) == false ||
-                Validator.Validator.CheckInputLength(company) == false ||
+                Validator.Validator.CheckEmptyvLength(company) == false ||
                 Validator.Validator.CheckInputLength(jobTitle) == false ||
                 Validator.Validator.CheckInputLength(address) == false ||
                 Validator.Validator.CheckInputLength(website) == false ||
@@ -388,7 +410,7 @@ namespace NCMSystem.Controllers
         [HttpPatch]
         [Route("api/contacts/de-active/{id}")]
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
-        public ResponseMessageResult PatchDeActive(int id,[FromBody] ReasonDaContact reasonDaContact)
+        public ResponseMessageResult PatchDeActive(int id, [FromBody] ReasonDaContact reasonDaContact)
         {
             var contact = db.contacts.FirstOrDefault(c => c.id == id);
             if (contact == null)
