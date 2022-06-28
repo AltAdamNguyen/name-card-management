@@ -85,23 +85,22 @@ const AddContact = ({ route, navigation }) => {
         fax: '',
         address: '',
         website: '',
+        img_url: '',
     });
     useEffect(() => {
         if (route.params && formRef.current) {
-            formRef.current.setValues({
-                name: route.params.contact.name,
-                job_title: route.params.contact.job_title,
-                company: route.params.contact.company,
-                phone: route.params.contact.phone,
-                email: route.params.contact.email,
-                fax: route.params.contact.fax,
-                address: route.params.contact.address,
-                website: route.params.contact.website,
-            })
-            setLoading(true)
+            FetchApi(`${ContactAPI.ViewContact}/${route.params.idContact}`, Method.GET, ContentType.JSON, undefined, getContact)
         }
 
     }, [route.params])
+
+    const getContact = (data) => {
+        if(data.data){
+            formRef.current.setValues(data.data)
+            setValue(data.data)
+            setLoading(true)
+        }
+    }
 
     const [goBack, setGoBack] = useState(false);
     const [onSubmit, setOnSubmit] = useState(false);
@@ -140,7 +139,7 @@ const AddContact = ({ route, navigation }) => {
             <View style={{ alignItems: 'center' }}>
                 <ShimmerPlaceholder visible={loading} width={windowWidth * 0.95} height={windowHeight * 0.3} shimmerStyle={{ borderRadius: 10, marginBottom: 10, }}>
                     <TouchableOpacity style={styles.imgContact} onPress={() => Keyboard.dismiss()}>
-                        {route.params && <Image source={{ uri: route.params.contact.img_url }} style={styles.image} />}
+                        {route.params && <Image source={{ uri: value.img_url }} style={styles.image} />}
                     </TouchableOpacity>
                 </ShimmerPlaceholder>
             </View>

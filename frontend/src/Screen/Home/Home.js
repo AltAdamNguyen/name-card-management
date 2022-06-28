@@ -1,8 +1,8 @@
 //import liraries
 import React, { useState, useEffect } from 'react';
-import { View, Text, SafeAreaView, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, SafeAreaView, Image, TouchableOpacity, ScrollView, Keyboard } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import { TextInput, IconButton, Searchbar,FAB } from 'react-native-paper';
+import { TextInput, IconButton, Searchbar, FAB } from 'react-native-paper';
 import styles from './styles';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -97,7 +97,6 @@ const Home = ({ route, navigation }) => {
 
     const getContactFilter = (data) => {
         if (data.data) {
-            console.log(data.data);
             if (data.data.length > 0) {
                 setListFilter(data.data);
                 setContContact(data.data.length);
@@ -140,30 +139,24 @@ const Home = ({ route, navigation }) => {
         <SafeAreaView style={[styles.container, modalFloatVisible ? styles.containerOverlay : null, modalVisible ? styles.containerOverlay : null]}>
             <View style={styles.header}>
                 <View style={styles.sectionStyle}>
-                    <TextInput
-                        mode='outlined'
-                        dense={true}
-                        placeholder='Tìm kiếm danh thiếp'
+                    <Searchbar
+                        placeholder="Tìm kiếm danh thiếp"
                         value={text}
                         onChangeText={(value) => setText(value)}
-                        left={<TextInput.Icon name="magnify" color="#828282" />}
-                        right={<TextInput.Icon name="close-circle" color="#828282" onPress={() => setText('')} />}
-                        style={styles.input}
                         theme={{
                             roundness: 10,
                             colors: { primary: '#1890FF' }
                         }}
+                        clearIcon={'close-circle'}
                     />
                 </View>
-                <View style={styles.titleContainer}>
-                    <Text style={styles.labelList}>Danh thiếp ({countContact})</Text>
-                    <View style={styles.flag}>
-                        <ModalFlag listItem={Object.values(listFlag)} visible={modalVisible} onPress={handlePressButtonFlag} onPressVisable={() => setModalVisible(!modalVisible)} />
-                        <TouchableOpacity onPress={() => setModalVisible(true)}>
-                            {changeTextButtonFlag(flag)}
-                        </TouchableOpacity>
-                    </View>
-                </View>
+            </View>
+            <View style={styles.titleContainer}>
+                <Text style={styles.labelList}>Danh thiếp ({countContact})</Text>
+                <ModalFlag listItem={Object.values(listFlag)} visible={modalVisible} onPress={handlePressButtonFlag} onPressVisable={() => setModalVisible(!modalVisible)} />
+                <TouchableOpacity onPress={() => setModalVisible(true)}>
+                    {changeTextButtonFlag(flag)}
+                </TouchableOpacity>
             </View>
             <View style={styles.listContainer}>
                 {listFilter.length == 0 &&
@@ -182,7 +175,6 @@ const Home = ({ route, navigation }) => {
                                         <View style={[styles.title, { flexDirection: 'row', justifyContent: 'space-between' }]}>
                                             <Text style={styles.nameContact}>{item.name}</Text>
                                             {item.flag !== null &&
-                                                // <Image source={iconPath.icBookMark} style={{ tintColor: listFlag[item.flag].color }} />
                                                 <Icon name="bookmark" size={24} color={listFlag[item.flag].color} />
                                             }
                                         </View>
@@ -201,13 +193,10 @@ const Home = ({ route, navigation }) => {
                     })}
                 </ScrollView>
             </View>
-                <ModalHome visible={modalFloatVisible} onPressVisable={() => setModalFloatVisible(false)} sort={sort} onPressSort={handlePressSort} />
-                <FAB style={styles.floatButton} icon="tune" size={24} color="#fff"/>
+            <ModalHome visible={modalFloatVisible} onPressVisable={() => setModalFloatVisible(false)} sort={sort} onPressSort={handlePressSort} />
+            <FAB style={styles.floatButton} icon="tune" size={24} color="#fff" onPress={() => setModalFloatVisible(!modalFloatVisible)} />
         </SafeAreaView>
     );
 };
 
-
-
-//make this component available to the app
 export default Home;

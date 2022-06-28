@@ -1,9 +1,9 @@
-import { Image, View, Text } from 'react-native';
+import { View, Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { GroupContact, Team, Setting, Home, ScanScreen} from '../../screen';
-import iconPath from '../../constants/iconPath';
+import { GroupContact, Team, Setting, Home} from '../../screen';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from '../../navigation/styles';
+import RouteMovingBetweenScanScreen from './RouteMovingBetweenScanScren';
 const Tab = createBottomTabNavigator();
 
 const RouteNavigation = () => {
@@ -51,7 +51,7 @@ const RouteNavigation = () => {
         }}
       />
       <Tab.Screen name="ScanScreen"
-        component={ScanScreen}
+        component={RouteMovingBetweenScanScreen}
         options={{
           tabBarIcon: ({ focused }) => {
             return (

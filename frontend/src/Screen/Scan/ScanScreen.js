@@ -61,12 +61,6 @@ const ScanScreen = ({ navigation }) => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.header_content}>
-          {/* <TouchableOpacity style={styles.header_content_buttonClose} onPress={() => navigation.goBack()}>
-            <Image style={styles.header_content_buttonClose_iconClose} source={iconPath.icClose} />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.header_content_buttonClose} onPress={() => navigation.goBack()}>
-            <Image style={styles.header_content_buttonClose_iconClose} source={iconPath.icClose} />
-          </TouchableOpacity> */}
           <IconButton icon="close-circle" size={30} color="#fff" onPress={() => navigation.goBack()} />
           <IconButton icon={flashMode===FlashMode.on?"flash":"flash-off"} size={30} color="#fff" onPress={() => setFlashMode(flashMode === FlashMode.off ?FlashMode.on:FlashMode.off)} />
         </View>

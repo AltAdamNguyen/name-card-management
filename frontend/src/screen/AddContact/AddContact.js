@@ -158,8 +158,11 @@ const AddContact = ({ contact, loading, navigation }) => {
 
     const getMessage = (data) => {
         console.log(data)
-        navigation.dispatch(StackActions.popToTop());
-        navigation.navigate('HomeScreen', { screen: 'Home', params: { visibleModal: true } })
+        if(data.message === 'D0001'){
+            navigation.navigate('HomeSwap',{screen: 'UpdateContact', params: {idContact: data.data.id}});
+        }
+        // navigation.dispatch(StackActions.popToTop());
+        // navigation.navigate('HomeScreen', { screen: 'Home', params: { visibleModal: true } })
     }
 
 

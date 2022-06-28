@@ -93,25 +93,18 @@ const styles = StyleSheet.create({
         marginTop: 10,
         width: '100%',
     },
-    input: {
-        width: '100%',
-    },
 
     titleContainer: {
         marginTop: 20,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        width: '95%',
     },
     labelList: {
-        textAlign: 'left',
-        width: '50%',
         fontSize: 16,
         fontWeight: 'bold',
         
-    },
-    flag: {
-        width: '50%',
     },
         buttonFlag: {
             borderRadius: 10,
@@ -195,6 +188,7 @@ const styles = StyleSheet.create({
         margin: 16,
         right: 0,
         bottom: 0,
+        backgroundColor: '#1890FF'
     },
 
 

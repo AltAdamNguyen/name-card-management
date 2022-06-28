@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
-import { Alert, Linking } from "react-native";
-import { Button } from 'react-native-paper';
+import { Alert, Linking,Text } from "react-native";
 
 const OpenURLButton = ({ url, children }) => {
   const handlePress = useCallback(async () => {
@@ -12,7 +11,7 @@ const OpenURLButton = ({ url, children }) => {
     }
   }, [url]);
 
-  return <Button style={{ alignItems: 'flex-start', width: '100%' }} color="#2D9CDB" onPress={handlePress} >{children}</Button>;
+  return <Text style={{ alignItems: 'flex-start', color:"#2D9CDB", fontSize: 16 }}  onPress={handlePress} >{children}</Text>;
 };
 
 export default OpenURLButton;
