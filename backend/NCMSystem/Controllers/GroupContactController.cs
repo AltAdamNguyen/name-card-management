@@ -3,6 +3,7 @@ using NCMSystem.Models;
 using NCMSystem.Models.CallAPI;
 using NCMSystem.Models.CallAPI.Group_Contact;
 using Newtonsoft.Json;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,21 +25,24 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
         public ResponseMessageResult GetHomeListGroupContact()
         {
-            int userId = ((JwtToken) Request.Properties["payload"]).Uid;
+            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
 
+            //find groups according to the logged in user
             List<group> listGroup = db.groups.Where(g => g.user_id == userId).ToList();
             List<HomeGroupContact> listHomeGroupContact = new List<HomeGroupContact>();
-
-            if(listGroup.Count == 0)
+            try
             {
-                return Common.ResponseMessage.Good("No groups found");
+                foreach (group g in listGroup)
+                {
+                    HomeGroupContact hgc = new HomeGroupContact();
+                    hgc.GroupName = g.name;
+                    listHomeGroupContact.Add(hgc);
+                }
             }
-
-            foreach(group g in listGroup)
+            catch(Exception ex)
             {
-                HomeGroupContact hgc = new HomeGroupContact();
-                hgc.GroupName = g.name;
-                listHomeGroupContact.Add(hgc);
+                Log.Error(ex, "C00001");
+                Log.CloseAndFlush();
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -67,17 +71,25 @@ namespace NCMSystem.Controllers
             DetailGroupContact dgc = new DetailGroupContact();
             dgc.GroupName = group.name;
 
-            foreach (var c in contacts)
+            try
             {
-                ContactInGroup cig = new ContactInGroup();
-                cig.ContactName = c.name;
-                cig.JobTitle = c.job_title;
-                cig.ContactCompany = c.company;
-                cig.ContactCreatedAt = c.create_date;
-                listCtInGroup.Add(cig);
-            }
+                foreach (var c in contacts)
+                {
+                    ContactInGroup cig = new ContactInGroup();
+                    cig.ContactName = c.name;
+                    cig.JobTitle = c.job_title;
+                    cig.ContactCompany = c.company;
+                    cig.ContactCreatedAt = c.create_date;
+                    listCtInGroup.Add(cig);
+                }
 
-            dgc.contacts = listCtInGroup;
+                dgc.contacts = listCtInGroup;
+            } 
+            catch(Exception ex)
+            {
+                Log.Error(ex, "C00001");
+                Log.CloseAndFlush();
+            }
 
             return new ResponseMessageResult(new HttpResponseMessage()
             {
@@ -96,26 +108,42 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
         public ResponseMessageResult AddGroup([FromBody] GroupContactRequest request)
         {
-            int userId = ((JwtToken) Request.Properties["payload"]).Uid;
-            string groupName = request.GroupName;
-
-            List<group> list = db.groups.Where(g => g.user_id == userId).ToList();
-
-            foreach(group g in list)
+            try
             {
-                if(g.name.Equals(groupName))
+                int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+                string groupName = request.GroupName;
+
+                //get list of groups by the logged in user
+                List<group> list = db.groups.Where(g => g.user_id == userId).ToList();
+
+                foreach (group g in list)
                 {
-                    return Common.ResponseMessage.Good("Group name already existed!");
+                    if (g.name.Equals(groupName))
+                    {
+                        return new ResponseMessageResult(new HttpResponseMessage()
+                        {
+                            StatusCode = System.Net.HttpStatusCode.OK,
+                            Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                            {
+                                Message = "C0007",
+                            }), Encoding.UTF8, "application/json")
+                        });
+                    }
                 }
+
+                db.groups.Add(new group()
+                {
+                    name = groupName,
+                    user_id = userId
+                });
+
+                db.SaveChanges();
             }
-
-            db.groups.Add(new group()
+            catch(Exception ex)
             {
-                 name = groupName,
-                 user_id = userId
-            });
-
-            db.SaveChanges();
+                Log.Error(ex, "C00001");
+                Log.CloseAndFlush();
+            }
 
             return new ResponseMessageResult(new HttpResponseMessage()
             {
@@ -132,25 +160,41 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer})]
         public ResponseMessageResult AddContactToGroup([FromBody] ContactToGroupRequest request)
         {
-            int contactId = request.ContactId;
-            int groupId = request.GroupId;
-
-            List<contact> list = db.groups.Where(g => g.id == groupId).FirstOrDefault().contacts.ToList();
-
-            foreach(contact c in list)
+            try
             {
-                if(c.id == contactId)
+                int contactId = request.ContactId;
+                int groupId = request.GroupId;
+
+                //get list of contacts in a group by the logged in user
+                List<contact> list = db.groups.Where(g => g.id == groupId).FirstOrDefault().contacts.ToList();
+
+                foreach (contact c in list)
                 {
-                    return Common.ResponseMessage.Good("Contact already existed in group!");
+                    if (c.id == contactId)
+                    {
+                        return new ResponseMessageResult(new HttpResponseMessage()
+                        {
+                            StatusCode = System.Net.HttpStatusCode.OK,
+                            Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                            {
+                                Message = "C0008",
+                            }), Encoding.UTF8, "application/json")
+                        });
+                    }
                 }
+
+                var selectedGroup = db.groups.Where(g => g.id == groupId).FirstOrDefault();
+                var selectedContact = db.contacts.Where(c => c.id == contactId).FirstOrDefault();
+
+                selectedGroup.contacts.Add(selectedContact);
+
+                db.SaveChanges();
             }
-
-            var selectedGroup = db.groups.Where(g => g.id == groupId).FirstOrDefault();
-            var selectedContact = db.contacts.Where(c => c.id == contactId).FirstOrDefault();
-
-            selectedGroup.contacts.Add(selectedContact);
-
-            db.SaveChanges();
+            catch(Exception ex)
+            {
+                Log.Error(ex, "C00001");
+                Log.CloseAndFlush();
+            }
 
             return new ResponseMessageResult(new HttpResponseMessage()
             {
@@ -168,12 +212,21 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
         public ResponseMessageResult DeleteContactFromGroup([FromBody] DeleteContactFromGroupRequest request)
         {
-            group selectedGroup = db.groups.Where(g => g.id == request.GroupId).FirstOrDefault();
-            contact selectedContact = db.contacts.Where(c => c.id == request.ContactId).FirstOrDefault();
-            
-            selectedGroup.contacts.Remove(selectedContact);
+            try
+            {
+                //get selected contact and group that contains the selected contact
+                group selectedGroup = db.groups.Where(g => g.id == request.GroupId).FirstOrDefault();
+                contact selectedContact = db.contacts.Where(c => c.id == request.ContactId).FirstOrDefault();
 
-            db.SaveChanges();
+                selectedGroup.contacts.Remove(selectedContact);
+
+                db.SaveChanges();                
+            }
+            catch(Exception ex)
+            {
+                Log.Error(ex, "C00001");
+                Log.CloseAndFlush();
+            }
 
             return new ResponseMessageResult(new HttpResponseMessage()
             {
@@ -190,14 +243,22 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
         public ResponseMessageResult DeleteGroupContact(int id)
         {
-            //get group from database with group_id
-            group selectedGroup = db.groups.Where(g => g.id == id).FirstOrDefault();
+            try
+            {
+                //get group from database with group_id
+                group selectedGroup = db.groups.Where(g => g.id == id).FirstOrDefault();
 
-            selectedGroup.contacts.Clear();
+                selectedGroup.contacts.Clear();
 
-            db.groups.Remove(selectedGroup);
+                db.groups.Remove(selectedGroup);
 
-            db.SaveChanges();
+                db.SaveChanges();               
+            }
+            catch(Exception ex)
+            {
+                Log.Error(ex, "C00001");
+                Log.CloseAndFlush();
+            }
 
             return new ResponseMessageResult(new HttpResponseMessage()
             {
@@ -215,22 +276,38 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
         public ResponseMessageResult PatchGroupName(int id, [FromBody] RenameGroupContact request)
         {
-            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
-            group group = db.groups.Where(g => g.id == id).FirstOrDefault();
-
-            List<group> list = db.groups.Where(g => g.user_id == userId).ToList();
-
-            foreach(group g in list)
+            try
             {
-                if(g.name == request.GroupName)
+                int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+                //get a group selected by the logged in user by id
+                group group = db.groups.Where(g => g.id == id).FirstOrDefault();
+
+                List<group> list = db.groups.Where(g => g.user_id == userId).ToList();
+
+                foreach (group g in list)
                 {
-                    return Common.ResponseMessage.Good("Group Name already existed! Choose another name!");
+                    if (g.name == request.GroupName)
+                    {
+                        return new ResponseMessageResult(new HttpResponseMessage()
+                        {
+                            StatusCode = System.Net.HttpStatusCode.OK,
+                            Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                            {
+                                Message = "C0007"
+                            }), Encoding.UTF8, "application/json")
+                        });
+                    }
                 }
+
+                group.name = request.GroupName;
+
+                db.SaveChanges();
             }
-
-            group.name = request.GroupName;
-
-            db.SaveChanges();
+            catch(Exception ex)
+            {
+                Log.Error(ex, "C00001");
+                Log.CloseAndFlush();
+            }
 
             return new ResponseMessageResult(new HttpResponseMessage()
             {
