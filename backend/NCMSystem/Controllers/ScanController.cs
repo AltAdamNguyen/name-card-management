@@ -9,19 +9,24 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.Http;
 using System.Web.Http.Results;
+using NCMSystem.Filter;
 using NCMSystem.Models.CallAPI;
 using NCMSystem.Models.CallAPI.ScanNC;
 using Newtonsoft.Json;
+using Serilog;
 using Tesseract;
 
 namespace NCMSystem.Controllers
 {
     public class ScanController : ApiController
     {
+        private LogException _log = new LogException();
+
         [HttpPost]
         [Route("api/scan")]
         public ResponseMessageResult Post([FromBody] ScanNCRequest image)
         {
+            ScanResponse response = new ScanResponse();
             try
             {
                 string[] imageArray = image.image.Split(',');
@@ -42,8 +47,6 @@ namespace NCMSystem.Controllers
                     ImgUrl = $"https://{Request.RequestUri.Host}/Images/nameCard_{timeStart}.jpg"
                 };
 
-                ScanResponse response = new ScanResponse();
-
                 using (var engine = new TesseractEngine(AppDomain.CurrentDomain.BaseDirectory + "tessdata", "vie",
                            EngineMode.Default))
                 {
@@ -59,27 +62,28 @@ namespace NCMSystem.Controllers
                                 {
                                     return Common.ResponseMessage.Good("Scan fail");
                                 }
+
                                 response.data = ExtractText(rsArray, info);
                             }
                         }
                     }
                 }
-
-                return new ResponseMessageResult(new HttpResponseMessage()
-                {
-                    StatusCode = System.Net.HttpStatusCode.OK,
-                    Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
-                    {
-                        Message = "Success",
-                        Data = response
-                    }), Encoding.UTF8, "application/json")
-                });
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e);
-                throw;
+                Log.Error(ex, "C00001");
+                Log.CloseAndFlush();
             }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = response
+                }), Encoding.UTF8, "application/json")
+            });
         }
 
         public static bool HasSpecialChar(string input)
