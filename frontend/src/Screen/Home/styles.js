@@ -74,7 +74,6 @@ const styles = StyleSheet.create({
                 alignItems: 'center',
             },
     container: {
-        fontfamily: 'Roboto',
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',

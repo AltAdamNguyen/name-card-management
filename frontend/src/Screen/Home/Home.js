@@ -1,8 +1,8 @@
 //import liraries
 import React, { useState, useEffect } from 'react';
-import { View, Text, SafeAreaView, Image, TouchableOpacity, ScrollView, Keyboard } from 'react-native';
+import { View, Text, SafeAreaView, Image, TouchableOpacity, ScrollView, Pressable } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import { TextInput, IconButton, Searchbar, FAB } from 'react-native-paper';
+import { IconButton, Searchbar, FAB } from 'react-native-paper';
 import styles from './styles';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -109,6 +109,7 @@ const Home = ({ route, navigation }) => {
     const deleteFlag = () => {
         setFlag('null')
         setListFilter(listContact);
+        setContContact(listContact.length);
     }
 
     const changeTextButtonFlag = (flag) => {
@@ -133,23 +134,19 @@ const Home = ({ route, navigation }) => {
         }
     }
 
-    console.log(listFilter)
-
     return (
         <SafeAreaView style={[styles.container, modalFloatVisible ? styles.containerOverlay : null, modalVisible ? styles.containerOverlay : null]}>
             <View style={styles.header}>
-                <View style={styles.sectionStyle}>
+                <Pressable style={styles.sectionStyle} onPress={() => navigation.navigate('HomeSwap', { screen: 'SearchContact'})}>
                     <Searchbar
                         placeholder="Tìm kiếm danh thiếp"
-                        value={text}
-                        onChangeText={(value) => setText(value)}
                         theme={{
                             roundness: 10,
                             colors: { primary: '#1890FF' }
                         }}
-                        clearIcon={'close-circle'}
+                        editable={false}
                     />
-                </View>
+                </Pressable>
             </View>
             <View style={styles.titleContainer}>
                 <Text style={styles.labelList}>Danh thiếp ({countContact})</Text>
@@ -184,7 +181,6 @@ const Home = ({ route, navigation }) => {
                                             <View style={{ alignItems: 'flex-end' }}>
                                                 <Text style={styles.date}>{FormatDate(item.created_at)}</Text>
                                             </View>
-
                                         </View>
                                     </View>
                                 </View>
