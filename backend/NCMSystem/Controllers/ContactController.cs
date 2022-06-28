@@ -187,6 +187,7 @@ namespace NCMSystem.Controllers
                     {
                         foreach (var c in listSearch)
                         {
+                            sc = new SearchContact();
                             sc.Id = c.id;
                             sc.ImgUrl = c.image_url;
                             sc.Name = c.name;
@@ -200,13 +201,13 @@ namespace NCMSystem.Controllers
 
                     // clear query
                     draft = query;
-
                     draft = draft.Where(c => c.company.Contains(value));
                     listSearch = draft.Take(pageSize).ToList();
                     if (listSearch.Count != 0)
                     {
                         foreach (var c in listSearch)
                         {
+                            sc = new SearchContact();
                             sc.Id = c.id;
                             sc.ImgUrl = c.image_url;
                             sc.Name = c.name;
@@ -220,13 +221,32 @@ namespace NCMSystem.Controllers
 
                     // clear query
                     draft = query;
-
                     draft = draft.Where(c => c.email.Contains(value));
                     listSearch = draft.Take(pageSize).ToList();
                     if (listSearch.Count != 0)
                     {
                         foreach (var c in listSearch)
                         {
+                            sc = new SearchContact();
+                            sc.Id = c.id;
+                            sc.ImgUrl = c.image_url;
+                            sc.Name = c.name;
+                            sc.JobTitle = c.job_title;
+                            sc.Company = c.company;
+                            sc.Email = c.email;
+                            sc.CreatedAt = c.create_date;
+                            listCt.Add(sc);
+                        }
+                    }
+
+                    draft = query;
+                    draft = draft.Where(c => c.phone.Contains(value));
+                    listSearch = draft.Take(pageSize).ToList();
+                    if (listSearch.Count != 0)
+                    {
+                        foreach (var c in listSearch)
+                        {
+                            sc = new SearchContact();
                             sc.Id = c.id;
                             sc.ImgUrl = c.image_url;
                             sc.Name = c.name;
@@ -239,8 +259,7 @@ namespace NCMSystem.Controllers
                     }
                 }
 
-                //map to remove item duplicate in listCt 
-                var map = listCt.GroupBy(x => x.Id).Select(x => x.First()).ToList();
+                listCt = listCt.GroupBy(x => x.Id).Select(x => x.First()).OrderByDescending(x => x.CreatedAt).ToList();
             }
             catch (Exception ex)
             {
@@ -357,7 +376,7 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.Created,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Add Successfully",
+                    Message = "C0009",
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -418,7 +437,7 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Update Successfully",
+                    Message = "C0010",
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -454,7 +473,7 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Update Flag Successfully",
+                    Message = "F0005",
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -501,7 +520,7 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Update Status Successfully",
+                    Message = "S0005",
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -540,7 +559,7 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Update DeActive Successfully",
+                    Message = "C0011",
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -574,7 +593,7 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Update Active Successfully",
+                    Message = "C0012",
                 }), Encoding.UTF8, "application/json")
             });
         }
