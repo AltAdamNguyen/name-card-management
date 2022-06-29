@@ -1,12 +1,11 @@
 //import liraries
 import React, { useState, useEffect } from 'react';
-import { View, Text, SafeAreaView, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, SafeAreaView, Image, TouchableOpacity, ScrollView, Pressable } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import { TextInput } from 'react-native-paper';
+import { IconButton, Searchbar, FAB } from 'react-native-paper';
 import styles from './styles';
 
-import iconPath from '../../constants/iconPath';
-
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { FetchApi } from '../../service/api/FetchAPI';
 import { ContactAPI, ContentType, Method } from '../../constants/ListAPI';
 
@@ -53,17 +52,21 @@ const Home = ({ route, navigation }) => {
     const [text, setText] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
     const [modalFloatVisible, setModalFloatVisible] = useState(false);
-    const [flag, setFlag] = useState();
+    const [flag, setFlag] = useState('null');
     const [sort, setSort] = useState('create_date');
     const isFocused = useIsFocused()
 
     useEffect(() => {
         FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
+    }, [])
+
+    useEffect(() => {
+        FetchApi(`${ContactAPI.ViewContact}?sortBy=${sort}&flag=${flag}`, Method.GET, ContentType.JSON, undefined, getContactFilter)
     }, [route.params, navigation]);
 
     useEffect(() => {
-        isFocused && FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
-      },[isFocused]);
+        FetchApi(`${ContactAPI.ViewContact}?sortBy=${sort}&flag=${flag}`, Method.GET, ContentType.JSON, undefined, getContactFilter)
+    }, [isFocused]);
 
     useEffect(() => {
         if (route.params) {
@@ -79,74 +82,78 @@ const Home = ({ route, navigation }) => {
         }
     }
 
+    const handlePressSort = (item) => {
+        FetchApi(`${ContactAPI.ViewContact}?sortBy=${item.value}&flag=${flag}`, Method.GET, ContentType.JSON, undefined, getContactFilter)
+        setSort(item.value);
+        setModalFloatVisible(!modalFloatVisible);
+    };
+
     const handlePressButtonFlag = (item) => {
+        console.log(item);
         setModalVisible(!modalVisible);
-        setFlag(item);
-        let newList = listContact.filter(items => items.flag == item.value)
-        setListFilter(newList);
+        setFlag(item.value);
+        FetchApi(`${ContactAPI.ViewContact}?sortBy=${sort}&flag=${item.value}`, Method.GET, ContentType.JSON, undefined, getContactFilter)
     }
 
+    const getContactFilter = (data) => {
+        if (data.data) {
+            if (data.data.length > 0) {
+                setListFilter(data.data);
+                setContContact(data.data.length);
+            }
+        } else {
+            setListFilter([]);
+            setContContact(0);
+        }
+    }
     const deleteFlag = () => {
-        setFlag()
+        setFlag('null')
         setListFilter(listContact);
+        setContContact(listContact.length);
     }
 
     const changeTextButtonFlag = (flag) => {
-        if (flag) {
+        if (flag !== 'null') {
             return (
                 <View style={styles.buttonFlag}>
-                    <View style={[{ backgroundColor: flag.background }, styles.sectionFlag]}>
-                        <Text style={[styles.labelFlag, { color: flag.color }]}>{flag.title}</Text>
-                        <TouchableOpacity onPress={() => { deleteFlag() }} activeOpacity={1}>
-                            <Image source={iconPath.icClose} style={{ tintColor: flag.color, width: 16, height: 16 }} />
-                        </TouchableOpacity>
+                    <View style={[{ backgroundColor: listFlag[flag].background }, styles.sectionFlag]}>
+                        <Text style={[styles.labelFlag, { color: listFlag[flag].color }]}>{listFlag[flag].title}</Text>
+                        <IconButton icon="close-circle" size={16} onPress={() => { deleteFlag() }} />
                     </View>
                 </View>
             )
         } else {
             return (
                 <View style={styles.buttonFlag}>
-                    <Text style={styles.labelFlag}>Phân loại</Text>
-                    <Image source={iconPath.icDown} />
+                    <View style={[{ backgroundColor: '#82828250' }, styles.sectionFlag]}>
+                        <Text style={styles.labelFlag}>Phân loại</Text>
+                        <IconButton icon="chevron-down" size={16} />
+                    </View>
                 </View>
             )
         }
     }
 
-    const handlePressSort = (item) => {
-        FetchApi(`${ContactAPI.ViewContact}?sortBy=${item.value}`, Method.GET, ContentType.JSON, undefined, getContact)
-        setSort(item.value);
-        setModalFloatVisible(!modalFloatVisible);
-    };
-
     return (
         <SafeAreaView style={[styles.container, modalFloatVisible ? styles.containerOverlay : null, modalVisible ? styles.containerOverlay : null]}>
             <View style={styles.header}>
-                <View style={styles.sectionStyle}>
-                    <TextInput
-                        mode='outlined'
-                        dense={true}
-                        placeholder='Tìm kiếm danh thiếp'
-                        value={text}
-                        onChangeText={(value) => setText(value)}
-                        left={<TextInput.Icon name="magnify" color="#828282" />}
-                        right={<TextInput.Icon name="close-circle" color="#828282" onPress={() => setText('')} />}
-                        style={styles.input}
+                <Pressable style={styles.sectionStyle} onPress={() => navigation.navigate('HomeSwap', { screen: 'SearchContact'})}>
+                    <Searchbar
+                        placeholder="Tìm kiếm danh thiếp"
                         theme={{
                             roundness: 10,
                             colors: { primary: '#1890FF' }
                         }}
+                        editable={false}
                     />
-                </View>
-                <View style={styles.titleContainer}>
-                    <Text style={styles.labelList}>Danh thiếp ({countContact})</Text>
-                    <View style={styles.flag}>
-                        <ModalFlag listItem={Object.values(listFlag)} visible={modalVisible} onPress={handlePressButtonFlag} onPressVisable={() => setModalVisible(!modalVisible)} />
-                        <TouchableOpacity onPress={() => setModalVisible(true)}>
-                            {changeTextButtonFlag(flag)}
-                        </TouchableOpacity>
-                    </View>
-                </View>
+                </Pressable>
+            </View>
+            <View style={styles.titleContainer}>
+                <Text style={styles.labelList}>Danh thiếp ({countContact})</Text>
+                <ModalFlag listItem={Object.values(listFlag)} visible={modalVisible} onPress={handlePressButtonFlag} onPressVisable={() => setModalVisible(!modalVisible)} />
+                <TouchableOpacity onPress={() => setModalVisible(true)}>
+                    {changeTextButtonFlag(flag)}
+                </TouchableOpacity>
             </View>
             <View style={styles.listContainer}>
                 {listFilter.length == 0 &&
@@ -156,23 +163,24 @@ const Home = ({ route, navigation }) => {
                 <ScrollView>
                     {listFilter.length != 0 && listFilter.map((item, index) => {
                         return (
-                            <TouchableOpacity key={index} onPress={() => { navigation.navigate('ViewContact', { 'idContact': item.id }) }}>
+                            <TouchableOpacity key={index} onPress={() => { navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: item.id } }) }}>
                                 <View style={styles.item}>
                                     <View style={styles.imgContact}>
                                         <Image source={{ uri: item.img_url }} style={styles.image} />
                                     </View>
                                     <View style={styles.txtContact}>
-                                        <View style={[styles.title,{flexDirection:'row', justifyContent: 'space-between'}]}>
+                                        <View style={[styles.title, { flexDirection: 'row', justifyContent: 'space-between' }]}>
                                             <Text style={styles.nameContact}>{item.name}</Text>
-                                            {item.flag !== null && <Image source={iconPath.icBookMark} style={{ tintColor: listFlag[item.flag].color }} />}
+                                            {item.flag !== null &&
+                                                <Icon name="bookmark" size={24} color={listFlag[item.flag].color} />
+                                            }
                                         </View>
                                         <Text style={styles.titleContact}>{item.job_title}</Text>
                                         <View style={styles.title}>
                                             <Text numberOfLines={1} style={styles.companyContact}>{item.company}</Text>
-                                            <View style={{alignItems: 'flex-end'}}>
+                                            <View style={{ alignItems: 'flex-end' }}>
                                                 <Text style={styles.date}>{FormatDate(item.created_at)}</Text>
                                             </View>
-
                                         </View>
                                     </View>
                                 </View>
@@ -181,22 +189,10 @@ const Home = ({ route, navigation }) => {
                     })}
                 </ScrollView>
             </View>
-            <View>
-                <ModalHome visible={modalFloatVisible} onPressVisable={() => setModalFloatVisible(false)} sort={sort} onPressSort={handlePressSort} />
-                <TouchableOpacity
-                    style={styles.floatButton}
-                    onPress={() => {
-                        setModalFloatVisible(!modalFloatVisible);
-
-                    }}>
-                    <Image source={iconPath.icFilter} style={styles.iconFilter} />
-                </TouchableOpacity>
-            </View>
+            <ModalHome visible={modalFloatVisible} onPressVisable={() => setModalFloatVisible(false)} sort={sort} onPressSort={handlePressSort} />
+            <FAB style={styles.floatButton} icon="tune" size={24} color="#fff" onPress={() => setModalFloatVisible(!modalFloatVisible)} />
         </SafeAreaView>
     );
 };
 
-
-
-//make this component available to the app
 export default Home;

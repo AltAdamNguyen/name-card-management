@@ -6,6 +6,7 @@ import { FetchApi } from "../../../service/api/FetchAPI";
 import { Method, ContentType, ContactAPI } from "../../../constants/ListAPI";
 
 const SkeletonAddContact = ({route, navigation}) => {
+    console.log(route)
     const [contact, setContact] = useState();
     const [visible, setVisible] = useState(false);
     const crop = async () => {
