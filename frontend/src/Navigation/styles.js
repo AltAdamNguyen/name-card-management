@@ -13,7 +13,8 @@ const styles = (focused) => StyleSheet.create({
     label: {
         fontSize: 12,
         color: focused ? '#1890FF' : '#828282',
-        textAlign: 'center'
+        textAlign: 'center',
+        textTransform: 'uppercase'
     },
     containerScan: {
         width: '75%',
@@ -23,15 +24,11 @@ const styles = (focused) => StyleSheet.create({
         backgroundColor: '#1890FF',
         borderRadius: 1000,
     },
-    iconScan: {
-        tintColor: '#ffff',
-        height: '50%',
-        width: '50%',
-    },
     labelScan: {
         fontSize: 12,
         color: '#ffff',
-        textAlign: 'center'
+        textAlign: 'center',
+        textTransform: 'uppercase',
     },
 });
 

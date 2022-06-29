@@ -18,8 +18,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     const handleLogout = async() => {
-        setIsLogin(false);
-        
+        setIsLogin(false);        
         await SecureStore.deleteItemAsync('access_token')
         await SecureStore.deleteItemAsync('refresh_token')
     }
@@ -27,10 +26,8 @@ export const AuthProvider = ({ children }) => {
     const handleLocale = (language) => {      
            () => setLocale(language)   
     }
+    
 
-    useEffect(() => {
-        setLocale(locale)
-      }, [])  
     return (
         <AuthContext.Provider value={{
             locale : locale,

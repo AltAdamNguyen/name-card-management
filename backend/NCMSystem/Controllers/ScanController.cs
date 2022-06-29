@@ -4,20 +4,29 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.Http;
+using System.Web.Http.Results;
+using NCMSystem.Filter;
+using NCMSystem.Models.CallAPI;
 using NCMSystem.Models.CallAPI.ScanNC;
+using Newtonsoft.Json;
+using Serilog;
 using Tesseract;
 
 namespace NCMSystem.Controllers
 {
     public class ScanController : ApiController
     {
+        private LogException _log = new LogException();
+
         [HttpPost]
         [Route("api/scan")]
-        public ScanNCResponse Post([FromBody] ScanNCRequest image)
+        public ResponseMessageResult Post([FromBody] ScanNCRequest image)
         {
+            ScanResponse response = new ScanResponse();
             try
             {
                 string[] imageArray = image.image.Split(',');
@@ -33,11 +42,11 @@ namespace NCMSystem.Controllers
                     img.Save(fileName, System.Drawing.Imaging.ImageFormat.Jpeg);
                 }
 
-                ScanNCResponse scanResult = new ScanNCResponse();
                 InfoNC info = new InfoNC
                 {
-                    imgUrl = $"https://{Request.RequestUri.Host}/Images/nameCard_{timeStart}.jpg"
+                    ImgUrl = $"https://{Request.RequestUri.Host}/Images/nameCard_{timeStart}.jpg"
                 };
+
                 using (var engine = new TesseractEngine(AppDomain.CurrentDomain.BaseDirectory + "tessdata", "vie",
                            EngineMode.Default))
                 {
@@ -48,32 +57,42 @@ namespace NCMSystem.Controllers
                             using (var page = engine.Process(pix))
                             {
                                 var text = page.GetText();
-                                scanResult.data = ExtractText(text.Trim(), info, scanResult);
+                                string[] rsArray = Regex.Split(text.Trim(), @"\r\n|\r|\n");
+                                if (rsArray.Length == 0 || rsArray.Length < 3)
+                                {
+                                    return Common.ResponseMessage.Good("Scan fail");
+                                }
+
+                                response.data = ExtractText(rsArray, info);
                             }
                         }
                     }
                 }
-
-                return scanResult;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Console.WriteLine(e);
-                throw;
+                Log.Error(ex, "C00001");
+                Log.CloseAndFlush();
             }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = response
+                }), Encoding.UTF8, "application/json")
+            });
         }
 
-        public void Error()
-        {
-            throw new HttpResponseException(HttpStatusCode.BadRequest);
-        }
-        
         public static bool HasSpecialChar(string input)
         {
             if (Regex.IsMatch(input, @"|!#%&=»«@£§€;<>_"))
             {
                 return false;
-            }else
+            }
+            else
             {
                 return true;
             }
@@ -100,22 +119,12 @@ namespace NCMSystem.Controllers
             return (str.Trim() == "") ? null : str;
         }
 
-        public InfoNC ExtractText(string originText, InfoNC info, ScanNCResponse scanResult)
+        public InfoNC ExtractText(string[] rsArray, InfoNC info)
         {
             List<string> listI = new List<string>();
-            string[] rsArray = Regex.Split(originText, @"\r\n|\r|\n");
 
             //remove empty string
             rsArray = rsArray.Where(s => !string.IsNullOrEmpty(s)).ToArray();
-
-            if (rsArray.Length == 0 || rsArray.Length < 3)
-            {
-                scanResult.message = "Fail";
-            }
-            else
-            {
-                scanResult.message = "Success";
-            }
 
             TextInfo myTi = new CultureInfo("vi-VN", false).TextInfo;
 
@@ -133,19 +142,13 @@ namespace NCMSystem.Controllers
                         if (Regex.IsMatch(rsArray[i], @"Fax"))
                         {
                             string fax = SplitNumber(str);
-                            info.fax = IsEmpty(fax);
-                            has = true;
-                        }
-                        else if (Regex.IsMatch(rsArray[i], @"Tel|Office|Off|Telephone"))
-                        {
-                            string tele = SplitNumber(str);
-                            info.telephone = IsEmpty(tele);
+                            info.Fax = IsEmpty(fax);
                             has = true;
                         }
                         else if (Regex.IsMatch(rsArray[i], @"Mobile|Mob|Mobi|Đt|Di Động|ĐTDĐ|Di động"))
                         {
                             string mobile = SplitNumber(str);
-                            info.mobile = IsEmpty(mobile);
+                            info.Phone = IsEmpty(mobile);
                             has = true;
                         }
                     }
@@ -157,6 +160,7 @@ namespace NCMSystem.Controllers
                         if (!HasSpecialChar(rsArray[i]))
                         {
                         }
+
                         if (separate.Length > 1)
                         {
                             listI.Add(SplitNumber(separate[1].Replace(" ", "").Trim()));
@@ -176,17 +180,17 @@ namespace NCMSystem.Controllers
                     {
                         if (eStr.Contains("@"))
                         {
-                            info.email = IsEmpty(eStr);
+                            info.Email = IsEmpty(eStr);
                         }
                         else if (eStr.Contains("www"))
                         {
-                            info.website = IsEmpty(eStr);
+                            info.Website = IsEmpty(eStr);
                         }
                     }
                 }
             }
 
-            info.items = listI;
+            info.Items = listI;
             return info;
         }
     }

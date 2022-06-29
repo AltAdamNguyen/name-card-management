@@ -14,7 +14,7 @@ namespace NCMSystem.Validator
                 }
 
                 string emailRegex =
-                    @"^(([^<>()[\]\\.,;:\s@\""]+(\.[^<>()[\]\\.,;:\s@\""]+)*)|(\"".+\""))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$";
+                    @"^[a-zA-Z0-9\.]+@([a-zA-Z0-9]+\.)+[\w-]{2,4}$";
 
                 if (Regex.IsMatch(value, emailRegex))
                 {
@@ -81,24 +81,45 @@ namespace NCMSystem.Validator
 
                 //regex check url
                 string phoneFaxRegex =
-                    @"^((0[3|5|7|8|9])+([0-9]{8})|(84[3|5|7|8|9])+([0-9]{8}))$";
+                    @"^((0[3|4|5|7|8|9])+([0-9]{8})|(84[3|4|5|7|8|9])+([0-9]{8}))$";
 
                 if (Regex.IsMatch(value, phoneFaxRegex))
                 {
                     return true;
                 }
             }
+
             return true;
         }
 
         public static bool CheckInputLength(string value)
         {
-            if (value.Length > 255)
+            if (!string.IsNullOrEmpty(value))
             {
-                return false;
+                if (value.Length > 255)
+                {
+                    return false;
+                }
+
+                return true;
             }
 
             return true;
+        }
+
+        public static bool CheckEmptyvLength(string value)
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                if (value.Length > 255)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+
+            return false;
         }
     }
 }

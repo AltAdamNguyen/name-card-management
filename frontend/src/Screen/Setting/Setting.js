@@ -15,6 +15,10 @@ const Setting = ({navigation}) => {
     const onChangePasswordPressed = () => {
         navigation.navigate('ChangePassword')
     }
+    const onLogoutPressed = () => {
+        navigation.dispatch(StackActions.popToTop());
+        authCtx.onLogout();     
+    }
     return (
         <SafeAreaView style={styles.container}>
             <Text style={styles.title}>{t("Screen_Setting_Button_Title")}</Text>

@@ -20,19 +20,15 @@ const styles = StyleSheet.create({
         height: 20,
     },
     containerOverlay: {
-        fontfamily: 'Roboto',
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
         backgroundColor: 'rgba(130, 130, 130,0.5)',
     },
 
         modalView: {
             backgroundColor: '#ffff',
             borderRadius: 10,
-            width: '50%',
+            width: '70%',
             alignItems: 'flex-start',
+            padding: 5
         },
             modalItem: {
                 flexDirection: 'row',
@@ -78,7 +74,6 @@ const styles = StyleSheet.create({
                 alignItems: 'center',
             },
     container: {
-        fontfamily: 'Roboto',
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
@@ -97,25 +92,18 @@ const styles = StyleSheet.create({
         marginTop: 10,
         width: '100%',
     },
-    input: {
-        width: '100%',
-    },
 
     titleContainer: {
         marginTop: 20,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        width: '95%',
     },
     labelList: {
-        textAlign: 'left',
-        width: '50%',
         fontSize: 16,
         fontWeight: 'bold',
         
-    },
-    flag: {
-        width: '50%',
     },
         buttonFlag: {
             borderRadius: 10,
@@ -128,7 +116,6 @@ const styles = StyleSheet.create({
                 alignItems:'center', 
                 borderRadius:10, 
                 paddingLeft: 5, 
-                paddingRight: 5
             },
                 labelFlag: {
                     fontWeight: 'bold',
@@ -155,7 +142,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 80,
         borderWidth: 1,
-        borderColor: '#82828225',
+        borderColor: '#82828250',
         borderRadius: 10,
         padding: 5,
         marginBottom: 8,
@@ -177,8 +164,6 @@ const styles = StyleSheet.create({
     },
     title: {
         width: '100%',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
     },
     nameContact: {
         fontSize: 16,
@@ -194,19 +179,15 @@ const styles = StyleSheet.create({
         color: '#8C8C8C',
     },
     date: {
-        marginTop: 15,
         fontSize: 10,
+        color: '#8C8C8C',
     },
     floatButton: {
         position: 'absolute',
-        width: 50,
-        height: 50,
-        alignItems: 'center',
-        justifyContent: 'center',
-        left: '30%',
-        bottom: 20,
-        backgroundColor: '#1890FF',
-        borderRadius: 1000,
+        margin: 16,
+        right: 0,
+        bottom: 0,
+        backgroundColor: '#1890FF'
     },
 
 
