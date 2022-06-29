@@ -11,7 +11,7 @@ const Setting = ({navigation}) => {
     const authCtx = useContext(AuthContext);
     const { t, i18n } = useTranslation();
      
-    i18n.changeLanguage(authCtx.locale)
+    //i18n.changeLanguage("en")
     const onChangePasswordPressed = () => {
         navigation.navigate('ChangePassword')
     }

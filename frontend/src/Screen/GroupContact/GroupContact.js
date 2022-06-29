@@ -11,9 +11,8 @@ const GroupContact = () => {
     const [text, setText] = useState('')
     const [textGroup, setTextGroup] = useState('')
     const [modalVisible, setModalVisible] = useState(false)
-    // const authCtx = useContext(AuthContext);
-    // const { t, i18n } = useTranslation();   
-    // i18n.changeLanguage(authCtx.locale);
+    const authCtx = useContext(AuthContext);
+    const { t, i18n } = useTranslation();   
     
     return (
         <SafeAreaView style={styles.container}>
@@ -21,7 +20,7 @@ const GroupContact = () => {
                     <Image source={iconPath.icSearch} style={styles.container_sectionStyle_icSearch} />
                     <TextInput
                         style={styles.input}
-                        placeholder="Tìm kiếm nhóm"
+                        placeholder={t("Screen_Group_Placeholder_Search")}
                         value={text}
                         onChangeText={(value) => setText(value)}
                     />
@@ -30,7 +29,7 @@ const GroupContact = () => {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.container_title}>
-                    <Text style={styles.container_title_label}>Nhóm danh thiếp của tôi</Text>
+                    <Text style={styles.container_title_label}>{t("Screen_Group_Container_Title_Label")}</Text>
                 </View>
                 <View style={styles.container_listGroup}>
                     <ScrollView>

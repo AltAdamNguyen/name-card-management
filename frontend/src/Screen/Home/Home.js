@@ -1,5 +1,5 @@
 //import liraries
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, SafeAreaView, Image, TouchableOpacity, ScrollView, Pressable } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { IconButton, Searchbar, FAB } from 'react-native-paper';
@@ -8,43 +8,17 @@ import styles from './styles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { FetchApi } from '../../service/api/FetchAPI';
 import { ContactAPI, ContentType, Method } from '../../constants/ListAPI';
-
+import i18next from "../../language/i18n"; 
+import { useTranslation } from "react-i18next";
+import AuthContext from '../../store/AuthContext';
 import ModalHome from '../../components/home/ModalHome';
 import ModalFlag from '../../components/home/ModalFlag';
 import { FormatDate } from '../../validate/FormatDate';
 // create a component
-const listFlag = {
-    F0001: {
-        name: 'very-important',
-        title: 'Rất quan trọng',
-        color: '#EB5757',
-        background: 'rgba(235, 87, 87, 0.2)',
-        value: 'F0001',
-    },
-    F0002: {
-        name: 'important',
-        title: 'Quan trọng',
-        color: '#F2994A',
-        background: 'rgba(242, 153, 74, 0.2)',
-        value: 'F0002',
-    },
-    F0003: {
-        name: 'not-important',
-        title: 'Không quan trọng',
-        color: '#F2C94C',
-        background: 'rgba(242, 201, 76, 0.2)',
-        value: 'F0003',
-    },
-    F0004: {
-        name: 'dont-care',
-        title: 'Không quan tâm',
-        color: '#2D9CDB',
-        background: 'rgba(45, 156, 219, 0.2)',
-        value: 'F0004',
-    }
-}
+
 
 const Home = ({ route, navigation }) => {
+   
     const [visibleModal, setVisibleModal] = useState(false);
     const [countContact, setContContact] = useState(0);
     const [listContact, setListContact] = useState();
@@ -55,7 +29,38 @@ const Home = ({ route, navigation }) => {
     const [flag, setFlag] = useState('null');
     const [sort, setSort] = useState('create_date');
     const isFocused = useIsFocused()
-
+    const authCtx = useContext(AuthContext);
+    const { t, i18n } = useTranslation();   
+    const listFlag = {
+        F0001: {
+            name: 'very-important',
+            title: t("Screen_Home_Button_Flag_VeryImportant"),
+            color: '#EB5757',
+            background: 'rgba(235, 87, 87, 0.2)',
+            value: 'F0001',
+        },
+        F0002: {
+            name: 'important',
+            title: t("Screen_Home_Button_Flag_Important"),
+            color: '#F2994A',
+            background: 'rgba(242, 153, 74, 0.2)',
+            value: 'F0002',
+        },
+        F0003: {
+            name: 'not-important',
+            title: t("Screen_Home_Button_Flag_NotImportant"),
+            color: '#F2C94C',
+            background: 'rgba(242, 201, 76, 0.2)',
+            value: 'F0003',
+        },
+        F0004: {
+            name: 'dont-care',
+            title: t("Screen_Home_Button_Flag_DoNotCare"),
+            color: '#2D9CDB',
+            background: 'rgba(45, 156, 219, 0.2)',
+            value: 'F0004',
+        }
+    }
     useEffect(() => {
         FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
     }, [])
@@ -126,7 +131,7 @@ const Home = ({ route, navigation }) => {
             return (
                 <View style={styles.buttonFlag}>
                     <View style={[{ backgroundColor: '#82828250' }, styles.sectionFlag]}>
-                        <Text style={styles.labelFlag}>Phân loại</Text>
+                        <Text style={styles.labelFlag}>{t("Screen_Home_Button_Flag_Label")}</Text>
                         <IconButton icon="chevron-down" size={16} />
                     </View>
                 </View>
@@ -139,7 +144,7 @@ const Home = ({ route, navigation }) => {
             <View style={styles.header}>
                 <Pressable style={styles.sectionStyle} onPress={() => navigation.navigate('HomeSwap', { screen: 'SearchContact'})}>
                     <Searchbar
-                        placeholder="Tìm kiếm danh thiếp"
+                        placeholder={t("Screen_Home_Placeholder_Search")}
                         theme={{
                             roundness: 10,
                             colors: { primary: '#1890FF' }
@@ -149,7 +154,7 @@ const Home = ({ route, navigation }) => {
                 </Pressable>
             </View>
             <View style={styles.titleContainer}>
-                <Text style={styles.labelList}>Danh thiếp ({countContact})</Text>
+                <Text style={styles.labelList}>{t("Screen_Home_Text_Container_Title_LabelList")} ({countContact})</Text>
                 <ModalFlag listItem={Object.values(listFlag)} visible={modalVisible} onPress={handlePressButtonFlag} onPressVisable={() => setModalVisible(!modalVisible)} />
                 <TouchableOpacity onPress={() => setModalVisible(true)}>
                     {changeTextButtonFlag(flag)}

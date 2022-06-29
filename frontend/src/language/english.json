@@ -9,8 +9,15 @@
         "Screen_Setting_Button_Title": "Setting",
         "Screen_Setting_Button_ChangePassword": "Change Password",
         "Screen_Setting_Button_Logout": "Logout",
+        "Screen_Home_Button_Flag_Label": "Classify",
         "Screen_Home_Button_Flag_VeryImportant": "Very Important",
-        "Screen_Home_Placeholder_Search_VeryImportant": "Find Contact",
-        "Screen_Group_Placeholder_Search": "Search for group"
+        "Screen_Home_Button_Flag_Important": "Important",
+        "Screen_Home_Button_Flag_NotImportant": "Not Important",
+        "Screen_Home_Button_Flag_DoNotCare": "Don't Care",
+        "Screen_Home_Placeholder_Search": "Search for contact",
+        "Screen_Home_Text_Container_Title_LabelList": "Name Card",
+        "Screen_Group_Placeholder_Search": "Search for group",
+        "Screen_Group_Text_Container_Title_Label":"My group of contacts"
+        
     }
 }

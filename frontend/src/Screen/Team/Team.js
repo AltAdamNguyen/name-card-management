@@ -1,25 +1,29 @@
 //import liraries
-import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-
+import React, { Component, useState } from 'react';
+import { View, Text, StyleSheet, Pressable} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import styles from './styles';
+import { IconButton, Searchbar, FAB } from 'react-native-paper';
 // create a component
 const Team = () => {
+    const [modalFloatVisible, setModalFloatVisible] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
     return (
-        <View style={styles.container}>
-            <Text>Team</Text>
-        </View>
+        <SafeAreaView style={[styles.container, modalFloatVisible ? styles.containerOverlay : null, modalVisible ? styles.containerOverlay : null]}>
+            <View style={styles.header}>
+                <Pressable style={styles.sectionStyle}>
+                    <Searchbar
+                        placeholder="Tìm kiếm nhóm"
+                        theme={{
+                            roundness: 10,
+                            colors: { primary: '#1890FF' }
+                        }}
+                        editable={false}
+                    />
+                </Pressable>
+            </View>
+        </SafeAreaView>
     );
 };
 
-// define your styles
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#2c3e50',
-    },
-});
-
-//make this component available to the app
 export default Team;

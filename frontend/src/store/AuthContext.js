@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     const handleLocale = (language) => {      
-           () => setLocale(language)   
+        setLocale(language)   
     }
     
 
