@@ -1,9 +1,16 @@
 {
     "translation" : {
-        "placeholder_Username": "Email",
-        "placeholder_Password": "Password",
-        "button_ForgotPassword": "Forgot Password",
-        "button_Login": "Login",
-        "signature_login": "@2022 Developed by FIS"
+        "Screen_Login_Placeholder_Username": "Email",
+        "Screen_Login_Placeholder_Password": "Password",
+        "Screen_Login_Button_ForgotPassword": "Forgot Password",
+        "Screen_Login_Button_Login": "Login",
+        "Screen_Login_Text_Signature": "@2022 Developed by FIS",
+        "Screen_ForgotPassword_Button_ResetPassword": "Reset Password",
+        "Screen_Setting_Button_Title": "Setting",
+        "Screen_Setting_Button_ChangePassword": "Change Password",
+        "Screen_Setting_Button_Logout": "Logout",
+        "Screen_Home_Button_Flag_VeryImportant": "Very Important",
+        "Screen_Home_Placeholder_Search_VeryImportant": "Find Contact",
+        "Screen_Group_Placeholder_Search": "Search for group"
     }
 }

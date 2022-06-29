@@ -1,9 +1,17 @@
 {
     "translation" : {
-        "placeholder_Username": "Email",
-        "placeholder_Password": "Mật Khẩu",
-        "button_ForgotPassword": "Quên mật khẩu",
-        "button_Login": "Đăng nhập",
-        "signature_login": "@2022 Phát triển bởi FIS"
+        "Screen_Login_Placeholder_Username": "Email",
+        "Screen_Login_Placeholder_Password": "Mật Khẩu",
+        "Screen_Login_Button_ForgotPassword": "Quên mật khẩu",
+        "Screen_Login_Button_Login": "Đăng nhập",
+        "Screen_Login_Text_Signature": "@2022 Phát triển bởi FIS",
+        "Screen_ForgotPassword_Button_ResetPassword": "Đặt lại mật khẩu",
+        "Screen_Setting_Button_Title": "Cài Đặt",
+        "Screen_Setting_Button_ChangePassword": "Đổi mật khẩu",
+        "Screen_Setting_Button_Logout": "Đăng xuất",
+        "Screen_Home_Button_Flag_VeryImportant": "Rất Quan Trọng",
+        "Screen_Home_Placeholder_Search_VeryImportant": "Tìm kiếm danh thiếp",
+        "Screen_Group_Placeholder_Search": "Tìm kiếm nhóm"
     }
+    
 }

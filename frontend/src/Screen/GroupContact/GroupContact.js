@@ -1,16 +1,20 @@
 //import liraries
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, SafeAreaView, Image, TouchableOpacity, ScrollView, Modal, TouchableWithoutFeedback, TextInput } from 'react-native';
 import iconPath from '../../constants/iconPath';
 import styles from './styles';
-
-
+import i18next from "../../language/i18n"; 
+import { useTranslation } from "react-i18next";
+import AuthContext from '../../store/AuthContext';
 // create a component
 const GroupContact = () => {
     const [text, setText] = useState('')
     const [textGroup, setTextGroup] = useState('')
     const [modalVisible, setModalVisible] = useState(false)
-
+    // const authCtx = useContext(AuthContext);
+    // const { t, i18n } = useTranslation();   
+    // i18n.changeLanguage(authCtx.locale);
+    
     return (
         <SafeAreaView style={styles.container}>
                 <View style={styles.container_sectionStyle}>

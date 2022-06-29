@@ -1,18 +1,12 @@
 import {
   View,
-  Text,
-  Image,
-  StyleSheet,
-  useWindowDimensions,
-  TouchableOpacity,
-  Content,
+  Text
 } from "react-native";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, createContext } from "react";
 import AuthContext from "../../store/AuthContext";
-import i18next from "../../language/i18n";
 import { useTranslation } from "react-i18next";
 import styles from "./styles";
-import iconPath from "../../constants/iconPath";
+import i18next from "../../language/i18n";
 import CustomInputs from "../../components/CustomInputs";
 import CustomButtons from "../../components/CustomButtons";
 import CustemHeaders from "../../components/CustomHeaders/CustemHeaders";
@@ -20,11 +14,16 @@ import Logo_Login from "../../asset/image/login.png";
 import { FetchApiAuth } from "../../service/api/FetchAPI";
 import SwitchSelector from "react-native-switch-selector";
 import { AuthAPI, ContentType, Method } from "../../constants/ListAPI";
+import LoginSchema from "../../validate/ValidateFormLogin";
+import { object } from "yup";
+
+const options = [
+  { label: "VN", value: "vn"} ,
+   {label: "EN", value: "en" },
+];
+
 const SignIn = ({ navigation }) => {
-  const options = [
-    { label: "VN", value: "vn" },
-    { label: "EN", value: "en" },
-  ];
+  
   const { t, i18n } = useTranslation();
   const [user, setUser] = useState({
     email: "anhnc@gmail.com",
@@ -53,6 +52,7 @@ const SignIn = ({ navigation }) => {
     console.log(data);
     if (data.message === "Get token success") {
       authCtx.onLogin(data.data.access_token, data.data.refresh_token);
+      
     }
   };
 
@@ -65,29 +65,34 @@ const SignIn = ({ navigation }) => {
     };
   };
 
+  const handleSubmit = (values) => {
+    // FetchApi(API.AddContact, Method.POST, ContentType.JSON, value, getMessage)
+  };
   const onClearUsernamePressed = () => {
     setUser({
       ...user,
-     email: '',
+      email: "",
     });
   };
   return (
+    
     <View style={styles.root}>
       <View>
         <CustemHeaders text_PRIMARY="Name Card Management" Logo={Logo_Login} />
       </View>
+
       <View style={styles.input}>
         <CustomInputs
           value={user.email}
           setValue={handleChange("email")}
           icon={"close-circle-outline"}
-          label={t("placeholder_Username")}
+          label={t("Screen_Login_Placeholder_Username")}
           onpress={onClearUsernamePressed}
         />
         <CustomInputs
           value={user.password}
           setValue={handleChange("password")}
-          label={t("placeholder_Password")}
+          label={t("Screen_Login_Placeholder_Password")}
           secureTextEntry={isSecureEntry}
           icon={isSecureEntry ? "eye" : "eye-off"}
           onpress={onVisibilityPasswordPressed}
@@ -95,26 +100,34 @@ const SignIn = ({ navigation }) => {
       </View>
       <View style={styles.button_forgotPassword}>
         <CustomButtons
-          text={t("button_ForgotPassword")}
+          text={t("Screen_Login_Button_ForgotPassword")}
           onPress={onForgotPasswordPressed}
           type="TERTIARY"
         />
       </View>
       <View style={styles.button_login}>
-      <CustomButtons text={t("button_Login")} onPress={onSignInPressed} />
+        <CustomButtons text={t("Screen_Login_Button_Login")} onPress={onSignInPressed} />
       </View>
       <SwitchSelector
         style={styles.language}
         options={options}
-        initial={0}
+        initial={authCtx.locale === 'vn' ? 0 : 1}
         hasPadding
         buttonColor="#2F80ED"
-        onPress={(language) => i18n.changeLanguage(language)}
+        disableValueChangeOnPress={true}
+        value={1}
+        onPress={(language) => {
+          i18n.changeLanguage(language)
+          authCtx.language(language)
+          }}
+        
       />
       <View style={styles.title}>
-        <Text>{t("signature_login")}</Text>
+        <Text>{t("Screen_Login_Text_Signature")}</Text>
       </View>
     </View>
+
+    
   );
 };
 
