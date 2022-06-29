@@ -30,14 +30,14 @@ namespace NCMSystem.Models
         public string address { get; set; }
         public string website { get; set; }
         public string fax { get; set; }
-        public string reasonStatus { get; set; }
+        public string reason_status { get; set; }
         public int owner_id { get; set; }
         public string flag_id { get; set; }
         public string status_id { get; set; }
         public bool isActive { get; set; }
         public System.DateTime create_date { get; set; }
         public int createdBy { get; set; }
-        public string resonDeactive { get; set; }
+        public string reason_deactive { get; set; }
     
         public virtual user user { get; set; }
         public virtual user user1 { get; set; }

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Text;
 using System.Web.Http;
 using System.Web.Http.Results;
 using NCMSystem.Filter;
-using Serilog;
+
 using NCMSystem.Models;
 using NCMSystem.Models.CallAPI;
 using Newtonsoft.Json;

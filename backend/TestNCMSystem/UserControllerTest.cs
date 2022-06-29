@@ -1,5 +1,4 @@
-﻿using System;
-using System.Net;
+﻿using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using NCMSystem.Controllers;
@@ -25,13 +24,12 @@ namespace TestNCMSystem
             //act
             var cc = controller.Login(new UserRequest()
             {
-                
             });
-            
+
             //assert
             Assert.AreEqual(cc.Response.StatusCode, HttpStatusCode.BadRequest);
         }
-        
+
         [Test]
         public void UserController_Login_MissingEmail()
         {
@@ -45,11 +43,11 @@ namespace TestNCMSystem
             {
                 Password = "Tung88644264@"
             });
-            
+
             //assert
             Assert.AreEqual(cc.Response.StatusCode, HttpStatusCode.BadRequest);
         }
-        
+
         [Test]
         public void UserController_Login_MissingPassword()
         {
@@ -63,11 +61,11 @@ namespace TestNCMSystem
             {
                 Email = "nmtung.study@gmail.com"
             });
-            
+
             //assert
             Assert.AreEqual(cc.Response.StatusCode, HttpStatusCode.BadRequest);
         }
-        
+
         [Test]
         public void UserController_Login_UserNotFound()
         {
@@ -82,11 +80,11 @@ namespace TestNCMSystem
                 Email = "nmtung.stuy@gmail.com",
                 Password = "Tung8864464@"
             });
-            
+
             //assert
             Assert.AreEqual(cc.Response.StatusCode, HttpStatusCode.BadRequest);
         }
-        
+
         [Test]
         public void UserController_Login_Success()
         {
@@ -101,14 +99,14 @@ namespace TestNCMSystem
                 Email = "nmtung.study@gmail.com",
                 Password = "Tung88644264@"
             });
-            
+
             JObject json = Parse(cc.Response.Content.ReadAsStringAsync().Result);
             //assert
             Assert.AreEqual(cc.Response.StatusCode, HttpStatusCode.OK);
             Assert.NotNull(json["data"]?["access_token"]);
             Assert.NotNull(json["data"]?["refresh_token"]);
         }
-        
+
         [Test]
         public void UserController_RefreshToken_MissingRefreshToken()
         {
@@ -120,13 +118,12 @@ namespace TestNCMSystem
             //act
             var cc = controller.PostRefreshToken(new RefreshTokenRequest()
             {
-                
             });
-            
+
             //assert
             Assert.AreEqual(cc.Response.StatusCode, HttpStatusCode.BadRequest);
         }
-        
+
         [Test]
         public void UserController_RefreshToken_Success()
         {
@@ -140,7 +137,7 @@ namespace TestNCMSystem
             {
                 RefreshToken = ""
             });
-            
+
             //assert
             Assert.AreEqual(cc.Response.StatusCode, HttpStatusCode.OK);
         }
