@@ -58,8 +58,8 @@
     <Reference Include="jose-jwt, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\jose-jwt.4.0.0\lib\net472\jose-jwt.dll</HintPath>
     </Reference>
-    <Reference Include="JWT, Version=9.0.0.0, Culture=neutral, PublicKeyToken=6f98bca0f40f2ecf, processorArchitecture=MSIL">
-      <HintPath>..\packages\JWT.9.0.3\lib\net46\JWT.dll</HintPath>
+    <Reference Include="JWT, Version=10.0.0.0, Culture=neutral, PublicKeyToken=6f98bca0f40f2ecf, processorArchitecture=MSIL">
+      <HintPath>..\packages\JWT.10.0.0-beta2\lib\net462\JWT.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -170,7 +170,6 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\HelpPage\ApiDescriptionExtensions.cs" />
     <Compile Include="Areas\HelpPage\App_Start\HelpPageConfig.cs" />
-    <Compile Include="Areas\HelpPage\Controllers\HelpController.cs" />
     <Compile Include="Areas\HelpPage\HelpPageAreaRegistration.cs" />
     <Compile Include="Areas\HelpPage\HelpPageConfigurationExtensions.cs" />
     <Compile Include="Areas\HelpPage\ModelDescriptions\CollectionModelDescription.cs" />
@@ -198,8 +197,6 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Common\ResponseMessage.cs" />
     <Compile Include="Controllers\ContactController.cs" />
-    <Compile Include="Controllers\GroupContactController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ScanController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -210,19 +207,14 @@
     </Compile>
     <Compile Include="Models\CallAPI\CommonResponse.cs" />
     <Compile Include="Models\CallAPI\Contact\ContactRequest.cs" />
+    <Compile Include="Models\CallAPI\Contact\DaContact.cs" />
     <Compile Include="Models\CallAPI\Contact\DetailContact.cs" />
     <Compile Include="Models\CallAPI\Contact\FlagContact.cs" />
     <Compile Include="Models\CallAPI\Contact\HomeContact.cs" />
     <Compile Include="Models\CallAPI\Contact\OwnerContact.cs" />
     <Compile Include="Models\CallAPI\Contact\ReasonDAContact.cs" />
+    <Compile Include="Models\CallAPI\Contact\SearchContact.cs" />
     <Compile Include="Models\CallAPI\Contact\StatusContact.cs" />
-    <Compile Include="Models\CallAPI\Group Contact\ContactInGroup.cs" />
-    <Compile Include="Models\CallAPI\Group Contact\ContactToGroupRequest.cs" />
-    <Compile Include="Models\CallAPI\Group Contact\DeleteContactFromGroupRequest.cs" />
-    <Compile Include="Models\CallAPI\Group Contact\DetailGroupContact.cs" />
-    <Compile Include="Models\CallAPI\Group Contact\GroupContactRequest.cs" />
-    <Compile Include="Models\CallAPI\Group Contact\HomeGroupContact.cs" />
-    <Compile Include="Models\CallAPI\Group Contact\RenameGroupContact.cs" />
     <Compile Include="Models\CallAPI\ScanNC\InfoNC.cs" />
     <Compile Include="Models\CallAPI\ScanNC\ScanNCRequest.cs" />
     <Compile Include="Models\CallAPI\ScanNC\ScanResponse.cs" />
@@ -345,11 +337,10 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Shared\Error.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\HelpPage\Controllers" />
     <Folder Include="Logs\" />
   </ItemGroup>
   <ItemGroup>

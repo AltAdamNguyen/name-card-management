@@ -7,8 +7,13 @@ import {
 } from "react-native";
 import { Button } from "react-native-paper";
 import styles from "../../screen/Home/styles";
-
+import i18next from "../../language/i18n"; 
+import AuthContext from "../../store/AuthContext";
+import { useTranslation } from "react-i18next";
+import React, { useContext, useState } from "react";
 const ModalFlag = ({ listItem, visible, onPress, onPressVisable }) => {
+   const { t, i18n } = useTranslation();
+   const authCtx = useContext(AuthContext)
   return (
     <Modal
       animationType="fade"
@@ -24,7 +29,7 @@ const ModalFlag = ({ listItem, visible, onPress, onPressVisable }) => {
       >
         <TouchableWithoutFeedback>
           <View style={styles.modalView}>
-            <Text style={{ fontSize: 20, fontWeight: "bold" }}>Phân loại</Text>
+            <Text style={{ fontSize: 20, fontWeight: "bold" }}>{t("Screen_Home_ModalFlag_Text_Classify")}</Text>
             {listItem.map((item, index) => {
               return (
                 <Button

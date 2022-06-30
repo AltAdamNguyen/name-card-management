@@ -43,7 +43,7 @@ namespace NCMSystem.Controllers
 
                 if (string.IsNullOrEmpty(sortBy))
                 {
-                    return Common.ResponseMessage.BadRequest("sortBy is not valid");
+                    return Common.ResponseMessage.BadRequest("C0006");
                 }
 
                 if (sortBy.Equals("name"))
@@ -84,7 +84,56 @@ namespace NCMSystem.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "C00001");
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = listCt
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpGet]
+        [Route("api/contacts/de-active")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
+        public ResponseMessageResult GetListDaContact(string sortBy = "create_date", int page = 1)
+        {
+            int pageSize = 10;
+            if (page < 1) page = 1;
+            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+
+            List<DaContact> listCt = new List<DaContact>();
+            try
+            {
+                var contact = db.contacts.Where(c => c.createdBy == userId && c.isActive == false)
+                    .OrderByDescending(x => x.create_date).Skip((page - 1) * pageSize)
+                    .Take(pageSize).ToList();
+
+                if (contact.Count != 0)
+                {
+                    foreach (var c in contact)
+                    {
+                        DaContact dc = new DaContact();
+                        dc.Id = c.id;
+                        dc.ImgUrl = c.image_url;
+                        dc.Name = c.name;
+                        dc.JobTitle = c.job_title;
+                        dc.Company = c.company;
+                        dc.ReasonDa = c.reason_deactive;
+                        dc.CreatedAt = c.create_date;
+                        listCt.Add(dc);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
             }
 
@@ -112,7 +161,7 @@ namespace NCMSystem.Controllers
                 var contact = db.contacts.FirstOrDefault(c => c.id == id);
                 if (contact == null)
                 {
-                    return Common.ResponseMessage.Good("No contact");
+                    return Common.ResponseMessage.NotFound("C0002");
                 }
 
                 Array.ForEach(contact.groups.ToArray(), g => { listGr.Add(g.name); });
@@ -136,12 +185,12 @@ namespace NCMSystem.Controllers
                 dc.Website = contact.website;
                 dc.GroupName = listGr.ToArray();
                 dc.Status = contact.status_id;
-                dc.ReasonStatus = contact.reasonStatus;
+                dc.ReasonStatus = contact.reason_status;
                 dc.CreatedAt = contact.create_date;
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "C00001");
+                Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
             }
 
@@ -152,6 +201,132 @@ namespace NCMSystem.Controllers
                 {
                     Message = "Get detail successfully",
                     Data = dc
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpGet]
+        [Route("api/contacts/search")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
+        public ResponseMessageResult GetSearch(string type = "home", string value = "")
+        {
+            int pageSize = 10;
+            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+
+            List<SearchContact> listCt = new List<SearchContact>();
+
+            try
+            {
+                var query = db.contacts.Where(c => c.createdBy == userId);
+                if (value == null)
+                {
+                    value = "";
+                }
+
+                var draft = query;
+
+                SearchContact sc = new SearchContact();
+
+                if (type.Equals("home"))
+                {
+                    List<contact> listSearch;
+                    draft = draft.Where(c => c.name.Contains(value));
+                    listSearch = draft.Take(pageSize).ToList();
+                    if (listSearch.Count != 0)
+                    {
+                        foreach (var c in listSearch)
+                        {
+                            sc = new SearchContact();
+                            sc.Id = c.id;
+                            sc.ImgUrl = c.image_url;
+                            sc.Name = c.name;
+                            sc.JobTitle = c.job_title;
+                            sc.Company = c.company;
+                            sc.Email = c.email;
+                            sc.Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id;
+                            sc.CreatedAt = c.create_date;
+                            listCt.Add(sc);
+                        }
+                    }
+
+                    // clear query
+                    draft = query;
+                    draft = draft.Where(c => c.company.Contains(value));
+                    listSearch = draft.Take(pageSize).ToList();
+                    if (listSearch.Count != 0)
+                    {
+                        foreach (var c in listSearch)
+                        {
+                            sc = new SearchContact();
+                            sc.Id = c.id;
+                            sc.ImgUrl = c.image_url;
+                            sc.Name = c.name;
+                            sc.JobTitle = c.job_title;
+                            sc.Company = c.company;
+                            sc.Email = c.email;
+                            sc.Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id;
+                            sc.CreatedAt = c.create_date;
+                            listCt.Add(sc);
+                        }
+                    }
+
+                    // clear query
+                    draft = query;
+                    draft = draft.Where(c => c.email.Contains(value));
+                    listSearch = draft.Take(pageSize).ToList();
+                    if (listSearch.Count != 0)
+                    {
+                        foreach (var c in listSearch)
+                        {
+                            sc = new SearchContact();
+                            sc.Id = c.id;
+                            sc.ImgUrl = c.image_url;
+                            sc.Name = c.name;
+                            sc.JobTitle = c.job_title;
+                            sc.Company = c.company;
+                            sc.Email = c.email;
+                            sc.Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id;
+                            sc.CreatedAt = c.create_date;
+                            listCt.Add(sc);
+                        }
+                    }
+
+                    draft = query;
+                    draft = draft.Where(c => c.phone.Contains(value));
+                    listSearch = draft.Take(pageSize).ToList();
+                    if (listSearch.Count != 0)
+                    {
+                        foreach (var c in listSearch)
+                        {
+                            sc = new SearchContact();
+                            sc.Id = c.id;
+                            sc.ImgUrl = c.image_url;
+                            sc.Name = c.name;
+                            sc.JobTitle = c.job_title;
+                            sc.Company = c.company;
+                            sc.Email = c.email;
+                            sc.Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id;
+                            sc.CreatedAt = c.create_date;
+                            listCt.Add(sc);
+                        }
+                    }
+                }
+
+                listCt = listCt.GroupBy(x => x.Id).Select(x => x.First()).OrderByDescending(x => x.CreatedAt).ToList();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = listCt
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -245,7 +420,7 @@ namespace NCMSystem.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "C00001");
+                Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
             }
 
@@ -254,7 +429,7 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.Created,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Add Successfully",
+                    Message = "C0009",
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -270,7 +445,7 @@ namespace NCMSystem.Controllers
                 var contact = db.contacts.FirstOrDefault(c => c.id == id);
                 if (contact == null)
                 {
-                    return Common.ResponseMessage.NotFound("Not found contact");
+                    return Common.ResponseMessage.NotFound("C0002");
                 }
 
                 string name = request.Name;
@@ -290,7 +465,7 @@ namespace NCMSystem.Controllers
                     Validator.Validator.CheckInputLength(website) == false ||
                     Validator.Validator.CheckPhoneOrFax(fax) == false)
                 {
-                    return Common.ResponseMessage.BadRequest("Information is not valid");
+                    return Common.ResponseMessage.BadRequest("C0005");
                 }
 
                 contact.name = name;
@@ -306,7 +481,7 @@ namespace NCMSystem.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "C00001");
+                Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
             }
 
@@ -315,7 +490,7 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Update Successfully",
+                    Message = "C0010",
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -331,7 +506,7 @@ namespace NCMSystem.Controllers
                 var contact = db.contacts.FirstOrDefault(c => c.id == id);
                 if (contact == null)
                 {
-                    return Common.ResponseMessage.NotFound("Not found contact");
+                    return Common.ResponseMessage.NotFound("C0002");
                 }
 
                 if (requestFlag.Flag != null)
@@ -342,7 +517,7 @@ namespace NCMSystem.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "C00001");
+                Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
             }
 
@@ -351,7 +526,7 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Update Flag Successfully",
+                    Message = "F0005",
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -367,12 +542,12 @@ namespace NCMSystem.Controllers
                 var contact = db.contacts.FirstOrDefault(c => c.id == id);
                 if (contact == null)
                 {
-                    return Common.ResponseMessage.NotFound("Not found contact");
+                    return Common.ResponseMessage.NotFound("C0002");
                 }
 
                 if (statusCt.Status == null)
                 {
-                    return Common.ResponseMessage.BadRequest("Failed to set status");
+                    return Common.ResponseMessage.NotFound("S0004");
                 }
 
                 if (!statusCt.Status.Equals("S0002"))
@@ -380,16 +555,16 @@ namespace NCMSystem.Controllers
                     contact.status_id = statusCt.Status;
                     if (!Validator.Validator.CheckEmptyvLength(statusCt.ReasonStatus))
                     {
-                        return Common.ResponseMessage.BadRequest("Reason Status is not valid");
+                        return Common.ResponseMessage.BadRequest("C0003");
                     }
 
-                    contact.reasonStatus = statusCt.ReasonStatus;
+                    contact.reason_status = statusCt.ReasonStatus;
                     db.SaveChanges();
                 }
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "C00001");
+                Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
             }
 
@@ -398,7 +573,7 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Update Status Successfully",
+                    Message = "S0005",
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -414,21 +589,21 @@ namespace NCMSystem.Controllers
                 var contact = db.contacts.FirstOrDefault(c => c.id == id);
                 if (contact == null)
                 {
-                    return Common.ResponseMessage.NotFound("Not found contact");
+                    return Common.ResponseMessage.NotFound("C0002");
                 }
 
                 if (string.IsNullOrEmpty(reasonDaContact.ReasonDa))
                 {
-                    return Common.ResponseMessage.BadRequest("Reason is not valid");
+                    return Common.ResponseMessage.BadRequest("C0004");
                 }
 
                 contact.isActive = false;
-                contact.resonDeactive = reasonDaContact.ReasonDa;
+                contact.reason_deactive = reasonDaContact.ReasonDa;
                 db.SaveChanges();
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "C00001");
+                Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
             }
 
@@ -437,7 +612,7 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Update DeActive Successfully",
+                    Message = "C0011",
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -453,16 +628,16 @@ namespace NCMSystem.Controllers
                 var contact = db.contacts.FirstOrDefault(c => c.id == id);
                 if (contact == null)
                 {
-                    return Common.ResponseMessage.NotFound("Not found contact");
+                    return Common.ResponseMessage.NotFound("C0002");
                 }
 
                 contact.isActive = true;
-                contact.resonDeactive = null;
+                contact.reason_deactive = null;
                 db.SaveChanges();
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "C00001");
+                Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
             }
 
@@ -471,7 +646,7 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Update Active Successfully",
+                    Message = "C0012",
                 }), Encoding.UTF8, "application/json")
             });
         }

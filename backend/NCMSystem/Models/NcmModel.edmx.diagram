@@ -4,22 +4,22 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="230f4c813d5e4775bd05a33a3764b9e2" Name="Diagram1">
-        <EntityTypeShape EntityType="NCMSystemModel.contact" Width="1.5" PointX="5.25" PointY="1.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="NCMSystemModel.flag" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="NCMSystemModel.group" Width="1.5" PointX="7.5" PointY="3.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="NCMSystemModel.role" Width="1.5" PointX="0.75" PointY="4.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="NCMSystemModel.status" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="NCMSystemModel.sysdiagram" Width="1.5" PointX="7.75" PointY="6.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="NCMSystemModel.token" Width="1.5" PointX="5.25" PointY="7" IsExpanded="true" />
-        <EntityTypeShape EntityType="NCMSystemModel.user" Width="1.5" PointX="3" PointY="3.125" IsExpanded="true" />
-        <AssociationConnector Association="NCMSystemModel.contact_user_id_fk" ManuallyRouted="false" />
-        <AssociationConnector Association="NCMSystemModel.contact_user_id_fk_2" ManuallyRouted="false" />
-        <AssociationConnector Association="NCMSystemModel.group_user_id_fk" ManuallyRouted="false" />
-        <AssociationConnector Association="NCMSystemModel.user_role_id_fk" ManuallyRouted="false" />
-        <AssociationConnector Association="NCMSystemModel.token_user_id_fk" ManuallyRouted="false" />
-        <AssociationConnector Association="NCMSystemModel.user_user_id_fk" ManuallyRouted="false" />
-        <AssociationConnector Association="NCMSystemModel.group_contact" ManuallyRouted="false" />
+      <Diagram DiagramId="568d7a5f020143048b10dd225e8ef6e7" Name="Diagram1">
+        <EntityTypeShape EntityType="NCMSystemModel.contact" Width="1.5" PointX="5.25" PointY="1.25" />
+        <EntityTypeShape EntityType="NCMSystemModel.flag" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="NCMSystemModel.group" Width="1.5" PointX="7.5" PointY="3.25" />
+        <EntityTypeShape EntityType="NCMSystemModel.role" Width="1.5" PointX="0.75" PointY="4.375" />
+        <EntityTypeShape EntityType="NCMSystemModel.status" Width="1.5" PointX="7.75" PointY="0.75" />
+        <EntityTypeShape EntityType="NCMSystemModel.sysdiagram" Width="1.5" PointX="7.75" PointY="6.75" />
+        <EntityTypeShape EntityType="NCMSystemModel.token" Width="1.5" PointX="5.25" PointY="7" />
+        <EntityTypeShape EntityType="NCMSystemModel.user" Width="1.5" PointX="3" PointY="3.125" />
+        <AssociationConnector Association="NCMSystemModel.contact_user_id_fk" />
+        <AssociationConnector Association="NCMSystemModel.contact_user_id_fk_2" />
+        <AssociationConnector Association="NCMSystemModel.group_user_id_fk" />
+        <AssociationConnector Association="NCMSystemModel.user_role_id_fk" />
+        <AssociationConnector Association="NCMSystemModel.token_user_id_fk" />
+        <AssociationConnector Association="NCMSystemModel.user_user_id_fk" />
+        <AssociationConnector Association="NCMSystemModel.group_contact" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

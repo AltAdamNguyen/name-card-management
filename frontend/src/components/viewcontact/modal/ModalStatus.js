@@ -1,14 +1,19 @@
 //import liraries
 import React  from 'react';
-import { View, Text, Modal, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, Modal, TouchableWithoutFeedback, Platform } from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import styles from '../../../screen/ViewContact/styles';
 import { Formik } from 'formik';
 import StatusSchema from '../../../validate/ValidateFormStatus';
-
+import { useContext } from 'react';
+import i18next from "../../../language/i18n"; 
+import AuthContext from "../../../store/AuthContext";
+import { useTranslation } from "react-i18next";
 // create a component
 const ModalStatus = ({ listStatus, visible, onPressVisable, status, onPressSubmit }) => {
+    const { t, i18n } = useTranslation();
+    const authCtx = useContext(AuthContext)
     return (
         <Modal
             animationType="fade"
@@ -20,7 +25,7 @@ const ModalStatus = ({ listStatus, visible, onPressVisable, status, onPressSubmi
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <TouchableWithoutFeedback>
                     <View style={styles.info_status_modalView}>
-                        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Trạng thái</Text>
+                        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{t("ModalStatus_Text_Label_Status")}</Text>
                         <Formik
                             initialValues={status }
                             onSubmit={onPressSubmit}
@@ -29,11 +34,12 @@ const ModalStatus = ({ listStatus, visible, onPressVisable, status, onPressSubmi
                             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => {
                                 return (
                                     <View style={{ width: '100%' }}>
+                                    
                                         <Picker
                                             selectedValue={values.status}
                                             onValueChange={handleChange('status')}
-                                            mode="dropdown"
-                                            style={{ width: '100%', alignItems: 'flex-start' }}
+                                            mode={Platform.OS === 'android' && 'dropdown'}
+                                            // style={{Platform.OS === 'android'?{ width: 1, alignItems: 'center' }:null}}
                                         >
                                             {listStatus.map((item, index) => {
                                                 return (
@@ -41,10 +47,12 @@ const ModalStatus = ({ listStatus, visible, onPressVisable, status, onPressSubmi
                                                 )
                                             })}
                                         </Picker>
+                                
+
                                         <TextInput
                                             mode="outlined"
-                                            label="Lý do"
-                                            placeholder='Nhập lý do'
+                                            label={t("ModalStatus_Label_Reason")}
+                                            placeholder={t("ModalStatus_PlaceHolder_Reason")}
                                             value={values.reason_status}
                                             onChangeText={handleChange('reason_status')}
                                             onBlur={handleBlur('reason_status')}
@@ -61,7 +69,7 @@ const ModalStatus = ({ listStatus, visible, onPressVisable, status, onPressSubmi
                                                 style={{ borderRadius: 10, width: '40%' }}
                                                 onPress={onPressVisable}
                                             >
-                                                Huỷ
+                                                {t("ModalStatus_Button_Cancel")}
                                             </Button>
                                             <Button
                                                 mode='contained'
@@ -69,7 +77,7 @@ const ModalStatus = ({ listStatus, visible, onPressVisable, status, onPressSubmi
                                                 style={{ borderRadius: 10, width: '40%' }}
                                                 onPress={handleSubmit}
                                             >
-                                                Hoàn tất
+                                                {t("ModalStatus_Button_Complete")}
                                             </Button>
                                         </View>
 

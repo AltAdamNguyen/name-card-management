@@ -25,7 +25,7 @@ namespace NCMSystem.Controllers
 
         [HttpPost]
         [Route("api/auth/login")]
-        public ResponseMessageResult Post([FromBody] UserRequest request)
+        public ResponseMessageResult Login([FromBody] UserRequest request)
         {
             string email = request.Email;
             string password = request.Password;
