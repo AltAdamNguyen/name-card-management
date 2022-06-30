@@ -1,5 +1,5 @@
 //import liraries
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { View, Text, Image, TouchableOpacity, ScrollView, Keyboard, Dimensions } from 'react-native';
 import { TextInput, Provider, IconButton, Button } from 'react-native-paper';
 import { StackActions } from '@react-navigation/native';
@@ -12,70 +12,21 @@ import AddContactSchema from '../../validate/ValidateFormAddContact';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
 import { LinearGradient } from 'expo-linear-gradient';
 import ModalContact from '../../components/addcontact/ModelContact';
+import i18next from "../../language/i18n"; 
+import AuthContext from "../../store/AuthContext";
+import { useTranslation } from "react-i18next";
 // create a component
 
 
-const formInput = [
-    {
-        name: 'name',
-        title: 'Họ và tên',
-        placeholder: 'Nhập họ và tên',
-    },
-    {
-        name: 'job_title',
-        title: 'Chức vụ',
-        placeholder: 'Nhập chức vụ',
-    },
-    {
-        name: 'company',
-        title: 'Công ty',
-        placeholder: 'Nhập công ty',
-    },
-    {
-        name: 'phone',
-        title: 'Số điện thoại',
-        placeholder: 'Nhập số điện thoại',
-    },
-    {
-        name: 'email',
-        title: 'Email',
-        placeholder: 'Nhập email',
-    },
-    {
-        name: 'fax',
-        title: 'Fax',
-        placeholder: 'Nhập fax',
-    },
-    {
-        name: 'address',
-        title: 'Địa chỉ',
-        placeholder: 'Nhập địa chỉ',
-    },
-    {
-        name: 'website',
-        title: 'Website',
-        placeholder: 'Nhập website',
-    }
-]
-const contextGoBack = {
-    title: 'Xác nhận',
-    message: 'Ban có chắc chắn muốn thoát không?',
-    cancel: 'Hủy',
-    submit: 'Đồng ý',
-}
 
-const contextOnSubmit = {
-    title: 'Chỉnh sửa liên hệ',
-    message: 'Bạn có muốn lưu thay đổi không?',
-    cancel: 'Hủy',
-    submit: 'Lưu',
-}
 const AddContact = ({ route, navigation }) => {
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
     const formRef = useRef();
     const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient)
     const [loading, setLoading] = useState(false);
+    const { t, i18n } = useTranslation();
+    const authCtx = useContext(AuthContext)
     const [value, setValue] = useState({
         name: '',
         job_title: '',
@@ -93,6 +44,62 @@ const AddContact = ({ route, navigation }) => {
         }
 
     }, [route.params])
+
+    const formInput = [
+        {
+            name: 'name',
+            title: t("Screen_UpdateContact_Input_Title_FullName"),
+            placeholder: t("Screen_UpdateContact_Input_PlaceHolder_FullName"),
+        },
+        {
+            name: 'job_title',
+            title: t("Screen_UpdateContact_Input_Title_JobTitle"),
+            placeholder: t("Screen_UpdateContact_Input_PlaceHolder_JobTitle"),
+        },
+        {
+            name: 'company',
+            title: t("Screen_UpdateContact_Input_Title_Company"),
+            placeholder: t("Screen_UpdateContact_Input_PlaceHolder_Company"),
+        },
+        {
+            name: 'phone',
+            title: t("Screen_UpdateContact_Input_Title_PhoneNumber"),
+            placeholder: t("Screen_UpdateContact_Input_PlaceHolder_PhoneNumber"),
+        },
+        {
+            name: 'email',
+            title: t("Screen_UpdateContact_Input_Title_Email"),
+            placeholder: t("Screen_UpdateContact_Input_PlaceHolder_Email"),
+        },
+        {
+            name: 'fax',
+            title: t("Screen_UpdateContact_Input_Title_Fax"),
+            placeholder: t("Screen_UpdateContact_Input_PlaceHolder_Fax"),
+        },
+        {
+            name: 'address',
+            title: t("Screen_UpdateContact_Input_Title_Address"),
+            placeholder: t("Screen_UpdateContact_Input_PlaceHolder_Address"),
+        },
+        {
+            name: 'website',
+            title: t("Screen_UpdateContact_Input_Title_Website"),
+            placeholder: t("Screen_UpdateContact_Input_PlaceHolder_Website"),
+        }
+    ]
+    const contextGoBack = {
+        title: t("Screen_UpdateContact_ContextGoback_Title"),
+        message: t("Screen_UpdateContact_ContextGoback_Message"),
+        cancel: t("Screen_UpdateContact_ContextGoback_Cancel"),
+        submit: t("Screen_UpdateContact_ContextGoback_Submit"),
+    }
+    
+    const contextOnSubmit = {
+        title: t("Screen_UpdateContact_ContextOnSubmit_Title"),
+        message: t("Screen_UpdateContact_ContextOnSubmit_Message"),
+        cancel: t("Screen_UpdateContact_ContextOnSubmit_Cancel"),
+        submit: t("Screen_UpdateContact_ContextOnSubmit_Submit"),
+    }
 
     const getContact = (data) => {
         if(data.data){
@@ -129,11 +136,11 @@ const AddContact = ({ route, navigation }) => {
             <View style={styles.header}>
                 <View style={styles.header_titleButton}>
                     <IconButton icon="arrow-left" size={20} onPress={() => setGoBack(!goBack)}/>
-                    <Text style={styles.header_titleButton_label}>Chỉnh sửa liên hệ</Text>
+                    <Text style={styles.header_titleButton_label}>{t("Screen_UpdateContact_Button_Header_Title")}</Text>
                 </View>
 
                 <View style={styles.header_modal}>
-                    <Button color='#1890FF' onPress={() => setOnSubmit(!onSubmit)}>Sửa</Button>
+                    <Button color='#1890FF' onPress={() => setOnSubmit(!onSubmit)}>{t("Screen_UpdateContact_Button_Header_Modal")}</Button>
                 </View>
             </View>
             <View style={{ alignItems: 'center' }}>
