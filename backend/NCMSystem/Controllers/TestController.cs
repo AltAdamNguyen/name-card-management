@@ -1,12 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Net.Http;
+using System.Text;
 using System.Web.Http;
 using System.Web.Http.Results;
 using NCMSystem.Filter;
-using Serilog;
+
 using NCMSystem.Models;
+using NCMSystem.Models.CallAPI;
+using Newtonsoft.Json;
 
 namespace NCMSystem.Controllers
 {
@@ -17,24 +17,20 @@ namespace NCMSystem.Controllers
 
         [HttpGet]
         [Route("api/test")]
-        public ResponseMessageResult PatchFlag()
+        public ResponseMessageResult PatchFlag(string name)
         {
-            try
+            return new ResponseMessageResult(new HttpResponseMessage()
             {
-                var selectGroup = db.groups.FirstOrDefault(x => x.id == 99999);
-                var selectContact = db.contacts.FirstOrDefault(x => x.id == 6);
-
-                selectGroup.contacts.Add(selectContact);
-
-                db.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex, "Something went wrong");
-                Log.CloseAndFlush();
-            }
-
-            return new ResponseMessageResult(Request.CreateResponse(HttpStatusCode.OK));
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = new
+                    {
+                        name
+                    }
+                }), Encoding.UTF8, "application/json")
+            });
         }
     }
 }
