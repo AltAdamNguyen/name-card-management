@@ -75,6 +75,7 @@ const Home = ({ route, navigation }) => {
     }, [route.params]);
 
     const getContact = (data) => {
+        console.log(data)
         if (data.data.length > 0) {
             setListContact(data.data);
             setListFilter(data.data);

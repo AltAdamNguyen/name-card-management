@@ -18,8 +18,8 @@ const ModalFlag = ({ listItem, visible, onPress, onPressVisable }) => {
                         <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Phân loại</Text>
                         {listItem.map((item, index) => {
                             return (
-                                <Button key={index} icon="bookmark" color={item.color} onPress={() => onPress(item)} style={{ width: '100%', alignItems: 'flex-start' }}>
-                                    <Text style={{ color: '#000' }}>{item.title}</Text>
+                                <Button key={index} icon="bookmark" color={item.color} onPress={() => onPress(item)} style={{ width: '100%', alignItems: 'flex-start' }} uppercase={false}>
+                                    <Text style={{ color: '#000', fontWeight: 'normal' }}>{item.title}</Text>
                                 </Button>
                             )
                         })}

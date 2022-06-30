@@ -46,7 +46,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: '#ffff',
     },
     header: {
         flexDirection: 'row',
@@ -60,7 +59,8 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height*0.3,
         justifyContent: "center",
-        padding: 5,
+        alignItems: "center",
+        padding: 7,
         marginBottom: 10,
     },
     body_imgContact_image:{
@@ -69,26 +69,41 @@ const styles = StyleSheet.create({
         aspectRatio: 1.63185185185,
         resizeMode: 'contain',
         borderRadius: 10,
+        borderWidth: 3,
+        borderColor: '#2D9CDB',
     },
     info: {
         flexDirection: 'column',
         paddingLeft: 10,
         paddingRight: 10,
     },
+    info_title: {
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        borderRadius: 20,
+        padding: 10,
+    },
     info_title_name: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: '2%',
+        fontSize: 25,
+        marginBottom: 10,
+    },
+    info_title_job: {
+        fontSize: 16,
+    },
+    info_title_job_name: {
+        fontSize: 12,
+        color: '#828282',
     },
     info_flag_button: {
         borderRadius: 10,
         marginTop: 10
     },
     info_component: {
-        borderTopWidth: 1,
-        borderColor: '#82828225',
-        marginTop: 10,
-        paddingTop: 10,
+        backgroundColor: '#fff',
+        borderRadius: 20,
+        marginTop: 15,
+        paddingLeft: 15,
+        paddingRight: 15,
     },
     info_component_item: {
         flexDirection: 'row',
@@ -97,11 +112,21 @@ const styles = StyleSheet.create({
     info_contact_des: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingBottom: 10,
+        paddingTop: 10,
+        paddingLeft: 5,
+    },
+    borderDes: {
+        borderBottomColor: '#82828250',
+        borderBottomWidth: 1,
+    },
+    info_component_des_title: {
+        fontSize: 12,
+        color: '#828282',
     },
     info_contact_des_label: {
         fontSize: 16,
-        color: '#2D9CDB',
-        marginLeft: 10,
     },
     info_component_title: {
         fontSize: 18,
@@ -110,7 +135,6 @@ const styles = StyleSheet.create({
     },
     info_component_des: {
         fontSize: 16,
-        // color: '#2D9CDB',
     },
     info_componetn_content: {
         flexDirection: 'row',
@@ -128,7 +152,17 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
     },
-
+    footer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        padding: 5,
+    },
+    footer_button: {
+        alignItems: 'center',
+    },
+    footer_button_label: {
+        fontSize: 12,
+    }
 });
 
 export default styles;

@@ -24,7 +24,7 @@
       "package": "com.ncm.namecardmanagement",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
+        "backgroundColor": "#BDBDBD"
       },
       "softwareKeyboardLayoutMode": "pan"
     },

@@ -1,10 +1,9 @@
 //import liraries
 import React, { useState, useEffect } from 'react';
-import { View, Text, SafeAreaView, Image, ScrollView, Platform } from 'react-native';
+import { View, Text, SafeAreaView, Image, ScrollView, Pressable } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import iconPath from '../../constants/iconPath';
-
+import { Picker } from '@react-native-picker/picker';
 import { Appbar, Button, IconButton } from 'react-native-paper';
 import { useIsFocused } from '@react-navigation/native';
 import { ContactAPI, ContentType, Method } from '../../constants/ListAPI';
@@ -135,8 +134,8 @@ const ViewContact = ({ navigation, route }) => {
         <SafeAreaView style={styles.container}>
             <Appbar.Header theme={{ colors: { primary: "transparent" } }} statusBarHeight={1}>
                 <Appbar.BackAction onPress={() => navigation.goBack()} />
-                <Appbar.Content title="Thông tin liên hệ" />
-                <Appbar.Action icon={Platform.OS === 'android' ? "dots-vertical" : "dots-horizontal"} onPress={() => setModalFloatVisible(true)} />
+                {/* <Appbar.Content title="Thông tin liên hệ" />
+                <Appbar.Action icon={Platform.OS === 'android' ? "dots-vertical" : "dots-horizontal"} onPress={() => setModalFloatVisible(true)} /> */}
             </Appbar.Header>
             <View style={[styles.body, modalFloatVisible ? styles.containerOverlay : null, modalVisible ? styles.containerOverlay : null, modalStatusVisible ? styles.containerOverlay : null]}>
                 <View style={styles.body_imgContact}>
@@ -147,10 +146,10 @@ const ViewContact = ({ navigation, route }) => {
                         <View style={styles.info}>
                             <View style={styles.info_title}>
                                 <Text style={styles.info_title_name}>{contact.name}</Text>
-                                {Boolean(contact.job_title) ?<Text>{contact.job_title}</Text>:<Text>Không có chức danh</Text>}
-                                <Text>{contact.company}</Text>
+                                {Boolean(contact.job_title) ? <Text style={styles.info_title_job}><Text style={styles.info_title_job_name}>Chức vụ </Text>{contact.job_title}</Text> : <Text>Không có chức danh</Text>}
+                                <Text style={styles.info_title_job}><Text style={styles.info_title_job_name}>Công ty </Text>{contact.company}</Text>
                             </View>
-                            <View style={styles.info_flag}>
+                            {/* <View style={styles.info_flag}>
                                 <ModalFlag listItem={Object.values(listFlag)} visible={modalVisible} onPress={handlePressButtonFlag} onPressVisable={() => setModalVisible(false)} />
                                 <Button
                                     icon="chevron-down"
@@ -162,25 +161,34 @@ const ViewContact = ({ navigation, route }) => {
                                 >
                                     <Text style={{ color: flag === undefined ? '#000000' : flag.color, fontWeight: 'bold' }}>{flag === undefined ? 'Phân loại' : flag.name == 'none' ? 'Phân loại' : flag.title}</Text>
                                 </Button>
-                            </View>
+                            </View> */}
                             <View style={styles.info_component}>
                                 {Boolean(contact.phone) &&
-                                    <View style={styles.info_contact_des}>
-                                        <Icon name="cellphone" size={24} color="#828282" />
-                                        <Text style={styles.info_contact_des_label}>{contact.phone}</Text>
-                                        <Icon.Button name={'content-copy'} backgroundColor='transparent' iconStyle={{ marginLeft: 10 }} size={24} color="#828282" onPress={async () => await Clipboard.setStringAsync(contact.phone)} />
-                                    </View>
+                                    <Pressable style={[styles.info_contact_des, styles.borderDes]} >
+                                        <View>
+                                            <Text style={styles.info_component_des_title}>Di động</Text>
+                                            <Text style={styles.info_contact_des_label}>{contact.phone}</Text>
+                                        </View>
+                                        <IconButton icon="cellphone" size={16} color="#828282" />
+                                        {/* <Icon.Button name={'content-copy'} backgroundColor='transparent' iconStyle={{ marginLeft: 10 }} size={24} color="#828282" onPress={async () => await Clipboard.setStringAsync(contact.phone)} /> */}
+                                    </Pressable>
                                 }
-                                <View style={styles.info_contact_des}>
-                                    <Icon name="email-outline" size={24} color="#828282" />
-                                    <Text style={styles.info_contact_des_label}>{contact.email}</Text>
-                                    <Icon.Button name={'content-copy'} backgroundColor='transparent' iconStyle={{ marginLeft: 10 }} size={24} color="#828282" onPress={async () => await Clipboard.setStringAsync(contact.email)} />
+                                <View style={[styles.info_contact_des, styles.borderDes]}>
+                                    <View>
+                                        <Text style={styles.info_component_des_title}>Email</Text>
+                                        <Text style={styles.info_contact_des_label}>{contact.email}</Text>
+                                    </View>
+                                    <IconButton icon="email" size={16} color="#828282" />
+                                    {/* <Icon.Button name={'content-copy'} backgroundColor='transparent' iconStyle={{ marginLeft: 10 }} size={24} color="#828282" onPress={async () => await Clipboard.setStringAsync(contact.email)} /> */}
                                 </View>
                                 {Boolean(contact.fax) &&
                                     <View style={styles.info_contact_des}>
-                                        <Icon name="fax" size={24} color="#828282" />
-                                        <Text style={styles.info_contact_des_label}>{contact.fax}</Text>
-                                        <Icon.Button name={'content-copy'} backgroundColor='transparent' iconStyle={{ marginLeft: 10 }} size={24} color="#828282" onPress={async () => await Clipboard.setStringAsync(contact.fax)} />
+                                        <View>
+                                            <Text style={styles.info_component_des_title}>Fax</Text>
+                                            <Text style={styles.info_contact_des_label}>{contact.fax}</Text>
+                                        </View>
+                                        <IconButton icon="fax" size={16} color="#828282" />
+                                        {/* <Icon.Button name={'content-copy'} backgroundColor='transparent' iconStyle={{ marginLeft: 10 }} size={24} color="#828282" onPress={async () => await Clipboard.setStringAsync(contact.fax)} /> */}
                                     </View>
                                 }
 
@@ -228,7 +236,20 @@ const ViewContact = ({ navigation, route }) => {
                 }
                 <BottomSheetContact visible={modalFloatVisible} onPressVisible={() => setModalFloatVisible(false)} onPressUpdate={handlePressUpdateContact} />
             </View>
-
+            <View style={styles.footer}>
+                <Pressable style={styles.footer_button}>
+                    <Icon name="account-multiple-plus-outline" size={24} color="#828282" />
+                    <Text style={styles.footer_button_label}>Thêm nhóm</Text>
+                </Pressable>
+                <Pressable style={styles.footer_button}>
+                    <Icon name="account-edit-outline" size={24} color="#828282" />
+                    <Text style={styles.footer_button_label}>Sửa</Text>
+                </Pressable>
+                <Pressable style={styles.footer_button}>
+                    <Icon name="account-minus-outline" size={24} color="#828282" />
+                    <Text style={styles.footer_button_label}>Vô hiệu hoá</Text>
+                </Pressable>
+            </View>
         </SafeAreaView>
     );
 };
