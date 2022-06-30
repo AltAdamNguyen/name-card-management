@@ -90,6 +90,10 @@ const styles = StyleSheet.create({
         marginTop: 10,
         paddingTop: 10,
     },
+    info_component_item: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
     info_contact_des: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -106,7 +110,7 @@ const styles = StyleSheet.create({
     },
     info_component_des: {
         fontSize: 16,
-        color: '#2D9CDB',
+        // color: '#2D9CDB',
     },
     info_componetn_content: {
         flexDirection: 'row',

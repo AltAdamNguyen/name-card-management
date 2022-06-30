@@ -1,12 +1,13 @@
 import { View, StyleSheet } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import CustomInputs from "../../components/CustomInputs";
 import CustomButtons from "../../components/CustomButtons";
 import CustemHeaders from "../../components/CustomHeaders/CustemHeaders";
 import Logo_ForgotPassword from "../../asset/image/forgotPassword.png";
 import styles from "./styles";
-
-import iconPath from "../../constants/iconPath";
+import i18next from "../../language/i18n"; 
+import AuthContext from "../../store/AuthContext";
+import { useTranslation } from "react-i18next";
 const ForgotPassword = () => {
   const [user, setUser] = useState({
     email: "",
@@ -15,7 +16,9 @@ const ForgotPassword = () => {
   const onForgotPasswordPressed = () => {
     console.warn("onForgotPasswordPressed");
   };
-
+  const { t, i18n } = useTranslation();
+  const authCtx = useContext(AuthContext)
+  i18n.changeLanguage(authCtx.locale)
   const onClearEmailPressed = () => {
     setUser({
       ...user,
@@ -42,7 +45,7 @@ const ForgotPassword = () => {
         onpress={onClearEmailPressed}
       />
       <CustomButtons
-        text="Đặt lại mật khẩu"
+        text={t("Screen_ForgotPassword_Button_ResetPassword")}
         onPress={onForgotPasswordPressed}
       />
     </View>

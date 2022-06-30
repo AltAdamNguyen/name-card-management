@@ -22,6 +22,8 @@ export const ContactAPI = {
     AddContact: "/api/contacts",
     ViewContact: "/api/contacts",
     UpdateContact: "/api/contacts",
+    SearchContact: "/api/contacts/search",
     SetFlag: "/api/contacts/flag",
-    SetStatus: "/api/contacts/status"
+    SetStatus: "/api/contacts/status",
+
 }

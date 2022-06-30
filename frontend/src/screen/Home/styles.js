@@ -74,7 +74,6 @@ const styles = StyleSheet.create({
                 alignItems: 'center',
             },
     container: {
-        fontfamily: 'Roboto',
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
@@ -93,25 +92,18 @@ const styles = StyleSheet.create({
         marginTop: 10,
         width: '100%',
     },
-    input: {
-        width: '100%',
-    },
 
     titleContainer: {
         marginTop: 20,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        width: '95%',
     },
     labelList: {
-        textAlign: 'left',
-        width: '50%',
         fontSize: 16,
         fontWeight: 'bold',
         
-    },
-    flag: {
-        width: '50%',
     },
         buttonFlag: {
             borderRadius: 10,
@@ -124,7 +116,6 @@ const styles = StyleSheet.create({
                 alignItems:'center', 
                 borderRadius:10, 
                 paddingLeft: 5, 
-                paddingRight: 5
             },
                 labelFlag: {
                     fontWeight: 'bold',
@@ -193,14 +184,10 @@ const styles = StyleSheet.create({
     },
     floatButton: {
         position: 'absolute',
-        width: 50,
-        height: 50,
-        alignItems: 'center',
-        justifyContent: 'center',
-        left: '30%',
-        bottom: 20,
-        backgroundColor: '#1890FF',
-        borderRadius: 1000,
+        margin: 16,
+        right: 0,
+        bottom: 0,
+        backgroundColor: '#1890FF'
     },
 
 

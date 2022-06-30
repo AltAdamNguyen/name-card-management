@@ -32,7 +32,7 @@ export const FetchApiAuth = (url, method, contentType, param, callback) => {
         })
 }
 
-export const FetchApi = async (url, method, contentType, param, callback) => {
+export const FetchApi = async(url, method, contentType, param, callback) => {
     let token = await SecureStore.getItemAsync('access_token');
     if (token && isTokenExpired(token)) {
         let refresh_token = await SecureStore.getItemAsync('refresh_token');
@@ -49,10 +49,12 @@ export const FetchApi = async (url, method, contentType, param, callback) => {
             console.log(response)
             return response.json()
         })
-        .then(async (data) => {
+        .then((data) => {
             console.log(data)
-            token = data.data.access_token;
-            await SecureStore.setItemAsync('access_token', data.data.access_token)
+            if (data.access_token) {
+                token = data.data.accessToken
+                SecureStore.setItemAsync('access_token', data.data.access_token)
+            }
         })
         .catch((error) => {
             console.log(error)
@@ -63,12 +65,11 @@ export const FetchApi = async (url, method, contentType, param, callback) => {
             method: method,
             headers: {
                 'Content-Type': contentType,
-                'Authorization': 'Bearer ' + token
+                'Authorization': 'Bearer ' + token,
             },
             body: JSON.stringify(param),
         })
         .then((response) => {
-            console.log(response)
             return response.json()
         })
         .then((data) => {
