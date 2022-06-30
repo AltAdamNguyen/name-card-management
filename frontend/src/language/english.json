@@ -1,9 +1,68 @@
 {
     "translation" : {
-        "placeholder_Username": "Email",
-        "placeholder_Password": "Password",
-        "button_ForgotPassword": "Forgot Password",
-        "button_Login": "Login",
-        "signature_login": "@2022 Developed by FIS"
+        "Screen_Login_Placeholder_Username": "Email",
+        "Screen_Login_Placeholder_Password": "Password",
+        "Screen_Login_Button_ForgotPassword": "Forgot Password",
+        "Screen_Login_Button_Login": "Login",
+        "Screen_Login_Text_Signature": "@2022 Developed by FIS",
+
+        "Screen_ForgotPassword_Button_ResetPassword": "Reset Password",
+
+        "Screen_Setting_Button_Title": "Setting",
+        "Screen_Setting_Button_ChangePassword": "Change Password",
+        "Screen_Setting_Button_Logout": "Logout",
+
+        "Screen_Home_Button_Flag_Label": "Classify",
+        "Screen_Home_Button_Flag_VeryImportant": "Very Important",
+        "Screen_Home_Button_Flag_Important": "Important",
+        "Screen_Home_Button_Flag_NotImportant": "Not Important",
+        "Screen_Home_Button_Flag_DoNotCare": "Don't Care",
+        "Screen_Home_Placeholder_Search": "Search for contact",
+        "Screen_Home_Text_Container_Title_LabelList": "Name Card",
+        "Screen_Home_ModalFlag_Text_Classify": "Classify",
+
+        "Screen_GroupContact_Placeholder_Search": "Search for group",
+        "Screen_GroupContact_Text_Container_Label_Title":"My group of contacts",
+
+        "Screen_Home_ModalHome_Text_Label_Sort": "Sort",
+        "Screen_Home_ModalHome_Text_Label_Manage": "Manage",
+        "Screen_Home_ModalHome_Text_Label_AddNameCard": "Add name card",
+        "Screen_Home_ModalHome_Text_Label_Export": "Export",
+        "Screen_Home_ModalHome_Text_Label_TransferNamecard": "Transfer name card",
+        "Screen_Home_ModalHome_Text_Label_DeactivateList": "Deactivate list",
+        "Screen_Home_ModalHome_Button_ListSort_Date": "Date",
+        "Screen_Home_ModalHome_Button_ListSort_Name": "Name",
+        "Screen_Home_ModalHome_Button_ListSort_Company": "Company",
+
+        "Screen_ViewContact_Appbar_Content_Title": "Contact Infomation",
+        "Screen_ViewContact_Text_NoJobTitle": "No title",
+        "Screen_ViewContact_Button_Flag_VeryImportant": "Very Important",
+        "Screen_ViewContact_Button_Flag_Important": "Important",
+        "Screen_ViewContact_Button_Flag_NotImportant": "Not Important",
+        "Screen_ViewContact_Button_Flag_DoNotCare": "Don't Care",
+        "Screen_ViewContact_Button_Flag_DeleteSelection": "Delete Selection",
+        "Screen_ViewContact_Button_Status_Completed": "COMPLETED",
+        "Screen_ViewContact_Button_Status_OnGoing": "ON GOING",
+        "Screen_ViewContact_Button_Status_Failed": "FAILED",
+        "Screen_ViewContact_Text_Label_Address": "Address",
+        "Screen_ViewContact_Text_Label_NoAddress": "No address",
+        "Screen_ViewContact_Text_Label_Website": "Website",
+        "Screen_ViewContact_Text_Label_NoWebsite": "No Website",
+        "Screen_ViewContact_Text_Label_Group": "Group",
+        "Screen_ViewContact_Text_Label_Status": "Status:",
+        "Screen_ViewContact_Text_Label_CreatedDated": "Created Date",
+        "Screen_ViewContact_Text_Label_NoStatusReason": "No reasons",
+        "Screen_ViewContact_Text_Classify": "Classify",
+        "Screen_ViewContact_BottomSheet_Text_AddToGroup":"Add to group",
+        "Screen_ViewContact_BottomSheet_Text_UpdateInformation":"Update information",
+        "Screen_ViewContact_BottomSheet_Text_DeactivateNameCard":"Deactivate Name Card",
+        
+        "ModalFlag_Text_Label_Classify": "Classify",
+
+        "ModalStatus_Text_Label_Status": "Status",
+        "ModalStatus_Button_Cancel": "Cancel",
+        "ModalStatus_Button_Complete": "Complete",
+        "ModalStatus_Label_Reason": "Reasons",
+        "ModalStatus_PlaceHolder_Reason": "Enter reasons"
     }
 }
