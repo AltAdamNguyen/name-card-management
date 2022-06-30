@@ -5,10 +5,13 @@
         "Screen_Login_Button_ForgotPassword": "Quên mật khẩu",
         "Screen_Login_Button_Login": "Đăng nhập",
         "Screen_Login_Text_Signature": "@2022 Phát triển bởi FIS",
+
         "Screen_ForgotPassword_Button_ResetPassword": "Đặt lại mật khẩu",
+
         "Screen_Setting_Button_Title": "Cài Đặt",
         "Screen_Setting_Button_ChangePassword": "Đổi mật khẩu",
         "Screen_Setting_Button_Logout": "Đăng xuất",
+
         "Screen_Home_Button_Flag_Label": "Phân Loại",
         "Screen_Home_Button_Flag_VeryImportant": "Rất Quan Trọng",
         "Screen_Home_Button_Flag_Important": "Quan Trọng",
@@ -16,8 +19,51 @@
         "Screen_Home_Button_Flag_DoNotCare": "Không Quan Tâm",
         "Screen_Home_Placeholder_Search": "Tìm kiếm danh thiếp",
         "Screen_Home_Text_Container_Title_LabelList": "Danh Thiếp",
-        "Screen_Group_Placeholder_Search": "Tìm kiếm nhóm",
-        "Screen_Group_Container_Title_Label":"Nhóm danh thiếp của tôi"
-    }
-    
+        "Screen_Home_ModalFlag_Text_Classify": "Phân loại", 
+
+        "Screen_GroupContact_Placeholder_Search": "Tìm kiếm nhóm",
+        "Screen_GroupContact_Text_Container_Label_Title":"Nhóm danh thiếp của tôi",
+
+        "Screen_Home_ModalHome_Text_Label_Sort": "Sắp xếp",
+        "Screen_Home_ModalHome_Text_Label_Manage": "Quản lí",
+        "Screen_Home_ModalHome_Text_Label_AddNameCard": "Thêm danh thiếp",
+        "Screen_Home_ModalHome_Text_Label_Export": "Xuất",
+        "Screen_Home_ModalHome_Text_Label_TransferNamecard": "Chuyển danh thiếp",
+        "Screen_Home_ModalHome_Text_Label_DeactivateList": "Danh sách vô hiệu hóa",
+        "Screen_Home_ModalHome_Button_ListSort_Date": "NGÀY",
+        "Screen_Home_ModalHome_Button_ListSort_Name": "TÊN",
+        "Screen_Home_ModalHome_Button_ListSort_Company": "CÔNG TY",
+
+        "Screen_ViewContact_Appbar_Content_Title": "Contact Infomation",
+        "Screen_ViewContact_Text_NoJobTitle": "No Title",
+        "Screen_ViewContact_Button_Flag_VeryImportant": "Rất Quan Trọng",
+        "Screen_ViewContact_Button_Flag_Important": "Quan Trọng",
+        "Screen_ViewContact_Button_Flag_NotImportant": "Không Quan Trọng",
+        "Screen_ViewContact_Button_Flag_DoNotCare": "Không Quan Tâm",
+        "Screen_ViewContact_Button_Flag_DeleteSelection": "Xóa lựa chọn",
+        "Screen_ViewContact_Button_Status_Completed": "HOÀN THÀNH",
+        "Screen_ViewContact_Button_Status_OnGoing": "ĐANG TIẾN HÀNH",
+        "Screen_ViewContact_Button_Status_Failed": "THẤT BẠI",
+        "Screen_ViewContact_Text_Label_Address": "Địa chỉ",
+        "Screen_ViewContact_Text_Label_NoAddress": "Không có địa chỉ",
+        "Screen_ViewContact_Text_Label_Website": "Website",
+        "Screen_ViewContact_Text_Label_NoWebsite": "Không có website",
+        "Screen_ViewContact_Text_Label_Group": "Nhóm",
+        "Screen_ViewContact_Text_Label_Status": "Trạng thái:",
+        "Screen_ViewContact_Text_Label_CreatedDated": "Ngày khởi tạo",
+        "Screen_ViewContact_Text_Label_NoStatusReason": "Không có lí do",
+        "Screen_ViewContact_Text_Classify": "Phân loại",
+        "Screen_ViewContact_BottomSheet_Text_AddToGroup":"Thêm vào nhóm",
+        "Screen_ViewContact_BottomSheet_Text_UpdateInformation":"Sửa thông tin",
+        "Screen_ViewContact_BottomSheet_Text_DeactivateNameCard":"Vô hiệu hóa danh thiếp",
+        
+        "ModalFlag_Text_Label_Classify": "Phân loại",
+
+        "ModalStatus_Text_Label_Status": "Status",
+        "ModalStatus_Button_Cancel": "Hủy",
+        "ModalStatus_Button_Complete": "Hoàn Tất",
+        "ModalStatus_Label_Reason": "Lý do",
+        "ModalStatus_PlaceHolder_Reason": "Nhập lý do"
+       
+    } 
 }

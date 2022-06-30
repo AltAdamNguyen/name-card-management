@@ -20,7 +20,7 @@ const GroupContact = () => {
                     <Image source={iconPath.icSearch} style={styles.container_sectionStyle_icSearch} />
                     <TextInput
                         style={styles.input}
-                        placeholder={t("Screen_Group_Placeholder_Search")}
+                        placeholder={t("Screen_GroupContact_Placeholder_Search")}
                         value={text}
                         onChangeText={(value) => setText(value)}
                     />
@@ -29,7 +29,7 @@ const GroupContact = () => {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.container_title}>
-                    <Text style={styles.container_title_label}>{t("Screen_Group_Container_Title_Label")}</Text>
+                    <Text style={styles.container_title_label}>{t("Screen_GroupContact_Text_Container_Label_Title")}</Text>
                 </View>
                 <View style={styles.container_listGroup}>
                     <ScrollView>
