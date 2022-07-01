@@ -1,15 +1,42 @@
 //import liraries
-import React, { Component, useState } from 'react';
-import { View, Text, StyleSheet, Pressable} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useEffect, useState } from 'react';
+import { View, Pressable, SafeAreaView, ScrollView, Text } from 'react-native';
 import styles from './styles';
-import { IconButton, Searchbar, FAB } from 'react-native-paper';
+import { Button, Searchbar } from 'react-native-paper';
+import Tree from '../../components/team/Tree';
+import { FetchApi } from '../../service/api/FetchAPI';
+import { ContentType, Method, TeamAPI } from '../../constants/ListAPI';
 // create a component
-const Team = () => {
-    const [modalFloatVisible, setModalFloatVisible] = useState(false);
-    const [modalVisible, setModalVisible] = useState(false);
+const Team = ({navigation}) => {
+    const [team, setTeam] = useState([]);
+    const [checked, setChecked] = useState(false);
+    const [listExport, setListExport] = useState([]);
+    useEffect(() => {
+        FetchApi(TeamAPI.GetTeam, Method.GET, ContentType.JSON, undefined, getTeam)
+    }, [])
+
+    const getTeam = (data) => {
+        setTeam(data.data);
+    }
+
+    const checklistExport = (item, check) => {
+        if (check) {
+            setListExport([...listExport, item]);
+        } else {
+            setListExport(listExport.filter(i => i !== item));
+        }
+    }
+
+    console.log(listExport);
+
     return (
-        <SafeAreaView style={[styles.container, modalFloatVisible ? styles.containerOverlay : null, modalVisible ? styles.containerOverlay : null]}>
+        <SafeAreaView style={styles.container}>
+            <Text>Team</Text>
+            <Button
+                onPress={() => setChecked(!checked)}
+            >
+                export
+            </Button>
             <View style={styles.header}>
                 <Pressable style={styles.sectionStyle}>
                     <Searchbar
@@ -22,6 +49,18 @@ const Team = () => {
                     />
                 </Pressable>
             </View>
+
+            <View style={{ flex: 1, width: '100%', marginTop: 20 }}>
+            <Text>Thành viên</Text>
+                <ScrollView>
+                    {Boolean(team) && team.map((item, index) => {
+                        return (
+                            <Tree item={item} navigation={navigation} key={index} checked={checked} checklistExport={checklistExport} listExport={listExport}/>
+                        )
+                    })}
+                </ScrollView>
+            </View>
+
         </SafeAreaView>
     );
 };

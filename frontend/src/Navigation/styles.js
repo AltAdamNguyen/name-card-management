@@ -5,7 +5,7 @@ const styles = (focused) => StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     icon: {
         tintColor: focused ? '#1890FF' : '#828282'
@@ -14,22 +14,35 @@ const styles = (focused) => StyleSheet.create({
         fontSize: 12,
         color: focused ? '#1890FF' : '#828282',
         textAlign: 'center',
-        textTransform: 'uppercase'
+        display: focused?'flex':'none'
     },
     containerScan: {
-        width: '75%',
-        height: '80%',
+        position: 'absolute',
+        top: -20,
+        width: 70,
+        height: 70,
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#1890FF',
-        borderRadius: 1000,
+        borderRadius: 35,
     },
-    labelScan: {
-        fontSize: 12,
-        color: '#ffff',
-        textAlign: 'center',
-        textTransform: 'uppercase',
-    },
+    // labelScan: {
+    //     fontSize: 12,
+    //     color: '#ffff',
+    //     textAlign: 'center',
+    //     textTransform: 'uppercase',
+    // },
+    shadow: {
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        
+        elevation: 5,
+    }
 });
 
 export default styles;

@@ -9,6 +9,18 @@ const styles = StyleSheet.create({
     ml10: {
         marginLeft: 10,
     },
+    btl20 :{
+        borderTopLeftRadius: 20,
+    },
+    btr20 :{
+        borderTopRightRadius: 20,
+    },
+    bbl20 :{
+        borderBottomLeftRadius: 20,
+    },
+    bbr20 :{
+        borderBottomRightRadius: 20,
+    },
     containerOverlay: {
         backgroundColor: 'rgba(130, 130, 130,0.5)',
     },
@@ -17,7 +29,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         width: '70%',
         alignItems: 'flex-start',
-        padding: 5
+        padding: 7
     },
     info_flag_modalItem: {
             flexDirection: 'row',
@@ -35,7 +47,9 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         width: '90%',
         alignItems: 'flex-start',
-        padding: 10
+        padding: 10,
+        borderColor: '#BDBDBD',
+        borderWidth: 1,
     },
     info_status_modalItem_button: {
         flexDirection:'row', 
@@ -61,7 +75,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         padding: 7,
-        marginBottom: 10,
     },
     body_imgContact_image:{
         width: '100%',
@@ -89,6 +102,7 @@ const styles = StyleSheet.create({
     },
     info_title_job: {
         fontSize: 16,
+        textAlign: 'center',
     },
     info_title_job_name: {
         fontSize: 12,
@@ -102,12 +116,14 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderRadius: 20,
         marginTop: 15,
-        paddingLeft: 15,
-        paddingRight: 15,
     },
     info_component_item: {
         flexDirection: 'row',
         alignItems: 'center',
+    },
+    info_component_button: {
+        paddingLeft: 15,
+        paddingRight: 15,
     },
     info_contact_des: {
         flexDirection: 'row',
@@ -117,9 +133,12 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingLeft: 5,
     },
-    borderDes: {
+    info_contact_border: {
         borderBottomColor: '#82828250',
         borderBottomWidth: 1,
+    },
+    info_contact_des_item: {
+        width: '90%',
     },
     info_component_des_title: {
         fontSize: 12,
@@ -153,6 +172,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 10,
     },
     footer: {
+        backgroundColor: '#FFFFFF',
         flexDirection: 'row',
         justifyContent: 'space-around',
         padding: 5,

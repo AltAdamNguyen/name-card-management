@@ -46,7 +46,9 @@ const ModalHome = ({ visible, onPressVisable, sort, onPressSort }) => {
       }}
     >
       <TouchableOpacity style={{ flex: 1 }} onPress={onPressVisable}>
+      <View style={{alignItems: 'center', flex: 1}}>
         <TouchableWithoutFeedback>
+
           <View style={styles.modelViewFloat}>
             <View style={styles.mb10}>
               <Text style={[styles.modalLabel, styles.Bold, styles.mb10]}>
@@ -60,7 +62,7 @@ const ModalHome = ({ visible, onPressVisable, sort, onPressSort }) => {
                       icon={item.icon}
                       color={item.value == sort ? "#1890FF" : "#828282"}
                       labelStyle={{ fontSize: 16 }}
-                      mode="contained"
+                      mode="outlined"
                       style={{ alignItems: "flex-start" }}
                       onPress={() => onPressSort(item)}
                     >
@@ -80,6 +82,7 @@ const ModalHome = ({ visible, onPressVisable, sort, onPressSort }) => {
                   color="#000000"
                   labelStyle={{ fontSize: 25 }}
                   style={{ alignItems: "flex-start" }}
+                  uppercase={false}
                 >
                   <Text style={{ fontSize: 14 }}>
                     {t("Screen_Home_ModalHome_Text_Label_AddNameCard")}
@@ -90,6 +93,7 @@ const ModalHome = ({ visible, onPressVisable, sort, onPressSort }) => {
                   color="#000000"
                   labelStyle={{ fontSize: 25 }}
                   style={{ alignItems: "flex-start" }}
+                  uppercase={false}
                 >
                   <Text style={{ fontSize: 14 }}>
                     {t("Screen_Home_ModalHome_Text_Label_Export")}
@@ -100,6 +104,7 @@ const ModalHome = ({ visible, onPressVisable, sort, onPressSort }) => {
                   color="#000000"
                   labelStyle={{ fontSize: 25 }}
                   style={{ alignItems: "flex-start" }}
+                  uppercase={false}
                 >
                   <Text style={{ fontSize: 14 }}>
                     {t("Screen_Home_ModalHome_Text_Label_TransferNamecard")}
@@ -110,6 +115,7 @@ const ModalHome = ({ visible, onPressVisable, sort, onPressSort }) => {
                   color="#000000"
                   labelStyle={{ fontSize: 25 }}
                   style={{ alignItems: "flex-start" }}
+                  uppercase={false}
                 >
                   <Text style={{ fontSize: 14 }}>
                     {t("Screen_Home_ModalHome_Text_Label_DeactivateList")}
@@ -119,6 +125,7 @@ const ModalHome = ({ visible, onPressVisable, sort, onPressSort }) => {
             </View>
           </View>
         </TouchableWithoutFeedback>
+        </View>
       </TouchableOpacity>
     </Modal>
   );
