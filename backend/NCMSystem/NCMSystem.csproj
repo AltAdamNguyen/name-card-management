@@ -58,8 +58,8 @@
     <Reference Include="jose-jwt, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\jose-jwt.4.0.0\lib\net472\jose-jwt.dll</HintPath>
     </Reference>
-    <Reference Include="JWT, Version=10.0.0.0, Culture=neutral, PublicKeyToken=6f98bca0f40f2ecf, processorArchitecture=MSIL">
-      <HintPath>..\packages\JWT.10.0.0-beta2\lib\net462\JWT.dll</HintPath>
+    <Reference Include="JWT, Version=9.0.0.0, Culture=neutral, PublicKeyToken=6f98bca0f40f2ecf, processorArchitecture=MSIL">
+      <HintPath>..\packages\JWT.9.0.3\lib\net46\JWT.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -197,6 +197,8 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Common\ResponseMessage.cs" />
     <Compile Include="Controllers\ContactController.cs" />
+    <Compile Include="Controllers\GroupContactController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ScanController.cs" />
     <Compile Include="Controllers\TeamController.cs" />
     <Compile Include="Controllers\TestController.cs" />
@@ -216,6 +218,13 @@
     <Compile Include="Models\CallAPI\Contact\ReasonDAContact.cs" />
     <Compile Include="Models\CallAPI\Contact\SearchContact.cs" />
     <Compile Include="Models\CallAPI\Contact\StatusContact.cs" />
+    <Compile Include="Models\CallAPI\Group Contact\ContactInGroup.cs" />
+    <Compile Include="Models\CallAPI\Group Contact\ContactToGroupRequest.cs" />
+    <Compile Include="Models\CallAPI\Group Contact\DeleteContactFromGroupRequest.cs" />
+    <Compile Include="Models\CallAPI\Group Contact\DetailGroupContact.cs" />
+    <Compile Include="Models\CallAPI\Group Contact\GroupContactRequest.cs" />
+    <Compile Include="Models\CallAPI\Group Contact\HomeGroupContact.cs" />
+    <Compile Include="Models\CallAPI\Group Contact\RenameGroupContact.cs" />
     <Compile Include="Models\CallAPI\ScanNC\InfoNC.cs" />
     <Compile Include="Models\CallAPI\ScanNC\ScanNCRequest.cs" />
     <Compile Include="Models\CallAPI\ScanNC\ScanResponse.cs" />
@@ -345,7 +354,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\HelpPage\Controllers" />
+    <Folder Include="Areas\HelpPage\Controllers\" />
     <Folder Include="Logs\" />
   </ItemGroup>
   <ItemGroup>
@@ -384,6 +393,9 @@
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
@@ -404,6 +416,9 @@
           <CustomServerUrl>
           </CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+          <servers defaultServer="SelfHostServer">
+            <server name="SelfHostServer" exePath="" cmdArgs="" url="http://localhost:52875/" workingDir="" />
+          </servers>
         </WebProjectProperties>
       </FlavorProperties>
     </VisualStudio>
