@@ -1,45 +1,68 @@
 //import liraries
-import React, { useState, useContext } from "react";
-import {
-  View,
-  SafeAreaView,
-  Pressable,
-  Text
-} from "react-native";
-
-import { IconButton, Searchbar, FAB } from "react-native-paper";
-import styles from "./styles";
-import i18next from "../../language/i18n";
-import { useTranslation } from "react-i18next";
-import AuthContext from "../../store/AuthContext";
+import React, { useEffect, useState } from 'react';
+import { View, Pressable, SafeAreaView, ScrollView, Text } from 'react-native';
+import styles from './styles';
+import { Button, Searchbar } from 'react-native-paper';
+import Tree from '../../components/team/Tree';
+import { FetchApi } from '../../service/api/FetchAPI';
+import { ContentType, Method, TeamAPI } from '../../constants/ListAPI';
 // create a component
-const Team = () => {
-  const [text, setText] = useState("");
-  const [textGroup, setTextGroup] = useState("");
-  const [modalVisible, setModalVisible] = useState(false);
-  const authCtx = useContext(AuthContext);
-  const { t, i18n } = useTranslation();
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Pressable
-          style={styles.sectionStyle}
-        >
-          <Searchbar
-                        placeholder="Tìm kiếm đội"
+const Team = ({navigation}) => {
+    const [team, setTeam] = useState([]);
+    const [checked, setChecked] = useState(false);
+    const [listExport, setListExport] = useState([]);
+    useEffect(() => {
+        FetchApi(TeamAPI.GetTeam, Method.GET, ContentType.JSON, undefined, getTeam)
+    }, [])
+
+    const getTeam = (data) => {
+        setTeam(data.data);
+    }
+
+    const checklistExport = (item, check) => {
+        if (check) {
+            setListExport([...listExport, item]);
+        } else {
+            setListExport(listExport.filter(i => i !== item));
+        }
+    }
+
+    console.log(listExport);
+
+    return (
+        <SafeAreaView style={styles.container}>
+            <Text>Team</Text>
+            <Button
+                onPress={() => setChecked(!checked)}
+            >
+                export
+            </Button>
+            <View style={styles.header}>
+                <Pressable style={styles.sectionStyle}>
+                    <Searchbar
+                        placeholder="Tìm kiếm nhóm"
                         theme={{
                             roundness: 10,
                             colors: { primary: '#1890FF' }
                         }}
                         editable={false}
                     />
-        </Pressable>
-      </View>
-      <View style={styles.container_title}>
-            <Text style={styles.container_title_label}>Đội của tôi</Text>
-        </View>
-    </SafeAreaView>
-  );
+                </Pressable>
+            </View>
+
+            <View style={{ flex: 1, width: '100%', marginTop: 20 }}>
+            <Text>Thành viên</Text>
+                <ScrollView>
+                    {Boolean(team) && team.map((item, index) => {
+                        return (
+                            <Tree item={item} navigation={navigation} key={index} checked={checked} checklistExport={checklistExport} listExport={listExport}/>
+                        )
+                    })}
+                </ScrollView>
+            </View>
+
+        </SafeAreaView>
+    );
 };
 
 export default Team;

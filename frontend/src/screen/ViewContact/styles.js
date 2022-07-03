@@ -9,6 +9,18 @@ const styles = StyleSheet.create({
     ml10: {
         marginLeft: 10,
     },
+    btl20 :{
+        borderTopLeftRadius: 20,
+    },
+    btr20 :{
+        borderTopRightRadius: 20,
+    },
+    bbl20 :{
+        borderBottomLeftRadius: 20,
+    },
+    bbr20 :{
+        borderBottomRightRadius: 20,
+    },
     containerOverlay: {
         backgroundColor: 'rgba(130, 130, 130,0.5)',
     },
@@ -17,7 +29,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         width: '70%',
         alignItems: 'flex-start',
-        padding: 5
+        padding: 7
     },
     info_flag_modalItem: {
             flexDirection: 'row',
@@ -35,7 +47,9 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         width: '90%',
         alignItems: 'flex-start',
-        padding: 10
+        padding: 10,
+        borderColor: '#BDBDBD',
+        borderWidth: 1,
     },
     info_status_modalItem_button: {
         flexDirection:'row', 
@@ -46,7 +60,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: '#ffff',
     },
     header: {
         flexDirection: 'row',
@@ -60,8 +73,8 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height*0.3,
         justifyContent: "center",
-        padding: 5,
-        marginBottom: 10,
+        alignItems: "center",
+        padding: 7,
     },
     body_imgContact_image:{
         width: '100%',
@@ -69,39 +82,70 @@ const styles = StyleSheet.create({
         aspectRatio: 1.63185185185,
         resizeMode: 'contain',
         borderRadius: 10,
+        borderWidth: 3,
+        borderColor: '#2D9CDB',
     },
     info: {
         flexDirection: 'column',
         paddingLeft: 10,
         paddingRight: 10,
     },
+    info_title: {
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        borderRadius: 20,
+        padding: 10,
+    },
     info_title_name: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: '2%',
+        fontSize: 25,
+        marginBottom: 10,
+    },
+    info_title_job: {
+        fontSize: 16,
+        textAlign: 'center',
+    },
+    info_title_job_name: {
+        fontSize: 12,
+        color: '#828282',
     },
     info_flag_button: {
         borderRadius: 10,
         marginTop: 10
     },
     info_component: {
-        borderTopWidth: 1,
-        borderColor: '#82828225',
-        marginTop: 10,
-        paddingTop: 10,
+        backgroundColor: '#fff',
+        borderRadius: 20,
+        marginTop: 15,
     },
     info_component_item: {
         flexDirection: 'row',
         alignItems: 'center',
     },
+    info_component_button: {
+        paddingLeft: 15,
+        paddingRight: 15,
+    },
     info_contact_des: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingBottom: 10,
+        paddingTop: 10,
+        paddingLeft: 5,
+    },
+    info_contact_border: {
+        borderBottomColor: '#82828250',
+        borderBottomWidth: 1,
+    },
+    info_contact_des_item: {
+        width: '90%',
+    },
+    info_component_des_title: {
+        fontSize: 12,
+        color: '#828282',
     },
     info_contact_des_label: {
         fontSize: 16,
-        color: '#2D9CDB',
-        marginLeft: 10,
     },
     info_component_title: {
         fontSize: 18,
@@ -110,7 +154,6 @@ const styles = StyleSheet.create({
     },
     info_component_des: {
         fontSize: 16,
-        // color: '#2D9CDB',
     },
     info_componetn_content: {
         flexDirection: 'row',
@@ -128,7 +171,18 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 10,
         borderTopRightRadius: 10,
     },
-
+    footer: {
+        backgroundColor: '#FFFFFF',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        padding: 5,
+    },
+    footer_button: {
+        alignItems: 'center',
+    },
+    footer_button_label: {
+        fontSize: 12,
+    }
 });
 
 export default styles;
