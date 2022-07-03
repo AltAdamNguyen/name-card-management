@@ -208,10 +208,13 @@ namespace NCMSystem.Controllers
         [HttpGet]
         [Route("api/contacts/search")]
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
-        public ResponseMessageResult GetSearch(string type = "home", string value = "")
+        public ResponseMessageResult GetSearch(string value = "", int? userId = 0)
         {
             int pageSize = 10;
-            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+            if (userId == 0 || userId == null)
+            {
+                userId = ((JwtToken)Request.Properties["payload"]).Uid;
+            }
 
             List<SearchContact> listCt = new List<SearchContact>();
 
@@ -227,88 +230,85 @@ namespace NCMSystem.Controllers
 
                 SearchContact sc = new SearchContact();
 
-                if (type.Equals("home"))
+                List<contact> listSearch;
+                draft = draft.Where(c => c.name.Contains(value));
+                listSearch = draft.Take(pageSize).ToList();
+                if (listSearch.Count != 0)
                 {
-                    List<contact> listSearch;
-                    draft = draft.Where(c => c.name.Contains(value));
-                    listSearch = draft.Take(pageSize).ToList();
-                    if (listSearch.Count != 0)
+                    foreach (var c in listSearch)
                     {
-                        foreach (var c in listSearch)
-                        {
-                            sc = new SearchContact();
-                            sc.Id = c.id;
-                            sc.ImgUrl = c.image_url;
-                            sc.Name = c.name;
-                            sc.JobTitle = c.job_title;
-                            sc.Company = c.company;
-                            sc.Email = c.email;
-                            sc.Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id;
-                            sc.CreatedAt = c.create_date;
-                            listCt.Add(sc);
-                        }
+                        sc = new SearchContact();
+                        sc.Id = c.id;
+                        sc.ImgUrl = c.image_url;
+                        sc.Name = c.name;
+                        sc.JobTitle = c.job_title;
+                        sc.Company = c.company;
+                        sc.Email = c.email;
+                        sc.Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id;
+                        sc.CreatedAt = c.create_date;
+                        listCt.Add(sc);
                     }
+                }
 
-                    // clear query
-                    draft = query;
-                    draft = draft.Where(c => c.company.Contains(value));
-                    listSearch = draft.Take(pageSize).ToList();
-                    if (listSearch.Count != 0)
+                // clear query
+                draft = query;
+                draft = draft.Where(c => c.company.Contains(value));
+                listSearch = draft.Take(pageSize).ToList();
+                if (listSearch.Count != 0)
+                {
+                    foreach (var c in listSearch)
                     {
-                        foreach (var c in listSearch)
-                        {
-                            sc = new SearchContact();
-                            sc.Id = c.id;
-                            sc.ImgUrl = c.image_url;
-                            sc.Name = c.name;
-                            sc.JobTitle = c.job_title;
-                            sc.Company = c.company;
-                            sc.Email = c.email;
-                            sc.Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id;
-                            sc.CreatedAt = c.create_date;
-                            listCt.Add(sc);
-                        }
+                        sc = new SearchContact();
+                        sc.Id = c.id;
+                        sc.ImgUrl = c.image_url;
+                        sc.Name = c.name;
+                        sc.JobTitle = c.job_title;
+                        sc.Company = c.company;
+                        sc.Email = c.email;
+                        sc.Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id;
+                        sc.CreatedAt = c.create_date;
+                        listCt.Add(sc);
                     }
+                }
 
-                    // clear query
-                    draft = query;
-                    draft = draft.Where(c => c.email.Contains(value));
-                    listSearch = draft.Take(pageSize).ToList();
-                    if (listSearch.Count != 0)
+                // clear query
+                draft = query;
+                draft = draft.Where(c => c.email.Contains(value));
+                listSearch = draft.Take(pageSize).ToList();
+                if (listSearch.Count != 0)
+                {
+                    foreach (var c in listSearch)
                     {
-                        foreach (var c in listSearch)
-                        {
-                            sc = new SearchContact();
-                            sc.Id = c.id;
-                            sc.ImgUrl = c.image_url;
-                            sc.Name = c.name;
-                            sc.JobTitle = c.job_title;
-                            sc.Company = c.company;
-                            sc.Email = c.email;
-                            sc.Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id;
-                            sc.CreatedAt = c.create_date;
-                            listCt.Add(sc);
-                        }
+                        sc = new SearchContact();
+                        sc.Id = c.id;
+                        sc.ImgUrl = c.image_url;
+                        sc.Name = c.name;
+                        sc.JobTitle = c.job_title;
+                        sc.Company = c.company;
+                        sc.Email = c.email;
+                        sc.Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id;
+                        sc.CreatedAt = c.create_date;
+                        listCt.Add(sc);
                     }
+                }
 
-                    draft = query;
-                    draft = draft.Where(c => c.phone.Contains(value));
-                    listSearch = draft.Take(pageSize).ToList();
-                    if (listSearch.Count != 0)
+                draft = query;
+                draft = draft.Where(c => c.phone.Contains(value));
+                listSearch = draft.Take(pageSize).ToList();
+                if (listSearch.Count != 0)
+                {
+                    foreach (var c in listSearch)
                     {
-                        foreach (var c in listSearch)
-                        {
-                            sc = new SearchContact();
-                            sc.Id = c.id;
-                            sc.ImgUrl = c.image_url;
-                            sc.Name = c.name;
-                            sc.JobTitle = c.job_title;
-                            sc.Company = c.company;
-                            sc.Email = c.email;
-                            sc.Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id;
-                            sc.CreatedAt = c.create_date;
-                            listCt.Add(sc);
-                        }
+                        sc = new SearchContact();
+                        sc.Id = c.id;
+                        sc.ImgUrl = c.image_url;
+                        sc.Name = c.name;
+                        sc.JobTitle = c.job_title;
+                        sc.Company = c.company;
+                        sc.Email = c.email;
+                        sc.Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id;
+                        sc.CreatedAt = c.create_date;
+                        listCt.Add(sc);
                     }
                 }
 

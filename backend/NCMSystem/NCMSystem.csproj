@@ -198,6 +198,7 @@
     <Compile Include="Common\ResponseMessage.cs" />
     <Compile Include="Controllers\ContactController.cs" />
     <Compile Include="Controllers\ScanController.cs" />
+    <Compile Include="Controllers\TeamController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Filter\JwtAuthorizeFilter.cs" />
@@ -218,6 +219,10 @@
     <Compile Include="Models\CallAPI\ScanNC\InfoNC.cs" />
     <Compile Include="Models\CallAPI\ScanNC\ScanNCRequest.cs" />
     <Compile Include="Models\CallAPI\ScanNC\ScanResponse.cs" />
+    <Compile Include="Models\CallAPI\Team\MemberContact.cs" />
+    <Compile Include="Models\CallAPI\Team\MemberTeam.cs" />
+    <Compile Include="Models\CallAPI\Team\SearchResponse.cs" />
+    <Compile Include="Models\CallAPI\Team\TeamResponse.cs" />
     <Compile Include="Models\CallAPI\User\ChangePassword\ChangePasswordRequest.cs" />
     <Compile Include="Models\CallAPI\User\ForgotPassword\ForgotPasswordCheckCodeRequest.cs" />
     <Compile Include="Models\CallAPI\User\ForgotPassword\ForgotPasswordSendEmailRequest.cs" />

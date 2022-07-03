@@ -70,14 +70,17 @@ namespace NCMSystem.Controllers
                     }), Encoding.UTF8, "application/json")
                 });
             }
+
             // init date create-expire for token and refresh token
             DateTimeOffset dateCreateToken = DateTimeOffset.Now;
 
             DateTimeOffset dateExpireToken = dateCreateToken.AddMinutes(30);
             DateTimeOffset dateExpireRefreshToken = dateCreateToken.AddMonths(1);
 
-            var token = GenerateToken(user.id, dateCreateToken.ToUnixTimeSeconds(), dateExpireToken.ToUnixTimeSeconds());
-            var refreshToken = GenerateRefreshToken(user.id, dateCreateToken.ToUnixTimeSeconds(), dateExpireRefreshToken.ToUnixTimeSeconds());
+            var token = GenerateToken(user.id, dateCreateToken.ToUnixTimeSeconds(), dateExpireToken.ToUnixTimeSeconds(),
+                user.role_id);
+            var refreshToken = GenerateRefreshToken(user.id, dateCreateToken.ToUnixTimeSeconds(),
+                dateExpireRefreshToken.ToUnixTimeSeconds());
 
             // add refresh token to database
             db.tokens.Add(new token()
@@ -223,8 +226,10 @@ namespace NCMSystem.Controllers
             DateTimeOffset dateExpireToken = dateCreateToken.AddMinutes(30);
             DateTimeOffset dateExpireRefreshToken = dateCreateToken.AddMonths(1);
 
-            var token = GenerateToken(userId, dateCreateToken.ToUnixTimeSeconds(), dateExpireToken.ToUnixTimeSeconds());
-            var refreshToken = GenerateRefreshToken(userId, dateCreateToken.ToUnixTimeSeconds(), dateExpireRefreshToken.ToUnixTimeSeconds());
+            var token = GenerateToken(userId, dateCreateToken.ToUnixTimeSeconds(), dateExpireToken.ToUnixTimeSeconds(),
+                selectUser.role_id);
+            var refreshToken = GenerateRefreshToken(userId, dateCreateToken.ToUnixTimeSeconds(),
+                dateExpireRefreshToken.ToUnixTimeSeconds());
 
             // add refresh token to database
             db.tokens.Add(new token()
@@ -307,25 +312,25 @@ namespace NCMSystem.Controllers
         {
             if (request == null)
                 return Common.ResponseMessage.BadRequest("Request must contain body");
-            
+
             string code = request.Code;
             string email = request.Email;
-            
+
             // check null code
             if (string.IsNullOrWhiteSpace(code) || string.IsNullOrWhiteSpace(email))
                 return Common.ResponseMessage.BadRequest("Request must contain code and email");
-            
+
             code = code.Trim();
             email = email.Trim();
-            
+
             // get user by email
             var selectUser = db.users.FirstOrDefault(e => e.email == email && e.code_resetPw == code);
             if (selectUser == null)
                 return Common.ResponseMessage.NotFound("User not found or code is incorrect");
-            
+
             if (selectUser.exp_code < DateTime.Now)
                 return Common.ResponseMessage.BadRequest("Code is expired");
-            
+
             return new ResponseMessageResult(new HttpResponseMessage()
             {
                 StatusCode = System.Net.HttpStatusCode.OK,
@@ -335,26 +340,27 @@ namespace NCMSystem.Controllers
                 }), Encoding.UTF8, "application/json")
             });
         }
-        
+
         [HttpPost]
         [Route("api/auth/forgot-password/submit")]
         public ResponseMessageResult ForgotPasswordSubmit([FromBody] ForgotPasswordSubmitRequest request)
         {
             if (request == null)
                 return Common.ResponseMessage.BadRequest("Request must contain body");
-            
+
             string code = request.Code;
             string email = request.Email;
             string password = request.Password;
-            
+
             // check null code or email or password
-            if (string.IsNullOrWhiteSpace(code) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            if (string.IsNullOrWhiteSpace(code) || string.IsNullOrWhiteSpace(email) ||
+                string.IsNullOrWhiteSpace(password))
                 return Common.ResponseMessage.BadRequest("Request must contain code, email and password");
-            
+
             code = code.Trim();
             email = email.Trim();
             password = password.Trim();
-            
+
             // get user by email
             var selectUser = db.users.FirstOrDefault(e => e.email == email && e.code_resetPw == code);
             if (selectUser == null)
@@ -362,7 +368,7 @@ namespace NCMSystem.Controllers
 
             if (selectUser.exp_code < DateTime.Now)
                 return Common.ResponseMessage.BadRequest("Code is expired");
-            
+
             // check password regex
             if (!Regex.IsMatch(password, @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}$"))
                 return Common.ResponseMessage.BadRequest(
@@ -371,18 +377,20 @@ namespace NCMSystem.Controllers
             selectUser.password = password;
             selectUser.code_resetPw = null;
             selectUser.exp_code = null;
-            
+
             db.tokens.RemoveRange(db.tokens.Where(e => e.user_id == selectUser.id));
-            
+
             // generate new token
             DateTimeOffset dateCreateToken = DateTimeOffset.Now;
 
             DateTimeOffset dateExpireToken = dateCreateToken.AddMinutes(30);
             DateTimeOffset dateExpireRefreshToken = dateCreateToken.AddMonths(1);
 
-            var token = GenerateToken(selectUser.id, dateCreateToken.ToUnixTimeSeconds(), dateExpireToken.ToUnixTimeSeconds());
-            var refreshToken = GenerateRefreshToken(selectUser.id, dateCreateToken.ToUnixTimeSeconds(), dateExpireRefreshToken.ToUnixTimeSeconds());
-            
+            var token = GenerateToken(selectUser.id, dateCreateToken.ToUnixTimeSeconds(),
+                dateExpireToken.ToUnixTimeSeconds(), selectUser.role_id);
+            var refreshToken = GenerateRefreshToken(selectUser.id, dateCreateToken.ToUnixTimeSeconds(),
+                dateExpireRefreshToken.ToUnixTimeSeconds());
+
             db.tokens.Add(new token()
             {
                 user_id = selectUser.id,
@@ -390,9 +398,9 @@ namespace NCMSystem.Controllers
                 created_date = dateCreateToken.DateTime,
                 expired_date = dateExpireRefreshToken.DateTime
             });
-            
+
             db.SaveChanges();
-            
+
             return new ResponseMessageResult(new HttpResponseMessage()
             {
                 StatusCode = System.Net.HttpStatusCode.OK,
@@ -407,8 +415,8 @@ namespace NCMSystem.Controllers
                 }), Encoding.UTF8, "application/json")
             });
         }
-        
-        private string GenerateToken(int userId, long createTime, long expireTime)
+
+        private string GenerateToken(int userId, long createTime, long expireTime, int userRole)
         {
             Jwk keyToken =
                 new Jwk(Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings["JWT_SecretKeyToken"]));
@@ -419,13 +427,14 @@ namespace NCMSystem.Controllers
             {
                 { "uid", userId },
                 { "iat", createTime },
-                { "exp", expireTime }
+                { "exp", expireTime },
+                { "role", userRole }
             }, keyToken, JwsAlgorithm.HS256);
-            
+
             return token;
         }
-        
-        private string GenerateRefreshToken (int userId, long createTime, long expireTime)
+
+        private string GenerateRefreshToken(int userId, long createTime, long expireTime)
         {
             Jwk keyRefreshToken =
                 new Jwk(Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings["JWT_SecretKeyRefreshToken"]));
