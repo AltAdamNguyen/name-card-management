@@ -1,10 +1,8 @@
 //import liraries
-import React, { useContext, useState, useEffect} from 'react';
-import { Text, SafeAreaView, TouchableOpacity, View, Image, StyleSheet, useWindowDimensions } from 'react-native';
+import React, { useContext} from 'react';
+import { Text, SafeAreaView, TouchableOpacity } from 'react-native';
 import AuthContext from '../../store/AuthContext';
 import styles from './styles'
-import ChangePassword from '../ChangePassword/ChangePassword';
-import i18next from "../../language/i18n"; 
 import { useTranslation } from "react-i18next";
 // create a component
 const Setting = ({navigation}) => {
@@ -15,10 +13,10 @@ const Setting = ({navigation}) => {
     const onChangePasswordPressed = () => {
         navigation.navigate('ChangePassword')
     }
-    const onLogoutPressed = () => {
-        navigation.dispatch(StackActions.popToTop());
-        authCtx.onLogout();     
-    }
+    // const onLogoutPressed = () => {
+    //     navigation.dispatch(StackActions.popToTop());
+    //     authCtx.onLogout();     
+    // }
     return (
         <SafeAreaView style={styles.container}>
             <Text style={styles.title}>{t("Screen_Setting_Button_Title")}</Text>

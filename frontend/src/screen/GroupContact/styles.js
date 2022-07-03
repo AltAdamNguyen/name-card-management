@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(130, 130, 130,0.5)',
+        // backgroundColor: 'rgba(130, 130, 130,0.5)',
     },
     container: {
         flex: 1,
@@ -29,22 +29,16 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         paddingRight: 10,
     },
-    container_sectionStyle_icSearch: {
-        padding: 10,
-        margin: 5,
-        height: 16,
-        width: 16,
-        resizeMode: 'stretch',
-        alignItems: 'center'
+    header: {
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: '95%',
     },
-    container_sectionStyle_icClose: {
-        tintColor: '#82828250',
-    },
-    input: {
-        flex: 1,
-        height: 40,
-        fontSize: 16,
-        color: '#828282',
+    sectionStyle: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 10,
+        width: '100%',
     },
     container_title: {
         width: '90%',
