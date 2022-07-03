@@ -128,6 +128,7 @@ namespace NCMSystem.Controllers
             }
 
             var selectToken = db.tokens.FirstOrDefault(e => e.refresh_token == refreshToken);
+            var selectUser = db.users.FirstOrDefault(e => e.id == selectToken.user_id);
 
             // check refresh token exist
             if (selectToken == null || selectToken.expired_date < DateTime.Now)
@@ -148,21 +149,12 @@ namespace NCMSystem.Controllers
                     }), Encoding.UTF8, "application/json")
                 });
             }
-
-            // generate token
-            Jwk keyToken =
-                new Jwk(Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings["JWT_SecretKeyToken"]));
-
+            
             // init date create-expire for token
             DateTimeOffset dateCreateToken = DateTimeOffset.Now;
             DateTimeOffset dateExpireToken = dateCreateToken.AddMinutes(30);
-
-            string token = Jose.JWT.Encode(new Dictionary<string, object>()
-            {
-                { "uid", selectToken.user_id },
-                { "iat", dateCreateToken.ToUnixTimeSeconds() },
-                { "exp", dateExpireToken.ToUnixTimeSeconds() }
-            }, keyToken, JwsAlgorithm.HS256);
+            
+            var token = GenerateToken(selectToken.user_id, dateCreateToken.ToUnixTimeSeconds(), dateExpireToken.ToUnixTimeSeconds(), selectUser.role_id);
 
             // return success response
             return new ResponseMessageResult(new HttpResponseMessage()
