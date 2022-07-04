@@ -222,9 +222,12 @@
     <Compile Include="Models\CallAPI\Group Contact\ContactToGroupRequest.cs" />
     <Compile Include="Models\CallAPI\Group Contact\DeleteContactFromGroupRequest.cs" />
     <Compile Include="Models\CallAPI\Group Contact\DetailGroupContact.cs" />
+    <Compile Include="Models\CallAPI\Group Contact\DetailSearchContactInGroupContact.cs" />
     <Compile Include="Models\CallAPI\Group Contact\GroupContactRequest.cs" />
     <Compile Include="Models\CallAPI\Group Contact\HomeGroupContact.cs" />
     <Compile Include="Models\CallAPI\Group Contact\RenameGroupContact.cs" />
+    <Compile Include="Models\CallAPI\Group Contact\SearchContactInGroupContact.cs" />
+    <Compile Include="Models\CallAPI\Group Contact\SearchGroupContact.cs" />
     <Compile Include="Models\CallAPI\ScanNC\InfoNC.cs" />
     <Compile Include="Models\CallAPI\ScanNC\ScanNCRequest.cs" />
     <Compile Include="Models\CallAPI\ScanNC\ScanResponse.cs" />

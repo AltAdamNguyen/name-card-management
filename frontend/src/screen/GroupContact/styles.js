@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     container_listGroup_item: {
+        marginBottom: 10,
         flexDirection: 'row',
         justifyContent: 'space-between',
         borderWidth: 1,

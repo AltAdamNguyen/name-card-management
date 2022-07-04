@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
-import { Card, Checkbox } from "react-native-paper";
-import { View, TouchableOpacity, Text, StyleSheet, Platform, UIManager } from "react-native";
+import { Card, Checkbox, TouchableRipple, IconButton } from "react-native-paper";
+import { View, Text, StyleSheet, Platform, UIManager, Pressable } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 
-const Tree = ({ item, expand = false, navigation, checked = false, child = false, checklistExport, listExport=[] }) => {
+const Tree = ({ item, expand = false, navigation, checked = false, child = false, checklistExport, listExport = [], handleChecked }) => {
   const [expanded, setExpanded] = useState(expand);
-  const [checkedItem, setCheckedItem] = useState(false);
+  const [checkedItem, setCheckedItem] = useState(listExport.find(i => i === item.id) ? true : false);
   useEffect(() => {
     if (Platform.OS === "android") {
       UIManager.setLayoutAnimationEnabledExperimental &&
@@ -18,48 +18,49 @@ const Tree = ({ item, expand = false, navigation, checked = false, child = false
     setExpanded(!expanded);
   }
 
-  const handleViewContact = () => {
-    navigation.navigate()
-  }
+  useEffect(() => {
+    checklistExport(item.id, checkedItem);
+  }, [checkedItem]);
 
-  const handleChecked = (item) => {
-    console.log(Boolean(listExport.find(i => i.id === item)))
-    return Boolean(listExport.find(i => i.id === item));
+  const handleViewContact = () => {
+    navigation.navigate("HomeSwap", {screen: "SearchContact", params: {useid: item.id}});
   }
 
   return (
     <View style={styles.container}>
-      {item.children.length !== 0 ? (
+      {(item.children && item.children.length !== 0) ? (
         <Card mode={child ? "outlined" : "elevated"} style={styles.card}>
-          <TouchableOpacity style={styles.row} onPress={toggleExpand}>
-            <View style={styles.row_label}>
-              {checked ?
-                (
-                  <Checkbox
-                    status={handleChecked(item.id) ? "checked" : "unchecked"}
-                    onPress={() => {
-                      checklistExport(item.id, !checkedItem)
-                      setCheckedItem(!checkedItem)
-                    }} />
-                ) :
-                (
-                  <Icon name={expanded ? 'chevron-up' : 'chevron-down'} size={26} color={'#828282'} />
-                )}
+          <TouchableRipple borderless={true} style={styles.row} onPress={toggleExpand} onLongPress={handleChecked}>
+            <View style={styles.row_item}>
+              <View style={styles.row_label}>
+                {checked ?
+                  (
+                    <Checkbox
+                      status={checkedItem ? 'checked' : 'unchecked'}
+                      onPress={() => {
+                        setCheckedItem(!checkedItem);
+                      }}
+                      />
+                  ) :
+                  (
+                    <Icon name={expanded ? 'chevron-up' : 'chevron-down'} size={26} color={'#828282'} />
+                  )}
 
-              <View style={styles.row_label_right}>
-                <Text style={styles.title}>{item.name}</Text>
-                <Text style={styles.subtitle}>Quản lí</Text>
+                <View style={styles.row_label_right}>
+                  <Text style={styles.title}>{item.name}</Text>
+                  <Text style={styles.subtitle}>Quản lí {item.id}</Text>
+                </View>
               </View>
+              <IconButton icon="chevron-right" size={30} color={'#828282'} onPress={handleViewContact}/>
             </View>
-            <Icon name="chevron-right" size={30} color={'#828282'} />
-          </TouchableOpacity>
+          </TouchableRipple>
           {item.children.map((element, index) => {
             return (
               <View key={index}>
                 <View style={styles.parentHr} />
                 {
                   expanded &&
-                  <Tree item={element} navigation={navigation} checked={checked} child={true} listExport={listExport}/>
+                  <Tree item={element} navigation={navigation} checked={checked} child={true} listExport={listExport} checklistExport={checklistExport} handleChecked={handleChecked} />
                 }
               </View>
             )
@@ -67,27 +68,30 @@ const Tree = ({ item, expand = false, navigation, checked = false, child = false
         </Card>
       ) : (
         <Card mode={child ? "outlined" : "elevated"} style={styles.card}>
-          <View style={styles.row}>
-            <View style={styles.row_label}>
-              {checked ?
-                (
-                  <Checkbox
-                  status={handleChecked(item.id) ? "checked" : "unchecked"}
-                    onPress={() => {
-                      checklistExport(item.id, checkedItem)
-                      setCheckedItem(!checkedItem)
-                    }} />
-                ) :
-                (
-                  <Icon name="account" size={26} color={'#828282'} />
-                )}
-              <View style={styles.row_label_right}>
-                <Text style={styles.title}>{item.name}</Text>
-                <Text style={styles.subtitle}>Nhân viên</Text>
+          <TouchableRipple borderless={true} style={styles.row} onLongPress={() => console.log('a')}>
+            <View style={styles.row_item}>
+              <View style={styles.row_label}>
+                {checked ?
+                  (
+                    <Checkbox
+                      status={checkedItem ? 'checked' : 'unchecked'}
+                      onPress={() => {
+                        setCheckedItem(!checkedItem);
+                      }}
+                      />
+                  ) :
+                  (
+                    <Icon name="account" size={26} color={'#828282'} />
+                  )}
+                <View style={styles.row_label_right}>
+                  <Text style={styles.title}>{item.name}</Text>
+                  <Text style={styles.subtitle}>Nhân viên {item.id}</Text>
+                </View>
               </View>
+              <IconButton icon="chevron-right" size={30} color={'#828282'} onPress={handleViewContact}/>
             </View>
-            <Icon name="chevron-right" size={30} color={'#828282'} />
-          </View>
+
+          </TouchableRipple>
         </Card>
       )}
     </View>
@@ -113,13 +117,17 @@ const styles = StyleSheet.create({
     color: '#828282',
   },
   row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    justifyContent: 'center',
     height: 56,
     width: '100%',
     borderRadius: 10,
     backgroundColor: '#FFF',
+    borderRadius: 10,
+  },
+  row_item: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   row_label: {
     flexDirection: 'row',

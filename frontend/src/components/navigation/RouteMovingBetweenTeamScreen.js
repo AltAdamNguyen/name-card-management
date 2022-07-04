@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Team  } from '../../screen';
+import { Team, ViewContactMember  } from '../../screen';
 const TeamStack = createNativeStackNavigator()
 
 const RouteMovingBetweenTeamScreen = () => {
@@ -8,7 +8,7 @@ const RouteMovingBetweenTeamScreen = () => {
       screenOptions={{
         headerShown: false,
       }}>
-      <TeamStack.Screen name="Team" component={Team} />
+      <TeamStack.Screen name="ViewContactMember" component={ViewContactMember} />
     </TeamStack.Navigator>
   )
 }

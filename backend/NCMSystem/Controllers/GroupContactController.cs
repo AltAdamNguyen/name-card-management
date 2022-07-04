@@ -36,10 +36,11 @@ namespace NCMSystem.Controllers
                 {
                     HomeGroupContact hgc = new HomeGroupContact();
                     hgc.GroupName = g.name;
+                    hgc.GroupId = g.id;
                     listHomeGroupContact.Add(hgc);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Error(ex, "C00001");
                 Log.CloseAndFlush();
@@ -84,8 +85,8 @@ namespace NCMSystem.Controllers
                 }
 
                 dgc.contacts = listCtInGroup;
-            } 
-            catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Log.Error(ex, "C00001");
                 Log.CloseAndFlush();
@@ -98,6 +99,95 @@ namespace NCMSystem.Controllers
                 {
                     Message = "Get Group Contact Detail Successully",
                     Data = dgc
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpGet]
+        [Route("api/groups/search-groupcontact/")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        public ResponseMessageResult SearchGroupContact([FromBody] SearchGroupContact request)
+        {
+            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+
+            //find groups according to the logged in user
+            List<group> listGroup = db.groups.Where(g => g.user_id == userId).ToList();
+            List<SearchGroupContact> listFoundGroup = new List<SearchGroupContact>();
+
+            try
+            {
+                //search for matched group contacts by names
+                foreach (group group in listGroup)
+                {
+                    if (group.name.Contains(request.GroupName))
+                    {
+                        listFoundGroup.Add(new SearchGroupContact()
+                        {
+                            GroupName = group.name
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C00001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Get Found Group Contacts Successully",
+                    Data = listFoundGroup
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpGet]
+        [Route("api/groups/search-contactingroupcontact/{id}")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        public ResponseMessageResult SearchContactInGroupContact(int id, [FromBody] SearchContactInGroupContact request)
+        {
+            //get group from database with its id accordingly
+            var group = db.groups.FirstOrDefault(g => g.id == id);
+
+            List<contact> contacts = group.contacts.ToList();
+
+            List<ContactInGroup> listFoundContactsInGroup = new List<ContactInGroup>();
+
+            try
+            {
+                //search for matched group contacts by names
+                foreach (contact c in contacts)
+                {
+                    if (c.name.Contains(request.Value) || c.job_title.Contains(request.Value) ||
+                        c.company.Contains(request.Value))
+                    {
+                        listFoundContactsInGroup.Add(new ContactInGroup()
+                        {
+                            ContactName = c.name,
+                            JobTitle = c.job_title,
+                            ContactCompany = c.company,
+                            ContactCreatedAt = c.create_date
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C00001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Get Found Contacts In Group Successully",
+                    Data = listFoundContactsInGroup
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -139,7 +229,7 @@ namespace NCMSystem.Controllers
 
                 db.SaveChanges();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Error(ex, "C00001");
                 Log.CloseAndFlush();
@@ -157,7 +247,7 @@ namespace NCMSystem.Controllers
 
         [HttpPost]
         [Route("api/groups/add-contacttogroup")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer})]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
         public ResponseMessageResult AddContactToGroup([FromBody] ContactToGroupRequest request)
         {
             try
@@ -190,7 +280,7 @@ namespace NCMSystem.Controllers
 
                 db.SaveChanges();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Error(ex, "C00001");
                 Log.CloseAndFlush();
@@ -220,9 +310,9 @@ namespace NCMSystem.Controllers
 
                 selectedGroup.contacts.Remove(selectedContact);
 
-                db.SaveChanges();                
+                db.SaveChanges();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Error(ex, "C00001");
                 Log.CloseAndFlush();
@@ -252,9 +342,9 @@ namespace NCMSystem.Controllers
 
                 db.groups.Remove(selectedGroup);
 
-                db.SaveChanges();               
+                db.SaveChanges();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Error(ex, "C00001");
                 Log.CloseAndFlush();
@@ -303,7 +393,7 @@ namespace NCMSystem.Controllers
 
                 db.SaveChanges();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Log.Error(ex, "C00001");
                 Log.CloseAndFlush();
