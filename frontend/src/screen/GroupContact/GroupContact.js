@@ -109,9 +109,8 @@ const GroupContact = ({ navigation }) => {
                 return (
                   <TouchableOpacity
                     onPress={() => {
-                      navigation.navigate("GroupContactDetail", {
-                        screen: "GroupContactDetail",
-                      });
+                      navigation.navigate("GroupSwap", {screen: "GroupContactDetail"})
+                      
                     }}
                   >
                     <View style={styles.container_listGroup_item}>

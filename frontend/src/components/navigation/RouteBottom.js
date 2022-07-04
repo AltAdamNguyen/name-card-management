@@ -44,7 +44,7 @@ const RouteNavigation = () => {
         }}
       />}
       <Tab.Screen name="GroupContact"
-        component={RouteMovingBetweenGroupContactScreen}
+        component={GroupContact}
         independent={true}
         options={{
           tabBarIcon: ({ focused }) => {

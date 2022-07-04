@@ -28,8 +28,7 @@ const GroupContactDetail = ({navigation}) => {
     }, [])
 
     return (
-        <SafeAreaView style={[styles.container, modalVisible ? styles.containerOverLay : null]}>
-        
+        <SafeAreaView style={[styles.container, modalVisible ? styles.containerOverLay : null]}>        
             <Appbar.Header statusBarHeight={1} theme={{ colors: { primary: "transparent" } }}>
                 <Appbar.BackAction onPress={() => navigation.goBack()} />
                 <Appbar.Content title="My Team" />
@@ -111,9 +110,7 @@ const GroupContactDetail = ({navigation}) => {
                 </View>
             </View>
             
-            <ModalGroupContactDetail visible={modalVisible} onDismiss={() => {setModalVisible(false)}} onPressAddContact={() => { navigation.navigate('AddContactToGroup'); setModalVisible(false) }}/>
-                        
-           
+            <ModalGroupContactDetail visible={modalVisible} onDismiss={() => {setModalVisible(false)}} onPressAddContact={() => { navigation.navigate("GroupSwap", {screen: "AddContactToGroup"}); setModalVisible(false) }}/>          
         </SafeAreaView>
     );
 }
