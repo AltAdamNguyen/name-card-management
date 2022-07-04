@@ -26,8 +26,8 @@ const SignIn = ({ navigation }) => {
   
   const { t, i18n } = useTranslation();
   const [user, setUser] = useState({
-    email: "anhnc@gmail.com",
-    password: "trung123@",
+    email: "tung@gmail.com",
+    password: "Tung123@",
   });
   const [isSecureEntry, setIsSecureEntry] = useState(true);
   const authCtx = useContext(AuthContext);

@@ -25,5 +25,9 @@ export const ContactAPI = {
     SearchContact: "/api/contacts/search",
     SetFlag: "/api/contacts/flag",
     SetStatus: "/api/contacts/status",
+}
 
+export const GroupContactAPI = {
+    ViewGroupContact: "/api/groups",
+    AddGroupContact: "/api/groups/add-group"
 }

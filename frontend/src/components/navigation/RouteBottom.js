@@ -4,6 +4,7 @@ import { GroupContact, Team, Setting, Home} from '../../screen';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from '../../navigation/styles';
 import RouteMovingBetweenScanScreen from './RouteMovingBetweenScanScren';
+import RouteMovingBetweenGroupContactScreen from './RouteMovingBetweenGroupContactScreen';
 const Tab = createBottomTabNavigator();
 
 const RouteNavigation = () => {
@@ -35,8 +36,9 @@ const RouteNavigation = () => {
           },
         }}
       />
-      <Tab.Screen name="Group Contact"
-        component={GroupContact}
+      <Tab.Screen name="GroupContact"
+        component={RouteMovingBetweenGroupContactScreen}
+        independent={true}
         options={{
           tabBarIcon: ({ focused }) => {
             return (

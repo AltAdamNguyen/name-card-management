@@ -16,7 +16,6 @@ import ModalFlag from '../../components/home/ModalFlag';
 import { FormatDate } from '../../validate/FormatDate';
 // create a component
 
-
 const Home = ({ route, navigation }) => {
    
     const [visibleModal, setVisibleModal] = useState(false);
@@ -83,7 +82,7 @@ const Home = ({ route, navigation }) => {
         if (data.data.length > 0) {
             setListContact(data.data);
             setListFilter(data.data);
-            setContContact(data.data.length);
+            setContContact(data.data.length);   
         }
     }
 
