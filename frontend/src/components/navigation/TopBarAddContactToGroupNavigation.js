@@ -25,8 +25,6 @@ const MyTabs = (props) => {
 
 export default function TopBarNavigator(props) {
     return (
-        
-            <MyTabs allTab={props.allTab} />
-        
+        <MyTabs allTab={props.allTab} />
     )
 }
