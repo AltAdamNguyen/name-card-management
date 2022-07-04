@@ -16,6 +16,7 @@ import SwitchSelector from "react-native-switch-selector";
 import { AuthAPI, ContentType, Method } from "../../constants/ListAPI";
 import LoginSchema from "../../validate/ValidateFormLogin";
 import { object } from "yup";
+import { StackActions } from "@react-navigation/native";
 
 const options = [
   { label: "VN", value: "vn"} ,
@@ -26,8 +27,8 @@ const SignIn = ({ navigation }) => {
   
   const { t, i18n } = useTranslation();
   const [user, setUser] = useState({
-    email: "person1@gmail.com",
-    password: "Trung123@",
+    email: "tung@gmail.com",
+    password: "Tung123@",
   });
   const [isSecureEntry, setIsSecureEntry] = useState(true);
   const authCtx = useContext(AuthContext);
@@ -49,7 +50,6 @@ const SignIn = ({ navigation }) => {
   };
 
   const getMessage = (data) => {
-    console.log(data);
     if (data.message === "Get token success") {
       authCtx.onLogin(data.data.access_token, data.data.refresh_token);
       

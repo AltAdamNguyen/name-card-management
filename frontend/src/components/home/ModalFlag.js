@@ -5,7 +5,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { Button } from "react-native-paper";
+import { Button, Card } from "react-native-paper";
 import styles from "../../screen/Home/styles";
 import i18next from "../../language/i18n"; 
 import AuthContext from "../../store/AuthContext";
@@ -28,7 +28,7 @@ const ModalFlag = ({ listItem, visible, onPress, onPressVisable }) => {
         onPress={onPressVisable}
       >
         <TouchableWithoutFeedback>
-          <View style={styles.modalView}>
+          <Card elevation={5} style={styles.modalView}>
             <Text style={{ fontSize: 20, fontWeight: "bold" }}>{t("Screen_Home_ModalFlag_Text_Classify")}</Text>
             {listItem.map((item, index) => {
               return (
@@ -44,7 +44,7 @@ const ModalFlag = ({ listItem, visible, onPress, onPressVisable }) => {
                 </Button>
               );
             })}
-          </View>
+          </Card>
         </TouchableWithoutFeedback>
       </TouchableOpacity>
     </Modal>

@@ -1,14 +1,6 @@
 //import liraries
 import React, { useState, useRef, useEffect } from "react";
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  ScrollView,
-  Keyboard,
-  Dimensions,
-} from "react-native";
+import { View,Text,Image,TouchableOpacity,ScrollView,Keyboard,Dimensions } from "react-native";
 import { TextInput, Provider, IconButton, Button } from "react-native-paper";
 import { StackActions } from "@react-navigation/native";
 import styles from "./styles";

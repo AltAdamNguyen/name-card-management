@@ -46,10 +46,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffff',
         borderRadius: 10,
         width: '90%',
-        alignItems: 'flex-start',
         padding: 10,
-        borderColor: '#BDBDBD',
-        borderWidth: 1,
     },
     info_status_modalItem_button: {
         flexDirection:'row', 
