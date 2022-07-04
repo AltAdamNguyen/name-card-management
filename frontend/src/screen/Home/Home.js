@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, SafeAreaView, Image, TouchableOpacity, ScrollView, Pressable } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import { IconButton, Searchbar, FAB } from 'react-native-paper';
+import { IconButton, Searchbar, FAB, Card } from 'react-native-paper';
 import styles from './styles';
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -17,12 +17,11 @@ import { FormatDate } from '../../validate/FormatDate';
 // create a component
 
 const Home = ({ route, navigation }) => {
-   
+
     const [visibleModal, setVisibleModal] = useState(false);
     const [countContact, setContContact] = useState(0);
     const [listContact, setListContact] = useState();
     const [listFilter, setListFilter] = useState([]);
-    const [text, setText] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
     const [modalFloatVisible, setModalFloatVisible] = useState(false);
     const [flag, setFlag] = useState('null');
@@ -79,6 +78,7 @@ const Home = ({ route, navigation }) => {
     }, [route.params]);
 
     const getContact = (data) => {
+        console.log(data)
         if (data.data.length > 0) {
             setListContact(data.data);
             setListFilter(data.data);
@@ -139,7 +139,7 @@ const Home = ({ route, navigation }) => {
     }
 
     return (
-        <SafeAreaView style={[styles.container, modalFloatVisible ? styles.containerOverlay : null, modalVisible ? styles.containerOverlay : null]}>
+        <SafeAreaView style={styles.container}>
             <View style={styles.header}>
                 <Pressable style={styles.sectionStyle} onPress={() => navigation.navigate('HomeSwap', { screen: 'SearchContact'})}>
                     <Searchbar
@@ -167,7 +167,7 @@ const Home = ({ route, navigation }) => {
                 <ScrollView>
                     {listFilter.length != 0 && listFilter.map((item, index) => {
                         return (
-                            <TouchableOpacity key={index} onPress={() => { navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: item.id } }) }}>
+                            <Card mode='elevated' style={styles.card} elevation={2} key={index} onPress={() => { navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: item.id } }) }}>
                                 <View style={styles.item}>
                                     <View style={styles.imgContact}>
                                         <Image source={{ uri: item.img_url }} style={styles.image} />
@@ -188,12 +188,12 @@ const Home = ({ route, navigation }) => {
                                         </View>
                                     </View>
                                 </View>
-                            </TouchableOpacity>
+                            </Card>
                         )
                     })}
                 </ScrollView>
             </View>
-            <ModalHome visible={modalFloatVisible} onPressVisable={() => setModalFloatVisible(false)} sort={sort} onPressSort={handlePressSort} />
+            <ModalHome visible={modalFloatVisible} navigation={navigation} onPressVisable={() => setModalFloatVisible(false)} sort={sort} onPressSort={handlePressSort} />
             <FAB style={styles.floatButton} icon="tune" size={24} color="#fff" onPress={() => setModalFloatVisible(!modalFloatVisible)} />
         </SafeAreaView>
     );

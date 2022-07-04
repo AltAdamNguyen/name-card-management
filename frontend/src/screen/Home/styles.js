@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
     mb10: {
         marginBottom: 10,
     },
-    mr10:{
+    mr10: {
         marginRight: 10,
     },
     w60: {
@@ -23,68 +23,67 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(130, 130, 130,0.5)',
     },
 
-        modalView: {
-            backgroundColor: '#ffff',
-            borderRadius: 10,
-            width: '70%',
-            alignItems: 'flex-start',
-            padding: 5
-        },
-            modalItem: {
-                flexDirection: 'row',
-                alignItems: 'center',
-            },
-                modalIcon: {
-                    width: 32,
-                    margin: 10
-                },
-                modalText: {
-                    fontSize: 15,
-                },
+    modalView: {
+        backgroundColor: '#ffff',
+        borderRadius: 10,
+        width: '70%',
+        alignItems: 'flex-start',
+        padding: 5,
+    },
+    modalItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    modalIcon: {
+        width: 32,
+        margin: 10
+    },
+    modalText: {
+        fontSize: 15,
+    },
 
-        modelViewFloat: {
-            backgroundColor: '#ffff',
-            width: '100%',
-            position: 'absolute',
-            bottom: 0,
-            padding: 20,
-            borderTopLeftRadius: 10,
-            borderTopRightRadius: 10,
-        },
-            modalLabel: {
-                fontSize: 16,
-            },
-            modalFloatSort: {
-                flexDirection: 'row',
-                width: '100%',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-            },
-                modalFloatSortItem: {
-                    borderColor: '#828282',
-                    borderWidth: 1,
-                    borderRadius: 15,
-                    paddingLeft: 20,
-                    paddingRight: 20,
-                    paddingTop: 3,
-                    paddingBottom: 3,
-                },
-            modalFloatMange: {
-                flexDirection: 'row',
-                alignItems: 'center',
-            },
+    modelViewFloat: {
+        backgroundColor: '#ffff',
+        width: '90%',
+        position: 'absolute',
+        bottom: 0,
+        padding: 20,
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+    },
+    modalLabel: {
+        fontSize: 16,
+    },
+    modalFloatSort: {
+        flexDirection: 'row',
+        width: '100%',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    modalFloatSortItem: {
+        borderColor: '#828282',
+        borderWidth: 1,
+        borderRadius: 15,
+        paddingLeft: 20,
+        paddingRight: 20,
+        paddingTop: 3,
+        paddingBottom: 3,
+    },
+    modalFloatMange: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
     container: {
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#ffff',
     },
 
     header: {
         flexDirection: 'column',
         alignItems: 'center',
-        width: '95%',
+        width: '90%',
     },
     sectionStyle: {
         justifyContent: 'center',
@@ -98,35 +97,35 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        width: '95%',
+        width: '90%',
     },
     labelList: {
         fontSize: 16,
         fontWeight: 'bold',
-        
+
     },
-        buttonFlag: {
-            borderRadius: 10,
-            flexDirection: 'row',
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-        },
-            sectionFlag: {
-                flexDirection:'row', 
-                alignItems:'center', 
-                borderRadius:10, 
-                paddingLeft: 5, 
-            },
-                labelFlag: {
-                    fontWeight: 'bold',
-                    fontSize: 16,
-                    marginRight: 10,
-                },
+    buttonFlag: {
+        borderRadius: 10,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
+    sectionFlag: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        borderRadius: 10,
+        paddingLeft: 5,
+    },
+    labelFlag: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        marginRight: 10,
+    },
 
     listContainer: {
         marginTop: 20,
         flex: 1,
-        width: '95%',
+        width: '90%',
         flexDirection: 'column',
     },
     listContainer_view: {
@@ -138,14 +137,14 @@ const styles = StyleSheet.create({
         color: '#828282',
         fontSize: 16,
     },
+    card: {
+        marginBottom: 10,
+        borderRadius: 10
+    },
     item: {
         width: '100%',
         height: 80,
-        borderWidth: 1,
-        borderColor: '#82828250',
-        borderRadius: 10,
         padding: 5,
-        marginBottom: 8,
         alignItems: 'center',
         flexDirection: 'row'
     },
@@ -189,6 +188,12 @@ const styles = StyleSheet.create({
         bottom: 0,
         backgroundColor: '#1890FF'
     },
+    item_reason: {
+        paddingLeft: 5,
+        paddingRight: 5,
+        paddingBottom: 5,
+        width: '100%'
+    }
 
 
 });

@@ -1,11 +1,10 @@
 //import liraries
-import React, { useContext, useState, useEffect} from 'react';
-import { Text, SafeAreaView, TouchableOpacity, View, Image, StyleSheet, useWindowDimensions } from 'react-native';
+import React, { useContext} from 'react';
+import { Text, SafeAreaView, TouchableOpacity } from 'react-native';
 import AuthContext from '../../store/AuthContext';
 import styles from './styles'
-import ChangePassword from '../ChangePassword/ChangePassword';
-import i18next from "../../language/i18n"; 
 import { useTranslation } from "react-i18next";
+import { StackActions } from '@react-navigation/native';
 // create a component
 const Setting = ({navigation}) => {
     const authCtx = useContext(AuthContext);
@@ -16,7 +15,6 @@ const Setting = ({navigation}) => {
         navigation.navigate('ChangePassword')
     }
     const onLogoutPressed = () => {
-        navigation.dispatch(StackActions.popToTop());
         authCtx.onLogout();     
     }
     return (
@@ -25,7 +23,7 @@ const Setting = ({navigation}) => {
             <TouchableOpacity style={[styles.button,styles.mb20]} onPress={onChangePasswordPressed}>
                 <Text style={styles.label}>{t("Screen_Setting_Button_ChangePassword")}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={authCtx.onLogout}>
+            <TouchableOpacity style={styles.button} onPress={onLogoutPressed}>
                 <Text style={styles.label}>{t("Screen_Setting_Button_Logout")}</Text>
             </TouchableOpacity>
         </SafeAreaView>

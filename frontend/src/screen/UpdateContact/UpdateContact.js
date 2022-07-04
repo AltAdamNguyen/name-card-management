@@ -125,7 +125,7 @@ const AddContact = ({ route, navigation }) => {
 
     const getMessage = (data) => {
         navigation.dispatch(StackActions.popToTop());
-        navigation.navigate('Home', { screen: 'HomeScreen', params: { visibleModal: true } })
+        navigation.navigate('Bottom', { screen: 'HomeScreen', params: { visibleModal: true } })
     }
 
 

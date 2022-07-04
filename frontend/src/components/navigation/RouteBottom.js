@@ -1,33 +1,40 @@
+import { useContext } from 'react';
 import { View, Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { GroupContact, Team, Setting, Home} from '../../screen';
+import { GroupContact, Team, Setting, Home } from '../../screen';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from '../../navigation/styles';
+import AuthContext from '../../store/AuthContext';
 import RouteMovingBetweenScanScreen from './RouteMovingBetweenScanScren';
 import RouteMovingBetweenGroupContactScreen from './RouteMovingBetweenGroupContactScreen';
 const Tab = createBottomTabNavigator();
 
 const RouteNavigation = () => {
+  const authCtx = useContext(AuthContext);
+  console.log(authCtx.isMarketer)
   return (
     <Tab.Navigator
-      initialRouteName='HomeScreen'
+      initialRouteName={authCtx.isMarketer === 3 ?"TeamScreen":"HomeScreen"}
       screenOptions={{
         tabBarShowLabel: false,
         headerShown: false,
         tabBarStyle: {
-          height: '9%',
-          borderTopColor: '#E0E3E3',
+          backgroundColor: '#ffffff',
+          borderTopRightRadius: 20,
+          borderTopLeftRadius: 20,
+          height: 80,
+          ... styles(false).shadow
         },
-        tabBarHideOnKeyboard: true
+        tabBarHideOnKeyboard: true,
       }}
     >
-      <Tab.Screen name="HomeScreen"
+      {authCtx.isMarketer !== 3 && <Tab.Screen name="HomeScreen"
         component={Home}
         options={{
           tabBarIcon: ({ focused }) => {
             return (
               <View style={styles(focused).container}>
-                <Icon name="home-outline" size={30} color={focused ? '#1890FF' : '#828282'} />
+                <Icon name="home" size={26} color={focused ? '#1890FF' : '#828282'} />
                 <Text style={styles(focused).label}>
                   Trang chủ
                 </Text>
@@ -35,7 +42,7 @@ const RouteNavigation = () => {
             )
           },
         }}
-      />
+      />}
       <Tab.Screen name="GroupContact"
         component={RouteMovingBetweenGroupContactScreen}
         independent={true}
@@ -43,38 +50,35 @@ const RouteNavigation = () => {
           tabBarIcon: ({ focused }) => {
             return (
               <View style={styles(focused).container}>
-                <Icon name="credit-card-multiple-outline" size={30} color={focused ? '#1890FF' : '#828282'} />
+                <Icon name="credit-card-multiple" size={26} color={focused ? '#1890FF' : '#828282'} />
                 <Text style={styles(focused).label}>
-                  Nhóm
+                  Nhóm liên lạc
                 </Text>
               </View>
             )
           }
         }}
       />
-      <Tab.Screen name="ScanScreen"
+      {authCtx.isMarketer !== 3 && <Tab.Screen name="ScanScreen"
         component={RouteMovingBetweenScanScreen}
         options={{
           tabBarIcon: ({ focused }) => {
             return (
-              <View style={styles(focused).containerScan}>
-                <Icon name="camera-outline" size={30} color='#fff' />
-                <Text style={styles(focused).labelScan}>
-                  Quét
-                </Text>
+              <View style={[styles(focused).containerScan, styles(focused).shadow]}>
+                <Icon name="credit-card-scan" size={30} color='#fff' />
               </View>
             )
           },
           tabBarStyle: { display: 'none' }
         }}
-      />
-      <Tab.Screen name="Team"
+      />}
+      <Tab.Screen name="TeamScreen"
         component={Team}
         options={{
           tabBarIcon: ({ focused }) => {
             return (
               <View style={styles(focused).container}>
-                <Icon name="account-group-outline" size={30} color={focused ? '#1890FF' : '#828282'} />
+                <Icon name="account-group" size={26} color={focused ? '#1890FF' : '#828282'} />
                 <Text style={styles(focused).label}>
                   Đội
                 </Text>
@@ -89,7 +93,7 @@ const RouteNavigation = () => {
           tabBarIcon: ({ focused }) => {
             return (
               <View style={styles(focused).container}>
-                <Icon name="cog-outline" size={30} color={focused ? '#1890FF' : '#828282'} />
+                <Icon name="cog" size={26} color={focused ? '#1890FF' : '#828282'} />
                 <Text style={styles(focused).label}>
                   Cài đặt
                 </Text>

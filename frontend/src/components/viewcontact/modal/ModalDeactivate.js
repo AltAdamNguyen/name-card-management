@@ -2,7 +2,6 @@
 import React from 'react';
 import { View, Text, Modal, TouchableWithoutFeedback, Platform } from 'react-native';
 import { TextInput, Button, Card } from 'react-native-paper';
-import { Picker } from '@react-native-picker/picker';
 import styles from '../../../screen/ViewContact/styles';
 import { Formik } from 'formik';
 import StatusSchema from '../../../validate/ValidateFormStatus';
@@ -11,7 +10,7 @@ import i18next from "../../../language/i18n";
 import AuthContext from "../../../store/AuthContext";
 import { useTranslation } from "react-i18next";
 // create a component
-const ModalStatus = ({ listStatus, visible, onPressVisable, status, onPressSubmit }) => {
+const ModalDeactivate = ({ visible, onPressVisable, reason, onPressSubmit }) => {
     const { t, i18n } = useTranslation();
     const authCtx = useContext(AuthContext)
     return (
@@ -26,29 +25,15 @@ const ModalStatus = ({ listStatus, visible, onPressVisable, status, onPressSubmi
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <TouchableWithoutFeedback>
                     <Card elevation={3} style={styles.info_status_modalView}>
-                        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>{t("ModalStatus_Text_Label_Status")}</Text>
+                        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Vô hiệu hoá liên hệ</Text>
                         <Formik
-                            initialValues={status}
+                            initialValues={reason}
                             onSubmit={onPressSubmit}
                             validationSchema={StatusSchema}
                         >
                             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => {
                                 return (
                                     <View style={{ width: '100%' }}>
-
-                                        <Picker
-                                            selectedValue={values.status}
-                                            onValueChange={handleChange('status')}
-                                            mode={Platform.OS === 'android' && 'dropdown'}
-                                        >
-                                            {listStatus.map((item, index) => {
-                                                return (
-                                                    <Picker.Item key={index} label={item.title} value={item.value} />
-                                                )
-                                            })}
-                                        </Picker>
-
-
                                         <TextInput
                                             mode="outlined"
                                             label={t("ModalStatus_Label_Reason")}
@@ -96,4 +81,4 @@ const ModalStatus = ({ listStatus, visible, onPressVisable, status, onPressSubmi
 
 
 //make this component available to the app
-export default ModalStatus;
+export default ModalDeactivate;
