@@ -32,7 +32,7 @@ namespace NCMSystem.Controllers
             List<HomeContact> listCt = new List<HomeContact>();
             try
             {
-                var query = db.contacts.Where(c => c.createdBy == userId);
+                var query = db.contacts.Where(c => c.createdBy == userId && c.isActive == true);
                 if (!string.IsNullOrEmpty(flag))
                 {
                     if (!flag.Equals("null"))
@@ -150,7 +150,7 @@ namespace NCMSystem.Controllers
 
         [HttpGet]
         [Route("api/contacts/{id}")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
         public ResponseMessageResult GetDetail(int id)
         {
             List<string> listGr = new List<string>();
@@ -207,7 +207,7 @@ namespace NCMSystem.Controllers
 
         [HttpGet]
         [Route("api/contacts/search")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
         public ResponseMessageResult GetSearch(string value = "", int? userId = 0)
         {
             int pageSize = 10;
@@ -220,7 +220,7 @@ namespace NCMSystem.Controllers
 
             try
             {
-                var query = db.contacts.Where(c => c.createdBy == userId);
+                var query = db.contacts.Where(c => c.createdBy == userId && c.isActive == true);
                 if (value == null)
                 {
                     value = "";
@@ -244,6 +244,7 @@ namespace NCMSystem.Controllers
                         sc.JobTitle = c.job_title;
                         sc.Company = c.company;
                         sc.Email = c.email;
+                        sc.Status = c.status_id;
                         sc.Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id;
                         sc.CreatedAt = c.create_date;
                         listCt.Add(sc);
@@ -265,6 +266,7 @@ namespace NCMSystem.Controllers
                         sc.JobTitle = c.job_title;
                         sc.Company = c.company;
                         sc.Email = c.email;
+                        sc.Status = c.status_id;
                         sc.Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id;
                         sc.CreatedAt = c.create_date;
                         listCt.Add(sc);
@@ -286,6 +288,7 @@ namespace NCMSystem.Controllers
                         sc.JobTitle = c.job_title;
                         sc.Company = c.company;
                         sc.Email = c.email;
+                        sc.Status = c.status_id;
                         sc.Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id;
                         sc.CreatedAt = c.create_date;
                         listCt.Add(sc);
@@ -306,6 +309,7 @@ namespace NCMSystem.Controllers
                         sc.JobTitle = c.job_title;
                         sc.Company = c.company;
                         sc.Email = c.email;
+                        sc.Status = c.status_id;
                         sc.Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id;
                         sc.CreatedAt = c.create_date;
                         listCt.Add(sc);
@@ -584,9 +588,10 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
         public ResponseMessageResult PatchDeActive(int id, [FromBody] ReasonDaContact reasonDaContact)
         {
+            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
             try
             {
-                var contact = db.contacts.FirstOrDefault(c => c.id == id);
+                var contact = db.contacts.FirstOrDefault(c => c.id == id && c.owner_id == userId);
                 if (contact == null)
                 {
                     return Common.ResponseMessage.NotFound("C0002");

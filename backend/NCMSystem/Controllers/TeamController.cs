@@ -87,7 +87,8 @@ namespace NCMSystem.Controllers
             List<MemberContact> listCt = new List<MemberContact>();
             try
             {
-                var contact = db.contacts.Where(c => c.createdBy == id).OrderByDescending(x => x.create_date)
+                var contact = db.contacts.Where(c => c.createdBy == id && c.isActive == true)
+                    .OrderByDescending(x => x.create_date)
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize).ToList();
 
