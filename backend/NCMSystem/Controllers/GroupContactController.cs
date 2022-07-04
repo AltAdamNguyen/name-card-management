@@ -36,6 +36,7 @@ namespace NCMSystem.Controllers
                 {
                     HomeGroupContact hgc = new HomeGroupContact();
                     hgc.GroupName = g.name;
+                    hgc.GroupId = g.id;
                     listHomeGroupContact.Add(hgc);
                 }
             }
