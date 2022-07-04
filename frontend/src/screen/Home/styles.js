@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         width: '70%',
         alignItems: 'flex-start',
-        padding: 5
+        padding: 5,
     },
     modalItem: {
         flexDirection: 'row',
@@ -188,6 +188,12 @@ const styles = StyleSheet.create({
         bottom: 0,
         backgroundColor: '#1890FF'
     },
+    item_reason: {
+        paddingLeft: 5,
+        paddingRight: 5,
+        paddingBottom: 5,
+        width: '100%'
+    }
 
 
 });

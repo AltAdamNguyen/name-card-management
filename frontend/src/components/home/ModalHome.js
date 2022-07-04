@@ -10,10 +10,10 @@ import {
   View,
   Text,
 } from "react-native";
-import { Button } from "react-native-paper";
+import { Button, Card } from "react-native-paper";
 import styles from "../../screen/Home/styles";
 
-const ModalHome = ({ visible, onPressVisable, sort, onPressSort }) => {
+const ModalHome = ({ visible, onPressVisable, sort, onPressSort, navigation }) => {
   const { t, i18n } = useTranslation();
   const authCtx = useContext(AuthContext);
   const listSort = [
@@ -49,7 +49,7 @@ const ModalHome = ({ visible, onPressVisable, sort, onPressSort }) => {
       <View style={{alignItems: 'center', flex: 1}}>
         <TouchableWithoutFeedback>
 
-          <View style={styles.modelViewFloat}>
+          <Card elevation={5} style={styles.modelViewFloat}>
             <View style={styles.mb10}>
               <Text style={[styles.modalLabel, styles.Bold, styles.mb10]}>
                 {t("Screen_Home_ModalHome_Text_Label_Sort")}
@@ -116,6 +116,7 @@ const ModalHome = ({ visible, onPressVisable, sort, onPressSort }) => {
                   labelStyle={{ fontSize: 25 }}
                   style={{ alignItems: "flex-start" }}
                   uppercase={false}
+                  onPress={() => navigation.navigate('HomeSwap', { screen: 'SearchContact', params: { deactive: true}})}
                 >
                   <Text style={{ fontSize: 14 }}>
                     {t("Screen_Home_ModalHome_Text_Label_DeactivateList")}
@@ -123,7 +124,7 @@ const ModalHome = ({ visible, onPressVisable, sort, onPressSort }) => {
                 </Button>
               </View>
             </View>
-          </View>
+          </Card>
         </TouchableWithoutFeedback>
         </View>
       </TouchableOpacity>

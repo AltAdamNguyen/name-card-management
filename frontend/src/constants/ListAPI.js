@@ -25,9 +25,13 @@ export const ContactAPI = {
     SearchContact: "/api/contacts/search",
     SetFlag: "/api/contacts/flag",
     SetStatus: "/api/contacts/status",
+    DeactiveContact: "/api/contacts/de-active",
+    ReactiveContact: "/api/contacts/active",
+    ListDeactive: "/api/contacts/de-active"
 }
 
 export const TeamAPI = {
     GetTeam: "/api/team",
     ViewContactMember: "/api/team",
+    SearchMember: "/api/team/search"
 }

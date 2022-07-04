@@ -18,12 +18,11 @@ import { FormatDate } from '../../validate/FormatDate';
 
 
 const Home = ({ route, navigation }) => {
-   
+
     const [visibleModal, setVisibleModal] = useState(false);
     const [countContact, setContContact] = useState(0);
     const [listContact, setListContact] = useState();
     const [listFilter, setListFilter] = useState([]);
-    const [text, setText] = useState("");
     const [modalVisible, setModalVisible] = useState(false);
     const [modalFloatVisible, setModalFloatVisible] = useState(false);
     const [flag, setFlag] = useState('null');
@@ -195,7 +194,7 @@ const Home = ({ route, navigation }) => {
                     })}
                 </ScrollView>
             </View>
-            <ModalHome visible={modalFloatVisible} onPressVisable={() => setModalFloatVisible(false)} sort={sort} onPressSort={handlePressSort} />
+            <ModalHome visible={modalFloatVisible} navigation={navigation} onPressVisable={() => setModalFloatVisible(false)} sort={sort} onPressSort={handlePressSort} />
             <FAB style={styles.floatButton} icon="tune" size={24} color="#fff" onPress={() => setModalFloatVisible(!modalFloatVisible)} />
         </SafeAreaView>
     );

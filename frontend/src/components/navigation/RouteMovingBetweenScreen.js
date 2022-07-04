@@ -9,11 +9,11 @@ const Stack = createNativeStackNavigator()
 const RouteMovingBetweenScreen = () => {
   return (
     <Stack.Navigator
-      initialRouteName='HomeScreen'
+      initialRouteName='Bottom'
       screenOptions={{
         headerShown: false,
       }}>
-      <Stack.Screen name="Home" component={RouteNavigation} />
+      <Stack.Screen name="Bottom" component={RouteNavigation} />
       <Stack.Screen name="HomeSwap" component={RouteMovingBetweenHomeScreen} />
       <Stack.Screen name="TeamSwap" component={RouteMovingBetweenTeamScreen} />
     </Stack.Navigator>

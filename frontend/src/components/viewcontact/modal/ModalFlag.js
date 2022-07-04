@@ -21,7 +21,7 @@ const ModalFlag = ({ listItem, visible, onPress, onPressVisable }) => {
             }}>
             <Pressable style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={onPressVisable}>
                 <TouchableWithoutFeedback>
-                    <Card mode='outlined' style={styles.info_flag_modalView}>
+                    <Card elevation={3} style={styles.info_flag_modalView}>
                         <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 10 }}>{t("ModalFlag_Text_Label_Classify")}</Text>
                         {listItem.map((item, index) => {
                             return (

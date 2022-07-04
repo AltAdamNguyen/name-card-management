@@ -5,7 +5,6 @@ import { Appbar, Button, IconButton, TouchableRipple } from 'react-native-paper'
 import * as Clipboard from 'expo-clipboard';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { useIsFocused } from '@react-navigation/native';
 import { ContactAPI, ContentType, Method } from '../../constants/ListAPI';
 import { FetchApi } from '../../service/api/FetchAPI';
 import AuthContext from "../../store/AuthContext";
@@ -13,11 +12,11 @@ import { useTranslation } from "react-i18next";
 
 import ModalStatus from '../../components/viewcontact/modal/ModalStatus';
 import ModalFlag from '../../components/viewcontact/modal/ModalFlag';
+import ModalDeactivate from '../../components/viewcontact/modal/ModalDeactivate';
 import { FormatDate } from '../../validate/FormatDate';
 import SnackbarComponent from '../../components/viewcontact/Snackbar';
 
 import styles from './styles';
-import BottomSheetContact from '../../components/viewcontact/bottomsheet/BottomSheetContact';
 
 // create a component
 
@@ -25,14 +24,16 @@ import BottomSheetContact from '../../components/viewcontact/bottomsheet/BottomS
 
 const ViewContact = ({ navigation, route }) => {
     const [modalVisible, setModalVisible] = useState(false);
-    const [modalFloatVisible, setModalFloatVisible] = useState(false);
     const [modalStatusVisible, setModalStatusVisible] = useState(false);
     const [snackVisible, setSnackVisible] = useState(false);
+    const [modalDeactivateVisible, setModalDeactivateVisible] = useState(false);
 
     const [flag, setFlag] = useState();
     const [contact, setContact] = useState();
     const [status, setStatus] = useState();
-    const isFocused = useIsFocused()
+    const [deactive, setDeactive] = useState({
+        reason: '',
+    });
     const { t, i18n } = useTranslation();
     const authCtx = useContext(AuthContext)
 
@@ -114,20 +115,17 @@ const ViewContact = ({ navigation, route }) => {
         console.log(data)
     }
     useEffect(() => {
-        console.log(route.params.idContact)
         FetchApi(`${ContactAPI.ViewContact}/${route.params.idContact}`, Method.GET, ContentType.JSON, undefined, getContact)
     }, [])
 
-    useEffect(() => {
-        isFocused && setModalFloatVisible(false)
-    }, [isFocused]);
+
 
     useEffect(() => {
         if (contact) {
             setFlag(listFlag[contact.flag])
             setStatus({
                 status: contact.status,
-                reason_status: contact.reason_status
+                reason: contact.reason_status
             })
         }
 
@@ -142,24 +140,32 @@ const ViewContact = ({ navigation, route }) => {
         navigation.navigate('UpdateContact', { 'idContact': route.params.idContact })
     }
 
+    const handleDeactivate = (values) => {
+        console.log(values)
+        FetchApi(`${ContactAPI.DeactiveContact}/${route.params.idContact}`, Method.PATCH, ContentType.JSON, {reason_da: values.reason} , getMessage)
+    }
+
+    const getMessage = (data) => {
+        console.log(data)
+        navigation.navigate("Bottom", { screen: "HomeScreen" })
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <Appbar.Header theme={{ colors: { primary: "transparent" } }} statusBarHeight={1}>
                 <Appbar.BackAction onPress={() => navigation.goBack()} />
-                {/* <Appbar.Content title="Thông tin liên hệ" />
-                <Appbar.Action icon={Platform.OS === 'android' ? "dots-vertical" : "dots-horizontal"} onPress={() => setModalFloatVisible(true)} /> */}
             </Appbar.Header>
             <View style={styles.body}>
                 <View style={styles.body_imgContact}>
-                    {contact !== undefined && <Image source={{ uri: contact.img_url }} style={styles.body_imgContact_image} />}
+                    {contact && <Image source={{ uri: contact.img_url }} style={styles.body_imgContact_image} />}
                 </View>
-                {contact !== undefined &&
+                {contact &&
                     <ScrollView style={{ flex: 1 }}>
                         <View style={{marginTop: 10}}/>
                         <View style={styles.info}>
                             <View style={styles.info_title}>
                                 <Text style={styles.info_title_name}>{contact.name}</Text>
-                                {Boolean(contact.job_title) ? <Text style={styles.info_title_job}><Text style={styles.info_title_job_name}>Chức vụ </Text>{contact.job_title}</Text> : <Text>{t("Screen_ViewContact_Text_NoJobTitle")}</Text>}
+                                <Text style={styles.info_title_job}><Text style={styles.info_title_job_name}>Chức vụ </Text>{Boolean(contact.job_title) ? contact.job_title : t("Screen_ViewContact_Text_NoJobTitle")}</Text>
                                 <Text style={styles.info_title_job}><Text style={styles.info_title_job_name}>Công ty </Text>{contact.company}</Text>
                             </View>
                             <View style={styles.info_component}>
@@ -275,6 +281,7 @@ const ViewContact = ({ navigation, route }) => {
                                     borderless={true}
                                     style={[styles.info_component_button, styles.btl20, styles.btr20]}
                                     onPress={() => setModalVisible(true)}
+                                    disabled={route.params && route.params.viewOnly}
                                 >
                                     <View style={[styles.info_contact_des, styles.info_contact_border]}>
                                         <View style={styles.info_contact_des_item}>
@@ -288,6 +295,7 @@ const ViewContact = ({ navigation, route }) => {
                                     borderless={true}
                                     style={[styles.info_component_button, styles.bbl20, styles.bbr20]}
                                     onPress={() => setModalStatusVisible(true)}
+                                    disabled={route.params && route.params.viewOnly}
                                 >
                                     <View style={styles.info_contact_des}>
                                         <View style={styles.info_contact_des_item}>
@@ -330,22 +338,22 @@ const ViewContact = ({ navigation, route }) => {
                 }
                 {status && <ModalStatus listStatus={Object.values(listStatus)} visible={modalStatusVisible} status={status} onPressSubmit={onSubmitStatus} onPressVisable={() => setModalStatusVisible(!modalStatusVisible)} />}
                 <ModalFlag listItem={Object.values(listFlag)} visible={modalVisible} onPress={handlePressButtonFlag} onPressVisable={() => setModalVisible(false)} />
-                {/* <BottomSheetContact visible={modalFloatVisible} onPressVisible={() => setModalFloatVisible(false)} onPressUpdate={handlePressUpdateContact} /> */}
                 <SnackbarComponent visible={snackVisible} onPressVisible={() => setSnackVisible(false)} message={'Đã sao chép'} />
+                <ModalDeactivate visible={modalDeactivateVisible} reason={deactive} onPressVisable={() => setModalDeactivateVisible(false)} onPressSubmit={handleDeactivate} />
             </View>
             <View style={styles.footer}>
-                <Pressable style={styles.footer_button}>
+                <Pressable style={styles.footer_button} >
                     <Icon name="account-multiple-plus-outline" size={24} color="#828282" />
                     <Text style={styles.footer_button_label}>Thêm nhóm</Text>
                 </Pressable>
-                <Pressable style={styles.footer_button} onPress={handlePressUpdateContact}>
+                {route.params && !route.params.useid && <Pressable style={styles.footer_button} onPress={handlePressUpdateContact}>
                     <Icon name="account-edit-outline" size={24} color="#828282" />
                     <Text style={styles.footer_button_label}>Sửa</Text>
-                </Pressable>
-                <Pressable style={styles.footer_button}>
+                </Pressable>}
+                {route.params && !route.params.useid && <Pressable style={styles.footer_button} onPress={() => setModalDeactivateVisible(true)}>
                     <Icon name="account-minus-outline" size={24} color="#828282" />
                     <Text style={styles.footer_button_label}>Vô hiệu hoá</Text>
-                </Pressable>
+                </Pressable>}
             </View>
         </SafeAreaView>
     );

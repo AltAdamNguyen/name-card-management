@@ -13,6 +13,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '90%',
     },
+    header_label: {
+        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
+    header_label_button: {
+        fontSize: 16,
+    },
     sectionStyle: {
         justifyContent: 'center',
         alignItems: 'center',
