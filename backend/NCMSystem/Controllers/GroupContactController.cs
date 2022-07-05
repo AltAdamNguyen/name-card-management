@@ -78,6 +78,7 @@ namespace NCMSystem.Controllers
                 {
                     ContactInGroup cig = new ContactInGroup();
                     cig.ContactName = c.name;
+                    cig.ImgUrl = c.image_url;
                     cig.JobTitle = c.job_title;
                     cig.ContactCompany = c.company;
                     cig.ContactCreatedAt = c.create_date;
@@ -168,6 +169,7 @@ namespace NCMSystem.Controllers
                         listFoundContactsInGroup.Add(new ContactInGroup()
                         {
                             ContactName = c.name,
+                            ImgUrl = c.image_url,
                             JobTitle = c.job_title,
                             ContactCompany = c.company,
                             ContactCreatedAt = c.create_date
