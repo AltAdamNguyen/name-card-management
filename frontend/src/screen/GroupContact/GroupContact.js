@@ -109,13 +109,13 @@ const GroupContact = ({ navigation }) => {
                 return (
                   <TouchableOpacity
                     onPress={() => {
-                      navigation.navigate("GroupSwap", {screen: "GroupContactDetail"})
+                      navigation.navigate("GroupSwap", {screen: "GroupContactDetail", params : { id : item.group_id}})
                       
                     }}
                   >
                     <View style={styles.container_listGroup_item}>
                       <Text style={styles.container_listGroup_item_label}>
-                        {item.GroupName}
+                        {item.group_name}
                       </Text>
                       <Image source={iconPath.icRight} />
                     </View>
