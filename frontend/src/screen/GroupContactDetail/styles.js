@@ -85,6 +85,15 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         backgroundColor: "red"
     },
+    listContainer_label: {
+        color: '#828282',
+        fontSize: 16,
+    },
+    listContainer_view: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    }
 });
 
 export default styles;

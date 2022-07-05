@@ -34,15 +34,15 @@ import { GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
 // create a component
 const GroupContact = ({ navigation }) => {
   const [listGroupContact, setLisGroupContact] = useState([]);
+  const [listGroupContactTotal, setListGroupContactTotal] = useState([]);
   const [addNewContact, setAddNewContact] = useState([]);
   const [text, setText] = useState("");
   const [textGroup, setTextGroup] = useState("");
   const authCtx = useContext(AuthContext);
   const { t, i18n } = useTranslation();
   const [modalAddContactVisible, setModalAddContactVisible] = useState(false);
-
   const onAddNewGroupContactPressed = (groupName) => {
-    setModalAddContactVisible(false)
+    setModalAddContactVisible(false);
     FetchApi(
       GroupContactAPI.AddGroupContact,
       Method.POST,
@@ -62,9 +62,24 @@ const GroupContact = ({ navigation }) => {
     );
   }, []);
 
+  const searchGroupHandle = (groupName) => {
+    let listSearchGroup = [];
+    if (groupName !== "") {
+      listGroupContactTotal.map((item, index) => {
+        if (item.group_name.includes(groupName)) {
+          listSearchGroup.push(item);
+        }
+      });
+      setLisGroupContact(listSearchGroup);
+    } else {
+      setLisGroupContact(listGroupContactTotal);
+    }
+    console.log(groupName);
+  };
   const getGroupContact = (data) => {
     if (data.data.length > 0) {
       setLisGroupContact(data.data);
+      setListGroupContactTotal(data.data);
     }
   };
 
@@ -77,8 +92,7 @@ const GroupContact = ({ navigation }) => {
         undefined,
         getGroupContact
       );
-    }else{
-
+    } else {
     }
   };
 
@@ -93,7 +107,8 @@ const GroupContact = ({ navigation }) => {
                 roundness: 10,
                 colors: { primary: "#1890FF" },
               }}
-              editable={false}
+              editable={true}
+              onChangeText={(text) => searchGroupHandle(text)}
             />
           </Pressable>
         </View>
@@ -103,14 +118,23 @@ const GroupContact = ({ navigation }) => {
           </Text>
         </View>
         <View style={styles.container_listGroup}>
+          {listGroupContact.length == 0 && (
+            <View style={styles.listContainer_view}>
+              <Text style={styles.listContainer_label}>
+                Không có nhóm
+              </Text>
+            </View>
+          )}
           <ScrollView>
             {listGroupContact.length != 0 &&
               listGroupContact.map((item, index) => {
                 return (
                   <TouchableOpacity
                     onPress={() => {
-                      navigation.navigate("GroupSwap", {screen: "GroupContactDetail", params : { id : item.group_id}})
-                      
+                      navigation.navigate("GroupSwap", {
+                        screen: "GroupContactDetail",
+                        params: { id: item.group_id, name: item.group_name },
+                      });
                     }}
                   >
                     <View style={styles.container_listGroup_item}>

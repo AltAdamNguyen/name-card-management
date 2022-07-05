@@ -17,10 +17,10 @@ const styles = StyleSheet.create({
         
     },
     loading: {
-        height: 100,
+        height: 50,
         width: '60%',
         alignItems: 'center',
-        paddingHorizontal: '50%',
+        
         
     },
     title: {

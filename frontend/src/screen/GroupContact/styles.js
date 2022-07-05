@@ -77,7 +77,16 @@ const styles = StyleSheet.create({
         bottom: 20,
         backgroundColor: '#1890FF',
         borderRadius: 25,
-    }
+    },
+    listContainer_view: {
+        flex: 1,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+    },
+    listContainer_label: {
+        color: '#828282',
+        fontSize: 16,
+    },
 });
 
 export default styles;

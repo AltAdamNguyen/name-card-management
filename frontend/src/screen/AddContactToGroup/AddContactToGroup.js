@@ -20,7 +20,7 @@ import {
 import { FormatDate } from '../../validate/FormatDate';
 import CustomCheckedBox from "../../components/groupcontact/checkBoxCustom/CustomCheckedBox";
 import TopBarNavigator from "../../components/navigation/TopBarAddContactToGroupNavigation";
-import Tab1 from "./Tab1";
+
 
 const AddContactToGroup = ({navigation}) => {
     const [listContact, setListContact] = useState([]);
@@ -43,19 +43,6 @@ const AddContactToGroup = ({navigation}) => {
                 <Appbar.Content title={"Đã chọn " + choosenItems} />
                 <Appbar.Action icon={"dots-horizontal"} />
             </Appbar.Header>
-            <TopBarNavigator allTab={[Tab1, Tab2]} />
-            <View style={styles.bottomButtonContainer}>
-                <Button style={choosenItems == 0 ? styles.bottomButtonDisable : styles.bottomButtonEnable} labelStyle={{ color: 'white' }} disabled={choosenItems == 0 ? true : false} onPress={() => { }}>
-                    Thêm
-                </Button>
-            </View>
-        </SafeAreaView>
-    );
-}
-
-const Tab2 = ({setdd}) => {
-    return (
-        <SafeAreaView style={styles.cotain}>
             <View style={styles.header}>
                 <Pressable style={styles.sectionStyle} >
                     <Searchbar
@@ -133,7 +120,13 @@ const Tab2 = ({setdd}) => {
                     </ScrollView>
                 </View>
             </View>
+            <View style={styles.bottomButtonContainer}>
+                <Button style={choosenItems == 0 ? styles.bottomButtonDisable : styles.bottomButtonEnable} labelStyle={{ color: 'white' }} disabled={choosenItems == 0 ? true : false} onPress={() => { }}>
+                    Thêm
+                </Button>
+            </View>
         </SafeAreaView>
-    )
+    );
 }
+
 export default AddContactToGroup
