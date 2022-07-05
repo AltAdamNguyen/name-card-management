@@ -30,6 +30,7 @@ import {
 import ModalAddGroupContact from "../../components/groupcontact/ModalAddGroupContact";
 import { FetchApi } from "../../service/api/FetchAPI";
 import { GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
+import { useIsFocused } from '@react-navigation/native';
 
 // create a component
 const GroupContact = ({ navigation }) => {
@@ -40,6 +41,7 @@ const GroupContact = ({ navigation }) => {
   const [textGroup, setTextGroup] = useState("");
   const authCtx = useContext(AuthContext);
   const { t, i18n } = useTranslation();
+  const isFocus = useIsFocused();
   const [modalAddContactVisible, setModalAddContactVisible] = useState(false);
   const onAddNewGroupContactPressed = (groupName) => {
     setModalAddContactVisible(false);
@@ -74,8 +76,17 @@ const GroupContact = ({ navigation }) => {
     } else {
       setLisGroupContact(listGroupContactTotal);
     }
-    console.log(groupName);
   };
+  useEffect(() => {
+    FetchApi(
+      GroupContactAPI.ViewGroupContact,
+      Method.GET,
+      ContentType.JSON,
+      undefined,
+      getGroupContact
+    );
+  }, [isFocus]);
+
   const getGroupContact = (data) => {
     if (data.data.length > 0) {
       setLisGroupContact(data.data);

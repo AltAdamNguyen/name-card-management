@@ -5,7 +5,7 @@ import AuthContext from "../../store/AuthContext";
 import styles from "./styles";
 import { useTranslation } from "react-i18next";
 import { StackActions } from "@react-navigation/native";
-import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
+// import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
 import {
   Button,
   Paragraph,
@@ -29,7 +29,7 @@ const Setting = ({ navigation }) => {
   };
   return (
     <Provider>
-      <LoadingDialog onVisible={isLoading ? true : false} />
+      {/* <LoadingDialog onVisible={isLoading ? true : false} /> */}
       <SafeAreaView style={styles.container}>
         <Text style={styles.title}>{t("Screen_Setting_Button_Title")}</Text>
         <TouchableOpacity

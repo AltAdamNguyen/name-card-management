@@ -18,7 +18,7 @@ import LoginSchema from "../../validate/ValidateFormLogin";
 import { object } from "yup";
 import { StackActions } from "@react-navigation/native";
 import AnimatedLottieView from "lottie-react-native";
-import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
+import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog"
 import {
   Button,
   Paragraph,
