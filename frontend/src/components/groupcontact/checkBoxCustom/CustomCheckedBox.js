@@ -13,7 +13,7 @@ const CustomCheckedBox = ({ onClick, id }) => {
         status={checked ? 'checked' : 'unchecked'}
         onPress={() => {
           setChecked(!checked)
-          // onClick(id, !checked)
+          onClick(id, !checked)
         }}
       />
     </View>

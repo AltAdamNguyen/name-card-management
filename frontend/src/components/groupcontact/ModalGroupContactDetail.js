@@ -107,6 +107,8 @@ const ModalGroupContactDetail = ({ visible, onPressVisable, onPressAddContact, o
             </Modal>
             <ConfirmDialog onVisible={dialogConfirmVisible}
             label={dialogTitle} 
+            leftButtonTitle = {"Hủy"}
+            rightButtonTitle = {"Xóa"}
             onDismiss =  {() => setDialogConfirmVisible(false)}
             onPressConfirm = {() => {
                 setDialogConfirmVisible(false)

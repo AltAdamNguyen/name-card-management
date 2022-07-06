@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
         width: 94.29,
         height: 70,
         borderRadius: 10,
-        backgroundColor: "#1890FF"
     },
     // End Contact Item Style Region
 

@@ -34,7 +34,8 @@ export const GroupContactAPI = {
     ReactiveContact: "/api/contacts/active",
     ListDeactive: "/api/contacts/de-active",
     ViewGroupContactDetail: "/api/groups",
-    DeleteGroupContact: "/api/groups/delete-groupcontact"
+    DeleteGroupContact: "/api/groups/delete-groupcontact",
+    SearchContactInGroup: "/api/groups/search-contactingroupcontact"
 }
 
 export const TeamAPI = {

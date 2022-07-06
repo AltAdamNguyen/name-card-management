@@ -22,11 +22,13 @@ import ModalGroupContactDetail from "../../components/groupcontact/ModalGroupCon
 import { FetchApi } from "../../service/api/FetchAPI";
 import { GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
 import { set } from "lodash";
+import { useIsFocused } from "@react-navigation/native";
 
 const GroupContactDetail = ({ navigation, route }) => {
     const [listContact, setListContact] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false)
+    const isFocus = useIsFocused();
 
   useEffect(() => {
     FetchApi(
@@ -38,6 +40,17 @@ const GroupContactDetail = ({ navigation, route }) => {
     );
     setModalVisible(false);
   }, []);
+
+  useEffect(() => {
+    FetchApi(
+      `${GroupContactAPI.ViewGroupContactDetail}/${route.params.id}`,
+      Method.GET,
+      ContentType.JSON,
+      undefined,
+      getGroupContactDetail
+    );
+    setModalVisible(false);
+  }, [isFocus]);
 
     // API call back 
     const getGroupContactDetail = (data) => { //Get Detail
@@ -65,6 +78,23 @@ const GroupContactDetail = ({ navigation, route }) => {
         }
     }
 
+    const getContactSearchCallBack = (data) => {
+        console.log(data)
+        //setListContact(data.data)
+    }
+
+    const handleSearch = (contactName) => {
+        if (contactName != "") {
+            FetchApi(
+                `${GroupContactAPI.SearchContactInGroup}/${route.params.groupId}`,
+                Method.GET,
+                ContentType.JSON,
+                { value : "Nghiêm"},
+                getContactSearchCallBack
+            )
+        }
+    }
+
     return (
         <Provider>
             <SafeAreaView style={[styles.container, modalVisible ? styles.containerOverLay : styles.container ]}>
@@ -82,6 +112,7 @@ const GroupContactDetail = ({ navigation, route }) => {
                                 roundness: 10,
                                 colors: { primary: '#1890FF' }
                             }}
+                            onChangeText = {text => handleSearch(text)}
                         />
                     </Pressable>
                 </View>
@@ -115,7 +146,7 @@ const GroupContactDetail = ({ navigation, route }) => {
                         </ScrollView>
                     </View>
                 </View>
-                <ModalGroupContactDetail groupContactId={route.params.id} visible={modalVisible} onDismiss={() => { setModalVisible(false) }} onPressAddContact={() => { navigation.navigate("GroupSwap", { screen: "AddContactToGroup" }); setModalVisible(false) }} onPressDeleteGroup = {() => {setModalVisible(false)}} onDataReturn = {onDataReturn} />
+                <ModalGroupContactDetail groupContactId={route.params.id} visible={modalVisible} onDismiss={() => { setModalVisible(false) }} onPressAddContact={() => { navigation.navigate("GroupSwap", { screen: "AddContactToGroup" , params : { id : route.params.groupId} }); setModalVisible(false) }} onPressDeleteGroup = {() => {setModalVisible(false)}} onDataReturn = {onDataReturn} />
             </SafeAreaView>
         </Provider>
     );
