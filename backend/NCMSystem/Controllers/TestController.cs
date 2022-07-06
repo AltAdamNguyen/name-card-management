@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Text;
 using System.Web.Http;
 using System.Web.Http.Results;
@@ -17,8 +18,9 @@ namespace NCMSystem.Controllers
 
         [HttpGet]
         [Route("api/test")]
-        public ResponseMessageResult PatchFlag(string name)
+        public ResponseMessageResult PatchFlag()
         {
+            var temp = Environment.GetEnvironmentVariable("NMTUNG_VAL");
             return new ResponseMessageResult(new HttpResponseMessage()
             {
                 StatusCode = System.Net.HttpStatusCode.OK,
@@ -27,7 +29,7 @@ namespace NCMSystem.Controllers
                     Message = "Success",
                     Data = new
                     {
-                        name
+                        temp
                     }
                 }), Encoding.UTF8, "application/json")
             });

@@ -51,7 +51,7 @@ namespace NCMSystem.Filter
             try
             {
                 data = Jose.JWT.Decode(jwtToken,
-                    Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings["JWT_SecretKeyToken"]));
+                    Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET_KEY_TOKEN") ?? string.Empty));
             }
             catch (Exception)
             {

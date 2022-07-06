@@ -12,7 +12,7 @@ namespace NCMSystem
         private static async Task SendEmail(string email, string htmlContent, string subject)
         {
             // Config sendgrid - get api key
-            var apiKey = WebConfigurationManager.AppSettings["sendgrid_api_key"];
+            var apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
             var client = new SendGridClient(apiKey);
             
             // setup Sender (Warning: Don't Change)

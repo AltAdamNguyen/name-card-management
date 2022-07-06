@@ -411,7 +411,7 @@ namespace NCMSystem.Controllers
         private string GenerateToken(int userId, long createTime, long expireTime, int userRole)
         {
             Jwk keyToken =
-                new Jwk(Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings["JWT_SecretKeyToken"]));
+                new Jwk(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET_KEY_TOKEN") ?? string.Empty));
 
             // init date create-expire for token and refresh token
 
@@ -429,7 +429,7 @@ namespace NCMSystem.Controllers
         private string GenerateRefreshToken(int userId, long createTime, long expireTime)
         {
             Jwk keyRefreshToken =
-                new Jwk(Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings["JWT_SecretKeyRefreshToken"]));
+                new Jwk(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET_KEY_REFRESH_TOKEN") ?? string.Empty));
 
             // init date create-expire for token and refresh token
             DateTimeOffset dateCreateToken = DateTimeOffset.Now;
