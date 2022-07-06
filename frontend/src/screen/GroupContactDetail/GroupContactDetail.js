@@ -25,7 +25,7 @@ const GroupContactDetail = ({ navigation, route }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const isFocus = useIsFocused();
-
+  const [groupName, setGroupName] = useState(route.params.name)
   useEffect(() => {
     FetchApi(
       `${GroupContactAPI.ViewGroupContactDetail}/${route.params.id}`,
@@ -61,6 +61,17 @@ const GroupContactDetail = ({ navigation, route }) => {
     //Delete Group
     navigation.goBack();
   };
+
+  const changeGroupName = () => {
+    
+    FetchApi(
+      `${GroupContactAPI.ViewGroupContactDetail}/${route.params.id}`,
+      Method.GET,
+      ContentType.JSON,
+      undefined,
+      getGroupContactDetail
+    );
+  }
   // end API call back
 
   const onDataReturn = (data) => {
@@ -72,6 +83,16 @@ const GroupContactDetail = ({ navigation, route }) => {
         undefined,
         deleteGroupContact
       );
+    }
+    else if(data.function === 'changeGroupName'){
+      FetchApi(
+        `${GroupContactAPI.ChangeGroupName}/${route.params.id}`,
+        Method.PATCH,
+        ContentType.JSON,
+        {name: data.groupCurrentName},
+        changeGroupName
+      );
+     setGroupName(data.groupCurrentName)
     }
   };
 
@@ -105,7 +126,7 @@ const GroupContactDetail = ({ navigation, route }) => {
           theme={{ colors: { primary: "transparent" } }}
         >
           <Appbar.BackAction onPress={() => navigation.goBack()} />
-          <Appbar.Content title={route.params.name} />
+          <Appbar.Content title={groupName} />
           <TouchableOpacity></TouchableOpacity>
           <Appbar.Action
             icon={"dots-horizontal"}

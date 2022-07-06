@@ -150,8 +150,7 @@ const ModalGroupContactDetail = ({
         }}
         onPressConfirm={() => {
             setDialogChangGroupNameVisible(false)
-            onDataReturn({ function: "delete" });
-            console.log("abc")
+            onDataReturn({ function: "changeGroupName", groupCurrentName : groupName});
         }}
       />
     </Portal>
