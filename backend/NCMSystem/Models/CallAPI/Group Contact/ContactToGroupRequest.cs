@@ -9,6 +9,6 @@ namespace NCMSystem.Models.CallAPI.Group_Contact
     public class ContactToGroupRequest
     {
         [JsonProperty("group_id")] public int GroupId { get; set; }
-        [JsonProperty("contact_id")] public int ContactId { get; set; }
+        [JsonProperty("contact_ids")] public List<ContactIdRequestToGroup> ListContactId { get; set; }
     }
 }

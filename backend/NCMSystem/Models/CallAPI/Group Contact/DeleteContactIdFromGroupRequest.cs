@@ -6,8 +6,8 @@ using System.Web;
 
 namespace NCMSystem.Models.CallAPI.Group_Contact
 {
-    public class SearchContactInGroupContact
+    public class DeleteContactIdFromGroupRequest
     {
-        [JsonProperty("value")] public string Value { get; set; }
+        [JsonProperty("contact_id")] public int ContactId { get; set; }
     }
 }
