@@ -10,8 +10,11 @@ import {
 } from "react-native-paper";
 
 const ModalAddGroupContact = ({onVisible, label, value, context, onPress, onDismiss, icon, onPressCancel, onPressConfirm}) => {
-    const [inputVal, setInputVal] = useState('test');
-    
+    const [inputVal, setInputVal] = useState("");
+    const onCancelPress = () => {
+      onVisible = false;
+      setInputVal("")
+    }
   return (
     <Portal>
       <Dialog visible={onVisible}  style={{ borderRadius: 10 }} onDismiss={onDismiss}>
@@ -20,17 +23,18 @@ const ModalAddGroupContact = ({onVisible, label, value, context, onPress, onDism
         <TextInput
           mode='outlined'
           label="Tên nhóm"
-          onChangeText={setInputVal}
+          onChangeText={text => setInputVal(text)}
+          value={inputVal}
           style={styles.input}
           theme={{ roundness: 10, colors: { primary: '#1890FF', error: '#B22D1D' } }}
-          right={<TextInput.Icon name={icon} onPress={onPress} />}
+          right={<TextInput.Icon name={icon} onPress={onPress } />}
         />
         </Dialog.Content>
         <Dialog.Actions>
-          <Button color="red"  onPress={onPressCancel}>
+          <Button color="red"  onPress={() => {onPressCancel(); setInputVal("")}}>
           Hủy
           </Button>
-          <Button color="#1890FF" onPress={onPressConfirm}>
+          <Button color="#1890FF" onPress={() => {onPressConfirm(inputVal); setInputVal("")}}>
           Thêm
           </Button>
         </Dialog.Actions>

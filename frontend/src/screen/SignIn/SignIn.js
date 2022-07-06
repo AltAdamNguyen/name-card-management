@@ -17,7 +17,16 @@ import { AuthAPI, ContentType, Method } from "../../constants/ListAPI";
 import LoginSchema from "../../validate/ValidateFormLogin";
 import { object } from "yup";
 import { StackActions } from "@react-navigation/native";
-
+import AnimatedLottieView from "lottie-react-native";
+import LoadingDialog from "../../components/custom/dialog/loadingDialog/LoadingDialog";
+import {
+  Button,
+  Paragraph,
+  Dialog,
+  Portal,
+  Provider,
+  TextInput
+} from "react-native-paper";
 const options = [
   { label: "VN", value: "vn"} ,
    {label: "EN", value: "en" },
@@ -27,13 +36,15 @@ const SignIn = ({ navigation }) => {
   
   const { t, i18n } = useTranslation();
   const [user, setUser] = useState({
-    // email: "person1@gmail.com",
-    // password: "Trung123@",
-    email: "anhnc@gmail.com",
-    password: "trung123@",
+    email: "tung@gmail.com",
+    password: "Tung123@",
   });
+  
   const [isSecureEntry, setIsSecureEntry] = useState(true);
+  const [isLoading, setLoading] = useState(false);
   const authCtx = useContext(AuthContext);
+
+
   const onVisibilityPasswordPressed = () => {
     setIsSecureEntry((prev) => !prev);
   };
@@ -42,6 +53,7 @@ const SignIn = ({ navigation }) => {
   };
 
   const onSignInPressed = () => {
+    setLoading(true)
     FetchApiAuth(
       AuthAPI.Login,
       Method.POST,
@@ -54,7 +66,7 @@ const SignIn = ({ navigation }) => {
   const getMessage = (data) => {
     if (data.message === "Get token success") {
       authCtx.onLogin(data.data.access_token, data.data.refresh_token);
-      
+      setLoading(true)
     }
   };
 
@@ -76,13 +88,14 @@ const SignIn = ({ navigation }) => {
       email: "",
     });
   };
-  return (
-    
-    <View style={styles.root}>
+ 
+  return (  
+    <Provider>
+       <View style= {styles.root}>
+      <LoadingDialog onVisible={isLoading ? true : false }/>
       <View>
         <CustemHeaders text_PRIMARY="Name Card Management" Logo={Logo_Login} />
       </View>
-
       <View style={styles.input}>
         <CustomInputs
           value={user.email}
@@ -128,8 +141,8 @@ const SignIn = ({ navigation }) => {
         <Text>{t("Screen_Login_Text_Signature")}</Text>
       </View>
     </View>
-
-    
+    </Provider>
+   
   );
 };
 

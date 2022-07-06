@@ -36,12 +36,13 @@ namespace NCMSystem.Controllers
                 {
                     HomeGroupContact hgc = new HomeGroupContact();
                     hgc.GroupName = g.name;
+                    hgc.GroupId = g.id;
                     listHomeGroupContact.Add(hgc);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Log.Error(ex, "C00001");
+                Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
             }
 
@@ -50,7 +51,7 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "List shown successfully",
+                    Message = "Success",
                     Data = listHomeGroupContact
                 }), Encoding.UTF8, "application/json")
             });
@@ -77,6 +78,7 @@ namespace NCMSystem.Controllers
                 {
                     ContactInGroup cig = new ContactInGroup();
                     cig.ContactName = c.name;
+                    cig.ImgUrl = c.image_url;
                     cig.JobTitle = c.job_title;
                     cig.ContactCompany = c.company;
                     cig.ContactCreatedAt = c.create_date;
@@ -84,10 +86,10 @@ namespace NCMSystem.Controllers
                 }
 
                 dgc.contacts = listCtInGroup;
-            } 
-            catch(Exception ex)
+            }
+            catch (Exception ex)
             {
-                Log.Error(ex, "C00001");
+                Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
             }
 
@@ -96,8 +98,98 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Get Group Contact Detail Successully",
+                    Message = "Success",
                     Data = dgc
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpGet]
+        [Route("api/groups/search-groupcontact/{group_name}")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        public ResponseMessageResult SearchGroupContact(string group_name)
+        {
+            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+
+            //find groups according to the logged in user
+            List<group> listGroup = db.groups.Where(g => g.user_id == userId).ToList();
+            List<SearchGroupContact> listFoundGroup = new List<SearchGroupContact>();
+
+            try
+            {
+                //search for matched group contacts by names
+                foreach (group group in listGroup)
+                {
+                    if (group.name.Contains(group_name))
+                    {
+                        listFoundGroup.Add(new SearchGroupContact()
+                        {
+                            GroupName = group.name
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = listFoundGroup
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpGet]
+        [Route("api/groups/search-contactingroupcontact/{group_id}/{valueToSearch}")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        public ResponseMessageResult SearchContactInGroupContact(int group_id, string valueToSearch)
+        {
+            //get group from database with its id accordingly
+            var group = db.groups.FirstOrDefault(g => g.id == group_id);
+
+            List<contact> contacts = group.contacts.ToList();
+
+            List<ContactInGroup> listFoundContactsInGroup = new List<ContactInGroup>();
+
+            try
+            {
+                //search for matched group contacts by names
+                foreach (contact c in contacts)
+                {
+                    if (c.name.Contains(valueToSearch) || c.job_title.Contains(valueToSearch) ||
+                        c.company.Contains(valueToSearch))
+                    {
+                        listFoundContactsInGroup.Add(new ContactInGroup()
+                        {
+                            ContactName = c.name,
+                            ImgUrl = c.image_url,
+                            JobTitle = c.job_title,
+                            ContactCompany = c.company,
+                            ContactCreatedAt = c.create_date
+                        });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = listFoundContactsInGroup
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -139,9 +231,9 @@ namespace NCMSystem.Controllers
 
                 db.SaveChanges();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Log.Error(ex, "C00001");
+                Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
             }
 
@@ -150,49 +242,60 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Add Group Successully",
+                    Message = "Success",
                 }), Encoding.UTF8, "application/json")
             });
         }
 
         [HttpPost]
         [Route("api/groups/add-contacttogroup")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer})]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
         public ResponseMessageResult AddContactToGroup([FromBody] ContactToGroupRequest request)
         {
             try
             {
-                int contactId = request.ContactId;
                 int groupId = request.GroupId;
+                List<ContactIdRequestToGroup> listContactIds = request.ListContactId;
 
                 //get list of contacts in a group by the logged in user
-                List<contact> list = db.groups.Where(g => g.id == groupId).FirstOrDefault().contacts.ToList();
+                List<contact> contactList = db.groups.Where(g => g.id == groupId).FirstOrDefault().contacts.ToList();
 
-                foreach (contact c in list)
+                //list of contacts to add to group contact
+                List<contact> selectedContacts = new List<contact>();
+
+                foreach (ContactIdRequestToGroup cirtg in listContactIds)
                 {
-                    if (c.id == contactId)
+                    contact c = (contact) contactList.Find(c1 => c1.id == cirtg.ContactId);
+                    //if there's no contact with same info as inputted contact
+                    if (c == null)
                     {
-                        return new ResponseMessageResult(new HttpResponseMessage()
-                        {
-                            StatusCode = System.Net.HttpStatusCode.OK,
-                            Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
-                            {
-                                Message = "C0008",
-                            }), Encoding.UTF8, "application/json")
-                        });
+                        selectedContacts.Add(c);
                     }
                 }
 
-                var selectedGroup = db.groups.Where(g => g.id == groupId).FirstOrDefault();
-                var selectedContact = db.contacts.Where(c => c.id == contactId).FirstOrDefault();
+                if (selectedContacts.Count == 0)
+                {
+                    return new ResponseMessageResult(new HttpResponseMessage()
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                        {
+                            Message = "C0008",
+                        }), Encoding.UTF8, "application/json")
+                    });
+                }
 
-                selectedGroup.contacts.Add(selectedContact);
+                var selectedGroup = db.groups.Where(g => g.id == groupId).FirstOrDefault();
+                foreach (contact contact in selectedContacts)
+                {
+                    selectedGroup.contacts.Add(contact);
+                }
 
                 db.SaveChanges();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Log.Error(ex, "C00001");
+                Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
             }
 
@@ -201,7 +304,7 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Add Contact to Group Successully",
+                    Message = "Success",
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -216,15 +319,48 @@ namespace NCMSystem.Controllers
             {
                 //get selected contact and group that contains the selected contact
                 group selectedGroup = db.groups.Where(g => g.id == request.GroupId).FirstOrDefault();
-                contact selectedContact = db.contacts.Where(c => c.id == request.ContactId).FirstOrDefault();
+                //get contacts from the selected group contact
+                List<contact> contacts = selectedGroup.contacts.ToList();
 
-                selectedGroup.contacts.Remove(selectedContact);
+                //list of contact ids from JSON Postman
+                List<DeleteContactIdFromGroupRequest> contactIds = request.ContactIds;
 
-                db.SaveChanges();                
+                //list of selected contacts according to contact ids to delete from group contact
+                List<contact> selectedContacts = new List<contact>();
+
+                foreach (DeleteContactIdFromGroupRequest dcifgr in contactIds)
+                {
+                    foreach (contact contact in contacts)
+                    {
+                        if (contact.id == dcifgr.ContactId)
+                        {
+                            selectedContacts.Add(contact);
+                        }
+                    }
+                }
+
+                if (selectedContacts.Count == 0)
+                {
+                    return new ResponseMessageResult(new HttpResponseMessage()
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                        {
+                            Message = "C0014"
+                        }), Encoding.UTF8, "application/json")
+                    });
+                }
+
+                foreach (contact selected in selectedContacts)
+                {
+                    selectedGroup.contacts.Remove(selected);
+                }
+
+                db.SaveChanges();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Log.Error(ex, "C00001");
+                Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
             }
 
@@ -233,7 +369,7 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Delete Contact From Group Successully"
+                    Message = "Success"
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -252,11 +388,11 @@ namespace NCMSystem.Controllers
 
                 db.groups.Remove(selectedGroup);
 
-                db.SaveChanges();               
+                db.SaveChanges();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Log.Error(ex, "C00001");
+                Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
             }
 
@@ -265,7 +401,7 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Delete Contact From Group Successully"
+                    Message = "Success"
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -303,9 +439,9 @@ namespace NCMSystem.Controllers
 
                 db.SaveChanges();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                Log.Error(ex, "C00001");
+                Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
             }
 
@@ -314,7 +450,7 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Change Group Name Successully"
+                    Message = "Success"
                 }), Encoding.UTF8, "application/json")
             });
         }

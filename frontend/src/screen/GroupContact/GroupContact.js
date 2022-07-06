@@ -1,5 +1,5 @@
 //import liraries
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   View,
   Text,
@@ -28,14 +28,60 @@ import {
   Provider,
 } from "react-native-paper";
 import ModalAddGroupContact from "../../components/groupcontact/ModalAddGroupContact";
+import { FetchApi } from "../../service/api/FetchAPI";
+import { GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
 
 // create a component
-const GroupContact = () => {
+const GroupContact = ({ navigation }) => {
+  const [listGroupContact, setLisGroupContact] = useState([]);
+  const [addNewContact, setAddNewContact] = useState([]);
   const [text, setText] = useState("");
   const [textGroup, setTextGroup] = useState("");
   const authCtx = useContext(AuthContext);
   const { t, i18n } = useTranslation();
   const [modalAddContactVisible, setModalAddContactVisible] = useState(false);
+
+  const onAddNewGroupContactPressed = (groupName) => {
+    setModalAddContactVisible(false)
+    FetchApi(
+      GroupContactAPI.AddGroupContact,
+      Method.POST,
+      ContentType.JSON,
+      { group_name: groupName },
+      addGroupContact
+    );
+  };
+
+  useEffect(() => {
+    FetchApi(
+      GroupContactAPI.ViewGroupContact,
+      Method.GET,
+      ContentType.JSON,
+      undefined,
+      getGroupContact
+    );
+  }, []);
+
+  const getGroupContact = (data) => {
+    if (data.data.length > 0) {
+      setLisGroupContact(data.data);
+    }
+  };
+
+  const addGroupContact = (data) => {
+    if (data.message == "Add Group Successully") {
+      FetchApi(
+        GroupContactAPI.ViewGroupContact,
+        Method.GET,
+        ContentType.JSON,
+        undefined,
+        getGroupContact
+      );
+    }else{
+
+    }
+  };
+
   return (
     <Provider style={styles.container_provider}>
       <SafeAreaView style={styles.container}>
@@ -58,14 +104,24 @@ const GroupContact = () => {
         </View>
         <View style={styles.container_listGroup}>
           <ScrollView>
-            <TouchableOpacity>
-              <View style={styles.container_listGroup_item}>
-                <Text style={styles.container_listGroup_item_label}>
-                  Yêu thích (0)
-                </Text>
-                <Image source={iconPath.icRight} />
-              </View>
-            </TouchableOpacity>
+            {listGroupContact.length != 0 &&
+              listGroupContact.map((item, index) => {
+                return (
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate("GroupSwap", {screen: "GroupContactDetail", params : { id : item.group_id}})
+                      
+                    }}
+                  >
+                    <View style={styles.container_listGroup_item}>
+                      <Text style={styles.container_listGroup_item_label}>
+                        {item.group_name}
+                      </Text>
+                      <Image source={iconPath.icRight} />
+                    </View>
+                  </TouchableOpacity>
+                );
+              })}
           </ScrollView>
         </View>
         <View>
@@ -78,6 +134,7 @@ const GroupContact = () => {
               onVisible={modalAddContactVisible}
               onDismiss={() => setModalAddContactVisible(false)}
               onPressCancel={() => setModalAddContactVisible(false)}
+              onPressConfirm={onAddNewGroupContactPressed}
             />
           </TouchableOpacity>
         </View>

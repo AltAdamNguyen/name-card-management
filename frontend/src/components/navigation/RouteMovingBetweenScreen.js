@@ -4,6 +4,7 @@ import RouteNavigation from './RouteBottom';
 import RouteMovingBetweenScanScreen from './RouteMovingBetweenScanScren';
 import RouteMovingBetweenTeamScreen from './RouteMovingBetweenTeamScreen';
 import RouteMovingBetweenHomeScreen from './RouteMovingBetwwenHomeScreen';
+import RouteMovingBetweenGroupScreen from './RouteMovingBetweenGroupContactScreen';
 const Stack = createNativeStackNavigator()
 
 const RouteMovingBetweenScreen = () => {
@@ -16,6 +17,7 @@ const RouteMovingBetweenScreen = () => {
       <Stack.Screen name="Bottom" component={RouteNavigation} />
       <Stack.Screen name="HomeSwap" component={RouteMovingBetweenHomeScreen} />
       <Stack.Screen name="TeamSwap" component={RouteMovingBetweenTeamScreen} />
+      <Stack.Screen name="GroupSwap" component={RouteMovingBetweenGroupScreen} />
     </Stack.Navigator>
   )
 }

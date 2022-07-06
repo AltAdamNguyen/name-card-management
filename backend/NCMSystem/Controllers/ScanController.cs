@@ -24,6 +24,7 @@ namespace NCMSystem.Controllers
 
         [HttpPost]
         [Route("api/scan")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
         public ResponseMessageResult Post([FromBody] ScanNCRequest image)
         {
             ScanResponse response = new ScanResponse();

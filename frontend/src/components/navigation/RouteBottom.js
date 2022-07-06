@@ -7,6 +7,7 @@ import styles from '../../navigation/styles';
 import AuthContext from '../../store/AuthContext';
 import RouteMovingBetweenScanScreen from './RouteMovingBetweenScanScren';
 import { Button } from 'react-native-paper';
+import RouteMovingBetweenGroupContactScreen from './RouteMovingBetweenGroupContactScreen';
 const Tab = createBottomTabNavigator();
 
 const RouteNavigation = () => {
@@ -43,8 +44,9 @@ const RouteNavigation = () => {
           },
         }}
       />}
-      <Tab.Screen name="Group Contact"
+      <Tab.Screen name="GroupContact"
         component={GroupContact}
+        independent={true}
         options={{
           tabBarIcon: ({ focused }) => {
             return (
