@@ -166,6 +166,8 @@ const GroupContact = ({ navigation }) => {
           >
             <Image source={iconPath.icPlus} />
             <ModalAddGroupContact
+              label="Tên nhóm"
+              confirmLabel="Thêm"
               onVisible={modalAddContactVisible}
               onDismiss={() => setModalAddContactVisible(false)}
               onPressCancel={() => setModalAddContactVisible(false)}
