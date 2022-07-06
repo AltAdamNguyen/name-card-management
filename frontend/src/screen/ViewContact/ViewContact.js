@@ -1,7 +1,8 @@
 //import liraries
-import React, { useState, useEffect, useContext, useCallback } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, SafeAreaView, Image, ScrollView, Pressable, Linking, Platform } from 'react-native';
-import { Appbar, Button, IconButton, TouchableRipple } from 'react-native-paper';
+import { Appbar, IconButton, TouchableRipple } from 'react-native-paper';
+import { useIsFocused } from '@react-navigation/native';
 import * as Clipboard from 'expo-clipboard';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -28,6 +29,7 @@ const ViewContact = ({ navigation, route }) => {
     const [snackVisible, setSnackVisible] = useState(false);
     const [modalDeactivateVisible, setModalDeactivateVisible] = useState(false);
 
+    const isFocused = useIsFocused()
     const [flag, setFlag] = useState();
     const [contact, setContact] = useState();
     const [status, setStatus] = useState();
@@ -118,7 +120,9 @@ const ViewContact = ({ navigation, route }) => {
         FetchApi(`${ContactAPI.ViewContact}/${route.params.idContact}`, Method.GET, ContentType.JSON, undefined, getContact)
     }, [])
 
-
+    useEffect(() => {
+        FetchApi(`${ContactAPI.ViewContact}/${route.params.idContact}`, Method.GET, ContentType.JSON, undefined, getContact)
+    }, [isFocused]);
 
     useEffect(() => {
         if (contact) {

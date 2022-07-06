@@ -1,71 +1,26 @@
 //import liraries
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, Text, SafeAreaView, Image, ScrollView } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Searchbar, Card, IconButton } from 'react-native-paper'
+
+import { Searchbar, Card, List, IconButton, Button, RadioButton } from 'react-native-paper'
 import debounce from 'lodash.debounce';
 import styles from '../Home/styles';
 import { FetchApi } from '../../service/api/FetchAPI';
 import { ContactAPI, ContentType, Method, TeamAPI } from '../../constants/ListAPI';
-import { FormatDate } from '../../validate/FormatDate';
+
 import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
 import { LinearGradient } from "expo-linear-gradient";
 import ModalActivate from '../../components/searchcontact/ModalActivate';
-const listFlag = {
-    F0001: {
-        name: 'very-important',
-        title: 'Rất quan trọng',
-        color: '#EB5757',
-        background: 'rgba(235, 87, 87, 0.2)',
-        value: 'F0001',
-    },
-    F0002: {
-        name: 'important',
-        title: 'Quan trọng',
-        color: '#F2994A',
-        background: 'rgba(242, 153, 74, 0.2)',
-        value: 'F0002',
-    },
-    F0003: {
-        name: 'not-important',
-        title: 'Không quan trọng',
-        color: '#F2C94C',
-        background: 'rgba(242, 201, 76, 0.2)',
-        value: 'F0003',
-    },
-    F0004: {
-        name: 'dont-care',
-        title: 'Không quan tâm',
-        color: '#2D9CDB',
-        background: 'rgba(45, 156, 219, 0.2)',
-        value: 'F0004',
-    }
-}
+import Contact from '../../components/searchcontact/Contact';
 
-const listStatus = {
-    S0001: {
-        name: 'failed',
-        color: '#EB5757',
-        value: 'S0001',
-    },
-    S0002: {
-        name: 'ongoing',
-        color: '#F2994A',
-        value: 'S0002',
-    },
-    S0003: {
-        name: 'success',
-        color: '#00C853',
-        value: 'S0003',
-    }
-}
 // create a component
 const SearchContact = ({ navigation, route }) => {
-    console.log(route.params)
     const [listContact, setListContact] = useState([]);
     const [listFilter, setListFilter] = useState([]);
+    const [listGroup, setListGroup] = useState([]);
     const [text, setText] = useState("");
     const [visible, setVisible] = useState(false);
+    const [visibleCheckBox, setVisibleCheckBox] = useState(false);
     const textInputRef = useRef();
     const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
     const [loading, setLoading] = useState(false);
@@ -105,6 +60,11 @@ const SearchContact = ({ navigation, route }) => {
         route.params && route.params.useid && navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: id, viewOnly: true } })
     }
 
+    const handleReActivateButton = (id) => {
+        setVisible(true)
+        setContactId(id)
+    }
+
     const handleReactivate = () => {
         FetchApi(`${ContactAPI.ReactiveContact}/${contactId}`, Method.PATCH, ContentType.JSON, null, getMessage)
     }
@@ -114,14 +74,53 @@ const SearchContact = ({ navigation, route }) => {
         FetchApi(`${ContactAPI.ListDeactive}`, Method.GET, ContentType.JSON, undefined, getContact)
     }
 
+    const checkListGroup = (item, check) => {
+        if (check) {
+            setListGroup([...listGroup, item]);
+        } else {
+            setListGroup(listGroup.filter(i => i !== item));
+        }
+    }
+
+    const handleSelectAll = () => {
+        const list = listContact.map(i => {return i.id})
+        if (listGroup && listGroup.length === listContact.length) {
+            setListGroup([]);
+        } else {
+            setListGroup(list);
+        }
+    }
+
+    const handleGoBack = () => {
+        if(!route.params || route.params && route.params.deactive){
+            navigation.goBack();
+        }
+    }
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
+                {route.params && route.params.useid &&
+                    <View style={styles.header_title}>
+                        <View style={styles.header_title_left}>
+                            <IconButton icon="arrow-left" size={26} onPress={() => navigation.goBack()} />
+                            <Text>Đặng Vũ Hoàng Trung</Text>
+                        </View>
+                        <Button
+                            onPress={() => setVisibleCheckBox(!visibleCheckBox)}
+                        >Thêm
+                        </Button>
+                        <Button
+                            onPress={handleSelectAll}
+                        >
+                            Select All
+                        </Button>
+                    </View>
+                }
                 <View style={styles.sectionStyle}>
                     <Searchbar
                         placeholder="Tìm kiếm danh thiếp"
-                        icon="arrow-left"
-                        onIconPress={() => navigation.goBack()}
+                        icon={!route.params || route.params && route.params.deactive ? "arrow-left" : "magnify"}
+                        onIconPress={handleGoBack}
                         theme={{
                             roundness: 10,
                             colors: { primary: '#1890FF' }
@@ -159,50 +158,11 @@ const SearchContact = ({ navigation, route }) => {
                 <ScrollView>
                     {listFilter && listFilter.length != 0 && listFilter.map((item, index) => {
                         return (
-                            <Card mode='elevated' style={styles.card} elevation={2} key={index} onPress={() => handleViewContact(item.id)}>
-                                <View>
-                                    <View style={styles.item}>
-                                        <View style={styles.imgContact}>
-                                            <Image source={{ uri: item.img_url }} style={styles.image} />
-                                        </View>
-                                        <View style={styles.txtContact}>
-                                            <View style={[styles.title, { flexDirection: 'row', justifyContent: 'space-between' }]}>
-                                                <Text style={styles.nameContact}>{item.name}</Text>
-                                                {!route.params && item.flag_id &&
-                                                    <Icon name="bookmark" size={24} color={listFlag[item.flag_id].color} />
-                                                }
-                                                {route.params && route.params.useid &&
-                                                    <Icon name="checkbox-blank-circle" size={14} color={listStatus[item.status_id].color} />
-                                                }
-                                                {route.params && route.params.deactive &&
-                                                    <Icon name="account-reactivate"
-                                                        size={24}
-                                                        color={"#828282"}
-                                                        onPress={() => { 
-                                                            setVisible(true) 
-                                                            setContactId(item.id)
-                                                        }} />
-                                                }
-                                            </View>
-                                            <Text style={styles.titleContact}>{item.job_title}</Text>
-                                            <View style={styles.title}>
-                                                <Text numberOfLines={1} style={styles.companyContact}>{item.company}</Text>
-                                                <View style={{ alignItems: 'flex-end' }}>
-                                                    <Text style={styles.date}>{FormatDate(item.created_at)}</Text>
-                                                </View>
-                                            </View>
-                                        </View>
-                                    </View>
-                                    {route.params && route.params.deactive &&
-                                        <View style={styles.item_reason}>
-                                            <Text>Lí do: <Text style={styles.titleContact}>{item.reason_da}</Text></Text>
-                                        </View>}
-                                </View>
-
-                            </Card>
+                            <Contact key={index} item={item} route={route} handleViewContact={handleViewContact} checkListGroup={checkListGroup} handleReActivateButton={handleReActivateButton} listGroup={listGroup} visibleCheckBox={visibleCheckBox}/>
                         )
                     })}
                 </ScrollView>
+                {visibleCheckBox && <Button style={styles.floatButton_team} mode="contained">Add to group</Button>}
                 <ModalActivate visible={visible} onPressVisable={() => setVisible(false)} onPressSubmit={handleReactivate} />
             </View>
         </SafeAreaView>

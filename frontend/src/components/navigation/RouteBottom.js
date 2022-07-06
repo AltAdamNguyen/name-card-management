@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from '../../navigation/styles';
 import AuthContext from '../../store/AuthContext';
 import RouteMovingBetweenScanScreen from './RouteMovingBetweenScanScren';
+import { Button } from 'react-native-paper';
 const Tab = createBottomTabNavigator();
 
 const RouteNavigation = () => {
@@ -13,7 +14,7 @@ const RouteNavigation = () => {
   console.log(authCtx.isMarketer)
   return (
     <Tab.Navigator
-      initialRouteName={authCtx.isMarketer === 3 ?"TeamScreen":"HomeScreen"}
+      initialRouteName={authCtx.isMarketer === 3 ? "TeamScreen" : "HomeScreen"}
       screenOptions={{
         tabBarShowLabel: false,
         headerShown: false,
@@ -22,7 +23,7 @@ const RouteNavigation = () => {
           borderTopRightRadius: 20,
           borderTopLeftRadius: 20,
           height: 80,
-          ... styles(false).shadow
+          ...styles(false).shadow
         },
         tabBarHideOnKeyboard: true,
       }}
@@ -50,7 +51,7 @@ const RouteNavigation = () => {
               <View style={styles(focused).container}>
                 <Icon name="credit-card-multiple" size={26} color={focused ? '#1890FF' : '#828282'} />
                 <Text style={styles(focused).label}>
-                  Nhóm liên lạc
+                  Nhóm
                 </Text>
               </View>
             )
@@ -82,7 +83,8 @@ const RouteNavigation = () => {
                 </Text>
               </View>
             )
-          }
+          },
+
         }}
       />
       <Tab.Screen name="Setting"

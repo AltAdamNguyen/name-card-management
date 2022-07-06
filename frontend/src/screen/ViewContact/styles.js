@@ -169,7 +169,6 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 10,
     },
     footer: {
-        backgroundColor: '#FFFFFF',
         flexDirection: 'row',
         justifyContent: 'space-around',
         padding: 5,

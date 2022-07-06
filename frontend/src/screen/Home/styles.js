@@ -85,6 +85,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: '90%',
     },
+    header_title: {
+        width: '100%',
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    header_title_left: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
     sectionStyle: {
         justifyContent: 'center',
         alignItems: 'center',
@@ -193,6 +203,13 @@ const styles = StyleSheet.create({
         paddingRight: 5,
         paddingBottom: 5,
         width: '100%'
+    },
+    floatButton_team: {
+        marginBottom: 20, 
+        position: 'absolute', 
+        width: '100%', 
+        bottom: 0,
+        backgroundColor: '#1890FF'
     }
 
 

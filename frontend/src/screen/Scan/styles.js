@@ -32,6 +32,12 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '70%',
     },
+    preview_camera: {
+        width: "100%", 
+        backgroundColor: "#ffff", 
+        justifyContent: 'center', 
+        alignItems: 'center'
+    },
     preview_overlay: {
         justifyContent: 'center',
         alignItems: 'center',
