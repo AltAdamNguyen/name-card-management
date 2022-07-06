@@ -1,6 +1,6 @@
 //import liraries
 import React, { useState, useRef, useEffect } from "react";
-import { View, Image,  ScrollView, Dimensions } from "react-native";
+import { View, Image, ScrollView, Dimensions } from "react-native";
 import { Provider, Button } from "react-native-paper";
 
 import { StackActions } from "@react-navigation/native";
@@ -165,11 +165,35 @@ const AddContact = ({ contact, loading, navigation }) => {
                 {formInput.map((item, index) => {
                   return (
                     <View key={index} style={styles.formInput_component}>
-                        {contact && <TextInputItem item={item} handleChange={handleChange} handleBlur={handleBlur} errors={errors} touched={touched} values={values} loading={loading} listItem={contact.data.Items} onPressRadio={handelerModal}/>}
+                      <ShimmerPlaceholder
+                        visible={loading}
+                        style={{ width: "100%" }}
+                        shimmerStyle={styles.shimmer_formInput}
+                      >
+                        {contact &&
+                          <TextInputItem
+                            item={item}
+                            handleChange={handleChange}
+                            handleBlur={handleBlur}
+                            errors={errors}
+                            touched={touched}
+                            values={values}
+                            loading={loading}
+                            listItem={contact.data.Items}
+                            onPressRadio={handelerModal}
+                          />}
+                      </ShimmerPlaceholder>
+                      {errors[item.name] && touched[item.name] ? (
+                        <View style={styles.formInput_item_error}>
+                          <Text style={styles.formInput_item_error_label}>
+                            {errors[item.name]}
+                          </Text>
+                        </View>
+                      ) : null}
                     </View>
                   );
                 })}
-                <View style={{marginBottom: 15}}/>
+                <View style={{ marginBottom: 15 }} />
               </ScrollView>
               <View style={styles.footer}>
                 <Button onPress={() => navigation.goBack()} style={styles.footer_button_label} color="#1890FF">Thoát</Button>

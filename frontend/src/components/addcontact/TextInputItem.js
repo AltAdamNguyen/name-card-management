@@ -7,7 +7,7 @@ import styles from '../../screen/AddContact/styles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { TextInput, RadioButton, Card } from "react-native-paper";
 // create a component
-const TextInputItem = ({ item, handleChange, handleBlur, errors, touched, values, loading, listItem, onPressRadio }) => {
+const TextInputItem = ({ item, handleChange, handleBlur, errors, touched, values, loading, listItem=[], onPressRadio }) => {
     const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
     const [expanded, setExpanded] = useState(false);
     const [value, setValue] = useState();
@@ -30,14 +30,10 @@ const TextInputItem = ({ item, handleChange, handleBlur, errors, touched, values
 
     return (
         <View style={styles.formInput_item}>
-            <ShimmerPlaceholder
-                visible={loading}
-                style={{ width: "100%" }}
-                shimmerStyle={styles.shimmer_formInput}
-            >
+
                 <View style={styles.formInput_item_component}>
                     <Icon size={20} name={item.icon} color="#1890FF" />
-                    <View style={{ width: '100%', marginLeft: 10 }}>
+                    <View style={{ width: '90%', marginLeft: 10 }}>
                         <Text style={{ fontWeight: '600', color: '#1890FF' }}>{item.title}</Text>
                         <TextInput
                             placeholder={item.placeholder}
@@ -64,9 +60,9 @@ const TextInputItem = ({ item, handleChange, handleBlur, errors, touched, values
                         />
                         {
                             expanded &&
-                            <Card mode='outlined' style={{width: '90%', borderBottomLeftRadius: 10, borderBottomRightRadius: 10}}>
+                            <Card mode='outlined' style={{width: '100%', borderBottomLeftRadius: 10, borderBottomRightRadius: 10}}>
                                 <RadioButton.Group onValueChange={(value) => handleChangeValue(value)} value={value}>
-                                    {listItem.map((item, index) => {
+                                    {listItem && listItem.map((item, index) => {
                                         return (
                                             <RadioButton.Item label={item} value={item} key={index} color="#1890FF"/>
                                         )
@@ -76,14 +72,6 @@ const TextInputItem = ({ item, handleChange, handleBlur, errors, touched, values
                         }
                     </View>
                 </View>
-            </ShimmerPlaceholder>
-            {errors[item.name] && touched[item.name] ? (
-                <View style={styles.formInput_item_error}>
-                    <Text style={styles.formInput_item_error_label}>
-                        {errors[item.name]}
-                    </Text>
-                </View>
-            ) : null}
         </View>
     );
 };

@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
 
     modelViewFloat: {
         backgroundColor: '#ffff',
-        width: '100%',
+        width: '90%',
         position: 'absolute',
         bottom: 0,
         padding: 20,

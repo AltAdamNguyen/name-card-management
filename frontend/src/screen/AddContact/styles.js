@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
         borderRadius: 10
     },
     formInput_item_input: {
-        width: '90%',
+        width: '100%',
         backgroundColor: 'transparent',
         paddingHorizontal: 0
     },
