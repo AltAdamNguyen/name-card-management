@@ -32,7 +32,8 @@ export const GroupContactAPI = {
     AddGroupContact: "/api/groups/add-group",
     DeactiveContact: "/api/contacts/de-active",
     ReactiveContact: "/api/contacts/active",
-    ListDeactive: "/api/contacts/de-active"
+    ListDeactive: "/api/contacts/de-active",
+    ViewGroupContactDetail: "/api/groups"
 }
 
 export const TeamAPI = {
