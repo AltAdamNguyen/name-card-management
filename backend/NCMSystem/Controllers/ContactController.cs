@@ -77,6 +77,8 @@ namespace NCMSystem.Controllers
                         hc.JobTitle = c.job_title;
                         hc.Company = c.company;
                         hc.Flag = c.flag_id;
+                        hc.Owner = c.owner_id;
+                        hc.CreateBy = c.createdBy;
                         hc.CreatedAt = c.create_date;
                         listCt.Add(hc);
                     }
@@ -210,7 +212,6 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
         public ResponseMessageResult GetSearch(string value = "", int? userId = 0)
         {
-            int pageSize = 10;
             if (userId == 0 || userId == null)
             {
                 userId = ((JwtToken)Request.Properties["payload"]).Uid;
@@ -232,7 +233,7 @@ namespace NCMSystem.Controllers
 
                 List<contact> listSearch;
                 draft = draft.Where(c => c.name.Contains(value));
-                listSearch = draft.Take(pageSize).ToList();
+                listSearch = draft.ToList();
                 if (listSearch.Count != 0)
                 {
                     foreach (var c in listSearch)
@@ -254,7 +255,7 @@ namespace NCMSystem.Controllers
                 // clear query
                 draft = query;
                 draft = draft.Where(c => c.company.Contains(value));
-                listSearch = draft.Take(pageSize).ToList();
+                listSearch = draft.ToList();
                 if (listSearch.Count != 0)
                 {
                     foreach (var c in listSearch)
@@ -276,7 +277,7 @@ namespace NCMSystem.Controllers
                 // clear query
                 draft = query;
                 draft = draft.Where(c => c.email.Contains(value));
-                listSearch = draft.Take(pageSize).ToList();
+                listSearch = draft.ToList();
                 if (listSearch.Count != 0)
                 {
                     foreach (var c in listSearch)
@@ -297,7 +298,7 @@ namespace NCMSystem.Controllers
 
                 draft = query;
                 draft = draft.Where(c => c.phone.Contains(value));
-                listSearch = draft.Take(pageSize).ToList();
+                listSearch = draft.ToList();
                 if (listSearch.Count != 0)
                 {
                     foreach (var c in listSearch)
@@ -335,17 +336,141 @@ namespace NCMSystem.Controllers
             });
         }
 
+        [HttpGet]
+        [Route("api/contacts/search/de-active")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        public ResponseMessageResult GetSearchDa(string value = "")
+        {
+            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+
+            List<DaContact> listCt = new List<DaContact>();
+
+            try
+            {
+                var query = db.contacts.Where(c => c.createdBy == userId && c.isActive == false);
+                if (value == null)
+                {
+                    value = "";
+                }
+
+                var draft = query;
+
+                DaContact da = new DaContact();
+
+                List<contact> listSearch;
+                draft = draft.Where(c => c.name.Contains(value));
+                listSearch = draft.ToList();
+                if (listSearch.Count != 0)
+                {
+                    foreach (var c in listSearch)
+                    {
+                        da = new DaContact();
+                        da.Id = c.id;
+                        da.ImgUrl = c.image_url;
+                        da.Name = c.name;
+                        da.JobTitle = c.job_title;
+                        da.Company = c.company;
+                        da.ReasonDa = c.reason_deactive;
+                        da.CreatedAt = c.create_date;
+                        listCt.Add(da);
+                    }
+                }
+
+                // clear query
+                draft = query;
+                draft = draft.Where(c => c.company.Contains(value));
+                listSearch = draft.ToList();
+                if (listSearch.Count != 0)
+                {
+                    foreach (var c in listSearch)
+                    {
+                        da = new DaContact();
+                        da.Id = c.id;
+                        da.ImgUrl = c.image_url;
+                        da.Name = c.name;
+                        da.JobTitle = c.job_title;
+                        da.Company = c.company;
+                        da.ReasonDa = c.reason_deactive;
+                        da.CreatedAt = c.create_date;
+                        listCt.Add(da);
+                    }
+                }
+
+                // clear query
+                draft = query;
+                draft = draft.Where(c => c.email.Contains(value));
+                listSearch = draft.ToList();
+                if (listSearch.Count != 0)
+                {
+                    foreach (var c in listSearch)
+                    {
+                        da = new DaContact();
+                        da.Id = c.id;
+                        da.ImgUrl = c.image_url;
+                        da.Name = c.name;
+                        da.JobTitle = c.job_title;
+                        da.Company = c.company;
+                        da.ReasonDa = c.reason_deactive;
+                        da.CreatedAt = c.create_date;
+                        listCt.Add(da);
+                    }
+                }
+
+                draft = query;
+                draft = draft.Where(c => c.phone.Contains(value));
+                listSearch = draft.ToList();
+                if (listSearch.Count != 0)
+                {
+                    foreach (var c in listSearch)
+                    {
+                        da = new DaContact();
+                        da.Id = c.id;
+                        da.ImgUrl = c.image_url;
+                        da.Name = c.name;
+                        da.JobTitle = c.job_title;
+                        da.Company = c.company;
+                        da.ReasonDa = c.reason_deactive;
+                        da.CreatedAt = c.create_date;
+                        listCt.Add(da);
+                    }
+                }
+
+                listCt = listCt.GroupBy(x => x.Id).Select(x => x.First()).OrderByDescending(x => x.CreatedAt).ToList();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = listCt
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
         // POST
         [HttpPost]
         [Route("api/contacts")]
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
-        public ResponseMessageResult Post([FromBody] ContactRequest request)
+        public ResponseMessageResult PostAddContact([FromBody] ContactRequest request)
         {
             int userId = ((JwtToken)Request.Properties["payload"]).Uid;
             DateTime dateCreated = DateTime.Now;
             string name = request.Name;
             string email = request.Email;
             string imageUrl = request.ImgUrl;
+
+            if (imageUrl == null || imageUrl.Equals(""))
+            {
+                imageUrl = AppDomain.CurrentDomain.BaseDirectory + "Images\\noImage.jpg";
+            }
+
             string company = request.Company;
             string jobTitle = request.JobTitle;
             string phone = request.Phone;
@@ -356,7 +481,6 @@ namespace NCMSystem.Controllers
             try
             {
                 if (Validator.Validator.CheckName(name) == false || Validator.Validator.CheckEmail(email) == false ||
-                    Validator.Validator.CheckUrl(imageUrl) == false ||
                     Validator.Validator.CheckPhoneOrFax(phone) == false ||
                     Validator.Validator.CheckEmptyvLength(company) == false ||
                     Validator.Validator.CheckInputLength(jobTitle) == false ||
@@ -370,7 +494,7 @@ namespace NCMSystem.Controllers
                 // check if email is already exist
                 var contact = db.contacts.FirstOrDefault(c => c.email == email);
 
-                if (contact != null)
+                if (contact != null && contact.owner_id == userId)
                 {
                     if (contact.isActive)
                     {
@@ -383,6 +507,7 @@ namespace NCMSystem.Controllers
                                 Data = new OwnerContact()
                                 {
                                     Id = contact.id,
+                                    Owner = contact.user.name
                                 }
                             }), Encoding.UTF8, "application/json")
                         });
@@ -397,6 +522,44 @@ namespace NCMSystem.Controllers
                             Data = new OwnerContact()
                             {
                                 Id = contact.id,
+                                Owner = contact.user.name
+                            }
+                        }), Encoding.UTF8, "application/json")
+                    });
+                }
+
+                if (contact != null)
+                {
+                    db.contacts.Add(new contact()
+                    {
+                        name = name,
+                        email = email,
+                        image_url = imageUrl,
+                        company = company,
+                        job_title = jobTitle,
+                        phone = phone,
+                        address = address,
+                        website = website,
+                        fax = fax,
+                        owner_id = contact.owner_id,
+                        status_id = "S0002",
+                        isActive = true,
+                        create_date = dateCreated,
+                        createdBy = userId
+                    });
+
+                    db.SaveChanges();
+
+                    return new ResponseMessageResult(new HttpResponseMessage()
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                        {
+                            Message = "D0003",
+                            Data = new OwnerContact()
+                            {
+                                Id = contact.id,
+                                Owner = contact.user.name
                             }
                         }), Encoding.UTF8, "application/json")
                     });
@@ -442,7 +605,7 @@ namespace NCMSystem.Controllers
         [HttpPut]
         [Route("api/contacts/{id}")]
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
-        public ResponseMessageResult Put(int id, ContactRequest request)
+        public ResponseMessageResult PutUpdateContact(int id, ContactRequest request)
         {
             try
             {

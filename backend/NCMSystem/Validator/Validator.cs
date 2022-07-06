@@ -48,28 +48,6 @@ namespace NCMSystem.Validator
             return false;
         }
 
-        public static bool CheckUrl(string value)
-        {
-            if (!string.IsNullOrEmpty(value))
-            {
-                if (value.Length > 255)
-                {
-                    return false;
-                }
-
-                //regex check url
-                string urlRegex =
-                    @"^(http|https|)\://";
-
-                if (Regex.IsMatch(value, urlRegex))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
         public static bool CheckPhoneOrFax(string value)
         {
             if (!string.IsNullOrEmpty(value))

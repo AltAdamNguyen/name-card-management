@@ -296,6 +296,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Images\1.png" />
+    <Content Include="Images\noImage.jpg" />
     <Content Include="Models\NcmModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>NcmModel.edmx</DependentUpon>
