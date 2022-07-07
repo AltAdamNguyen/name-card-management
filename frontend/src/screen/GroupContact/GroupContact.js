@@ -18,6 +18,7 @@ import styles from "./styles";
 import i18next from "../../language/i18n";
 import { useTranslation } from "react-i18next";
 import AuthContext from "../../store/AuthContext";
+import Loading from '../../components/customDialog/dialog/loadingDialog/LoadingDialog'
 import {
   IconButton,
   Searchbar,
@@ -34,6 +35,7 @@ import { useIsFocused } from '@react-navigation/native';
 
 // create a component
 const GroupContact = ({ navigation }) => {
+  const [isLoading, setLoading] = useState(true);
   const [listGroupContact, setLisGroupContact] = useState([]);
   const [listGroupContactTotal, setListGroupContactTotal] = useState([]);
   const [addNewContact, setAddNewContact] = useState([]);
@@ -62,6 +64,7 @@ const GroupContact = ({ navigation }) => {
       undefined,
       getGroupContact
     );
+    
   }, []);
 
   const searchGroupHandle = (groupName) => {
@@ -86,12 +89,14 @@ const GroupContact = ({ navigation }) => {
       undefined,
       getGroupContact
     );
+    
   }, [isFocus]);
 
   const getGroupContact = (data) => {
     if (data.data.length > 0) {
       setLisGroupContact(data.data);
       setListGroupContactTotal(data.data);
+      setLoading(false)
     }
   };
 
@@ -147,6 +152,7 @@ const GroupContact = ({ navigation }) => {
                         screen: "GroupContactDetail",
                         params: { id: item.group_id, name: item.group_name },
                       });
+                      
                     }}
                   >
                     <View style={styles.container_listGroup_item}>
@@ -157,7 +163,9 @@ const GroupContact = ({ navigation }) => {
                     </View>
                   </TouchableOpacity>
                 );
-              })}
+              })
+             }
+              
           </ScrollView>
         </View>
         <View>
@@ -177,6 +185,7 @@ const GroupContact = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </SafeAreaView>
+      <Loading onVisible={isLoading ? true : false }/>
     </Provider>
   );
 };

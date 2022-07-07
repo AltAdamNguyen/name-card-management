@@ -19,7 +19,7 @@ import { FetchApi } from "../../service/api/FetchAPI";
 import { GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
 import { set } from "lodash";
 import { useIsFocused } from "@react-navigation/native";
-
+import Loading from "../../components/customDialog/dialog/loadingDialog/LoadingDialog"
 const GroupContactDetail = ({ navigation, route }) => {
     const [listContact, setListContact] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
@@ -226,6 +226,7 @@ const GroupContactDetail = ({ navigation, route }) => {
                     onDataReturn={onDataReturn}
                 />
             </SafeAreaView>
+            <Loading onVisible={isLoading ? true : false }/>
         </Provider>
     );
 };
