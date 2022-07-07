@@ -25,7 +25,6 @@ import ConfirmDialog from "../../components/customDialog/dialog/confirmDialog/Co
 import { FetchApi } from "../../service/api/FetchAPI";
 import { ContactAPI, GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
 
-
 const AddContactToGroup = ({ navigation, route }) => {
     const [listContact, setListContact] = useState([]);
     const [listContactTotal, setListContactTotal] = useState([]);
@@ -33,6 +32,7 @@ const AddContactToGroup = ({ navigation, route }) => {
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false)
     const [listSearch, setListSearch] = useState([])
 
+    const [isLoading, setIsLoading] = useState(true)
     useEffect(() => {
         FetchApi(
             ContactAPI.ViewContact,
@@ -51,6 +51,7 @@ const AddContactToGroup = ({ navigation, route }) => {
             })
             setListContact(list)
             setListContactTotal(list)
+            setIsLoading(false)
         }
     }
 
@@ -218,6 +219,7 @@ const AddContactToGroup = ({ navigation, route }) => {
                         }} />
                 </SafeAreaView>
             </Portal>
+            <Loading onVisible={isLoading ? true : false }/>
         </Provider>
     );
 }
