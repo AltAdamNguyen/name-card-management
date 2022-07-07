@@ -77,6 +77,7 @@ const GroupContact = ({ navigation }) => {
       setLisGroupContact(listGroupContactTotal);
     }
   };
+  
   useEffect(() => {
     FetchApi(
       GroupContactAPI.ViewGroupContact,
