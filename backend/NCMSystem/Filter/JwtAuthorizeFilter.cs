@@ -51,7 +51,7 @@ namespace NCMSystem.Filter
             try
             {
                 data = Jose.JWT.Decode(jwtToken,
-                    Encoding.ASCII.GetBytes(ConfigurationManager.AppSettings["JWT_SecretKeyToken"]));
+                    Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET_KEY_TOKEN") ?? string.Empty));
             }
             catch (Exception)
             {
@@ -85,7 +85,7 @@ namespace NCMSystem.Filter
             }
             
             // check role
-            NCMSystemEntities db = new NCMSystemEntities();
+            NCMSystemEntities db = new NCMSystemEntities(Environment.GetEnvironmentVariable("NCMSystemEntities"));
             var selectUser = db.users.First(e => e.id == payload.Uid);
 
             if (!NcmRoles.Contains((NcmRole) selectUser.role_id))

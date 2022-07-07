@@ -18,7 +18,7 @@ namespace NCMSystem.Controllers
 {
     public class GroupContactController : ApiController
     {
-        private NCMSystemEntities db = new NCMSystemEntities();
+        private NCMSystemEntities db = new NCMSystemEntities(Environment.GetEnvironmentVariable("NCMSystemEntities"));
 
         //GET
         [HttpGet]
