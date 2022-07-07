@@ -59,6 +59,10 @@ namespace TestNCMSystem
             var cc = controller.AddContactToGroup(new ContactToGroupRequest()
             {
                 GroupId = 1,
+<<<<<<< HEAD
+=======
+                //ContactId = 6
+>>>>>>> develop
             });
 
             //assert

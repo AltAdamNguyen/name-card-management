@@ -61,8 +61,6 @@ const Team = ({ navigation }) => {
         debounceSearch(value);
     }
 
-    console.log(searchTeam)
-
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -91,7 +89,7 @@ const Team = ({ navigation }) => {
                 </View>
             </View>
             <View style={{ flex: 1, width: '100%', marginTop: 20 }}>
-                {authCtx.isMarketer !== 1 && searchTeam.length === 0 &&
+                {authCtx.isMarketer !== 1 && searchTeam && searchTeam.length === 0 &&
                     <View style={styles.container}>
                         <Text>Không có thành viên</Text>
                     </View>
@@ -102,7 +100,7 @@ const Team = ({ navigation }) => {
                     </View>
                 }
                 <ScrollView>
-                    {Boolean(searchTeam) && searchTeam.map((item, index) => {
+                    {searchTeam && searchTeam.map((item, index) => {
                         return (
                             <Tree item={item} navigation={navigation} key={index} checked={checked} checklistExport={checklistExport} listExport={listExport} handleChecked={handleChecked} />
                         )

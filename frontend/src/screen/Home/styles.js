@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
 
     modelViewFloat: {
         backgroundColor: '#ffff',
-        width: '100%',
+        width: '90%',
         position: 'absolute',
         bottom: 0,
         padding: 20,
@@ -84,6 +84,16 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         width: '90%',
+    },
+    header_title: {
+        width: '100%',
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    header_title_left: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     sectionStyle: {
         justifyContent: 'center',
@@ -193,6 +203,13 @@ const styles = StyleSheet.create({
         paddingRight: 5,
         paddingBottom: 5,
         width: '100%'
+    },
+    floatButton_team: {
+        marginBottom: 20, 
+        position: 'absolute', 
+        width: '100%', 
+        bottom: 0,
+        backgroundColor: '#1890FF'
     }
 
 

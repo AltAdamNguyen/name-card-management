@@ -218,6 +218,7 @@
     <Compile Include="Models\CallAPI\Contact\ReasonDAContact.cs" />
     <Compile Include="Models\CallAPI\Contact\SearchContact.cs" />
     <Compile Include="Models\CallAPI\Contact\StatusContact.cs" />
+    <Compile Include="Models\CallAPI\Group Contact\AvailableContactToGroup.cs" />
     <Compile Include="Models\CallAPI\Group Contact\ContactIdRequestToGroup.cs" />
     <Compile Include="Models\CallAPI\Group Contact\ContactInGroup.cs" />
     <Compile Include="Models\CallAPI\Group Contact\ContactToGroupRequest.cs" />

@@ -36,8 +36,8 @@ const SignIn = ({ navigation }) => {
   
   const { t, i18n } = useTranslation();
   const [user, setUser] = useState({
-    email: "tung@gmail.com",
-    password: "Tung123@",
+    email: "",
+    password: "",
   });
   
   const [isSecureEntry, setIsSecureEntry] = useState(true);

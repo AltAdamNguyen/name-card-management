@@ -32,33 +32,28 @@ export const FetchApiAuth = (url, method, contentType, param, callback) => {
         })
 }
 
+const RefeshToken = async(refresh_token) => {
+    let response = await fetch(`${BaseUrl}${AuthAPI.RefreshToken}`,
+        {
+            method: Method.POST,
+            headers: {
+                'Content-Type': ContentType.JSON,              
+            },
+            body: JSON.stringify({
+                refresh_token: refresh_token
+            })
+        }
+    )
+    let data = await response.json()
+    return data
+}
+
 export const FetchApi = async(url, method, contentType, param, callback) => {
     let token = await SecureStore.getItemAsync('access_token');
     if (token && isTokenExpired(token)) {
-        let refresh_token = await SecureStore.getItemAsync('refresh_token');
-        fetch(`${BaseUrl}${AuthAPI.RefeshToken}`,
-            {
-                method: Method.POST,
-                headers: {
-                    'Content-Type': ContentType.JSON,
-                },
-                body: JSON.stringify({ "refresh_token": refresh_token })
-            }
-        )
-        .then((response) => {
-            console.log(response)
-            return response.json()
-        })
-        .then((data) => {
-            console.log(data)
-            if (data.access_token) {
-                token = data.data.accessToken
-                SecureStore.setItemAsync('access_token', data.data.access_token)
-            }
-        })
-        .catch((error) => {
-            console.log(error)
-        })
+        let refresh_token = await SecureStore.getItemAsync('refresh_token');       
+        token = await RefeshToken(refresh_token)
+        SecureStore.setItemAsync('access_token',token)
     }
     fetch(`${BaseUrl}${url}`,
         {

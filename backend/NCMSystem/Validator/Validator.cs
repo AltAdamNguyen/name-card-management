@@ -99,5 +99,20 @@ namespace NCMSystem.Validator
 
             return false;
         }
+
+        public static bool CheckInputLengthGroupName(string value)
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                if (value.Length > 20)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+
+            return false;
+        }
     }
 }
