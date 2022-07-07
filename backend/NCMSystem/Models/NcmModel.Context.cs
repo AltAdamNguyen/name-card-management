@@ -15,8 +15,8 @@ namespace NCMSystem.Models
     
     public partial class NCMSystemEntities : DbContext
     {
-        public NCMSystemEntities()
-            : base("name=NCMSystemEntities")
+        public NCMSystemEntities(string connectionString)
+            : base(connectionString)
         {
         }
     

@@ -13,7 +13,7 @@ namespace NCMSystem.Controllers
 {
     public class TestController : ApiController
     {
-        private NCMSystemEntities db = new NCMSystemEntities();
+        private NCMSystemEntities db = new NCMSystemEntities(Environment.GetEnvironmentVariable("NCMSystemEntities"));
         private LogException _log = new LogException();
 
         [HttpGet]
@@ -21,6 +21,7 @@ namespace NCMSystem.Controllers
         public ResponseMessageResult PatchFlag()
         {
             var temp = Environment.GetEnvironmentVariable("NMTUNG_VAL");
+            SendGridConfig.SendRequestTransferContact("trungdang249@gmail.com", "trung");
             return new ResponseMessageResult(new HttpResponseMessage()
             {
                 StatusCode = System.Net.HttpStatusCode.OK,

@@ -21,7 +21,7 @@ namespace NCMSystem.Controllers
 {
     public class UserController : ApiController
     {
-        private NCMSystemEntities db = new NCMSystemEntities();
+        private NCMSystemEntities db = new NCMSystemEntities(Environment.GetEnvironmentVariable("NCMSystemEntities"));
 
         [HttpPost]
         [Route("api/auth/login")]

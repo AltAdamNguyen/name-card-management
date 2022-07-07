@@ -16,7 +16,7 @@ namespace NCMSystem.Controllers
 {
     public class ContactController : ApiController
     {
-        private NCMSystemEntities db = new NCMSystemEntities();
+        private NCMSystemEntities db = new NCMSystemEntities(Environment.GetEnvironmentVariable("NCMSystemEntities"));
         private LogException _log = new LogException();
 
         // GET

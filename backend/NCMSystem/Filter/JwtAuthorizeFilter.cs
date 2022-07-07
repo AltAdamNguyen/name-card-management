@@ -85,7 +85,7 @@ namespace NCMSystem.Filter
             }
             
             // check role
-            NCMSystemEntities db = new NCMSystemEntities();
+            NCMSystemEntities db = new NCMSystemEntities(Environment.GetEnvironmentVariable("NCMSystemEntities"));
             var selectUser = db.users.First(e => e.id == payload.Uid);
 
             if (!NcmRoles.Contains((NcmRole) selectUser.role_id))
