@@ -493,7 +493,12 @@ namespace NCMSystem.Controllers
 
                 // check if email is already exist
                 var contact = db.contacts.FirstOrDefault(c => c.email == email);
-                var user = db.users.FirstOrDefault(c => c.id == contact.owner_id);
+                var user = db.users.FirstOrDefault(c => c.id == userId);
+                var userOwner = db.users.FirstOrDefault(c => c.id == contact.owner_id);
+                if (userOwner == null)
+                {
+                    return Common.ResponseMessage.BadRequest("C0001");
+                }
 
                 if (contact != null && contact.owner_id == userId)
                 {
@@ -549,7 +554,7 @@ namespace NCMSystem.Controllers
                         createdBy = userId
                     });
 
-                    // SendGridConfig.SendRequestTransferContact("trungdang249@gmail.com", contact);
+                    SendGridConfig.SendRequestTransferContact(userOwner.email, contact, user);
 
                     // db.SaveChanges();
 
