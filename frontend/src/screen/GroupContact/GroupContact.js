@@ -36,9 +36,6 @@ import { useIsFocused } from '@react-navigation/native';
 const GroupContact = ({ navigation }) => {
   const [listGroupContact, setLisGroupContact] = useState([]);
   const [listGroupContactTotal, setListGroupContactTotal] = useState([]);
-  const [addNewContact, setAddNewContact] = useState([]);
-  const [text, setText] = useState("");
-  const [textGroup, setTextGroup] = useState("");
   const authCtx = useContext(AuthContext);
   const { t, i18n } = useTranslation();
   const isFocus = useIsFocused();
@@ -143,9 +140,10 @@ const GroupContact = ({ navigation }) => {
                 return (
                   <TouchableOpacity
                     onPress={() => {
+                      let is = item.group_id
                       navigation.navigate("GroupSwap", {
                         screen: "GroupContactDetail",
-                        params: { id: item.group_id, name: item.group_name },
+                        params: { id: item.group_id , name: item.group_name },
                       });
                     }}
                   >

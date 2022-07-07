@@ -21,11 +21,9 @@ import {
 } from "react-native-paper";
 import { FormatDate } from '../../validate/FormatDate';
 import CustomCheckedBox from "../../components/groupcontact/checkBoxCustom/CustomCheckedBox";
-import TopBarNavigator from "../../components/navigation/TopBarAddContactToGroupNavigation";
 import ConfirmDialog from "../../components/customDialog/dialog/confirmDialog/ConfirmDialog";
 import { FetchApi } from "../../service/api/FetchAPI";
 import { ContactAPI, GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
-import { object } from "yup";
 
 
 const AddContactToGroup = ({ navigation, route }) => {
@@ -33,6 +31,7 @@ const AddContactToGroup = ({ navigation, route }) => {
     const [listContactTotal, setListContactTotal] = useState([]);
     const [choosenItems, setChoosenItems] = useState(0);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false)
+    const [listSearch, setListSearch] = useState([])
 
     useEffect(() => {
         FetchApi(
@@ -48,7 +47,7 @@ const AddContactToGroup = ({ navigation, route }) => {
         if (data.data.length > 0) {
             let list = []
             data.data.map((item, index) => {
-               list.push({ isChecked : false, contact: item })
+                list.push({ isChecked: false, contact: item })
             })
             setListContact(list)
             setListContactTotal(list)
@@ -57,28 +56,30 @@ const AddContactToGroup = ({ navigation, route }) => {
 
     const checkBoxOnClickCallBack = (id, check) => {
         if (check) {
-            updateStateForListContact(id,true)
+            updateStateForListContact(id, true)
             setChoosenItems(choosenItems + 1)
-        } else {  
-            updateStateForListContact(id,false)  
+        } else {
+            updateStateForListContact(id, false)
             setChoosenItems(choosenItems - 1)
         }
     }
 
+
     const updateStateForListContact = (id, check) => {
-        let newState = []
-        listContactTotal.map((item) => {
-            if (item.contact.id === id && item.isChecked != check) {
-                newState.push({...item, isChecked : check})
-            }
-            else {
-                newState.push(item)
-            }
-        })
+        let newState = [...listContactTotal]
+        let index = newState.findIndex(el => el.contact.id === id)
+        newState[index] = { ...newState[index], isChecked: check }
         setListContactTotal(newState)
+        //setListSearch(newState)
     }
 
     const addContactToGroup = () => {
+        let listIdSaved = []
+        listContactTotal.map((item) => {
+            if (item.isChecked === true) {
+                listIdSaved.push({ contact_id: item.contact.id })
+            }
+        })
         FetchApi(
             GroupContactAPI.AddContactsToGroup,
             Method.POST,
@@ -100,23 +101,22 @@ const AddContactToGroup = ({ navigation, route }) => {
     const handleSearch = (contactSearch) => {
         let listSearchContact = [];
         if (contactSearch !== "") {
-            listContactTotal.map((item, index) => {
-                if (item.contact.name.includes(contactSearch)) {
-                    listSearchContact.push(item)
+            for (var i = 0; i < listContactTotal.length; i++) {
+                if (listContactTotal[i].contact.name.includes(contactSearch)) {
+                    listSearchContact.push(listContactTotal[i])
                 }
-                else if (item.contact.job_title.includes(contactSearch)) {
-                    listSearchContact.push(item)
+                else if (listContactTotal[i].contact.job_title.includes(contactSearch)) {
+                    listSearchContact.push(listContactTotal[i])
                 }
-                else if (item.contact.company.includes(contactSearch)) {
-                    listSearchContact.push(item)
+                else if (listContactTotal[i].contact.company.includes(contactSearch)) {
+                    listSearchContact.push(listContactTotal[i])
                 }
-                else {
-                    listSearchContact.push(item)
-                }
-            })
-            setListContact(listSearchContact)
+            }
+            setListContact([])
+            setListSearch(listSearchContact)
         }
         else {
+            setListSearch([])
             setListContact(listContactTotal)
         }
     };
@@ -145,36 +145,56 @@ const AddContactToGroup = ({ navigation, route }) => {
                     </View>
                     <View style={styles.contactsContainer}>
                         <View style={styles.listContainer}>
-                            {listContact.length == 0 && (
+                            {listContact.length == 0 && listSearch == 0 && (
                                 <View style={styles.listContainer_view}>
                                     <Text style={styles.listContainer_label}>
                                         Không có liên hệ
                                     </Text>
                                 </View>
                             )}
+                            {listSearch.length != 0 && listSearch.map((item, index) => {
+                                return (
+                                    <View style={styles.item}>
+                                        <CustomCheckedBox id={item.contact.id} onClick={checkBoxOnClickCallBack} isChecked={item.isChecked} />
+                                        <View style={styles.image}>
+                                            <Image style={styles.image} source={{ uri: item.contact.img_url }} />
+                                        </View>
+                                        <View style={styles.txtContact}>
+                                            <View style={[styles.title, { flexDirection: 'row', justifyContent: 'space-between' }]}>
+                                                <Text style={styles.nameContact}>{item.contact.name}</Text>
+                                            </View>
+                                            <Text style={styles.titleContact}>{item.contact.job_title}</Text>
+                                            <View style={styles.title}>
+                                                <Text numberOfLines={1} style={styles.companyContact}>{item.contact.company}</Text>
+                                                <View style={{ alignItems: 'flex-end' }}>
+                                                    <Text style={styles.date}>{FormatDate(item.contact.created_at)}</Text>
+                                                </View>
+                                            </View>
+                                        </View>
+                                    </View>
+                                )
+                            })}
                             <ScrollView>
                                 {listContact.length != 0 && listContact.map((item, index) => {
                                     return (
-                                        <TouchableOpacity>
-                                            <View style={styles.item}>
-                                                <CustomCheckedBox id={item.contact.id} onClick={checkBoxOnClickCallBack} isChecked={item.isChecked}/>
-                                                <View style={styles.image}>
-                                                    <Image style={styles.image} source={{ uri: item.contact.img_url }} />
+                                        <View style={styles.item}>
+                                            <CustomCheckedBox id={item.contact.id} onClick={checkBoxOnClickCallBack} isChecked={item.isChecked} />
+                                            <View style={styles.image}>
+                                                <Image style={styles.image} source={{ uri: item.contact.img_url }} />
+                                            </View>
+                                            <View style={styles.txtContact}>
+                                                <View style={[styles.title, { flexDirection: 'row', justifyContent: 'space-between' }]}>
+                                                    <Text style={styles.nameContact}>{item.contact.name}</Text>
                                                 </View>
-                                                <View style={styles.txtContact}>
-                                                    <View style={[styles.title, { flexDirection: 'row', justifyContent: 'space-between' }]}>
-                                                        <Text style={styles.nameContact}>{item.contact.name}</Text>
-                                                    </View>
-                                                    <Text style={styles.titleContact}>{item.contact.job_title}</Text>
-                                                    <View style={styles.title}>
-                                                        <Text numberOfLines={1} style={styles.companyContact}>{item.contact.company}</Text>
-                                                        <View style={{ alignItems: 'flex-end' }}>
-                                                            <Text style={styles.date}>{FormatDate(item.contact.created_at)}</Text>
-                                                        </View>
+                                                <Text style={styles.titleContact}>{item.contact.job_title}</Text>
+                                                <View style={styles.title}>
+                                                    <Text numberOfLines={1} style={styles.companyContact}>{item.contact.company}</Text>
+                                                    <View style={{ alignItems: 'flex-end' }}>
+                                                        <Text style={styles.date}>{FormatDate(item.contact.created_at)}</Text>
                                                     </View>
                                                 </View>
                                             </View>
-                                        </TouchableOpacity>
+                                        </View>
                                     )
                                 })}
                             </ScrollView>

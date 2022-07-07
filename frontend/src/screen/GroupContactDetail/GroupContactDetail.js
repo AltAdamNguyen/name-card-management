@@ -23,7 +23,6 @@ import { useIsFocused } from "@react-navigation/native";
 const GroupContactDetail = ({ navigation, route }) => {
     const [listContact, setListContact] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
     const isFocus = useIsFocused();
     const [groupName, setGroupName] = useState(route.params.name)
     const [listContactTotal, setListContactTotal] = useState([])
@@ -53,12 +52,13 @@ const GroupContactDetail = ({ navigation, route }) => {
     // API call back
     const getGroupContactDetail = (data) => {
         //Get Detail
-        if (data.message === "Get Group Contact Detail Successully") {
+        if (data.message === "Success") {
             if (data.data.contacts.length > 0) {
                 setListContact(data.data.contacts);
                 setListContactTotal(data.data.contacts);
             }
         } else {
+
         }
     };
 
@@ -156,13 +156,51 @@ const GroupContactDetail = ({ navigation, route }) => {
                 <View style={styles.contactsContainer}>
                     <View style={styles.listContainer}>
                         <ScrollView>
-                            {listContact.length != 0 &&
+                            <TouchableOpacity>
+                                <View style={styles.item}>
+                                    <View style={styles.image}>
+                                        <Image source={{ uri: "" }} style={styles.image} />
+                                    </View>
+                                    <View style={styles.txtContact}>
+                                        <View
+                                            style={[
+                                                styles.title,
+                                                {
+                                                    flexDirection: "row",
+                                                    justifyContent: "space-between",
+                                                },
+                                            ]}
+                                        >
+                                            <Text style={styles.nameContact}>
+                                                Hello
+                                            </Text>
+                                        </View>
+                                        <Text style={styles.titleContact}>
+                                            Alo
+                                        </Text>
+                                        <View style={styles.title}>
+                                            <Text
+                                                numberOfLines={1}
+                                                style={styles.companyContact}
+                                            >
+                                                Hai
+                                            </Text>
+                                            <View style={{ alignItems: "flex-end" }}>
+                                                <Text style={styles.date}>
+                                                    {FormatDate('14-11-2000')}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                            {/* {listContact.length != 0 &&
                                 listContact.map((item, index) => {
                                     return (
                                         <TouchableOpacity>
                                             <View style={styles.item}>
                                                 <View style={styles.image}>
-                                                    <Image source={{ uri: "" }} style={styles.image} />
+                                                    <Image source={{ uri: item.contact_imgurl}} style={styles.image} />
                                                 </View>
                                                 <View style={styles.txtContact}>
                                                     <View
@@ -198,7 +236,7 @@ const GroupContactDetail = ({ navigation, route }) => {
                                             </View>
                                         </TouchableOpacity>
                                     );
-                                })}
+                                })} */}
                         </ScrollView>
                     </View>
                 </View>
@@ -206,14 +244,14 @@ const GroupContactDetail = ({ navigation, route }) => {
                     groupContactId={route.params.id}
                     groupContactName={route.params.name}
                     visible={modalVisible}
-                    onPressVisable= {() => setModalVisible(false)}
+                    onPressVisable={() => setModalVisible(false)}
                     onDismiss={() => {
                         setModalVisible(false);
                     }}
                     onPressAddContact={() => {
                         navigation.navigate("GroupSwap", {
                             screen: "AddContactToGroup",
-                            params: { id: route.params.groupId },
+                            params: { id: route.params.id },
                         });
                         setModalVisible(false);
                     }}
