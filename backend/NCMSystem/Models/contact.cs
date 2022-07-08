@@ -17,6 +17,8 @@ namespace NCMSystem.Models
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public contact()
         {
+            this.requests = new HashSet<request>();
+            this.requests1 = new HashSet<request>();
             this.groups = new HashSet<group>();
         }
     
@@ -41,6 +43,10 @@ namespace NCMSystem.Models
     
         public virtual user user { get; set; }
         public virtual user user1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<request> requests { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<request> requests1 { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<group> groups { get; set; }
     }

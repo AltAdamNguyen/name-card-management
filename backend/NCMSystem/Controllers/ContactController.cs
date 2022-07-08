@@ -478,6 +478,7 @@ namespace NCMSystem.Controllers
             string website = request.Website;
             string fax = request.Fax;
 
+            var newCt = new contact();
             try
             {
                 if (Validator.Validator.CheckName(name) == false || Validator.Validator.CheckEmail(email) == false ||
@@ -536,7 +537,7 @@ namespace NCMSystem.Controllers
 
                 if (contact != null)
                 {
-                    db.contacts.Add(new contact()
+                    newCt = db.contacts.Add(new contact()
                     {
                         name = name,
                         email = email,
@@ -554,9 +555,7 @@ namespace NCMSystem.Controllers
                         createdBy = userId
                     });
 
-                    SendGridConfig.SendRequestTransferContact(userOwner.email, contact, user);
-
-                    // db.SaveChanges();
+                    db.SaveChanges();
 
                     return new ResponseMessageResult(new HttpResponseMessage()
                     {
@@ -567,13 +566,14 @@ namespace NCMSystem.Controllers
                             Data = new OwnerContact()
                             {
                                 Id = contact.id,
+                                IdDuplicate = newCt.id,
                                 Owner = contact.user.name
                             }
                         }), Encoding.UTF8, "application/json")
                     });
                 }
 
-                db.contacts.Add(new contact()
+                newCt = db.contacts.Add(new contact()
                 {
                     name = name,
                     email = email,
@@ -605,6 +605,74 @@ namespace NCMSystem.Controllers
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
                     Message = "C0009",
+                    Data = new
+                    {
+                        id = newCt.id
+                    }
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpGet]
+        [Route("api/contacts/request/{id}/{idDuplicate}")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
+        public ResponseMessageResult RequestTransferContact(int id, int idDuplicate)
+        {
+            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+            DateTime dateCreated = DateTime.Now;
+
+            var rq = new request();
+            try
+            {
+                var contact = db.contacts.FirstOrDefault(c => c.id == id);
+                if (contact == null)
+                {
+                    return Common.ResponseMessage.BadRequest("C0002");
+                }
+
+                var user = db.users.FirstOrDefault(c => c.id == userId);
+                if (user == null)
+                {
+                    return Common.ResponseMessage.BadRequest("C0018");
+                }
+
+                var userOwner = db.users.FirstOrDefault(c => c.id == contact.owner_id);
+                if (userOwner == null)
+                {
+                    return Common.ResponseMessage.BadRequest("C0018");
+                }
+
+                SendGridConfig.SendRequestTransferContact(userOwner.email, contact, user);
+
+                rq = db.requests.Add(new request()
+                {
+                    requester = userId,
+                    receiver = userOwner.id,
+                    contact_id = contact.id,
+                    contact_id_duplicate = idDuplicate,
+                    status = "R0002",
+                    create_date = dateCreated,
+                });
+
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = new
+                    {
+                        id_request = rq.id,
+                        code_request = rq.code
+                    }
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -826,23 +894,29 @@ namespace NCMSystem.Controllers
                 }), Encoding.UTF8, "application/json")
             });
         }
-        
+
         // PATCH
         [HttpPatch]
-        [Route("api/contacts/active/{id}")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
+        [Route("api/contacts/request/{id}")]
         public ResponseMessageResult TransferContact(int id)
         {
             try
             {
-                var contact = db.contacts.FirstOrDefault(c => c.id == id);
-                if (contact == null)
+                var rq = db.requests.FirstOrDefault(c => c.id == id);
+                if (rq == null)
                 {
-                    return Common.ResponseMessage.NotFound("C0002");
+                    return Common.ResponseMessage.NotFound("C0019");
                 }
 
-                contact.isActive = true;
-                contact.reason_deactive = null;
+                var contact = db.contacts.FirstOrDefault(c => c.id == rq.contact_id_duplicate);
+                if (contact == null)
+                {
+                    return Common.ResponseMessage.NotFound("C0018");
+                }
+
+                contact.owner_id = rq.requester;
+                rq.status = "R0003";
+
                 db.SaveChanges();
             }
             catch (Exception ex)

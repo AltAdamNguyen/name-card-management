@@ -15,11 +15,16 @@ namespace NCMSystem.Models
     public partial class request
     {
         public int id { get; set; }
-        public Nullable<int> requester { get; set; }
-        public Nullable<int> receiver { get; set; }
+        public int requester { get; set; }
+        public int receiver { get; set; }
         public string status { get; set; }
         public Nullable<System.DateTime> create_date { get; set; }
+        public Nullable<int> contact_id { get; set; }
+        public Nullable<int> contact_id_duplicate { get; set; }
+        public string code { get; set; }
     
+        public virtual contact contact { get; set; }
+        public virtual contact contact1 { get; set; }
         public virtual user user { get; set; }
         public virtual user user1 { get; set; }
     }
