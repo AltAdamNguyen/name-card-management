@@ -9,33 +9,30 @@ import {
   TextInput
 } from "react-native-paper";
 
-const ModalAddGroupContact = ({onVisible, label, value, confirmLabel, context, onPress, onDismiss, icon, onPressCancel, onPressConfirm}) => {
+const InputDialog = ({onVisible, label, value, setValue, leftButtonTitle, rightButtonTitle, onPress, onDismiss, icon, title, onPressCancel, onPressConfirm}) => {
     const [inputVal, setInputVal] = useState("");
-    const onCancelPress = () => {
-      onVisible = false;
-      setInputVal("")
-    }
+
   return (
     <Portal>
-      <Dialog visible={onVisible}  style={{ borderRadius: 10 }} onDismiss={() => {onDismiss; setInputVal("")}}>
-        <Dialog.Title style={styles.title}>Thêm tên nhóm</Dialog.Title>
+      <Dialog visible={onVisible}  style={{ borderRadius: 10 }} onDismiss={onDismiss}>
+        <Dialog.Title style={styles.title}>{title}</Dialog.Title>
         <Dialog.Content>
         <TextInput
           mode='outlined'
           label={label}
-          onChangeText={text => setInputVal(text)}
-          value={inputVal}
+          onChangeText={setValue}
+          value={value}
           style={styles.input}
           theme={{ roundness: 10, colors: { primary: '#1890FF', error: '#B22D1D' } }}
           right={<TextInput.Icon name={icon} onPress={onPress } />}
         />
         </Dialog.Content>
         <Dialog.Actions>
-          <Button color="red"  onPress={() => {onPressCancel(); setInputVal("")}}>
-          Hủy
+          <Button color="red"  onPress={onPressCancel}>
+          {leftButtonTitle}
           </Button>
-          <Button color="#1890FF" onPress={() => {onPressConfirm(inputVal); setInputVal("")}}>
-          {confirmLabel}
+          <Button color="#1890FF" onPress={onPressConfirm}>
+          {rightButtonTitle}
           </Button>
         </Dialog.Actions>
       </Dialog>
@@ -56,4 +53,4 @@ const styles = StyleSheet.create({
         color: '#1890FF',
     },
   });
-export default ModalAddGroupContact;
+export default InputDialog;
