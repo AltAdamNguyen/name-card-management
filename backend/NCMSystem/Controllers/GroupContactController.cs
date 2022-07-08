@@ -18,6 +18,7 @@ namespace NCMSystem.Controllers
 {
     public class GroupContactController : ApiController
     {
+        //QUAN TRONG
         private NCMSystemEntities db = new NCMSystemEntities(Environment.GetEnvironmentVariable("NCMSystemEntities"));
 
         //GET
