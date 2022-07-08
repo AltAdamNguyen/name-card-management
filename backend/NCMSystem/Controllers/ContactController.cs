@@ -493,7 +493,12 @@ namespace NCMSystem.Controllers
 
                 // check if email is already exist
                 var contact = db.contacts.FirstOrDefault(c => c.email == email);
-                var user = db.users.FirstOrDefault(c => c.id == contact.owner_id);
+                var user = db.users.FirstOrDefault(c => c.id == userId);
+                var userOwner = db.users.FirstOrDefault(c => c.id == contact.owner_id);
+                if (userOwner == null)
+                {
+                    return Common.ResponseMessage.BadRequest("C0001");
+                }
 
                 if (contact != null && contact.owner_id == userId)
                 {
@@ -549,7 +554,7 @@ namespace NCMSystem.Controllers
                         createdBy = userId
                     });
 
-                    // SendGridConfig.SendRequestTransferContact("trungdang249@gmail.com", contact);
+                    SendGridConfig.SendRequestTransferContact(userOwner.email, contact, user);
 
                     // db.SaveChanges();
 
@@ -793,6 +798,40 @@ namespace NCMSystem.Controllers
         [Route("api/contacts/active/{id}")]
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
         public ResponseMessageResult PatchActive(int id)
+        {
+            try
+            {
+                var contact = db.contacts.FirstOrDefault(c => c.id == id);
+                if (contact == null)
+                {
+                    return Common.ResponseMessage.NotFound("C0002");
+                }
+
+                contact.isActive = true;
+                contact.reason_deactive = null;
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "C0012",
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+        
+        // PATCH
+        [HttpPatch]
+        [Route("api/contacts/active/{id}")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
+        public ResponseMessageResult TransferContact(int id)
         {
             try
             {

@@ -21,7 +21,7 @@ namespace NCMSystem.Controllers
         public ResponseMessageResult PatchFlag()
         {
             var temp = Environment.GetEnvironmentVariable("NMTUNG_VAL");
-            SendGridConfig.SendRequestTransferContact("trungdang249@gmail.com", "trung");
+            // SendGridConfig.SendRequestTransferContact("trungdang249@gmail.com", "trung");
             return new ResponseMessageResult(new HttpResponseMessage()
             {
                 StatusCode = System.Net.HttpStatusCode.OK,

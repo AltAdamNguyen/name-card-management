@@ -270,10 +270,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>NcmModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\request.cs">
+      <DependentUpon>NcmModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\role.cs">
       <DependentUpon>NcmModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\status.cs">
+      <DependentUpon>NcmModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\status_request.cs">
       <DependentUpon>NcmModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\sysdiagram.cs">
