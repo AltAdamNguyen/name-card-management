@@ -24,16 +24,19 @@ import CustomCheckedBox from "../../components/groupcontact/checkBoxCustom/Custo
 import ConfirmDialog from "../../components/customDialog/dialog/confirmDialog/ConfirmDialog";
 import { FetchApi } from "../../service/api/FetchAPI";
 import { ContactAPI, GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
+import Loading from "../../components/customDialog/dialog/loadingDialog/LoadingDialog"
 
 const AddContactToGroup = ({ navigation, route }) => {
     const [listContact, setListContact] = useState([]);
     const [listContactTotal, setListContactTotal] = useState([]);
+    const [listSearch, setListSearch] = useState([]);
+
     const [choosenItems, setChoosenItems] = useState(0);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false)
-    const [listSearch, setListSearch] = useState([])
+    const [isLoading, setIsLoading] = useState(false)
 
-    const [isLoading, setIsLoading] = useState(true)
     useEffect(() => {
+        setIsLoading(true)
         FetchApi(
             ContactAPI.ViewContact,
             Method.GET,
@@ -45,12 +48,12 @@ const AddContactToGroup = ({ navigation, route }) => {
 
     const getContactCallBack = (data) => {
         if (data.data.length > 0) {
-            let list = []
+            let initListContact = []
             data.data.map((item, index) => {
-                list.push({ isChecked: false, contact: item })
+                initListContact.push({ isChecked: false, contact: item })
             })
-            setListContact(list)
-            setListContactTotal(list)
+            setListContact(initListContact)
+            setListContactTotal(initListContact)
             setIsLoading(false)
         }
     }
@@ -71,7 +74,6 @@ const AddContactToGroup = ({ navigation, route }) => {
         let index = newState.findIndex(el => el.contact.id === id)
         newState[index] = { ...newState[index], isChecked: check }
         setListContactTotal(newState)
-        //setListSearch(newState)
     }
 
     const addContactToGroup = () => {
@@ -88,7 +90,7 @@ const AddContactToGroup = ({ navigation, route }) => {
             {
                 group_id: route.params.id,
                 contact_ids: [
-                    listIdSaved
+                    ...listIdSaved
                 ]
             },
             addContactsToGroupCallBack
@@ -96,7 +98,7 @@ const AddContactToGroup = ({ navigation, route }) => {
     }
 
     const addContactsToGroupCallBack = (data) => {
-        console.log(data.message)
+        navigation.goBack()
     }
 
     const handleSearch = (contactSearch) => {

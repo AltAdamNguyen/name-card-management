@@ -36,7 +36,7 @@ const SignIn = ({ navigation }) => {
   
   const { t, i18n } = useTranslation();
   const [user, setUser] = useState({
-    email: "anhnc@gmail.com",
+    email: "anhnche141236@gmail.com",
     password: "Trung123@",
   });
   

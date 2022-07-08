@@ -83,7 +83,6 @@ const styles = StyleSheet.create({
         width: 94.29,
         height: 70,
         borderRadius: 10,
-        backgroundColor: "red"
     },
     listContainer_label: {
         color: '#828282',
@@ -103,6 +102,23 @@ const styles = StyleSheet.create({
         color: '#828282',
         fontSize: 16,
     },
+
+    // Bottom Button Region
+    bottomButtonContainer: {
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20
+    },
+    bottomButtonEnable: {
+        width: '95%',
+        backgroundColor: '#1890FF',
+    },
+    bottomButtonDisable: {
+        width: '95%',
+        backgroundColor: 'grey'
+    }
+    // End Bottom Buttom Region
 });
 
 export default styles;

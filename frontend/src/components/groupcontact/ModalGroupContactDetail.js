@@ -22,7 +22,9 @@ const ModalGroupContactDetail = ({
   onDataReturn,
   onDismiss,
   onPressChangeGroupName,
+  onPressDeleteGroupContact,
   groupContactId,
+  onDeleteContact,
   groupContactName,
   route
 }) => {
@@ -44,8 +46,8 @@ const ModalGroupContactDetail = ({
     setDialogDeleteGroupConfirmVisible(false);
   };
 
-  const handleChange = (name) => {   
-        setGroupName(name);
+  const handleChange = (name) => {
+    setGroupName(name);
   }
 
   return (
@@ -98,6 +100,10 @@ const ModalGroupContactDetail = ({
                     color="#000000"
                     labelStyle={{ fontSize: 25 }}
                     style={{ alignItems: "flex-start" }}
+                    onPress={() => {
+                      onPressDeleteGroupContact()
+                    }
+                    }
                   >
                     <Text style={{ fontSize: 14 }}>Xóa danh thiếp</Text>
                   </Button>
@@ -133,24 +139,24 @@ const ModalGroupContactDetail = ({
         onPressCancel={() => {
           setDialogDeleteGroupConfirmVisible(false);
         }}
-       
+
       />
       <InputDialog
         onVisible={dialogChangeGroupNameVisible}
         title="Đổi tên nhóm"
         leftButtonTitle="Hủy"
         rightButtonTitle="Đổi"
-        value = {groupName}
-        setValue = {(name) => handleChange(name)}
+        value={groupName}
+        setValue={(name) => handleChange(name)}
         onDismiss={() => {
           setDialogChangGroupNameVisible(false);
         }}
-        onPressCancel= {() => {
-            setDialogChangGroupNameVisible(false)
+        onPressCancel={() => {
+          setDialogChangGroupNameVisible(false)
         }}
         onPressConfirm={() => {
-            setDialogChangGroupNameVisible(false)
-            onDataReturn({ function: "changeGroupName", groupCurrentName : groupName});
+          setDialogChangGroupNameVisible(false)
+          onDataReturn({ function: "changeGroupName", groupCurrentName: groupName });
         }}
       />
     </Portal>
