@@ -98,7 +98,7 @@ const GroupContact = ({ navigation }) => {
   };
 
   const addGroupContact = (data) => {
-    if (data.message == "Add Group Successully") {
+    if (data.message == "Success") {
       FetchApi(
         GroupContactAPI.ViewGroupContact,
         Method.GET,
@@ -173,6 +173,7 @@ const GroupContact = ({ navigation }) => {
           >
             <Image source={iconPath.icPlus} />
             <ModalAddGroupContact
+              
               label="Tên nhóm"
               confirmLabel="Thêm"
               onVisible={modalAddContactVisible}

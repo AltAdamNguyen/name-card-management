@@ -33,7 +33,7 @@ const GroupContactDetail = ({ navigation, route }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const isFocus = useIsFocused();
     const [groupName, setGroupName] = useState(route.params.name)
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         FetchApi(
@@ -67,6 +67,7 @@ const GroupContactDetail = ({ navigation, route }) => {
             })
             setListContact(initListContact)
             setListContactTotal(initListContact)
+            setIsLoading(false)
         } else {
 
         }
