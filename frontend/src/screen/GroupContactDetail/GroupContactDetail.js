@@ -27,8 +27,6 @@ const GroupContactDetail = ({ navigation, route }) => {
     const [listContact, setListContact] = useState([]);
     const [listContactTotal, setListContactTotal] = useState([])
     const [listContactSearch, setListContactSearch] = useState([])
-    const [choosenItems, setChoosenItems] = useState(0);
-    const [functionTitle, setFuctionTitle] = useState("");
 
     const [modalVisible, setModalVisible] = useState(false);
     const isFocus = useIsFocused();
@@ -47,6 +45,7 @@ const GroupContactDetail = ({ navigation, route }) => {
     }, []);
 
     useEffect(() => {
+        setIsLoading(true)
         FetchApi(
             `${GroupContactAPI.ViewGroupContactDetail}/${route.params.id}`,
             Method.GET,
@@ -63,14 +62,14 @@ const GroupContactDetail = ({ navigation, route }) => {
         if (data.message === "Success" && data.data.contacts.length > 0) {
             let initListContact = []
             data.data.contacts.map((item, index) => {
-                initListContact.push({ isChecked: false, contact: item })
+                initListContact.push(item)
             })
             setListContact(initListContact)
             setListContactTotal(initListContact)
-            setIsLoading(false)
         } else {
 
         }
+        setIsLoading(false)
     };
 
     const deleteGroupContact = (data) => {
@@ -134,25 +133,6 @@ const GroupContactDetail = ({ navigation, route }) => {
         }
     };
 
-    const checkBoxOnClickCallBack = (id, check) => {
-        if (check) {
-            setChoosenItems(choosenItems + 1)
-            updateStateForListContact(id,true)
-        }
-        else {
-            setChoosenItems(choosenItems - 1)
-            updateStateForListContact(id, false)
-        }
-    }
-
-    const updateStateForListContact = (id, check) => {
-        let newState = [...listContactTotal]
-        let index = newState.findIndex(el => el.contact.contact_id === id)
-        newState[index] = { ...newState[index], isChecked: check }
-        setListContactTotal(newState)
-        console.log(listContactTotal)
-    }
-
     return (
         <Provider>
             <SafeAreaView
@@ -187,14 +167,20 @@ const GroupContactDetail = ({ navigation, route }) => {
                 <View style={styles.contactsContainer}>
                     <View style={styles.listContainer}>
                         <ScrollView>
+                        {listContact.length == 0 && (
+                                <View style={styles.listContainer_view}>
+                                    <Text style={styles.listContainer_label}>
+                                        Không có liên hệ
+                                    </Text>
+                                </View>
+                            )}
                             {listContactSearch.length != 0 &&
                                 listContactSearch.map((item, index) => {
                                     return (
                                         <TouchableOpacity>
                                             <View style={styles.item}>
-                                                <CustomCheckedBox id={item.contact.contact_id} onClick={checkBoxOnClickCallBack} isChecked={item.isChecked} />
                                                 <View style={styles.image}>
-                                                    <Image source={{ uri: item.contact.contact_imgurl }} style={styles.image} />
+                                                    <Image source={{ uri: item.contact_imgurl }} style={styles.image} />
                                                 </View>
                                                 <View style={styles.txtContact}>
                                                     <View
@@ -207,22 +193,22 @@ const GroupContactDetail = ({ navigation, route }) => {
                                                         ]}
                                                     >
                                                         <Text style={styles.nameContact}>
-                                                            {item.contact.contact_name}
+                                                            {item.contact_name}
                                                         </Text>
                                                     </View>
                                                     <Text style={styles.titleContact}>
-                                                        {item.contact.contact_jobtitle}
+                                                        {item.contact_jobtitle}
                                                     </Text>
                                                     <View style={styles.title}>
                                                         <Text
                                                             numberOfLines={1}
                                                             style={styles.companyContact}
                                                         >
-                                                            {item.contact.contact_company}
+                                                            {item.contact_company}
                                                         </Text>
                                                         <View style={{ alignItems: "flex-end" }}>
                                                             <Text style={styles.date}>
-                                                                {FormatDate(item.contact.contact_createdat)}
+                                                                {FormatDate(item.contact_createdat)}
                                                             </Text>
                                                         </View>
                                                     </View>
@@ -236,9 +222,8 @@ const GroupContactDetail = ({ navigation, route }) => {
                                     return (
                                         <TouchableOpacity>
                                             <View style={styles.item}>
-                                                <CustomCheckedBox id={item.contact.contact_id} onClick={checkBoxOnClickCallBack} isChecked={item.isChecked} />
                                                 <View style={styles.image}>
-                                                    <Image source={{ uri: item.contact.contact_imgurl }} style={styles.image} />
+                                                    <Image source={{ uri: item.contact_imgurl }} style={styles.image} />
                                                 </View>
                                                 <View style={styles.txtContact}>
                                                     <View
@@ -251,22 +236,22 @@ const GroupContactDetail = ({ navigation, route }) => {
                                                         ]}
                                                     >
                                                         <Text style={styles.nameContact}>
-                                                            {item.contact.contact_name}
+                                                            {item.contact_name}
                                                         </Text>
                                                     </View>
                                                     <Text style={styles.titleContact}>
-                                                        {item.contact.contact_jobtitle}
+                                                        {item.contact_jobtitle}
                                                     </Text>
                                                     <View style={styles.title}>
                                                         <Text
                                                             numberOfLines={1}
                                                             style={styles.companyContact}
                                                         >
-                                                            {item.contact.contact_company}
+                                                            {item.contact_company}
                                                         </Text>
                                                         <View style={{ alignItems: "flex-end" }}>
                                                             <Text style={styles.date}>
-                                                                {FormatDate(item.contact.contact_createdat)}
+                                                                {FormatDate(item.contact_createdat)}
                                                             </Text>
                                                         </View>
                                                     </View>
@@ -301,15 +286,13 @@ const GroupContactDetail = ({ navigation, route }) => {
                     }}
                     onPressDeleteGroupContact={() => {
                         setModalVisible(false)
-                        setFuctionTitle("Xoá")
+                        navigation.navigate("GroupSwap", {
+                            screen: "DeleteContactFromGroup",
+                            params: { id: route.params.id },
+                        });
                     }}
                     onDataReturn={onDataReturn}
                 />
-                <View style={styles.bottomButtonContainer}>
-                    <Button style={choosenItems == 0 ? styles.bottomButtonDisable : styles.bottomButtonEnable} labelStyle={{ color: 'white' }} disabled={choosenItems == 0 ? true : false} onPress={() => { setConfirmDialogVisible(true) }}>
-                        {functionTitle}
-                    </Button>
-                </View>
             </SafeAreaView>
             <Loading onVisible={isLoading ? true : false} />
         </Provider>
