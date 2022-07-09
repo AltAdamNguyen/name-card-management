@@ -2,8 +2,8 @@ import * as React from 'react';
 import { Checkbox } from 'react-native-paper';
 import { View } from 'react-native';
 
-const CustomCheckedBox = ({ onClick, id }) => {
-  const [checked, setChecked] = React.useState(false)
+const CustomCheckedBox = ({ onClick, id, isChecked }) => {
+  const [checked, setChecked] = React.useState(isChecked)
 
   return (
     <View>
@@ -13,7 +13,7 @@ const CustomCheckedBox = ({ onClick, id }) => {
         status={checked ? 'checked' : 'unchecked'}
         onPress={() => {
           setChecked(!checked)
-          // onClick(id, !checked)
+          onClick(id, !checked)
         }}
       />
     </View>

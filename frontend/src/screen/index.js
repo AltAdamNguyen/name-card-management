@@ -14,3 +14,6 @@ export {default as SearchContact} from './SearchContact/SearchContact'
 export {default as GroupContactDetail} from './GroupContactDetail/GroupContactDetail'
 export {default as AddContactToGroup} from './AddContactToGroup/AddContactToGroup'
 
+export {default as AddContactToManyGroup} from './AddContactToManyGroup/AddContactToManyGroup'
+export {default as DeleteContactFromGroup} from './DeleteContactFromGroup/DeleteContactFromGroup'
+//export {default as ViewContactMember} from './ViewContactMember/ViewContactMember'
