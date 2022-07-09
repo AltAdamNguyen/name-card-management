@@ -1,6 +1,7 @@
 import React from 'react';
 import { SafeAreaView, Text, View, StatusBar } from 'react-native';
 import Route from './src/navigation/Router';
+import { GroupContactDetail } from './src/screen';
 import { AuthProvider } from './src/store/AuthContext';
 
 const App = () => {
@@ -11,7 +12,7 @@ const App = () => {
         <Route />
       </AuthProvider>
     </SafeAreaView>
-  );
+   );
 };
 
 

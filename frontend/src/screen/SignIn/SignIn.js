@@ -18,7 +18,7 @@ import LoginSchema from "../../validate/ValidateFormLogin";
 import { object } from "yup";
 import { StackActions } from "@react-navigation/native";
 import AnimatedLottieView from "lottie-react-native";
-import LoadingDialog from "../../components/custom/dialog/loadingDialog/LoadingDialog";
+import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog"
 import {
   Button,
   Paragraph,
@@ -36,8 +36,8 @@ const SignIn = ({ navigation }) => {
   
   const { t, i18n } = useTranslation();
   const [user, setUser] = useState({
-    email: "",
-    password: "",
+    email: "anhnche141236@gmail.com",
+    password: "Trung123@",
   });
   
   const [isSecureEntry, setIsSecureEntry] = useState(true);

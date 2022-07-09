@@ -22,7 +22,6 @@ const LoadingDialog = (props) => {
         </Dialog.Content>
       </Dialog>
     </Portal>
-
   )
 }
 

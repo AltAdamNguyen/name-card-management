@@ -18,6 +18,7 @@ namespace NCMSystem.Controllers
 {
     public class GroupContactController : ApiController
     {
+        //QUAN TRONG
         private NCMSystemEntities db = new NCMSystemEntities(Environment.GetEnvironmentVariable("NCMSystemEntities"));
 
         //GET
@@ -95,13 +96,17 @@ namespace NCMSystem.Controllers
                 foreach (var c in contacts)
                 {
                     ContactInGroup cig = new ContactInGroup();
-                    cig.ContactId = c.id;
-                    cig.ContactName = c.name;
-                    cig.ImgUrl = c.image_url;
-                    cig.JobTitle = c.job_title;
-                    cig.ContactCompany = c.company;
-                    cig.ContactCreatedAt = c.create_date;
-                    listCtInGroup.Add(cig);
+                    //if this contact is active
+                    if (c.isActive)
+                    {
+                        cig.ContactId = c.id;
+                        cig.ContactName = c.name;
+                        cig.ImgUrl = c.image_url;
+                        cig.JobTitle = c.job_title;
+                        cig.ContactCompany = c.company;
+                        cig.ContactCreatedAt = c.create_date;
+                        listCtInGroup.Add(cig);
+                    }           
                 }
 
                 dgc.contacts = listCtInGroup;
@@ -197,48 +202,51 @@ namespace NCMSystem.Controllers
                 //search for matched group contacts by names
                 foreach (contact c in contacts)
                 {
-                    string cName, cJobTitle = "", cCompany = "";
-                    if (c.name == null)
+                    if (c.isActive)
                     {
-                        cName = "";
-                    }
-                    else
-                    {
-                        cName = c.name;
-                    }
-                    
-                    
-                    if(c.job_title == null)
-                    {
-                        cJobTitle = "";
-                    }
-                    else
-                    {
-                        cJobTitle = c.job_title;
-                    }
-                    
-                    if(c.company == null)
-                    {
-                        cCompany = "";
-                    }
-                    else
-                    {
-                        cCompany = c.company;
-                    }
-
-                    if (cName.ToLower().Contains(valueToSearch.ToLower()) || cJobTitle.ToLower().Contains(valueToSearch.ToLower()) ||
-                    cCompany.ToLower().Contains(valueToSearch.ToLower()))
-                    {
-                        listFoundContactsInGroup.Add(new ContactInGroup()
+                        string cName, cJobTitle = "", cCompany = "";
+                        if (c.name == null)
                         {
-                            ContactId = c.id,
-                            ContactName = cName,
-                            ImgUrl = c.image_url,
-                            JobTitle = cJobTitle,
-                            ContactCompany = cCompany,
-                            ContactCreatedAt = c.create_date
-                        });
-                    }
+                            cName = "";
+                        }
+                        else
+                        {
+                            cName = c.name;
+                        }
+
+
+                        if (c.job_title == null)
+                        {
+                            cJobTitle = "";
+                        }
+                        else
+                        {
+                            cJobTitle = c.job_title;
+                        }
+
+                        if (c.company == null)
+                        {
+                            cCompany = "";
+                        }
+                        else
+                        {
+                            cCompany = c.company;
+                        }
+
+                        if (cName.ToLower().Contains(valueToSearch.ToLower()) || cJobTitle.ToLower().Contains(valueToSearch.ToLower()) ||
+                        cCompany.ToLower().Contains(valueToSearch.ToLower()))
+                        {
+                            listFoundContactsInGroup.Add(new ContactInGroup()
+                            {
+                                ContactId = c.id,
+                                ContactName = cName,
+                                ImgUrl = c.image_url,
+                                JobTitle = cJobTitle,
+                                ContactCompany = cCompany,
+                                ContactCreatedAt = c.create_date
+                            });
+                        }
+                    }   
                 }
             }
             catch (Exception ex)
@@ -290,18 +298,22 @@ namespace NCMSystem.Controllers
 
                 foreach (contact contact in listContact)
                 {
-                    if (!listContactInGroup.Contains(contact))
+                    //if this contact is active
+                    if (contact.isActive)
                     {
-                        AvailableContactToGroup c = new AvailableContactToGroup();
-                        c.ContactId = contact.id;
-                        c.ContactName = contact.name;
-                        c.ImgUrl = contact.image_url;
-                        c.JobTitle = contact.job_title;
-                        c.ContactCompany = contact.company;
-                        c.ContactCreatedAt = contact.create_date;
+                        if (!listContactInGroup.Contains(contact))
+                        {
+                            AvailableContactToGroup c = new AvailableContactToGroup();
+                            c.ContactId = contact.id;
+                            c.ContactName = contact.name;
+                            c.ImgUrl = contact.image_url;
+                            c.JobTitle = contact.job_title;
+                            c.ContactCompany = contact.company;
+                            c.ContactCreatedAt = contact.create_date;
 
-                        availableContacts.Add(c);
-                    }
+                            availableContacts.Add(c);
+                        }
+                    }     
                 }
             }
             catch (Exception ex)
@@ -411,6 +423,7 @@ namespace NCMSystem.Controllers
                     });
                 }
 
+                //get list of contact ids that user wants to add to a group contact
                 List<ContactIdRequestToGroup> listContactIds = request.ListContactId;
 
                 //get list of contacts in a Group Contact user chose to add to
@@ -432,7 +445,11 @@ namespace NCMSystem.Controllers
                         contact contactToAdd = contacts.Find(c1 => c1.id == cirtg.ContactId);
                         if (contactToAdd != null)
                         {
-                            selectedContacts.Add(contactToAdd);
+                            //if this contact is active
+                            if (contactToAdd.isActive)
+                            {
+                                selectedContacts.Add(contactToAdd);
+                            }                  
                         }
                     }
                 }
@@ -473,6 +490,111 @@ namespace NCMSystem.Controllers
                 }), Encoding.UTF8, "application/json")
             });
         }
+
+        [HttpPost]
+        [Route("api/groups/add-contacttomanygroups")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        public ResponseMessageResult AddContactToManyGroups([FromBody] ContactToManyGroupRequest request)
+        {
+            try
+            {
+                int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+
+                int contactId = request.ContactId;
+
+                contact contact = db.contacts.Where(c => c.owner_id == userId && c.id == contactId).FirstOrDefault();
+
+                if(contact == null)
+                {
+                    return new ResponseMessageResult(new HttpResponseMessage()
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                        {
+                            Message = "C0016",
+                        }), Encoding.UTF8, "application/json")
+                    });
+                }
+                else if (!contact.isActive)
+                {
+                    return new ResponseMessageResult(new HttpResponseMessage()
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                        {
+                            Message = "C0020",
+                        }), Encoding.UTF8, "application/json")
+                    });
+                }
+
+                //get all group contact ids user wants to add a contact to
+                List<GroupIdsRequest> listGroupIdsRequest = request.ListGroupId;
+
+                //get all group contacts for the logged in user
+                List<group> listAllGroups = db.groups.Where(g => g.user_id == userId).ToList();
+
+                //list of groups to add the contact to
+                List<group> selectedGroups = new List<group>();
+
+                foreach(GroupIdsRequest gir in listGroupIdsRequest)
+                {
+                    group g = listAllGroups.Where(g1 => g1.id == gir.GroupId).FirstOrDefault();
+
+                    //if group contact does not exist
+                    if(g == null)
+                    {
+                        continue;
+                    }
+
+                    List<contact> contacts = g.contacts.ToList();
+
+                    if (contacts.Contains(contact))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        selectedGroups.Add(g);
+                    }
+                }
+
+                if(selectedGroups.Count == 0)
+                {
+                    return new ResponseMessageResult(new HttpResponseMessage()
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                        {
+                            Message = "C0008",
+                        }), Encoding.UTF8, "application/json")
+                    });
+                }
+
+                foreach(group g in selectedGroups)
+                {
+                    group g1 = db.groups.Where(groupToAdd => groupToAdd.id == g.id).FirstOrDefault();
+
+                    g1.contacts.Add(contact);
+                }
+
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
 
         //DELETE
         [HttpDelete]

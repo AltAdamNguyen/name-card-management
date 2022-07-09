@@ -147,7 +147,7 @@ const Home = ({ route, navigation }) => {
                         theme={{
                             roundness: 10,
                             colors: { primary: '#1890FF' }
-                        }}
+                        }} 
                         editable={false}
                     />
                 </Pressable>
