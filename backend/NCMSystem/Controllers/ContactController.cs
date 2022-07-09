@@ -70,16 +70,18 @@ namespace NCMSystem.Controllers
                 {
                     foreach (var c in contact)
                     {
-                        HomeContact hc = new HomeContact();
-                        hc.Id = c.id;
-                        hc.ImgUrl = c.image_url;
-                        hc.Name = c.name;
-                        hc.JobTitle = c.job_title;
-                        hc.Company = c.company;
-                        hc.Flag = c.flag_id;
-                        hc.Owner = c.owner_id;
-                        hc.CreateBy = c.createdBy;
-                        hc.CreatedAt = c.create_date;
+                        HomeContact hc = new HomeContact
+                        {
+                            Id = c.id,
+                            ImgUrl = c.image_url,
+                            Name = c.name,
+                            JobTitle = c.job_title,
+                            Company = c.company,
+                            Flag = c.flag_id,
+                            Owner = c.owner_id,
+                            CreateBy = c.createdBy,
+                            CreatedAt = c.create_date
+                        };
                         listCt.Add(hc);
                     }
                 }
@@ -121,14 +123,16 @@ namespace NCMSystem.Controllers
                 {
                     foreach (var c in contact)
                     {
-                        DaContact dc = new DaContact();
-                        dc.Id = c.id;
-                        dc.ImgUrl = c.image_url;
-                        dc.Name = c.name;
-                        dc.JobTitle = c.job_title;
-                        dc.Company = c.company;
-                        dc.ReasonDa = c.reason_deactive;
-                        dc.CreatedAt = c.create_date;
+                        DaContact dc = new DaContact
+                        {
+                            Id = c.id,
+                            ImgUrl = c.image_url,
+                            Name = c.name,
+                            JobTitle = c.job_title,
+                            Company = c.company,
+                            ReasonDa = c.reason_deactive,
+                            CreatedAt = c.create_date
+                        };
                         listCt.Add(dc);
                     }
                 }
@@ -229,7 +233,7 @@ namespace NCMSystem.Controllers
 
                 var draft = query;
 
-                SearchContact sc = new SearchContact();
+                SearchContact sc;
 
                 List<contact> listSearch;
                 draft = draft.Where(c => c.name.Contains(value));
@@ -238,16 +242,18 @@ namespace NCMSystem.Controllers
                 {
                     foreach (var c in listSearch)
                     {
-                        sc = new SearchContact();
-                        sc.Id = c.id;
-                        sc.ImgUrl = c.image_url;
-                        sc.Name = c.name;
-                        sc.JobTitle = c.job_title;
-                        sc.Company = c.company;
-                        sc.Email = c.email;
-                        sc.Status = c.status_id;
-                        sc.Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id;
-                        sc.CreatedAt = c.create_date;
+                        sc = new SearchContact
+                        {
+                            Id = c.id,
+                            ImgUrl = c.image_url,
+                            Name = c.name,
+                            JobTitle = c.job_title,
+                            Company = c.company,
+                            Email = c.email,
+                            Status = c.status_id,
+                            Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id,
+                            CreatedAt = c.create_date
+                        };
                         listCt.Add(sc);
                     }
                 }
@@ -260,16 +266,18 @@ namespace NCMSystem.Controllers
                 {
                     foreach (var c in listSearch)
                     {
-                        sc = new SearchContact();
-                        sc.Id = c.id;
-                        sc.ImgUrl = c.image_url;
-                        sc.Name = c.name;
-                        sc.JobTitle = c.job_title;
-                        sc.Company = c.company;
-                        sc.Email = c.email;
-                        sc.Status = c.status_id;
-                        sc.Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id;
-                        sc.CreatedAt = c.create_date;
+                        sc = new SearchContact
+                        {
+                            Id = c.id,
+                            ImgUrl = c.image_url,
+                            Name = c.name,
+                            JobTitle = c.job_title,
+                            Company = c.company,
+                            Email = c.email,
+                            Status = c.status_id,
+                            Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id,
+                            CreatedAt = c.create_date
+                        };
                         listCt.Add(sc);
                     }
                 }
@@ -282,16 +290,18 @@ namespace NCMSystem.Controllers
                 {
                     foreach (var c in listSearch)
                     {
-                        sc = new SearchContact();
-                        sc.Id = c.id;
-                        sc.ImgUrl = c.image_url;
-                        sc.Name = c.name;
-                        sc.JobTitle = c.job_title;
-                        sc.Company = c.company;
-                        sc.Email = c.email;
-                        sc.Status = c.status_id;
-                        sc.Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id;
-                        sc.CreatedAt = c.create_date;
+                        sc = new SearchContact
+                        {
+                            Id = c.id,
+                            ImgUrl = c.image_url,
+                            Name = c.name,
+                            JobTitle = c.job_title,
+                            Company = c.company,
+                            Email = c.email,
+                            Status = c.status_id,
+                            Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id,
+                            CreatedAt = c.create_date
+                        };
                         listCt.Add(sc);
                     }
                 }
@@ -303,16 +313,18 @@ namespace NCMSystem.Controllers
                 {
                     foreach (var c in listSearch)
                     {
-                        sc = new SearchContact();
-                        sc.Id = c.id;
-                        sc.ImgUrl = c.image_url;
-                        sc.Name = c.name;
-                        sc.JobTitle = c.job_title;
-                        sc.Company = c.company;
-                        sc.Email = c.email;
-                        sc.Status = c.status_id;
-                        sc.Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id;
-                        sc.CreatedAt = c.create_date;
+                        sc = new SearchContact
+                        {
+                            Id = c.id,
+                            ImgUrl = c.image_url,
+                            Name = c.name,
+                            JobTitle = c.job_title,
+                            Company = c.company,
+                            Email = c.email,
+                            Status = c.status_id,
+                            Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id,
+                            CreatedAt = c.create_date
+                        };
                         listCt.Add(sc);
                     }
                 }
@@ -355,7 +367,7 @@ namespace NCMSystem.Controllers
 
                 var draft = query;
 
-                DaContact da = new DaContact();
+                DaContact da;
 
                 List<contact> listSearch;
                 draft = draft.Where(c => c.name.Contains(value));
@@ -364,14 +376,16 @@ namespace NCMSystem.Controllers
                 {
                     foreach (var c in listSearch)
                     {
-                        da = new DaContact();
-                        da.Id = c.id;
-                        da.ImgUrl = c.image_url;
-                        da.Name = c.name;
-                        da.JobTitle = c.job_title;
-                        da.Company = c.company;
-                        da.ReasonDa = c.reason_deactive;
-                        da.CreatedAt = c.create_date;
+                        da = new DaContact
+                        {
+                            Id = c.id,
+                            ImgUrl = c.image_url,
+                            Name = c.name,
+                            JobTitle = c.job_title,
+                            Company = c.company,
+                            ReasonDa = c.reason_deactive,
+                            CreatedAt = c.create_date
+                        };
                         listCt.Add(da);
                     }
                 }
@@ -384,14 +398,16 @@ namespace NCMSystem.Controllers
                 {
                     foreach (var c in listSearch)
                     {
-                        da = new DaContact();
-                        da.Id = c.id;
-                        da.ImgUrl = c.image_url;
-                        da.Name = c.name;
-                        da.JobTitle = c.job_title;
-                        da.Company = c.company;
-                        da.ReasonDa = c.reason_deactive;
-                        da.CreatedAt = c.create_date;
+                        da = new DaContact
+                        {
+                            Id = c.id,
+                            ImgUrl = c.image_url,
+                            Name = c.name,
+                            JobTitle = c.job_title,
+                            Company = c.company,
+                            ReasonDa = c.reason_deactive,
+                            CreatedAt = c.create_date
+                        };
                         listCt.Add(da);
                     }
                 }
@@ -404,14 +420,16 @@ namespace NCMSystem.Controllers
                 {
                     foreach (var c in listSearch)
                     {
-                        da = new DaContact();
-                        da.Id = c.id;
-                        da.ImgUrl = c.image_url;
-                        da.Name = c.name;
-                        da.JobTitle = c.job_title;
-                        da.Company = c.company;
-                        da.ReasonDa = c.reason_deactive;
-                        da.CreatedAt = c.create_date;
+                        da = new DaContact
+                        {
+                            Id = c.id,
+                            ImgUrl = c.image_url,
+                            Name = c.name,
+                            JobTitle = c.job_title,
+                            Company = c.company,
+                            ReasonDa = c.reason_deactive,
+                            CreatedAt = c.create_date
+                        };
                         listCt.Add(da);
                     }
                 }
@@ -423,14 +441,16 @@ namespace NCMSystem.Controllers
                 {
                     foreach (var c in listSearch)
                     {
-                        da = new DaContact();
-                        da.Id = c.id;
-                        da.ImgUrl = c.image_url;
-                        da.Name = c.name;
-                        da.JobTitle = c.job_title;
-                        da.Company = c.company;
-                        da.ReasonDa = c.reason_deactive;
-                        da.CreatedAt = c.create_date;
+                        da = new DaContact
+                        {
+                            Id = c.id,
+                            ImgUrl = c.image_url,
+                            Name = c.name,
+                            JobTitle = c.job_title,
+                            Company = c.company,
+                            ReasonDa = c.reason_deactive,
+                            CreatedAt = c.create_date
+                        };
                         listCt.Add(da);
                     }
                 }
@@ -494,11 +514,13 @@ namespace NCMSystem.Controllers
 
                 // check if email is already exist
                 var contact = db.contacts.FirstOrDefault(c => c.email == email);
-                var user = db.users.FirstOrDefault(c => c.id == userId);
-                var userOwner = db.users.FirstOrDefault(c => c.id == contact.owner_id);
-                if (userOwner == null)
+                if (contact != null)
                 {
-                    return Common.ResponseMessage.BadRequest("C0001");
+                    var userOwner = db.users.FirstOrDefault(c => c.id == contact.owner_id);
+                    if (userOwner == null)
+                    {
+                        return Common.ResponseMessage.NotFound("C0001");
+                    }
                 }
 
                 if (contact != null && contact.owner_id == userId)
@@ -601,13 +623,13 @@ namespace NCMSystem.Controllers
 
             return new ResponseMessageResult(new HttpResponseMessage()
             {
-                StatusCode = System.Net.HttpStatusCode.Created,
+                StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
                     Message = "C0009",
                     Data = new
                     {
-                        id = newCt.id
+                        Id = newCt.id
                     }
                 }), Encoding.UTF8, "application/json")
             });
@@ -633,27 +655,34 @@ namespace NCMSystem.Controllers
                 var user = db.users.FirstOrDefault(c => c.id == userId);
                 if (user == null)
                 {
-                    return Common.ResponseMessage.BadRequest("C0018");
+                    return Common.ResponseMessage.NotFound("C0018");
                 }
 
                 var userOwner = db.users.FirstOrDefault(c => c.id == contact.owner_id);
                 if (userOwner == null)
                 {
-                    return Common.ResponseMessage.BadRequest("C0018");
+                    return Common.ResponseMessage.NotFound("C0018");
                 }
 
-                SendGridConfig.SendRequestTransferContact(userOwner.email, contact, user);
+                //random string 30 length
+                Random random = new Random();
+                const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+                var codeRq = new string(Enumerable.Repeat(chars, 30)
+                    .Select(s => s[random.Next(s.Length)]).ToArray());
+
 
                 rq = db.requests.Add(new request()
                 {
                     requester = userId,
                     receiver = userOwner.id,
-                    contact_id = contact.id,
-                    contact_id_duplicate = idDuplicate,
+                    old_contact_id = contact.id,
+                    new_contact_id = idDuplicate,
                     status = "R0002",
                     create_date = dateCreated,
+                    code = codeRq
                 });
 
+                SendGridConfig.SendRequestTransferContact(userOwner.email, contact, user, rq);
                 db.SaveChanges();
             }
             catch (Exception ex)
@@ -672,6 +701,70 @@ namespace NCMSystem.Controllers
                     {
                         id_request = rq.id,
                         code_request = rq.code
+                    }
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpGet]
+        [Route("api/contacts/request/info/{id}/{code}")]
+        public ResponseMessageResult RequestInfo(int id, string code)
+        {
+            request rq;
+            var requester = new user();
+            var receiver = new user();
+            var contact = new contact();
+            try
+            {
+                rq = db.requests.FirstOrDefault(c => c.id == id && c.code == code);
+                if (rq == null)
+                {
+                    return Common.ResponseMessage.NotFound("C0019");
+                }
+
+                requester = db.users.FirstOrDefault(c => c.id == rq.requester);
+                if (requester == null)
+                {
+                    return Common.ResponseMessage.NotFound("C0018");
+                }
+
+                receiver = db.users.FirstOrDefault(c => c.id == rq.receiver);
+                if (receiver == null)
+                {
+                    return Common.ResponseMessage.NotFound("C0018");
+                }
+
+                contact = db.contacts.FirstOrDefault(c => c.id == rq.old_contact_id);
+                if (contact == null)
+                {
+                    return Common.ResponseMessage.NotFound("C0002");
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = new
+                    {
+                        requester = requester?.name,
+                        receiver = receiver?.name,
+                        contact = new
+                        {
+                            nameCt = contact?.name,
+                            emailCt = contact?.email,
+                            phoneCt = contact?.phone,
+                            jobCt = contact?.job_title,
+                            companyCt = contact?.company,
+                            addressCt = contact?.address,
+                        }
                     }
                 }), Encoding.UTF8, "application/json")
             });
@@ -897,22 +990,33 @@ namespace NCMSystem.Controllers
 
         // PATCH
         [HttpPatch]
-        [Route("api/contacts/request/{id}")]
-        public ResponseMessageResult TransferContact(int id)
+        [Route("api/contacts/request/{id}/{code}")]
+        public ResponseMessageResult TransferContact(int id, string code)
         {
             try
             {
-                var rq = db.requests.FirstOrDefault(c => c.id == id);
+                var rq = db.requests.FirstOrDefault(c => c.id == id && c.code == code);
                 if (rq == null)
                 {
                     return Common.ResponseMessage.NotFound("C0019");
                 }
 
-                var contact = db.contacts.FirstOrDefault(c => c.id == rq.contact_id_duplicate);
+                var contact = db.contacts.FirstOrDefault(c => c.id == rq.new_contact_id);
                 if (contact == null)
                 {
                     return Common.ResponseMessage.NotFound("C0018");
                 }
+
+                var oldCt = db.contacts.FirstOrDefault(c => c.id == rq.old_contact_id);
+                if (oldCt == null)
+                {
+                    return Common.ResponseMessage.NotFound("C0018");
+                }
+
+                rq.old_contact_id = null;
+                rq.new_contact_id = null;
+
+                db.contacts.Remove(oldCt);
 
                 contact.owner_id = rq.requester;
                 rq.status = "R0003";
@@ -930,7 +1034,7 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "C0012",
+                    Message = "success",
                 }), Encoding.UTF8, "application/json")
             });
         }

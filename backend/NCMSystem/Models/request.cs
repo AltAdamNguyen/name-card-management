@@ -19,8 +19,8 @@ namespace NCMSystem.Models
         public int receiver { get; set; }
         public string status { get; set; }
         public Nullable<System.DateTime> create_date { get; set; }
-        public Nullable<int> contact_id { get; set; }
-        public Nullable<int> contact_id_duplicate { get; set; }
+        public Nullable<int> old_contact_id { get; set; }
+        public Nullable<int> new_contact_id { get; set; }
         public string code { get; set; }
     
         public virtual contact contact { get; set; }

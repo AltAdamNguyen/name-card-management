@@ -61,8 +61,8 @@
           <Property Name="receiver" Type="int" Nullable="false" />
           <Property Name="status" Type="nvarchar" MaxLength="10" Nullable="false" />
           <Property Name="create_date" Type="datetime" />
-          <Property Name="contact_id" Type="int" />
-          <Property Name="contact_id_duplicate" Type="int" />
+          <Property Name="old_contact_id" Type="int" />
+          <Property Name="new_contact_id" Type="int" />
           <Property Name="code" Type="nvarchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="role">
@@ -196,7 +196,7 @@ warning 6035: The relationship 'contact_status_code_fk' has columns that are not
               <PropertyRef Name="id" />
             </Principal>
             <Dependent Role="request">
-              <PropertyRef Name="contact_id" />
+              <PropertyRef Name="old_contact_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -208,7 +208,7 @@ warning 6035: The relationship 'contact_status_code_fk' has columns that are not
               <PropertyRef Name="id" />
             </Principal>
             <Dependent Role="request">
-              <PropertyRef Name="contact_id_duplicate" />
+              <PropertyRef Name="new_contact_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -451,8 +451,8 @@ warning 6035: The relationship 'request_status_request_code_fk' has columns that
           <Property Name="receiver" Type="Int32" Nullable="false" />
           <Property Name="status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="create_date" Type="DateTime" Precision="3" />
-          <Property Name="contact_id" Type="Int32" />
-          <Property Name="contact_id_duplicate" Type="Int32" />
+          <Property Name="old_contact_id" Type="Int32" />
+          <Property Name="new_contact_id" Type="Int32" />
           <Property Name="code" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="contact" Relationship="NCMSystemModel.request_contact_id_fk" FromRole="request" ToRole="contact" />
           <NavigationProperty Name="contact1" Relationship="NCMSystemModel.request_contact_id_fk_2" FromRole="request" ToRole="contact" />
@@ -559,7 +559,7 @@ warning 6035: The relationship 'request_status_request_code_fk' has columns that
               <PropertyRef Name="id" />
             </Principal>
             <Dependent Role="request">
-              <PropertyRef Name="contact_id" />
+              <PropertyRef Name="old_contact_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -571,7 +571,7 @@ warning 6035: The relationship 'request_status_request_code_fk' has columns that
               <PropertyRef Name="id" />
             </Principal>
             <Dependent Role="request">
-              <PropertyRef Name="contact_id_duplicate" />
+              <PropertyRef Name="new_contact_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -651,7 +651,7 @@ warning 6035: The relationship 'request_status_request_code_fk' has columns that
           <End Type="NCMSystemModel.contact" Role="contact" Multiplicity="*" />
           <End Type="NCMSystemModel.group" Role="group" Multiplicity="*" />
         </Association>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -703,8 +703,8 @@ warning 6035: The relationship 'request_status_request_code_fk' has columns that
             <EntityTypeMapping TypeName="NCMSystemModel.request">
               <MappingFragment StoreEntitySet="request">
                 <ScalarProperty Name="code" ColumnName="code" />
-                <ScalarProperty Name="contact_id_duplicate" ColumnName="contact_id_duplicate" />
-                <ScalarProperty Name="contact_id" ColumnName="contact_id" />
+                <ScalarProperty Name="new_contact_id" ColumnName="new_contact_id" />
+                <ScalarProperty Name="old_contact_id" ColumnName="old_contact_id" />
                 <ScalarProperty Name="create_date" ColumnName="create_date" />
                 <ScalarProperty Name="status" ColumnName="status" />
                 <ScalarProperty Name="receiver" ColumnName="receiver" />
