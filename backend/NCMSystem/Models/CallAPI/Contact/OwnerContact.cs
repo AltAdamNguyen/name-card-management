@@ -7,6 +7,9 @@ namespace NCMSystem.Models.CallAPI.Contact
         [JsonProperty("id")]
         public int Id { get; set; }
         
+        [JsonProperty("id_duplicate")]
+        public int IdDuplicate { get; set; }
+        
         [JsonProperty("user_name")]
         public string Owner { get; set; }
     }

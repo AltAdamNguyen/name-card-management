@@ -18,7 +18,7 @@ namespace TestNCMSystem
     public class GroupContactControllerTest
     {
         private user user;
-        NCMSystemEntities db = new NCMSystemEntities();
+        NCMSystemEntities db = new NCMSystemEntities(Environment.GetEnvironmentVariable("NCMSystemEntities"));
 
         [SetUp]
         public void Setup()
@@ -59,7 +59,7 @@ namespace TestNCMSystem
             var cc = controller.AddContactToGroup(new ContactToGroupRequest()
             {
                 GroupId = 1,
-                ContactId = 6
+                //ContactId = 6
             });
 
             //assert
@@ -85,10 +85,3 @@ namespace TestNCMSystem
         }
     }
 }
-        
-
-        
-
-    
-
-

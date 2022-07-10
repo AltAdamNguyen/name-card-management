@@ -346,7 +346,13 @@ const ViewContact = ({ navigation, route }) => {
                 <ModalDeactivate visible={modalDeactivateVisible} reason={deactive} onPressVisable={() => setModalDeactivateVisible(false)} onPressSubmit={handleDeactivate} />
             </View>
             <View style={styles.footer}>
-                <Pressable style={styles.footer_button} >
+                <Pressable style={styles.footer_button} onPress={() => {
+                      navigation.navigate("HomeSwap", {
+                        screen: "AddContactToManyGroup",
+                        params : { id : route.params.idContact }
+                      });
+                      
+                    }}>
                     <Icon name="account-multiple-plus-outline" size={24} color="#828282" />
                     <Text style={styles.footer_button_label}>Thêm nhóm</Text>
                 </Pressable>

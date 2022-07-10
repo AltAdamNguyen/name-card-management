@@ -4,7 +4,6 @@ import {
     Text,
     SafeAreaView,
     Image,
-    TouchableOpacity,
     ScrollView,
     Pressable,
 } from "react-native";
@@ -25,8 +24,9 @@ import ConfirmDialog from "../../components/customDialog/dialog/confirmDialog/Co
 import { FetchApi } from "../../service/api/FetchAPI";
 import { GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
 import Loading from "../../components/customDialog/dialog/loadingDialog/LoadingDialog"
+import { useIsFocused } from "@react-navigation/native";
 
-const AddContactToGroup = ({ navigation, route }) => {
+const DeleteContactFromGroup = ({ navigation, route }) => {
     const [listContact, setListContact] = useState([]);
     const [listContactTotal, setListContactTotal] = useState([]);
     const [listSearch, setListSearch] = useState([]);
@@ -34,22 +34,33 @@ const AddContactToGroup = ({ navigation, route }) => {
     const [choosenItems, setChoosenItems] = useState(0);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
+    const isFocus = useIsFocused()
 
     useEffect(() => {
         setIsLoading(true)
         FetchApi(
-            `${GroupContactAPI.ViewAvailableContactsForGroup}/${route.params.id}`,
+            `${GroupContactAPI.ViewGroupContactDetail}/${route.params.id}`,
             Method.GET,
             ContentType.JSON,
             undefined,
-            getContactCallBack
-        )
+            getGroupContactDetail
+        );
     }, [])
 
-    const getContactCallBack = (data) => {
-        if (data.data.length > 0) {
+    useEffect(() => {
+        FetchApi(
+            `${GroupContactAPI.ViewGroupContactDetail}/${route.params.id}`,
+            Method.GET,
+            ContentType.JSON,
+            undefined,
+            getGroupContactDetail
+        );
+    }, [isFocus]);
+
+    const getGroupContactDetail = (data) => {
+        if (data.data.contacts.length > 0) {
             let initListContact = []
-            data.data.map((item, index) => {
+            data.data.contacts.map((item, index) => {
                 initListContact.push({ isChecked: false, contact: item })
             })
             setListContact(initListContact)
@@ -76,7 +87,7 @@ const AddContactToGroup = ({ navigation, route }) => {
         setListContactTotal(newState)
     }
 
-    const addContactToGroup = () => {
+    const deleteContactFromGroup = () => {
         let listIdSaved = []
         listContactTotal.map((item) => {
             if (item.isChecked === true) {
@@ -84,8 +95,8 @@ const AddContactToGroup = ({ navigation, route }) => {
             }
         })
         FetchApi(
-            GroupContactAPI.AddContactsToGroup,
-            Method.POST,
+            GroupContactAPI.DeleteContactInGroup,
+            Method.DELETE,
             ContentType.JSON,
             {
                 group_id: route.params.id,
@@ -93,11 +104,11 @@ const AddContactToGroup = ({ navigation, route }) => {
                     ...listIdSaved
                 ]
             },
-            addContactsToGroupCallBack
+            deleteContactsFromGroupAPICallBack
         )
     }
 
-    const addContactsToGroupCallBack = (data) => {
+    const deleteContactsFromGroupAPICallBack = (data) => {
         navigation.goBack()
     }
 
@@ -205,17 +216,17 @@ const AddContactToGroup = ({ navigation, route }) => {
                     </View>
                     <View style={styles.bottomButtonContainer}>
                         <Button style={choosenItems == 0 ? styles.bottomButtonDisable : styles.bottomButtonEnable} labelStyle={{ color: 'white' }} disabled={choosenItems == 0 ? true : false} onPress={() => { setConfirmDialogVisible(true) }}>
-                            Thêm
+                            Xóa
                         </Button>
                     </View>
                     <ConfirmDialog onVisible={confirmDialogVisible}
-                        label={"Bạn muốn thêm những liên hệ này vào nhóm không?"}
+                        label={"Bạn muốn xóa những liên hệ này ra khỏi nhóm không?"}
                         leftButtonTitle={"Hủy"}
-                        rightButtonTitle={"Thêm"}
+                        rightButtonTitle={"Xóa"}
                         onDismiss={() => {
                             setConfirmDialogVisible(false)
                         }}
-                        onPressConfirm={addContactToGroup}
+                        onPressConfirm={deleteContactFromGroup}
                         onPressCancel={() => {
                             setConfirmDialogVisible(false)
                         }} />
@@ -226,4 +237,4 @@ const AddContactToGroup = ({ navigation, route }) => {
     );
 }
 
-export default AddContactToGroup
+export default DeleteContactFromGroup

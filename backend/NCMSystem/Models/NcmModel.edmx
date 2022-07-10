@@ -52,6 +52,19 @@
           <Property Name="group_id" Type="int" Nullable="false" />
           <Property Name="contact_id" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="request">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="requester" Type="int" Nullable="false" />
+          <Property Name="receiver" Type="int" Nullable="false" />
+          <Property Name="status" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="create_date" Type="datetime" />
+          <Property Name="old_contact_id" Type="int" />
+          <Property Name="new_contact_id" Type="int" />
+          <Property Name="code" Type="nvarchar" MaxLength="30" />
+        </EntityType>
         <EntityType Name="role">
           <Key>
             <PropertyRef Name="id" />
@@ -65,6 +78,14 @@
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="code" Type="nvarchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="status_request">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="255" />
           <Property Name="code" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="sysdiagrams">
@@ -167,6 +188,57 @@ warning 6035: The relationship 'contact_status_code_fk' has columns that are not
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="request_contact_id_fk">
+          <End Role="contact" Type="Self.contact" Multiplicity="0..1" />
+          <End Role="request" Type="Self.request" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="contact">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="request">
+              <PropertyRef Name="old_contact_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="request_contact_id_fk_2">
+          <End Role="contact" Type="Self.contact" Multiplicity="0..1" />
+          <End Role="request" Type="Self.request" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="contact">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="request">
+              <PropertyRef Name="new_contact_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <!--Errors Found During Generation:
+warning 6035: The relationship 'request_status_request_code_fk' has columns that are not part of the key of the table on the primary side of the relationship. The relationship was excluded.
+        <Association Name="request_status_request_code_fk" />-->
+        <Association Name="request_user_id_fk">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
+          <End Role="request" Type="Self.request" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="request">
+              <PropertyRef Name="requester" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="request_user_id_fk_2">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
+          <End Role="request" Type="Self.request" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="request">
+              <PropertyRef Name="receiver" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="token_user_id_fk">
           <End Role="user" Type="Self.user" Multiplicity="1" />
           <End Role="token" Type="Self.token" Multiplicity="*" />
@@ -208,8 +280,10 @@ warning 6035: The relationship 'contact_status_code_fk' has columns that are not
           <EntitySet Name="flag" EntityType="Self.flag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="group" EntityType="Self.group" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="group_contact" EntityType="Self.group_contact" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="request" EntityType="Self.request" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="role" EntityType="Self.role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="status" EntityType="Self.status" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="status_request" EntityType="Self.status_request" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="token" EntityType="Self.token" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="user" EntityType="Self.user" Schema="dbo" store:Type="Tables" />
@@ -233,6 +307,22 @@ warning 6035: The relationship 'contact_status_code_fk' has columns that are not
             <End Role="user" EntitySet="user" />
             <End Role="group" EntitySet="group" />
           </AssociationSet>
+          <AssociationSet Name="request_contact_id_fk" Association="Self.request_contact_id_fk">
+            <End Role="contact" EntitySet="contact" />
+            <End Role="request" EntitySet="request" />
+          </AssociationSet>
+          <AssociationSet Name="request_contact_id_fk_2" Association="Self.request_contact_id_fk_2">
+            <End Role="contact" EntitySet="contact" />
+            <End Role="request" EntitySet="request" />
+          </AssociationSet>
+          <AssociationSet Name="request_user_id_fk" Association="Self.request_user_id_fk">
+            <End Role="user" EntitySet="user" />
+            <End Role="request" EntitySet="request" />
+          </AssociationSet>
+          <AssociationSet Name="request_user_id_fk_2" Association="Self.request_user_id_fk_2">
+            <End Role="user" EntitySet="user" />
+            <End Role="request" EntitySet="request" />
+          </AssociationSet>
           <AssociationSet Name="token_user_id_fk" Association="Self.token_user_id_fk">
             <End Role="user" EntitySet="user" />
             <End Role="token" EntitySet="token" />
@@ -250,12 +340,14 @@ warning 6035: The relationship 'contact_status_code_fk' has columns that are not
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="NCMSystemModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityContainer Name="NCMSystemEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="contacts" EntityType="NCMSystemModel.contact" />
           <EntitySet Name="flags" EntityType="NCMSystemModel.flag" />
           <EntitySet Name="groups" EntityType="NCMSystemModel.group" />
+          <EntitySet Name="requests" EntityType="NCMSystemModel.request" />
           <EntitySet Name="roles" EntityType="NCMSystemModel.role" />
           <EntitySet Name="status" EntityType="NCMSystemModel.status" />
+          <EntitySet Name="status_request" EntityType="NCMSystemModel.status_request" />
           <EntitySet Name="sysdiagrams" EntityType="NCMSystemModel.sysdiagram" />
           <EntitySet Name="tokens" EntityType="NCMSystemModel.token" />
           <EntitySet Name="users" EntityType="NCMSystemModel.user" />
@@ -267,9 +359,25 @@ warning 6035: The relationship 'contact_status_code_fk' has columns that are not
             <End Role="user" EntitySet="users" />
             <End Role="contact" EntitySet="contacts" />
           </AssociationSet>
+          <AssociationSet Name="request_contact_id_fk" Association="NCMSystemModel.request_contact_id_fk">
+            <End Role="contact" EntitySet="contacts" />
+            <End Role="request" EntitySet="requests" />
+          </AssociationSet>
+          <AssociationSet Name="request_contact_id_fk_2" Association="NCMSystemModel.request_contact_id_fk_2">
+            <End Role="contact" EntitySet="contacts" />
+            <End Role="request" EntitySet="requests" />
+          </AssociationSet>
           <AssociationSet Name="group_user_id_fk" Association="NCMSystemModel.group_user_id_fk">
             <End Role="user" EntitySet="users" />
             <End Role="group" EntitySet="groups" />
+          </AssociationSet>
+          <AssociationSet Name="request_user_id_fk" Association="NCMSystemModel.request_user_id_fk">
+            <End Role="user" EntitySet="users" />
+            <End Role="request" EntitySet="requests" />
+          </AssociationSet>
+          <AssociationSet Name="request_user_id_fk_2" Association="NCMSystemModel.request_user_id_fk_2">
+            <End Role="user" EntitySet="users" />
+            <End Role="request" EntitySet="requests" />
           </AssociationSet>
           <AssociationSet Name="user_role_id_fk" Association="NCMSystemModel.user_role_id_fk">
             <End Role="role" EntitySet="roles" />
@@ -312,6 +420,8 @@ warning 6035: The relationship 'contact_status_code_fk' has columns that are not
           <Property Name="reason_deactive" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="user" Relationship="NCMSystemModel.contact_user_id_fk" FromRole="contact" ToRole="user" />
           <NavigationProperty Name="user1" Relationship="NCMSystemModel.contact_user_id_fk_2" FromRole="contact" ToRole="user" />
+          <NavigationProperty Name="requests" Relationship="NCMSystemModel.request_contact_id_fk" FromRole="contact" ToRole="request" />
+          <NavigationProperty Name="requests1" Relationship="NCMSystemModel.request_contact_id_fk_2" FromRole="contact" ToRole="request" />
           <NavigationProperty Name="groups" Relationship="NCMSystemModel.group_contact" FromRole="contact" ToRole="group" />
         </EntityType>
         <EntityType Name="flag">
@@ -332,6 +442,23 @@ warning 6035: The relationship 'contact_status_code_fk' has columns that are not
           <NavigationProperty Name="user" Relationship="NCMSystemModel.group_user_id_fk" FromRole="group" ToRole="user" />
           <NavigationProperty Name="contacts" Relationship="NCMSystemModel.group_contact" FromRole="group" ToRole="contact" />
         </EntityType>
+        <EntityType Name="request">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="requester" Type="Int32" Nullable="false" />
+          <Property Name="receiver" Type="Int32" Nullable="false" />
+          <Property Name="status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="create_date" Type="DateTime" Precision="3" />
+          <Property Name="old_contact_id" Type="Int32" />
+          <Property Name="new_contact_id" Type="Int32" />
+          <Property Name="code" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="contact" Relationship="NCMSystemModel.request_contact_id_fk" FromRole="request" ToRole="contact" />
+          <NavigationProperty Name="contact1" Relationship="NCMSystemModel.request_contact_id_fk_2" FromRole="request" ToRole="contact" />
+          <NavigationProperty Name="user" Relationship="NCMSystemModel.request_user_id_fk" FromRole="request" ToRole="user" />
+          <NavigationProperty Name="user1" Relationship="NCMSystemModel.request_user_id_fk_2" FromRole="request" ToRole="user" />
+        </EntityType>
         <EntityType Name="role">
           <Key>
             <PropertyRef Name="id" />
@@ -346,6 +473,14 @@ warning 6035: The relationship 'contact_status_code_fk' has columns that are not
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="status_request">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <Property Name="code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="sysdiagram">
@@ -385,6 +520,8 @@ warning 6035: The relationship 'contact_status_code_fk' has columns that are not
           <NavigationProperty Name="contacts" Relationship="NCMSystemModel.contact_user_id_fk" FromRole="user" ToRole="contact" />
           <NavigationProperty Name="contacts1" Relationship="NCMSystemModel.contact_user_id_fk_2" FromRole="user" ToRole="contact" />
           <NavigationProperty Name="groups" Relationship="NCMSystemModel.group_user_id_fk" FromRole="user" ToRole="group" />
+          <NavigationProperty Name="requests" Relationship="NCMSystemModel.request_user_id_fk" FromRole="user" ToRole="request" />
+          <NavigationProperty Name="requests1" Relationship="NCMSystemModel.request_user_id_fk_2" FromRole="user" ToRole="request" />
           <NavigationProperty Name="role" Relationship="NCMSystemModel.user_role_id_fk" FromRole="user" ToRole="role" />
           <NavigationProperty Name="tokens" Relationship="NCMSystemModel.token_user_id_fk" FromRole="user" ToRole="token" />
           <NavigationProperty Name="user1" Relationship="NCMSystemModel.user_user_id_fk" FromRole="user" ToRole="user1" />
@@ -414,6 +551,30 @@ warning 6035: The relationship 'contact_status_code_fk' has columns that are not
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="request_contact_id_fk">
+          <End Type="NCMSystemModel.contact" Role="contact" Multiplicity="0..1" />
+          <End Type="NCMSystemModel.request" Role="request" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="contact">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="request">
+              <PropertyRef Name="old_contact_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="request_contact_id_fk_2">
+          <End Type="NCMSystemModel.contact" Role="contact" Multiplicity="0..1" />
+          <End Type="NCMSystemModel.request" Role="request" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="contact">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="request">
+              <PropertyRef Name="new_contact_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="group_user_id_fk">
           <End Type="NCMSystemModel.user" Role="user" Multiplicity="1" />
           <End Type="NCMSystemModel.group" Role="group" Multiplicity="*" />
@@ -423,6 +584,30 @@ warning 6035: The relationship 'contact_status_code_fk' has columns that are not
             </Principal>
             <Dependent Role="group">
               <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="request_user_id_fk">
+          <End Type="NCMSystemModel.user" Role="user" Multiplicity="1" />
+          <End Type="NCMSystemModel.request" Role="request" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="request">
+              <PropertyRef Name="requester" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="request_user_id_fk_2">
+          <End Type="NCMSystemModel.user" Role="user" Multiplicity="1" />
+          <End Type="NCMSystemModel.request" Role="request" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="request">
+              <PropertyRef Name="receiver" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -466,12 +651,12 @@ warning 6035: The relationship 'contact_status_code_fk' has columns that are not
           <End Type="NCMSystemModel.contact" Role="contact" Multiplicity="*" />
           <End Type="NCMSystemModel.group" Role="group" Multiplicity="*" />
         </Association>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="NCMSystemModelStoreContainer" CdmEntityContainer="NCMSystemEntities">
+        <EntityContainerMapping StorageEntityContainer="NCMSystemModelStoreContainer" CdmEntityContainer="Entities">
           <EntitySetMapping Name="contacts">
             <EntityTypeMapping TypeName="NCMSystemModel.contact">
               <MappingFragment StoreEntitySet="contact">
@@ -514,6 +699,20 @@ warning 6035: The relationship 'contact_status_code_fk' has columns that are not
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="requests">
+            <EntityTypeMapping TypeName="NCMSystemModel.request">
+              <MappingFragment StoreEntitySet="request">
+                <ScalarProperty Name="code" ColumnName="code" />
+                <ScalarProperty Name="new_contact_id" ColumnName="new_contact_id" />
+                <ScalarProperty Name="old_contact_id" ColumnName="old_contact_id" />
+                <ScalarProperty Name="create_date" ColumnName="create_date" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="receiver" ColumnName="receiver" />
+                <ScalarProperty Name="requester" ColumnName="requester" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="roles">
             <EntityTypeMapping TypeName="NCMSystemModel.role">
               <MappingFragment StoreEntitySet="role">
@@ -525,6 +724,15 @@ warning 6035: The relationship 'contact_status_code_fk' has columns that are not
           <EntitySetMapping Name="status">
             <EntityTypeMapping TypeName="NCMSystemModel.status">
               <MappingFragment StoreEntitySet="status">
+                <ScalarProperty Name="code" ColumnName="code" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="status_request">
+            <EntityTypeMapping TypeName="NCMSystemModel.status_request">
+              <MappingFragment StoreEntitySet="status_request">
                 <ScalarProperty Name="code" ColumnName="code" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="id" ColumnName="id" />

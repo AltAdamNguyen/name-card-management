@@ -2,6 +2,7 @@
 using NCMSystem.Models;
 using NCMSystem.Models.CallAPI;
 using NCMSystem.Models.CallAPI.Group_Contact;
+using NCMSystem.Models.CallAPI.Team;
 using Newtonsoft.Json;
 using Serilog;
 using System;
@@ -17,7 +18,8 @@ namespace NCMSystem.Controllers
 {
     public class GroupContactController : ApiController
     {
-        private NCMSystemEntities db = new NCMSystemEntities();
+        //QUAN TRONG
+        private NCMSystemEntities db = new NCMSystemEntities(Environment.GetEnvironmentVariable("NCMSystemEntities"));
 
         //GET
         [HttpGet]
@@ -25,13 +27,15 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
         public ResponseMessageResult GetHomeListGroupContact()
         {
-            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
-
-            //find groups according to the logged in user
-            List<group> listGroup = db.groups.Where(g => g.user_id == userId).ToList();
             List<HomeGroupContact> listHomeGroupContact = new List<HomeGroupContact>();
+
             try
             {
+                int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+
+                //find groups according to the logged in user
+                List<group> listGroup = db.groups.Where(g => g.user_id == userId).ToList();
+
                 foreach (group g in listGroup)
                 {
                     HomeGroupContact hgc = new HomeGroupContact();
@@ -62,27 +66,47 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
         public ResponseMessageResult GetGroupContactDetail(int id)
         {
-            //get group from database with its id accordingly
-            var group = db.groups.FirstOrDefault(g => g.id == id);
-
-            List<contact> contacts = group.contacts.ToList();
-
-            List<ContactInGroup> listCtInGroup = new List<ContactInGroup>();
-
             DetailGroupContact dgc = new DetailGroupContact();
-            dgc.GroupName = group.name;
 
             try
             {
+                int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+
+                //get group from database with its id accordingly from the logged in user
+                var group = db.groups.FirstOrDefault(g => g.id == id && g.user_id == userId);
+
+                if (group == null)
+                {
+                    return new ResponseMessageResult(new HttpResponseMessage()
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                        {
+                            Message = "C0015"
+                        }), Encoding.UTF8, "application/json")
+                    });
+                }
+
+                List<contact> contacts = group.contacts.ToList();
+
+                List<ContactInGroup> listCtInGroup = new List<ContactInGroup>();
+
+                dgc.GroupName = group.name;
+
                 foreach (var c in contacts)
                 {
                     ContactInGroup cig = new ContactInGroup();
-                    cig.ContactName = c.name;
-                    cig.ImgUrl = c.image_url;
-                    cig.JobTitle = c.job_title;
-                    cig.ContactCompany = c.company;
-                    cig.ContactCreatedAt = c.create_date;
-                    listCtInGroup.Add(cig);
+                    //if this contact is active
+                    if (c.isActive)
+                    {
+                        cig.ContactId = c.id;
+                        cig.ContactName = c.name;
+                        cig.ImgUrl = c.image_url;
+                        cig.JobTitle = c.job_title;
+                        cig.ContactCompany = c.company;
+                        cig.ContactCreatedAt = c.create_date;
+                        listCtInGroup.Add(cig);
+                    }           
                 }
 
                 dgc.contacts = listCtInGroup;
@@ -109,18 +133,19 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
         public ResponseMessageResult SearchGroupContact(string group_name)
         {
-            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
-
-            //find groups according to the logged in user
-            List<group> listGroup = db.groups.Where(g => g.user_id == userId).ToList();
             List<SearchGroupContact> listFoundGroup = new List<SearchGroupContact>();
 
             try
             {
+                int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+
+                //find groups according to the logged in user
+                List<group> listGroup = db.groups.Where(g => g.user_id == userId).ToList();
+
                 //search for matched group contacts by names
                 foreach (group group in listGroup)
                 {
-                    if (group.name.Contains(group_name))
+                    if (group.name.ToLower().Contains(group_name.ToLower()))
                     {
                         listFoundGroup.Add(new SearchGroupContact()
                         {
@@ -151,30 +176,77 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
         public ResponseMessageResult SearchContactInGroupContact(int group_id, string valueToSearch)
         {
-            //get group from database with its id accordingly
-            var group = db.groups.FirstOrDefault(g => g.id == group_id);
-
-            List<contact> contacts = group.contacts.ToList();
-
             List<ContactInGroup> listFoundContactsInGroup = new List<ContactInGroup>();
 
             try
             {
+                int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+
+                //get group from database with its id accordingly by the logged in user
+                var group = db.groups.FirstOrDefault(g => g.id == group_id && g.user_id == userId);
+
+                if (group == null)
+                {
+                    return new ResponseMessageResult(new HttpResponseMessage()
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                        {
+                            Message = "C0015"
+                        }), Encoding.UTF8, "application/json")
+                    });
+                }
+
+                List<contact> contacts = group.contacts.ToList();
+
                 //search for matched group contacts by names
                 foreach (contact c in contacts)
                 {
-                    if (c.name.Contains(valueToSearch) || c.job_title.Contains(valueToSearch) ||
-                        c.company.Contains(valueToSearch))
+                    if (c.isActive)
                     {
-                        listFoundContactsInGroup.Add(new ContactInGroup()
+                        string cName, cJobTitle = "", cCompany = "";
+                        if (c.name == null)
                         {
-                            ContactName = c.name,
-                            ImgUrl = c.image_url,
-                            JobTitle = c.job_title,
-                            ContactCompany = c.company,
-                            ContactCreatedAt = c.create_date
-                        });
-                    }
+                            cName = "";
+                        }
+                        else
+                        {
+                            cName = c.name;
+                        }
+
+
+                        if (c.job_title == null)
+                        {
+                            cJobTitle = "";
+                        }
+                        else
+                        {
+                            cJobTitle = c.job_title;
+                        }
+
+                        if (c.company == null)
+                        {
+                            cCompany = "";
+                        }
+                        else
+                        {
+                            cCompany = c.company;
+                        }
+
+                        if (cName.ToLower().Contains(valueToSearch.ToLower()) || cJobTitle.ToLower().Contains(valueToSearch.ToLower()) ||
+                        cCompany.ToLower().Contains(valueToSearch.ToLower()))
+                        {
+                            listFoundContactsInGroup.Add(new ContactInGroup()
+                            {
+                                ContactId = c.id,
+                                ContactName = cName,
+                                ImgUrl = c.image_url,
+                                JobTitle = cJobTitle,
+                                ContactCompany = cCompany,
+                                ContactCreatedAt = c.create_date
+                            });
+                        }
+                    }   
                 }
             }
             catch (Exception ex)
@@ -194,6 +266,73 @@ namespace NCMSystem.Controllers
             });
         }
 
+        [HttpGet]
+        [Route("api/groups/getcontactsavailableforgroup/{group_id}")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        public ResponseMessageResult GetContactsAvailableForAGroup(int group_id)
+        {
+            List<AvailableContactToGroup> availableContacts = new List<AvailableContactToGroup>();
+
+            try
+            {
+                int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+
+                var selectedGroup = db.groups.Where(g => g.id == group_id && g.user_id == userId).FirstOrDefault();
+
+                if (selectedGroup == null)
+                {
+                    return new ResponseMessageResult(new HttpResponseMessage()
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                        {
+                            Message = "C0015"
+                        }), Encoding.UTF8, "application/json")
+                    });
+                }
+
+                //get list of contacts that the user has
+                List<contact> listContact = db.contacts.Where(c => c.owner_id == userId).ToList();
+                //get list of contacts in the selected group contact
+                List<contact> listContactInGroup = selectedGroup.contacts.ToList();
+
+                foreach (contact contact in listContact)
+                {
+                    //if this contact is active
+                    if (contact.isActive)
+                    {
+                        if (!listContactInGroup.Contains(contact))
+                        {
+                            AvailableContactToGroup c = new AvailableContactToGroup();
+                            c.ContactId = contact.id;
+                            c.ContactName = contact.name;
+                            c.ImgUrl = contact.image_url;
+                            c.JobTitle = contact.job_title;
+                            c.ContactCompany = contact.company;
+                            c.ContactCreatedAt = contact.create_date;
+
+                            availableContacts.Add(c);
+                        }
+                    }     
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = availableContacts
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
         //POST
         [HttpPost]
         [Route("api/groups/add-group")]
@@ -204,6 +343,18 @@ namespace NCMSystem.Controllers
             {
                 int userId = ((JwtToken)Request.Properties["payload"]).Uid;
                 string groupName = request.GroupName;
+
+                 if (!Validator.Validator.CheckInputLengthGroupName(groupName))
+                {
+                    return new ResponseMessageResult(new HttpResponseMessage()
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                        {
+                            Message = "C0017",
+                        }), Encoding.UTF8, "application/json")
+                    });
+                }
 
                 //get list of groups by the logged in user
                 List<group> list = db.groups.Where(g => g.user_id == userId).ToList();
@@ -254,25 +405,56 @@ namespace NCMSystem.Controllers
         {
             try
             {
+                int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+
                 int groupId = request.GroupId;
+
+                var group = db.groups.Where(g => g.user_id == userId && g.id == groupId).FirstOrDefault();
+
+                if (group == null)
+                {
+                    return new ResponseMessageResult(new HttpResponseMessage()
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                        {
+                            Message = "C0015",
+                        }), Encoding.UTF8, "application/json")
+                    });
+                }
+
+                //get list of contact ids that user wants to add to a group contact
                 List<ContactIdRequestToGroup> listContactIds = request.ListContactId;
 
-                //get list of contacts in a group by the logged in user
-                List<contact> contactList = db.groups.Where(g => g.id == groupId).FirstOrDefault().contacts.ToList();
+                //get list of contacts in a Group Contact user chose to add to
+                List<contact> contactListInGroupContact = group.contacts.ToList();
+
+                //get list of contacts that the user has
+                List<contact> contacts = db.contacts.Where(c => c.owner_id == userId).ToList();
 
                 //list of contacts to add to group contact
                 List<contact> selectedContacts = new List<contact>();
 
                 foreach (ContactIdRequestToGroup cirtg in listContactIds)
                 {
-                    contact c = (contact) contactList.Find(c1 => c1.id == cirtg.ContactId);
+                    contact c = contactListInGroupContact.Find(c1 => c1.id == cirtg.ContactId);
                     //if there's no contact with same info as inputted contact
                     if (c == null)
                     {
-                        selectedContacts.Add(c);
+                        //determines if the contact to add belongs to the logged in user
+                        contact contactToAdd = contacts.Find(c1 => c1.id == cirtg.ContactId);
+                        if (contactToAdd != null)
+                        {
+                            //if this contact is active
+                            if (contactToAdd.isActive)
+                            {
+                                selectedContacts.Add(contactToAdd);
+                            }                  
+                        }
                     }
                 }
 
+                //if there's nothing to add
                 if (selectedContacts.Count == 0)
                 {
                     return new ResponseMessageResult(new HttpResponseMessage()
@@ -309,6 +491,111 @@ namespace NCMSystem.Controllers
             });
         }
 
+        [HttpPost]
+        [Route("api/groups/add-contacttomanygroups")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        public ResponseMessageResult AddContactToManyGroups([FromBody] ContactToManyGroupRequest request)
+        {
+            try
+            {
+                int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+
+                int contactId = request.ContactId;
+
+                contact contact = db.contacts.Where(c => c.owner_id == userId && c.id == contactId).FirstOrDefault();
+
+                if(contact == null)
+                {
+                    return new ResponseMessageResult(new HttpResponseMessage()
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                        {
+                            Message = "C0016",
+                        }), Encoding.UTF8, "application/json")
+                    });
+                }
+                else if (!contact.isActive)
+                {
+                    return new ResponseMessageResult(new HttpResponseMessage()
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                        {
+                            Message = "C0020",
+                        }), Encoding.UTF8, "application/json")
+                    });
+                }
+
+                //get all group contact ids user wants to add a contact to
+                List<GroupIdsRequest> listGroupIdsRequest = request.ListGroupId;
+
+                //get all group contacts for the logged in user
+                List<group> listAllGroups = db.groups.Where(g => g.user_id == userId).ToList();
+
+                //list of groups to add the contact to
+                List<group> selectedGroups = new List<group>();
+
+                foreach(GroupIdsRequest gir in listGroupIdsRequest)
+                {
+                    group g = listAllGroups.Where(g1 => g1.id == gir.GroupId).FirstOrDefault();
+
+                    //if group contact does not exist
+                    if(g == null)
+                    {
+                        continue;
+                    }
+
+                    List<contact> contacts = g.contacts.ToList();
+
+                    if (contacts.Contains(contact))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        selectedGroups.Add(g);
+                    }
+                }
+
+                if(selectedGroups.Count == 0)
+                {
+                    return new ResponseMessageResult(new HttpResponseMessage()
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                        {
+                            Message = "C0008",
+                        }), Encoding.UTF8, "application/json")
+                    });
+                }
+
+                foreach(group g in selectedGroups)
+                {
+                    group g1 = db.groups.Where(groupToAdd => groupToAdd.id == g.id).FirstOrDefault();
+
+                    g1.contacts.Add(contact);
+                }
+
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+
         //DELETE
         [HttpDelete]
         [Route("api/groups/delete-contactfromgroup/")]
@@ -317,8 +604,22 @@ namespace NCMSystem.Controllers
         {
             try
             {
+                int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+
                 //get selected contact and group that contains the selected contact
-                group selectedGroup = db.groups.Where(g => g.id == request.GroupId).FirstOrDefault();
+                group selectedGroup = db.groups.Where(g => g.id == request.GroupId && g.user_id == userId).FirstOrDefault();
+
+                if (selectedGroup == null)
+                {
+                    return new ResponseMessageResult(new HttpResponseMessage()
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                        {
+                            Message = "C0015"
+                        }), Encoding.UTF8, "application/json")
+                    });
+                }
                 //get contacts from the selected group contact
                 List<contact> contacts = selectedGroup.contacts.ToList();
 
@@ -381,8 +682,22 @@ namespace NCMSystem.Controllers
         {
             try
             {
+                int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+
                 //get group from database with group_id
-                group selectedGroup = db.groups.Where(g => g.id == id).FirstOrDefault();
+                group selectedGroup = db.groups.Where(g => g.id == id && g.user_id == userId).FirstOrDefault();
+
+                if (selectedGroup == null)
+                {
+                    return new ResponseMessageResult(new HttpResponseMessage()
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                        {
+                            Message = "C0015"
+                        }), Encoding.UTF8, "application/json")
+                    });
+                }
 
                 selectedGroup.contacts.Clear();
 
@@ -416,7 +731,19 @@ namespace NCMSystem.Controllers
             {
                 int userId = ((JwtToken)Request.Properties["payload"]).Uid;
                 //get a group selected by the logged in user by id
-                group group = db.groups.Where(g => g.id == id).FirstOrDefault();
+                group group = db.groups.Where(g => g.id == id && g.user_id == userId).FirstOrDefault();
+
+                if (group == null)
+                {
+                    return new ResponseMessageResult(new HttpResponseMessage()
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                        {
+                            Message = "C0015"
+                        }), Encoding.UTF8, "application/json")
+                    });
+                }
 
                 List<group> list = db.groups.Where(g => g.user_id == userId).ToList();
 
