@@ -57,7 +57,7 @@ namespace TestNCMSystem
 
             //act
             //var cc = controller.AddContactToGroup(new ManyContactsToGroupRequest()
-            {
+            
             //    GroupId = 1,
             //    //ContactId = 6
             //});
