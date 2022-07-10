@@ -116,13 +116,13 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
         let listSearchContact = [];
         if (contactSearch !== "") {
             for (var i = 0; i < listContactTotal.length; i++) {
-                if (listContactTotal[i].contact.contact_name.includes(contactSearch)) {
+                if (listContactTotal[i].contact.contact_name != null && listContactTotal[i].contact.contact_name.toLowerCase().includes(contactSearch.toLowerCase())) {
                     listSearchContact.push(listContactTotal[i])
                 }
-                else if (listContactTotal[i].contact.contact_jobtitle.includes(contactSearch)) {
+                else if (listContactTotal[i].contact.contact_jobtitle != null && listContactTotal[i].contact.contact_jobtitle.toLowerCase().includes(contactSearch.toLowerCase())) {
                     listSearchContact.push(listContactTotal[i])
                 }
-                else if (listContactTotal[i].contact.contact_company.includes(contactSearch)) {
+                else if (listContactTotal[i].contact.contact_company != null && listContactTotal[i].contact.contact_company.toLowerCase().includes(contactSearch.toLowerCase())) {
                     listSearchContact.push(listContactTotal[i])
                 }
             }

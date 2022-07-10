@@ -64,7 +64,7 @@ const SignIn = ({ navigation }) => {
   };
 
   const getMessage = (data) => {
-    if (data.message === "Get token success") {
+    if (data.message === "U0001") {
       authCtx.onLogin(data.data.access_token, data.data.refresh_token);
       setLoading(true)
     }

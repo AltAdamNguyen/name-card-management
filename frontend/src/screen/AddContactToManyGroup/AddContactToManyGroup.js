@@ -79,7 +79,7 @@ const AddContactToManyGroup = ({ route, navigation }) => {
     let listSearchGroup = [];
     if (groupName !== "") {
       listGroupContactTotal.map((item, index) => {
-        if (item.group.group_name.includes(groupName)) {
+        if (item.group.group_name != null && item.group.group_name.toLowerCase().includes(groupName.toLowerCase())) {
           listSearchGroup.push(item);
         }
       });
