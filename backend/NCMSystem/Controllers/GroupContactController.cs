@@ -589,7 +589,7 @@ namespace NCMSystem.Controllers
         [HttpPost]
         [Route("api/groups/add-contactstogroups")]
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
-        public ResponseMessageResult AddContactsToGroups([FromBody] ManyContactToManyGroupRequest request)
+        public ResponseMessageResult AddContactsToGroups([FromBody] ContactToGroupRequest request)
         {
             try
             {

@@ -6,7 +6,7 @@ using System.Web;
 
 namespace NCMSystem.Models.CallAPI.Group_Contact
 {
-    public class ManyContactToManyGroupRequest
+    public class ContactToGroupRequest
     {
         [JsonProperty("user_id")] public string UserId { get; set; }
         [JsonProperty("contact_ids")] public List<ContactIdsRequest> ContactIds { get; set; }
