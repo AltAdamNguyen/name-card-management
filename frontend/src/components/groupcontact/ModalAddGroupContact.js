@@ -17,7 +17,7 @@ const ModalAddGroupContact = ({onVisible, label, value, confirmLabel, context, o
     }
   return (
     <Portal>
-      <Dialog visible={onVisible}  style={{ borderRadius: 10 }} onDismiss={() => {onDismiss; setInputVal("")}}>
+      <Dialog visible={onVisible}  style={{ borderRadius: 10 }} onDismiss={() => {onDismiss(); setInputVal("")}}>
         <Dialog.Title style={styles.title}>Thêm tên nhóm</Dialog.Title>
         <Dialog.Content>
         <TextInput

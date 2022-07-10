@@ -67,7 +67,8 @@ const GroupContactDetail = ({ navigation, route }) => {
             setListContact(initListContact)
             setListContactTotal(initListContact)
         } else {
-
+            setListContact([])
+            setListContactTotal([])
         }
         setIsLoading(false)
     };
