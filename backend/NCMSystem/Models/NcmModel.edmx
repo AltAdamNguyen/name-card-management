@@ -27,6 +27,7 @@
           <Property Name="create_date" Type="datetime" Nullable="false" />
           <Property Name="createdBy" Type="int" Nullable="false" />
           <Property Name="reason_deactive" Type="nvarchar" MaxLength="255" />
+          <Property Name="note" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="flag">
           <Key>
@@ -153,7 +154,9 @@ warning 6035: The relationship 'contact_status_code_fk' has columns that are not
           </ReferentialConstraint>
         </Association>
         <Association Name="group_contact_contact_id_fk">
-          <End Role="contact" Type="Self.contact" Multiplicity="1" />
+          <End Role="contact" Type="Self.contact" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="group_contact" Type="Self.group_contact" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="contact">
@@ -423,6 +426,7 @@ warning 6035: The relationship 'request_status_request_code_fk' has columns that
           <NavigationProperty Name="requests" Relationship="NCMSystemModel.request_contact_id_fk" FromRole="contact" ToRole="request" />
           <NavigationProperty Name="requests1" Relationship="NCMSystemModel.request_contact_id_fk_2" FromRole="contact" ToRole="request" />
           <NavigationProperty Name="groups" Relationship="NCMSystemModel.group_contact" FromRole="contact" ToRole="group" />
+          <Property Name="note" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="flag">
           <Key>
@@ -660,6 +664,7 @@ warning 6035: The relationship 'request_status_request_code_fk' has columns that
           <EntitySetMapping Name="contacts">
             <EntityTypeMapping TypeName="NCMSystemModel.contact">
               <MappingFragment StoreEntitySet="contact">
+                <ScalarProperty Name="note" ColumnName="note" />
                 <ScalarProperty Name="reason_deactive" ColumnName="reason_deactive" />
                 <ScalarProperty Name="createdBy" ColumnName="createdBy" />
                 <ScalarProperty Name="create_date" ColumnName="create_date" />
