@@ -11,18 +11,16 @@ import { Formik } from 'formik';
 import AddContactSchema from '../../validate/ValidateFormAddContact';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
 import { LinearGradient } from 'expo-linear-gradient';
-import AuthContext from "../../store/AuthContext";
 import { useTranslation } from "react-i18next";
 // create a component
 
-const AddContact = ({ route, navigation }) => {
+const UpdateContact = ({ route, navigation }) => {
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
     const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient)
     const [loading, setLoading] = useState(false);
     const { t, i18n } = useTranslation();
     const formRef = useRef();
-    const authCtx = useContext(AuthContext)
     const [value, setValue] = useState({
         name: '',
         job_title: '',
@@ -84,6 +82,12 @@ const AddContact = ({ route, navigation }) => {
             title: t("Screen_UpdateContact_Input_Title_Address"),
             placeholder: t("Screen_UpdateContact_Input_PlaceHolder_Address"),
             icon: "map-marker"
+        },
+        {
+            name: 'note',
+            title: t("Screen_UpdateContact_Input_Title_Note"),
+            placeholder: t("Screen_UpdateContact_Input_PlaceHolder_Note"),
+            icon: "text-box"
         },
         {
             name: 'website',
@@ -191,4 +195,4 @@ const AddContact = ({ route, navigation }) => {
 
 
 //make this component available to the app
-export default AddContact;
+export default UpdateContact;

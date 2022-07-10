@@ -53,14 +53,14 @@ export const FetchApi = async(url, method, contentType, param, callback) => {
     if (token && isTokenExpired(token)) {
         let refresh_token = await SecureStore.getItemAsync('refresh_token');       
         token = await RefeshToken(refresh_token)
-        SecureStore.setItemAsync('access_token',token)
+        await SecureStore.setItemAsync('access_token',token)
     }
     fetch(`${BaseUrl}${url}`,
         {
             method: method,
             headers: {
                 'Content-Type': contentType,
-                'Authorization': 'Bearer ' + token,
+                'Authorization': 'Bearer ' + await SecureStore.getItemAsync('access_token'),
             },
             body: JSON.stringify(param),
         })
