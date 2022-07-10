@@ -27,13 +27,14 @@ const GroupContactDetail = ({ navigation, route }) => {
     const [listContact, setListContact] = useState([]);
     const [listContactTotal, setListContactTotal] = useState([])
     const [listContactSearch, setListContactSearch] = useState([])
-
+    const { t, i18n } = useTranslation();
     const [modalVisible, setModalVisible] = useState(false);
     const isFocus = useIsFocused();
     const [groupName, setGroupName] = useState(route.params.name)
-    const [isLoading, setIsLoading] = useState(true)
+    const [isLoading, setIsLoading] = useState(false)
 
     useEffect(() => {
+        setIsLoading(true)
         FetchApi(
             `${GroupContactAPI.ViewGroupContactDetail}/${route.params.id}`,
             Method.GET,
@@ -67,8 +68,10 @@ const GroupContactDetail = ({ navigation, route }) => {
             setListContact(initListContact)
             setListContactTotal(initListContact)
         } else {
-
+            setListContact([])
+            setListContactTotal([])
         }
+        setListContactSearch([])
         setIsLoading(false)
     };
 
@@ -114,13 +117,13 @@ const GroupContactDetail = ({ navigation, route }) => {
         let listSearchContactInGroup = [];
         if (contactSearch !== "") {
             for (var i = 0; i < listContactTotal.length; i++) {
-                if (listContactTotal[i].contact.contact_name.includes(contactSearch)) {
+                if (listContactTotal[i].contact_name != null && listContactTotal[i].contact_name.toLowerCase().includes(contactSearch.toLowerCase())) {
                     listSearchContactInGroup.push(listContactTotal[i])
                 }
-                else if (listContactTotal[i].contact.contact_jobtitle.includes(contactSearch)) {
+                else if (listContactTotal[i].contact_jobtitle != null && listContactTotal[i].contact_jobtitle.toLowerCase().includes(contactSearch.toLowerCase())) {
                     listSearchContactInGroup.push(listContactTotal[i])
                 }
-                else if (listContactTotal[i].contact.contact_company.includes(contactSearch)) {
+                else if (listContactTotal[i].contact_company != null && listContactTotal[i].contact_company.toLowerCase().includes(contactSearch.toLowerCase())) {
                     listSearchContactInGroup.push(listContactTotal[i])
                 }
             }
@@ -167,17 +170,22 @@ const GroupContactDetail = ({ navigation, route }) => {
                 <View style={styles.contactsContainer}>
                     <View style={styles.listContainer}>
                         <ScrollView>
-                        {listContact.length == 0 && (
+                            {listContact.length == 0 && listContactSearch.length == 0 && (
                                 <View style={styles.listContainer_view}>
                                     <Text style={styles.listContainer_label}>
-                                        Không có liên hệ
+                                        {t("Screen_GroupContactDetail_ListContact_NoContactFound")}
                                     </Text>
                                 </View>
                             )}
                             {listContactSearch.length != 0 &&
                                 listContactSearch.map((item, index) => {
                                     return (
-                                        <TouchableOpacity>
+                                        <TouchableOpacity onPress={() => {
+                                            navigation.navigate("HomeSwap", {
+                                                screen: "ViewContact",
+                                                params: { idContact : item.contact_id },
+                                            });
+                                        }}>
                                             <View style={styles.item}>
                                                 <View style={styles.image}>
                                                     <Image source={{ uri: item.contact_imgurl }} style={styles.image} />
@@ -220,7 +228,12 @@ const GroupContactDetail = ({ navigation, route }) => {
                             {listContact.length != 0 &&
                                 listContact.map((item, index) => {
                                     return (
-                                        <TouchableOpacity>
+                                        <TouchableOpacity onPress={() => {
+                                            navigation.navigate("HomeSwap", {
+                                                screen: "ViewContact",
+                                                params: { idContact : item.contact_id, showFooter : false },
+                                            });
+                                        }}>
                                             <View style={styles.item}>
                                                 <View style={styles.image}>
                                                     <Image source={{ uri: item.contact_imgurl }} style={styles.image} />

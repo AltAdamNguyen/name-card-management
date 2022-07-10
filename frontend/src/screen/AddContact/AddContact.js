@@ -59,6 +59,12 @@ const formInput = [
     icon: "map-marker"
   },
   {
+    name: 'note',
+    title: 'Ghi chú',
+    placeholder: 'Nhập ghi chú',
+    icon: "text-box"
+  },
+  {
     name: "website",
     title: "Website",
     placeholder: "Nhập website",

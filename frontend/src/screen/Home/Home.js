@@ -167,7 +167,7 @@ const Home = ({ route, navigation }) => {
                 <ScrollView>
                     {listFilter.length != 0 && listFilter.map((item, index) => {
                         return (
-                            <Card mode='elevated' style={styles.card} elevation={2} key={index} onPress={() => { navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: item.id } }) }}>
+                            <Card mode='elevated' style={styles.card} elevation={2} key={index} onPress={() => { navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: item.id, showFooter : true } }) }}>
                                 <View style={styles.item}>
                                     <View style={styles.imgContact}>
                                         <Image source={{ uri: item.img_url }} style={styles.image} />

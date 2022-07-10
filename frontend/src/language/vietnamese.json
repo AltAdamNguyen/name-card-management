@@ -65,6 +65,17 @@
         "ModalStatus_Label_Reason": "Lý do",
         "ModalStatus_PlaceHolder_Reason": "Nhập lý do",
         
+        "ModalAddGroupContact_Title" : "Nhập tên nhóm",
+        "ModalAddGroupContact_Label_Cancel" : "Hủy",
+        "ModalAddGroupContact_Label_Confirm" : "Thêm",
+        "ModalAddGroupContact_Placeholder_GroupName" : "Tên nhóm",
+
+        "ModalGroupContactDetail_Label_AddContact": "THÊM DANH THIẾP",
+        "ModalGroupContactDetail_Label_Export": "XUẤT THÔNG TIN",
+        "ModalGroupContactDetail_Label_ChangeGroupName": "ĐỔI TÊN NHÓM",
+        "ModalGroupContactDetail_Label_DeleteContact": "XÓA DANH THIẾP",
+        "ModalGroupContactDetail_Label_DeleteGroup": "XÓA NHÓM",
+
         "Screen_UpdateContact_Button_Header_Title": "Chỉnh sửa liên hệ",
         "Screen_UpdateContact_Button_Header_Modal": "Sửa",
         "Screen_UpdateContact_Input_Title_FullName": "Họ và tên",
@@ -75,6 +86,7 @@
         "Screen_UpdateContact_Input_Title_Fax": "Fax",
         "Screen_UpdateContact_Input_Title_Address": "Địa chỉ",
         "Screen_UpdateContact_Input_Title_Website": "Website",
+        "Screen_UpdateContact_Input_Title_Note": "Ghi chú",
         "Screen_UpdateContact_Input_PlaceHolder_FullName": "Nhập họ và tên",
         "Screen_UpdateContact_Input_PlaceHolder_JobTitle": "Nhập chức vụ",
         "Screen_UpdateContact_Input_PlaceHolder_Company": "Nhập công ty",
@@ -83,6 +95,7 @@
         "Screen_UpdateContact_Input_PlaceHolder_Fax": "Nhập fax",
         "Screen_UpdateContact_Input_PlaceHolder_Address": "Nhập địa chỉ",
         "Screen_UpdateContact_Input_PlaceHolder_Website": "Nhập website",
+        "Screen_UpdateContact_Input_PlaceHolder_Note": "Nhập ghi chú",
         "Screen_UpdateContact_ContextGoback_Title": "Xác nhận",
         "Screen_UpdateContact_ContextGoback_Message": "Ban có chắc chắn muốn thoát không?",
         "Screen_UpdateContact_ContextGoback_Cancel": "Hủy",
@@ -90,6 +103,33 @@
         "Screen_UpdateContact_ContextOnSubmit_Title": "Chỉnh sửa liên hệ",
         "Screen_UpdateContact_ContextOnSubmit_Message": "Bạn có muốn lưu thay đổi không?",
         "Screen_UpdateContact_ContextOnSubmit_Cancel": "Hủy",
-        "Screen_UpdateContact_ContextOnSubmit_Submit": "Lưu"
+        "Screen_UpdateContact_ContextOnSubmit_Submit": "Lưu",
+
+        "Screen_AddContactToGroup_Appbar_Content_Title_Selected": " Đã chọn",
+        "Screen_AddContactToGroup_SearchBar_Placeholder": "Tìm kiếm liên hệ",
+        "Screen_AddContactToGroup_ListContact_NoContactFound": "Không có liên hệ",
+        "Screen_AddContactToGroup_Button_AddContact": "Thêm",
+        "Screen_AddContactToGroup_ConfirmDialog_Label": "Bạn muốn thêm những liên hệ này vào nhóm không?",
+        "Screen_AddContactToGroup_ConfirmDialog_LeftButtonTitle": "Hủy",
+        "Screen_AddContactToGroup_ConfirmDialog_RightButtonTitle": "Thêm",
+
+        "Screen_DeleteContactFromGroup_Appbar_Content_Title_Selected": "Đã chọn ",
+        "Screen_DeleteContactFromGroup_SearchBar_Placeholder": "Tìm kiếm liên hệ",
+        "Screen_DeleteContactFromGroup_ListContact_NoContactFound": "Không có liên hệ",
+        "Screen_DeleteContactFromGroup_Button_DeleteContact": "Xóa",
+        "Screen_DeleteContactFromGroup_ConfirmDialog_Label": "Bạn có muốn xóa những liên hệ đã chọn khỏi nhóm này?",
+        "Screen_DeleteContactFromGroup_ConfirmDialog_LeftButtonTitle": "Hủy",
+        "Screen_DeleteContactFromGroup_ConfirmDialog_RightButtonTitle": "Xóa",
+        
+        "Screen_GroupContactDetail_ListContact_NoContactFound":"Không có liên hệ",
+
+        "Screen_AddContactToManyGroup_Appbar_Content_Title_AddToGroup": "Thêm vào nhóm",
+        "Screen_AddContactToManyGroup_Title_MyGroups": "Nhóm của tôi",
+        "Screen_AddContactToManyGroup_Title_AddGroup": "+ Thêm nhóm",
+        "Screen_AddContactToManyGroup_ListGroup_NoGroupFound": "Không tìm thấy nhóm",
+        "Screen_AddContactToManyGroup_ConfirmDialog_Label": "Bạn có muốn thêm liên hệ này vào những nhóm đã chọn?",
+        "Screen_AddContactToManyGroup_ConfirmDialog_LeftButtonTitle": "Hủy",
+        "Screen_AddContactToManyGroup_ConfirmDialog_RightButtonTitle": "Thêm"
+        
     } 
 }
