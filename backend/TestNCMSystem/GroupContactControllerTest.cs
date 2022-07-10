@@ -56,7 +56,7 @@ namespace TestNCMSystem
             controller.Configuration = new HttpConfiguration();
 
             //act
-            var cc = controller.AddContactToGroup(new ContactToGroupRequest()
+            var cc = controller.AddContactToGroup(new ManyContactsToGroupRequest()
             {
                 GroupId = 1,
                 //ContactId = 6

@@ -219,9 +219,10 @@
     <Compile Include="Models\CallAPI\Contact\SearchContact.cs" />
     <Compile Include="Models\CallAPI\Contact\StatusContact.cs" />
     <Compile Include="Models\CallAPI\Group Contact\AvailableContactToGroup.cs" />
-    <Compile Include="Models\CallAPI\Group Contact\ContactIdRequestToGroup.cs" />
+    <Compile Include="Models\CallAPI\Group Contact\AvailableGroupToContact.cs" />
+    <Compile Include="Models\CallAPI\Group Contact\ContactIdsRequest.cs" />
     <Compile Include="Models\CallAPI\Group Contact\ContactInGroup.cs" />
-    <Compile Include="Models\CallAPI\Group Contact\ContactToGroupRequest.cs" />
+    <Compile Include="Models\CallAPI\Group Contact\ManyContactsToGroupRequest.cs" />
     <Compile Include="Models\CallAPI\Group Contact\ContactToManyGroupRequest.cs" />
     <Compile Include="Models\CallAPI\Group Contact\DeleteContactFromGroupRequest.cs" />
     <Compile Include="Models\CallAPI\Group Contact\DeleteContactIdFromGroupRequest.cs" />
@@ -230,6 +231,7 @@
     <Compile Include="Models\CallAPI\Group Contact\GroupContactRequest.cs" />
     <Compile Include="Models\CallAPI\Group Contact\GroupIdsRequest.cs" />
     <Compile Include="Models\CallAPI\Group Contact\HomeGroupContact.cs" />
+    <Compile Include="Models\CallAPI\Group Contact\ManyContactToManyGroupRequest.cs" />
     <Compile Include="Models\CallAPI\Group Contact\RenameGroupContact.cs" />
     <Compile Include="Models\CallAPI\Group Contact\SearchGroupContact.cs" />
     <Compile Include="Models\CallAPI\ScanNC\InfoNC.cs" />
