@@ -27,7 +27,7 @@ const GroupContactDetail = ({ navigation, route }) => {
     const [listContact, setListContact] = useState([]);
     const [listContactTotal, setListContactTotal] = useState([])
     const [listContactSearch, setListContactSearch] = useState([])
-
+    const { t, i18n } = useTranslation();
     const [modalVisible, setModalVisible] = useState(false);
     const isFocus = useIsFocused();
     const [groupName, setGroupName] = useState(route.params.name)
@@ -173,7 +173,7 @@ const GroupContactDetail = ({ navigation, route }) => {
                             {listContact.length == 0 && listContactSearch.length == 0 && (
                                 <View style={styles.listContainer_view}>
                                     <Text style={styles.listContainer_label}>
-                                        Không có liên hệ
+                                        {t("Screen_GroupContactDetail_ListContact_NoContactFound")}
                                     </Text>
                                 </View>
                             )}
