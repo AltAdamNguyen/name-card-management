@@ -63,7 +63,6 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
             data.data.contacts.map((item, index) => {
                 initListContact.push({ isChecked: false, contact: item })
             })
-            console.log(initListContact)
             setListContact(initListContact)
             setListContactTotal(initListContact)
         }
@@ -86,7 +85,6 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
         let index = newState.findIndex(el => el.contact.contact_id === id)
         newState[index] = { ...newState[index], isChecked: check }
         setListContactTotal(newState)
-        console.log(newState)
     }
 
     const deleteContactFromGroup = () => {

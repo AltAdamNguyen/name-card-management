@@ -54,8 +54,8 @@ const AddContactToGroup = ({ navigation, route }) => {
             })
             setListContact(initListContact)
             setListContactTotal(initListContact)
-            setIsLoading(false)
         }
+        setIsLoading(false)
     }
 
     const checkBoxOnClickCallBack = (id, check) => {
