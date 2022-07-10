@@ -11,7 +11,7 @@ import Logo_Login from "../../asset/image/login.png";
 import { FetchApiAuth } from "../../service/api/FetchAPI";
 import SwitchSelector from "react-native-switch-selector";
 import { AuthAPI, ContentType, Method } from "../../constants/ListAPI";
-import LoadingDialog from "../../components/custom/dialog/loadingDialog/LoadingDialog";
+import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
 import {Provider,} from "react-native-paper";
 const options = [
   { label: "VN", value: "vn"} ,
