@@ -38,7 +38,7 @@ namespace NCMSystem.Controllers
                     StatusCode = System.Net.HttpStatusCode.BadRequest,
                     Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                     {
-                        Message = "Request must contain email and password",
+                        Message = "U0004",
                     }), Encoding.UTF8, "application/json")
                 });
             }
@@ -53,7 +53,7 @@ namespace NCMSystem.Controllers
                     StatusCode = System.Net.HttpStatusCode.BadRequest,
                     Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                     {
-                        Message = "Email or password is incorrect",
+                        Message = "U0003",
                     }), Encoding.UTF8, "application/json")
                 });
             }
@@ -66,7 +66,7 @@ namespace NCMSystem.Controllers
                     StatusCode = System.Net.HttpStatusCode.BadRequest,
                     Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                     {
-                        Message = "User is not active",
+                        Message = "U0002",
                     }), Encoding.UTF8, "application/json")
                 });
             }
@@ -98,7 +98,7 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Get token success",
+                    Message = "U0001",
                     Data = new UserToken()
                     {
                         Token = token,

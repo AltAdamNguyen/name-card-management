@@ -193,6 +193,7 @@ namespace NCMSystem.Controllers
                 dc.Status = contact.status_id;
                 dc.ReasonStatus = contact.reason_status;
                 dc.CreatedAt = contact.create_date;
+                dc.Note = contact.note;
             }
             catch (Exception ex)
             {
@@ -574,7 +575,8 @@ namespace NCMSystem.Controllers
                         status_id = "S0002",
                         isActive = true,
                         create_date = dateCreated,
-                        createdBy = userId
+                        createdBy = userId,
+                        note = request.Note
                     });
 
                     db.SaveChanges();
@@ -610,7 +612,8 @@ namespace NCMSystem.Controllers
                     status_id = "S0002",
                     isActive = true,
                     create_date = dateCreated,
-                    createdBy = userId
+                    createdBy = userId,
+                    note = request.Note
                 });
 
                 db.SaveChanges();
@@ -629,7 +632,7 @@ namespace NCMSystem.Controllers
                     Message = "C0009",
                     Data = new
                     {
-                        Id = newCt.id
+                        id = newCt.id
                     }
                 }), Encoding.UTF8, "application/json")
             });
@@ -804,6 +807,12 @@ namespace NCMSystem.Controllers
                     return Common.ResponseMessage.BadRequest("C0005");
                 }
 
+                var duplicate = db.contacts.FirstOrDefault(c => c.email == email);
+                if (duplicate != null)
+                {
+                    return Common.ResponseMessage.NotFound("D0005");
+                }
+
                 contact.name = name;
                 contact.job_title = jobTitle;
                 contact.company = company;
@@ -812,6 +821,7 @@ namespace NCMSystem.Controllers
                 contact.email = email;
                 contact.address = address;
                 contact.website = website;
+                contact.note = request.Note;
 
                 db.SaveChanges();
             }
