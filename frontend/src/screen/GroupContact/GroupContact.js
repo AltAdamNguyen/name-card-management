@@ -18,7 +18,7 @@ import styles from "./styles";
 import i18next from "../../language/i18n";
 import { useTranslation } from "react-i18next";
 import AuthContext from "../../store/AuthContext";
-import Loading from '../../components/customDialog/dialog/loadingDialog/LoadingDialog'
+import Loading from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
 import {
   IconButton,
   Searchbar,
@@ -31,7 +31,7 @@ import {
 import ModalAddGroupContact from "../../components/groupcontact/ModalAddGroupContact";
 import { FetchApi } from "../../service/api/FetchAPI";
 import { GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from "@react-navigation/native";
 
 // create a component
 const GroupContact = ({ navigation }) => {
@@ -61,7 +61,6 @@ const GroupContact = ({ navigation }) => {
       undefined,
       getGroupContact
     );
-    
   }, []);
 
   const searchGroupHandle = (groupName) => {
@@ -77,7 +76,7 @@ const GroupContact = ({ navigation }) => {
       setLisGroupContact(listGroupContactTotal);
     }
   };
-  
+
   useEffect(() => {
     FetchApi(
       GroupContactAPI.ViewGroupContact,
@@ -86,14 +85,13 @@ const GroupContact = ({ navigation }) => {
       undefined,
       getGroupContact
     );
-    
   }, [isFocus]);
 
   const getGroupContact = (data) => {
     if (data.data.length > 0) {
       setLisGroupContact(data.data);
       setListGroupContactTotal(data.data);
-      setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -134,9 +132,7 @@ const GroupContact = ({ navigation }) => {
         <View style={styles.container_listGroup}>
           {listGroupContact.length == 0 && (
             <View style={styles.listContainer_view}>
-              <Text style={styles.listContainer_label}>
-                Không có nhóm
-              </Text>
+              <Text style={styles.listContainer_label}>Không có nhóm</Text>
             </View>
           )}
           <ScrollView>
@@ -145,12 +141,11 @@ const GroupContact = ({ navigation }) => {
                 return (
                   <TouchableOpacity
                     onPress={() => {
-                      let is = item.group_id
+                      let is = item.group_id;
                       navigation.navigate("GroupSwap", {
                         screen: "GroupContactDetail",
-                        params: { id: item.group_id , name: item.group_name },
+                        params: { id: item.group_id, name: item.group_name },
                       });
-                      
                     }}
                   >
                     <View style={styles.container_listGroup_item}>
@@ -161,9 +156,7 @@ const GroupContact = ({ navigation }) => {
                     </View>
                   </TouchableOpacity>
                 );
-              })
-             }
-              
+              })}
           </ScrollView>
         </View>
         <View>
@@ -173,9 +166,8 @@ const GroupContact = ({ navigation }) => {
           >
             <Image source={iconPath.icPlus} />
             <ModalAddGroupContact
-              
-              label="Tên nhóm"
-              confirmLabel="Thêm"
+              label={t("ModalAddGroupContact_Placeholder_GroupName")}
+              confirmLabel={t("ModalAddGroupContact_Label_Confirm")}
               onVisible={modalAddContactVisible}
               onDismiss={() => setModalAddContactVisible(false)}
               onPressCancel={() => setModalAddContactVisible(false)}
@@ -184,7 +176,7 @@ const GroupContact = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </SafeAreaView>
-      <Loading onVisible={isLoading ? true : false }/>
+      <Loading onVisible={isLoading ? true : false} />
     </Provider>
   );
 };

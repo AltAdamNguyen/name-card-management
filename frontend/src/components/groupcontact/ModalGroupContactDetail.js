@@ -73,7 +73,7 @@ const ModalGroupContactDetail = ({
                     style={{ alignItems: "flex-start" }}
                     onPress={onPressAddContact}
                   >
-                    <Text style={{ fontSize: 14 }}>Thêm danh thiếp</Text>
+                    <Text style={{ fontSize: 14 }}>{t("ModalGroupContactDetail_Label_AddContact")}</Text>
                   </Button>
                   <Button
                     icon="export"
@@ -81,7 +81,7 @@ const ModalGroupContactDetail = ({
                     labelStyle={{ fontSize: 25 }}
                     style={{ alignItems: "flex-start" }}
                   >
-                    <Text style={{ fontSize: 14 }}>Xuất thông tin</Text>
+                    <Text style={{ fontSize: 14 }}>{t("ModalGroupContactDetail_Label_Export")}</Text>
                   </Button>
                   <Button
                     icon="swap-horizontal"
@@ -93,7 +93,7 @@ const ModalGroupContactDetail = ({
                       onPressChangeGroupName()
                     }}
                   >
-                    <Text style={{ fontSize: 14 }}>Đổi tên nhóm</Text>
+                    <Text style={{ fontSize: 14 }}>{t("ModalGroupContactDetail_Label_ChangeGroupName")}</Text>
                   </Button>
                   <Button
                     icon="account-multiple-minus-outline"
@@ -105,7 +105,7 @@ const ModalGroupContactDetail = ({
                     }
                     }
                   >
-                    <Text style={{ fontSize: 14 }}>Xóa danh thiếp</Text>
+                    <Text style={{ fontSize: 14 }}>{t("ModalGroupContactDetail_Label_DeleteContact")}</Text>
                   </Button>
                   <Button
                     icon="account-multiple-minus-outline"
@@ -118,7 +118,7 @@ const ModalGroupContactDetail = ({
                       onPressDeleteGroup();
                     }}
                   >
-                    <Text style={{ fontSize: 14 }}>Xóa nhóm</Text>
+                    <Text style={{ fontSize: 14 }}>{t("ModalGroupContactDetail_Label_DeleteGroup")}</Text>
                   </Button>
                 </View>
               </View>

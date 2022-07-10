@@ -146,7 +146,7 @@ const ViewContact = ({ navigation, route }) => {
 
     const handleDeactivate = (values) => {
         console.log(values)
-        FetchApi(`${ContactAPI.DeactiveContact}/${route.params.idContact}`, Method.PATCH, ContentType.JSON, {reason_da: values.reason} , getMessage)
+        FetchApi(`${ContactAPI.DeactiveContact}/${route.params.idContact}`, Method.PATCH, ContentType.JSON, { reason_da: values.reason }, getMessage)
     }
 
     const getMessage = (data) => {
@@ -165,7 +165,7 @@ const ViewContact = ({ navigation, route }) => {
                 </View>
                 {contact &&
                     <ScrollView style={{ flex: 1 }}>
-                        <View style={{marginTop: 10}}/>
+                        <View style={{ marginTop: 10 }} />
                         <View style={styles.info}>
                             <View style={styles.info_title}>
                                 <Text style={styles.info_title_name}>{contact.name}</Text>
@@ -337,7 +337,7 @@ const ViewContact = ({ navigation, route }) => {
                                 </TouchableRipple>
                             </View>
                         </View>
-                        <View style={{marginBottom: 20}}/>
+                        <View style={{ marginBottom: 20 }} />
                     </ScrollView>
                 }
                 {status && <ModalStatus listStatus={Object.values(listStatus)} visible={modalStatusVisible} status={status} onPressSubmit={onSubmitStatus} onPressVisable={() => setModalStatusVisible(!modalStatusVisible)} />}
@@ -345,25 +345,27 @@ const ViewContact = ({ navigation, route }) => {
                 <SnackbarComponent visible={snackVisible} onPressVisible={() => setSnackVisible(false)} message={'Đã sao chép'} />
                 <ModalDeactivate visible={modalDeactivateVisible} reason={deactive} onPressVisable={() => setModalDeactivateVisible(false)} onPressSubmit={handleDeactivate} />
             </View>
-            <View style={styles.footer}>
-                <Pressable style={styles.footer_button} onPress={() => {
-                      navigation.navigate("HomeSwap", {
-                        screen: "AddContactToManyGroup",
-                      });
-                      
+            {route.params.showFooter == true &&
+                <View style={styles.footer}>
+                    <Pressable style={styles.footer_button} onPress={() => {
+                        navigation.navigate("HomeSwap", {
+                            screen: "AddContactToManyGroup",
+                            params: { id: route.params.idContact }
+                        });
+
                     }}>
-                    <Icon name="account-multiple-plus-outline" size={24} color="#828282" />
-                    <Text style={styles.footer_button_label}>Thêm nhóm</Text>
-                </Pressable>
-                {route.params && !route.params.useid && <Pressable style={styles.footer_button} onPress={handlePressUpdateContact}>
-                    <Icon name="account-edit-outline" size={24} color="#828282" />
-                    <Text style={styles.footer_button_label}>Sửa</Text>
-                </Pressable>}
-                {route.params && !route.params.useid && <Pressable style={styles.footer_button} onPress={() => setModalDeactivateVisible(true)}>
-                    <Icon name="account-minus-outline" size={24} color="#828282" />
-                    <Text style={styles.footer_button_label}>Vô hiệu hoá</Text>
-                </Pressable>}
-            </View>
+                        <Icon name="account-multiple-plus-outline" size={24} color="#828282" />
+                        <Text style={styles.footer_button_label}>Thêm nhóm</Text>
+                    </Pressable>
+                    {route.params && !route.params.useid && <Pressable style={styles.footer_button} onPress={handlePressUpdateContact}>
+                        <Icon name="account-edit-outline" size={24} color="#828282" />
+                        <Text style={styles.footer_button_label}>Sửa</Text>
+                    </Pressable>}
+                    {route.params && !route.params.useid && <Pressable style={styles.footer_button} onPress={() => setModalDeactivateVisible(true)}>
+                        <Icon name="account-minus-outline" size={24} color="#828282" />
+                        <Text style={styles.footer_button_label}>Vô hiệu hoá</Text>
+                    </Pressable>}
+                </View>}
         </SafeAreaView>
     );
 };

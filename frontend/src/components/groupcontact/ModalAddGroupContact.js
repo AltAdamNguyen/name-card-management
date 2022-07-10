@@ -8,17 +8,20 @@ import {
   Provider,
   TextInput
 } from "react-native-paper";
+import { useTranslation } from "react-i18next";
+import i18next from "../../language/i18n";
 
 const ModalAddGroupContact = ({onVisible, label, value, confirmLabel, context, onPress, onDismiss, icon, onPressCancel, onPressConfirm}) => {
     const [inputVal, setInputVal] = useState("");
+    const { t, i18n } = useTranslation();
     const onCancelPress = () => {
       onVisible = false;
       setInputVal("")
     }
   return (
     <Portal>
-      <Dialog visible={onVisible}  style={{ borderRadius: 10 }} onDismiss={() => {onDismiss; setInputVal("")}}>
-        <Dialog.Title style={styles.title}>Thêm tên nhóm</Dialog.Title>
+      <Dialog visible={onVisible}  style={{ borderRadius: 10, height: '40%', alignContent: 'center' }} onDismiss={() => {onDismiss(); setInputVal("")}}>
+        <Dialog.Title style={styles.title}>{t("ModalAddGroupContact_Title")}</Dialog.Title>
         <Dialog.Content>
         <TextInput
           mode='outlined'
@@ -32,7 +35,7 @@ const ModalAddGroupContact = ({onVisible, label, value, confirmLabel, context, o
         </Dialog.Content>
         <Dialog.Actions>
           <Button color="red"  onPress={() => {onPressCancel(); setInputVal("")}}>
-          Hủy
+          {t("ModalAddGroupContact_Label_Cancel")}
           </Button>
           <Button color="#1890FF" onPress={() => {onPressConfirm(inputVal); setInputVal("")}}>
           {confirmLabel}
@@ -51,6 +54,7 @@ const styles = StyleSheet.create({
     },
     title: {
         paddingLeft: 5,
+        
         fontSize: 16,
         fontWeight: 'bold',
         color: '#1890FF',

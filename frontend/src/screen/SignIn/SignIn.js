@@ -1,12 +1,9 @@
-import {
-  View,
-  Text
-} from "react-native";
-import React, { useState, useContext, createContext } from "react";
+import {View,Text} from "react-native";
+import React, { useState, useContext } from "react";
 import AuthContext from "../../store/AuthContext";
 import { useTranslation } from "react-i18next";
-import styles from "./styles";
 import i18next from "../../language/i18n";
+import styles from "./styles";
 import CustomInputs from "../../components/CustomInputs";
 import CustomButtons from "../../components/CustomButtons";
 import CustemHeaders from "../../components/CustomHeaders/CustemHeaders";
@@ -14,19 +11,8 @@ import Logo_Login from "../../asset/image/login.png";
 import { FetchApiAuth } from "../../service/api/FetchAPI";
 import SwitchSelector from "react-native-switch-selector";
 import { AuthAPI, ContentType, Method } from "../../constants/ListAPI";
-import LoginSchema from "../../validate/ValidateFormLogin";
-import { object } from "yup";
-import { StackActions } from "@react-navigation/native";
-import AnimatedLottieView from "lottie-react-native";
-import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog"
-import {
-  Button,
-  Paragraph,
-  Dialog,
-  Portal,
-  Provider,
-  TextInput
-} from "react-native-paper";
+import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
+import {Provider,} from "react-native-paper";
 const options = [
   { label: "VN", value: "vn"} ,
    {label: "EN", value: "en" },
@@ -36,7 +22,7 @@ const SignIn = ({ navigation }) => {
   
   const { t, i18n } = useTranslation();
   const [user, setUser] = useState({
-    email: "anhnche141236@gmail.com",
+    email: "person2@gmail.com",
     password: "Trung123@",
   });
   
@@ -64,10 +50,10 @@ const SignIn = ({ navigation }) => {
   };
 
   const getMessage = (data) => {
-    if (data.message === "Get token success") {
-      authCtx.onLogin(data.data.access_token, data.data.refresh_token);
-      setLoading(true)
-    }
+    setLoading(false)
+    data.message === "U0001" && authCtx.onLogin(data.data.access_token, data.data.refresh_token);
+    data.message === "U0003" && alert("Email or password is incorrect");
+    data.message === "U0002" && alert("User is not active");
   };
 
   const handleChange = (name) => {
@@ -79,9 +65,6 @@ const SignIn = ({ navigation }) => {
     };
   };
 
-  const handleSubmit = (values) => {
-    // FetchApi(API.AddContact, Method.POST, ContentType.JSON, value, getMessage)
-  };
   const onClearUsernamePressed = () => {
     setUser({
       ...user,
