@@ -14,5 +14,7 @@ namespace NCMSystem.Models.CallAPI.Contact
         [JsonProperty("owner_id")] public int? Owner { get; set; }
         [JsonProperty("createdBy")] public int CreateBy { get; set; }
         [JsonProperty("created_at")] public DateTime CreatedAt { get; set; }
+        [JsonProperty("status_request")] public string Request { get; set; }
+
     }
 }

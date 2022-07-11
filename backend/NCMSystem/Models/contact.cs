@@ -40,6 +40,7 @@ namespace NCMSystem.Models
         public System.DateTime create_date { get; set; }
         public int createdBy { get; set; }
         public string reason_deactive { get; set; }
+        public string note { get; set; }
     
         public virtual user user { get; set; }
         public virtual user user1 { get; set; }
