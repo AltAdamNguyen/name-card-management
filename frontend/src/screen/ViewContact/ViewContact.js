@@ -350,7 +350,7 @@ const ViewContact = ({ navigation, route }) => {
                     <Pressable style={styles.footer_button} onPress={() => {
                         navigation.navigate("HomeSwap", {
                             screen: "AddContactToManyGroup",
-                            params: { id: route.params.idContact }
+                            params: { id: [{ contact_id : route.params.idContact}], userId : "" }
                         });
 
                     }}>

@@ -83,7 +83,7 @@ const SearchContact = ({ navigation, route }) => {
     }
 
     const handleSelectAll = () => {
-        const list = listContact.map(i => {return i.id})
+        const list = listContact.map(i => { return i.id })
         if (listGroup && listGroup.length === listContact.length) {
             setListGroup([]);
         } else {
@@ -92,10 +92,26 @@ const SearchContact = ({ navigation, route }) => {
     }
 
     const handleGoBack = () => {
-        if(!route.params || route.params && route.params.deactive){
+        if (!route.params || route.params && route.params.deactive) {
             navigation.goBack();
         }
     }
+
+    const handleAddContactsToGroups = () => {
+        let selectedContactIds = []
+        for (let i = 0; i < listGroup.length; i++) {
+            selectedContactIds.push({ contact_id: listGroup[i]})
+        }
+        navigation.navigate("HomeSwap", {
+            screen: "AddContactToManyGroup",
+            params: { id: [...selectedContactIds] , userId: route.params.useid}
+        });
+    }
+
+    const addContactToManyGroupAPICallBack = (data) => {
+        navigation.goBack()
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -158,11 +174,11 @@ const SearchContact = ({ navigation, route }) => {
                 <ScrollView>
                     {listFilter && listFilter.length != 0 && listFilter.map((item, index) => {
                         return (
-                            <Contact key={index} item={item} route={route} handleViewContact={handleViewContact} checkListGroup={checkListGroup} handleReActivateButton={handleReActivateButton} listGroup={listGroup} visibleCheckBox={visibleCheckBox}/>
+                            <Contact key={index} item={item} route={route} handleViewContact={handleViewContact} checkListGroup={checkListGroup} handleReActivateButton={handleReActivateButton} listGroup={listGroup} visibleCheckBox={visibleCheckBox} />
                         )
                     })}
                 </ScrollView>
-                {visibleCheckBox && <Button style={styles.floatButton_team} mode="contained">Add to group</Button>}
+                {visibleCheckBox && <Button style={styles.floatButton_team} onPress={handleAddContactsToGroups} mode="contained">Add to group</Button>}
                 <ModalActivate visible={visible} onPressVisable={() => setVisible(false)} onPressSubmit={handleReactivate} />
             </View>
         </SafeAreaView>

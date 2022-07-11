@@ -41,6 +41,7 @@ import CustomCheckedBox from "../../components/groupcontact/checkBoxCustom/Custo
 const AddContactToManyGroup = ({ route, navigation }) => {
   const [checked, setChecked] = React.useState(false);
   const isFocus = useIsFocused();
+  const authCtx = useContext(AuthContext);
   const { t, i18n } = useTranslation();
   const [listGroupContact, setLisGroupContact] = useState([]);
   const [listGroupContactTotal, setListGroupContactTotal] = useState([]);
@@ -118,8 +119,8 @@ const AddContactToManyGroup = ({ route, navigation }) => {
     if (data.data.length > 0) {
       if (listGroupContactTotal.length > 0) {
         setListGroupSearch([])
-        setLisGroupContact([...listGroupContactTotal, { isChecked : false, group : data.data[data.data.length - 1]}])
-        setListGroupContactTotal([...listGroupContactTotal, { isChecked : false, group : data.data[data.data.length - 1]}])
+        setLisGroupContact([...listGroupContactTotal, { isChecked: false, group: data.data[data.data.length - 1] }])
+        setListGroupContactTotal([...listGroupContactTotal, { isChecked: false, group: data.data[data.data.length - 1] }])
       }
       else {
         let initListGroup = []
@@ -151,24 +152,25 @@ const AddContactToManyGroup = ({ route, navigation }) => {
   }
 
   const addContactToManyGroupAPICallBack = (data) => {
-      navigation.goBack()
+    navigation.goBack()
   }
 
   const AddContactToManyGroup = () => {
     let selectedGroupIds = []
     for (let i = 0; i < listGroupContactTotal.length; i++) {
       if (listGroupContactTotal[i].isChecked == true) {
-        selectedGroupIds.push({ group_id : listGroupContactTotal[i].group.group_id})
+        selectedGroupIds.push({ group_id: listGroupContactTotal[i].group.group_id })
       }
     }
     setConfirmDialogVisible(false);
     FetchApi(
-      GroupContactAPI.AddContactToManyGroup,
+      GroupContactAPI.AddContactsToGroup,
       Method.POST,
       ContentType.JSON,
       {
-        contact_id : route.params.id,
-        group_ids : [
+        user_id: route.params.userId,
+        contact_ids: route.params.id,
+        group_ids: [
           ...selectedGroupIds
         ]
       },
@@ -188,7 +190,7 @@ const AddContactToManyGroup = ({ route, navigation }) => {
           <TouchableOpacity></TouchableOpacity>
         </Appbar.Header>
       </View>
-      <Loading onVisible={isLoading ? true : false }/>
+      <Loading onVisible={isLoading ? true : false} />
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <Pressable style={styles.sectionStyle}>
