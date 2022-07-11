@@ -13,7 +13,7 @@ import {
 import { Button, Card } from "react-native-paper";
 import styles from "../../screen/Home/styles";
 
-const ModalHome = ({ visible, onPressVisable, sort, onPressSort, navigation }) => {
+const ModalHome = ({ visible, onPressVisable, sort, onPressSort, onPressDeactive }) => {
   const { t, i18n } = useTranslation();
   const authCtx = useContext(AuthContext);
   const listSort = [
@@ -116,7 +116,7 @@ const ModalHome = ({ visible, onPressVisable, sort, onPressSort, navigation }) =
                   labelStyle={{ fontSize: 25 }}
                   style={{ alignItems: "flex-start" }}
                   uppercase={false}
-                  onPress={() => navigation.navigate('HomeSwap', { screen: 'SearchContact', params: { deactive: true}})}
+                  onPress={onPressDeactive}
                 >
                   <Text style={{ fontSize: 14 }}>
                     {t("Screen_Home_ModalHome_Text_Label_DeactivateList")}

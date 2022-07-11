@@ -95,6 +95,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
+    header_title_left_label: {
+        fontSize: 16,
+    },
     sectionStyle: {
         justifyContent: 'center',
         alignItems: 'center',
@@ -151,12 +154,29 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         borderRadius: 10
     },
+
+    overlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: '#82828270',
+        borderRadius: 10,
+    },
+    card_noti: {
+        alignItems: 'center',
+        marginBottom: 5
+    },
+    card_noti_label: {
+        color: '#828282',
+    },
     item: {
         width: '100%',
         height: 80,
         padding: 5,
         alignItems: 'center',
-        flexDirection: 'row'
+        flexDirection: 'row',
     },
 
     image: {

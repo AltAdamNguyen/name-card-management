@@ -22,8 +22,10 @@ const SignIn = ({ navigation }) => {
   
   const { t, i18n } = useTranslation();
   const [user, setUser] = useState({
-    email: "",
-    password: "",
+    // email: "anhnche141236@gmail.com",
+    // password: "trung123@",
+    email: "person1@gmail.com",
+    password: "Trung123@"
   });
   
   const [isSecureEntry, setIsSecureEntry] = useState(true);
@@ -75,7 +77,7 @@ const SignIn = ({ navigation }) => {
   return (  
     <Provider>
        <View style= {styles.root}>
-      <LoadingDialog onVisible={isLoading ? true : false }/>
+      <LoadingDialog onVisible={isLoading}/>
       <View>
         <CustemHeaders text_PRIMARY="Name Card Management" Logo={Logo_Login} />
       </View>

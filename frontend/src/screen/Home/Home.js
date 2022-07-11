@@ -1,6 +1,6 @@
 //import liraries
-import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, SafeAreaView, Image, TouchableOpacity, ScrollView, Pressable } from 'react-native';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
+import { View, Text, SafeAreaView, Image, TouchableOpacity, ScrollView, Pressable, RefreshControl } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { IconButton, Searchbar, FAB, Card } from 'react-native-paper';
 import styles from './styles';
@@ -8,7 +8,7 @@ import styles from './styles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { FetchApi } from '../../service/api/FetchAPI';
 import { ContactAPI, ContentType, Method } from '../../constants/ListAPI';
-import i18next from "../../language/i18n"; 
+import i18next from "../../language/i18n";
 import { useTranslation } from "react-i18next";
 import AuthContext from '../../store/AuthContext';
 import ModalHome from '../../components/home/ModalHome';
@@ -16,8 +16,21 @@ import ModalFlag from '../../components/home/ModalFlag';
 import { FormatDate } from '../../validate/FormatDate';
 // create a component
 
-const Home = ({ route, navigation }) => {
+const listRequest = {
+    R0001: {
+        label: "Không chấp nhận",
+        color: "#FF0000"
+    },
+    R0002: {
+        label: "Đang xử lý",
+        color: "#FFA500"
+    },
 
+
+}
+
+const Home = ({ route, navigation }) => {
+    const [refreshing, setRefreshing] = useState(false);
     const [visibleModal, setVisibleModal] = useState(false);
     const [countContact, setContContact] = useState(0);
     const [listContact, setListContact] = useState();
@@ -28,7 +41,7 @@ const Home = ({ route, navigation }) => {
     const [sort, setSort] = useState('create_date');
     const isFocused = useIsFocused()
     const authCtx = useContext(AuthContext);
-    const { t, i18n } = useTranslation();   
+    const { t, i18n } = useTranslation();
     const listFlag = {
         F0001: {
             name: 'very-important',
@@ -77,12 +90,17 @@ const Home = ({ route, navigation }) => {
         }
     }, [route.params]);
 
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        FetchApi(`${ContactAPI.ViewContact}?sortBy=${sort}&flag=${flag}`, Method.GET, ContentType.JSON, undefined, getContactFilter)
+    }, []);
+
     const getContact = (data) => {
         console.log(data)
         if (data.data.length > 0) {
             setListContact(data.data);
             setListFilter(data.data);
-            setContContact(data.data.length);   
+            setContContact(data.data.length);
         }
     }
 
@@ -93,7 +111,6 @@ const Home = ({ route, navigation }) => {
     };
 
     const handlePressButtonFlag = (item) => {
-        console.log(item);
         setModalVisible(!modalVisible);
         setFlag(item.value);
         FetchApi(`${ContactAPI.ViewContact}?sortBy=${sort}&flag=${item.value}`, Method.GET, ContentType.JSON, undefined, getContactFilter)
@@ -109,11 +126,12 @@ const Home = ({ route, navigation }) => {
             setListFilter([]);
             setContContact(0);
         }
+        setRefreshing(false);
     }
     const deleteFlag = () => {
+        console.log(listContact)
         setFlag('null')
-        setListFilter(listContact);
-        setContContact(listContact.length);
+        FetchApi(`${ContactAPI.ViewContact}?sortBy=${sort}`, Method.GET, ContentType.JSON, undefined, getContactFilter)
     }
 
     const changeTextButtonFlag = (flag) => {
@@ -138,16 +156,21 @@ const Home = ({ route, navigation }) => {
         }
     }
 
+    const handlePressDeactive = () => {
+        navigation.navigate('HomeSwap', { screen: 'SearchContact', params: { deactive: true } })
+        setModalFloatVisible(!modalFloatVisible);
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
-                <Pressable style={styles.sectionStyle} onPress={() => navigation.navigate('HomeSwap', { screen: 'SearchContact'})}>
+                <Pressable style={styles.sectionStyle} onPress={() => navigation.navigate('HomeSwap', { screen: 'SearchContact' })}>
                     <Searchbar
                         placeholder={t("Screen_Home_Placeholder_Search")}
                         theme={{
                             roundness: 10,
                             colors: { primary: '#1890FF' }
-                        }} 
+                        }}
                         editable={false}
                     />
                 </Pressable>
@@ -164,13 +187,22 @@ const Home = ({ route, navigation }) => {
                     <View style={styles.listContainer_view}>
                         <Text style={styles.listContainer_label}>Không có danh thiếp</Text>
                     </View>}
-                <ScrollView>
+                <ScrollView
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            onRefresh={onRefresh}
+                            colors={['#1890FF']}
+                            tintColor="#1890FF"
+                        />
+                    }
+                >
                     {listFilter.length != 0 && listFilter.map((item, index) => {
                         return (
                             <Card mode='elevated' style={styles.card} elevation={2} key={index} onPress={() => { navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: item.id } }) }}>
                                 <View style={styles.item}>
                                     <View style={styles.imgContact}>
-                                        <Image source={{ uri: item.img_url }} style={styles.image} />
+                                        <Image source={{ uri: item.status_request || item.owner_id !== item.createdBy ? 'https://ncmsystem.azurewebsites.net/Images/noImage.jpg' : item.img_url }} style={styles.image} />
                                     </View>
                                     <View style={styles.txtContact}>
                                         <View style={[styles.title, { flexDirection: 'row', justifyContent: 'space-between' }]}>
@@ -179,7 +211,9 @@ const Home = ({ route, navigation }) => {
                                                 <Icon name="bookmark" size={24} color={listFlag[item.flag].color} />
                                             }
                                         </View>
-                                        <Text style={styles.titleContact}>{item.job_title}</Text>
+                                        {!Boolean(item.status_request) || item.owner_id === item.createdBy &&
+                                            <Text style={styles.titleContact}>{item.job_title}</Text>
+                                        }
                                         <View style={styles.title}>
                                             <Text numberOfLines={1} style={styles.companyContact}>{item.company}</Text>
                                             <View style={{ alignItems: 'flex-end' }}>
@@ -188,12 +222,22 @@ const Home = ({ route, navigation }) => {
                                         </View>
                                     </View>
                                 </View>
+                                {Boolean(item.status_request) &&
+                                    <View style={styles.card_noti}>
+                                        <Text style={[styles.card_noti_label, { color: listRequest[item.status_request].color }]}>{listRequest[item.status_request].label}</Text>
+                                    </View>
+                                }
+                                {!Boolean(item.status_request) && item.owner_id !== item.createdBy &&
+                                    <View style={styles.card_noti}>
+                                        <Text style={styles.card_noti_label}>Không phải người sở hữu</Text>
+                                    </View>
+                                }
                             </Card>
                         )
                     })}
                 </ScrollView>
             </View>
-            <ModalHome visible={modalFloatVisible} navigation={navigation} onPressVisable={() => setModalFloatVisible(false)} sort={sort} onPressSort={handlePressSort} />
+            <ModalHome visible={modalFloatVisible} onPressVisable={() => setModalFloatVisible(false)} sort={sort} onPressSort={handlePressSort} onPressDeactive={handlePressDeactive} />
             <FAB style={styles.floatButton} icon="tune" size={24} color="#fff" onPress={() => setModalFloatVisible(!modalFloatVisible)} />
         </SafeAreaView>
     );

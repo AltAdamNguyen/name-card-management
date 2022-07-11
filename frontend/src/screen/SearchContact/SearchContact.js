@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, Text, SafeAreaView, Image, ScrollView } from 'react-native';
 
-import { Searchbar, Card, List, IconButton, Button, RadioButton } from 'react-native-paper'
+import { Searchbar, Card, List, IconButton, Button, RadioButton, FAB } from 'react-native-paper'
 import debounce from 'lodash.debounce';
 import styles from '../Home/styles';
 import { FetchApi } from '../../service/api/FetchAPI';
@@ -83,7 +83,7 @@ const SearchContact = ({ navigation, route }) => {
     }
 
     const handleSelectAll = () => {
-        const list = listContact.map(i => {return i.id})
+        const list = listContact.map(i => { return i.id })
         if (listGroup && listGroup.length === listContact.length) {
             setListGroup([]);
         } else {
@@ -92,7 +92,7 @@ const SearchContact = ({ navigation, route }) => {
     }
 
     const handleGoBack = () => {
-        if(!route.params || route.params && route.params.deactive){
+        if (!route.params || route.params && route.params.deactive) {
             navigation.goBack();
         }
     }
@@ -103,16 +103,13 @@ const SearchContact = ({ navigation, route }) => {
                     <View style={styles.header_title}>
                         <View style={styles.header_title_left}>
                             <IconButton icon="arrow-left" size={26} onPress={() => navigation.goBack()} />
-                            <Text>Đặng Vũ Hoàng Trung</Text>
+                            <Text style={styles.header_title_left_label}>Đặng Vũ Hoàng Trung</Text>
                         </View>
                         <Button
                             onPress={() => setVisibleCheckBox(!visibleCheckBox)}
+                            uppercase={false}
+                            color="#1980FF"
                         >Thêm
-                        </Button>
-                        <Button
-                            onPress={handleSelectAll}
-                        >
-                            Select All
                         </Button>
                     </View>
                 }
@@ -131,6 +128,18 @@ const SearchContact = ({ navigation, route }) => {
                         ref={textInputRef}
                     />
                 </View>
+                {visibleCheckBox &&
+                    <View style={styles.header_title}>
+                        <Text>Đã chọn ({listGroup.length})</Text>
+                        <Button
+                            onPress={handleSelectAll}
+                            uppercase={false}
+                            color="#1980FF"
+                        >
+                            Select All
+                        </Button>
+                    </View>
+                }
             </View>
             <View style={styles.listContainer}>
                 {listFilter && listFilter.length == 0 && loading == false &&
@@ -158,11 +167,17 @@ const SearchContact = ({ navigation, route }) => {
                 <ScrollView>
                     {listFilter && listFilter.length != 0 && listFilter.map((item, index) => {
                         return (
-                            <Contact key={index} item={item} route={route} handleViewContact={handleViewContact} checkListGroup={checkListGroup} handleReActivateButton={handleReActivateButton} listGroup={listGroup} visibleCheckBox={visibleCheckBox}/>
+                            <Contact key={index} item={item} route={route} handleViewContact={handleViewContact} checkListGroup={checkListGroup} handleReActivateButton={handleReActivateButton} listGroup={listGroup} visibleCheckBox={visibleCheckBox} />
                         )
                     })}
                 </ScrollView>
-                {visibleCheckBox && <Button style={styles.floatButton_team} mode="contained">Add to group</Button>}
+                {visibleCheckBox &&
+                    <Button
+                        style={styles.floatButton_team}
+                        mode="contained"
+                    >
+                        Add to group
+                    </Button>}
                 <ModalActivate visible={visible} onPressVisable={() => setVisible(false)} onPressSubmit={handleReactivate} />
             </View>
         </SafeAreaView>
