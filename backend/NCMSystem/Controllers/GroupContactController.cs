@@ -298,7 +298,7 @@ namespace NCMSystem.Controllers
 
                 if (type.Equals("team"))
                 {
-                    //get list of contacts that the user has
+                    //get list of contacts that the team of the user has
                     List<contact> listContactTeam = new List<contact>();
                     //if the logged in user is a manager
                     if (u.role_id == 2)
@@ -350,6 +350,7 @@ namespace NCMSystem.Controllers
                 }
                 if (type.Equals("personal"))
                 {
+                    //get list of contacts that the user has
                     List<contact> listContactPersonal = db.contacts.Where(c => c.owner_id == userId).ToList();
                     foreach (contact contact in listContactPersonal)
                     {
