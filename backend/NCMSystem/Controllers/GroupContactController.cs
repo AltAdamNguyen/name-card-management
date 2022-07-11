@@ -82,7 +82,7 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "C0015"
+                            Message = "G0001"
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -192,7 +192,7 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "C0015"
+                            Message = "G0001"
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -286,7 +286,7 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "C0015"
+                            Message = "G0001"
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -372,10 +372,7 @@ namespace NCMSystem.Controllers
                             }
                         }
                     }
-                }
-                
-
-                
+                }  
             }
             catch (Exception ex)
             {
@@ -416,7 +413,7 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "No contacts selected"
+                            Message = "G0002"
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -467,7 +464,7 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "No Active Contacts to perform action"
+                            Message = "G0003"
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -517,7 +514,7 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "C0021"
+                            Message = "G0004"
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -557,7 +554,7 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "C0017",
+                            Message = "G0005",
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -574,7 +571,7 @@ namespace NCMSystem.Controllers
                             StatusCode = System.Net.HttpStatusCode.OK,
                             Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                             {
-                                Message = "C0007",
+                                Message = "G0006"
                             }), Encoding.UTF8, "application/json")
                         });
                     }
@@ -724,7 +721,7 @@ namespace NCMSystem.Controllers
                             StatusCode = System.Net.HttpStatusCode.OK,
                             Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                             {
-                                Message = "User Id is not a Member",
+                                Message = "G0007",
                             }), Encoding.UTF8, "application/json")
                         });
                     }
@@ -737,7 +734,7 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "C0008",
+                            Message = "G0008",
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -781,7 +778,7 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "C0015"
+                            Message = "G0009"
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -812,7 +809,7 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "C0014"
+                            Message = "G0010"
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -859,7 +856,7 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "C0015"
+                            Message = "G0009"
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -905,7 +902,7 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "C0015"
+                            Message = "G0009"
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -921,7 +918,7 @@ namespace NCMSystem.Controllers
                             StatusCode = System.Net.HttpStatusCode.OK,
                             Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                             {
-                                Message = "C0007"
+                                Message = "G0006"
                             }), Encoding.UTF8, "application/json")
                         });
                     }
