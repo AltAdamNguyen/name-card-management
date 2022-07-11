@@ -1,6 +1,6 @@
 //import liraries
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, Text, SafeAreaView, Image, ScrollView } from 'react-native';
+import { View, Text, SafeAreaView, Image, ScrollView, Alert } from 'react-native';
 
 import { Searchbar, Card, List, IconButton, Button, RadioButton, FAB } from 'react-native-paper'
 import debounce from 'lodash.debounce';
@@ -12,6 +12,7 @@ import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
 import { LinearGradient } from "expo-linear-gradient";
 import ModalActivate from '../../components/searchcontact/ModalActivate';
 import Contact from '../../components/searchcontact/Contact';
+import ModalTransfer from '../../components/searchcontact/ModalTransfer';
 
 // create a component
 const SearchContact = ({ navigation, route }) => {
@@ -21,6 +22,7 @@ const SearchContact = ({ navigation, route }) => {
     const [text, setText] = useState("");
     const [visible, setVisible] = useState(false);
     const [visibleCheckBox, setVisibleCheckBox] = useState(false);
+    const [visibleTransfer, setVisibleTransfer] = useState(false);
     const textInputRef = useRef();
     const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
     const [loading, setLoading] = useState(false);
@@ -33,6 +35,10 @@ const SearchContact = ({ navigation, route }) => {
         }
         if (route.params && route.params.deactive) {
             FetchApi(`${ContactAPI.ListDeactive}`, Method.GET, ContentType.JSON, undefined, getContact)
+        }
+        if (route.params && route.params.transfer) {
+            FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
+            setVisibleCheckBox(true)
         }
     }, []);
 
@@ -96,20 +102,58 @@ const SearchContact = ({ navigation, route }) => {
             navigation.goBack();
         }
     }
+
+    const handleTransfer = (values) => {
+        FetchApi(ContactAPI.TransferContact
+            , Method.PATCH,
+            ContentType.JSON,
+            {
+                contact_id: listGroup,
+                email: values.email,
+            },
+            getMessageTransfer)
+    }
+
+    const getMessageTransfer = (data) => {
+        console.log(data)
+        if (data.message === "C0018") {
+            Alert.alert("Email không tồn tại")
+        }
+        if (data.message === "Success") {
+            setVisibleTransfer(false);
+            setListGroup([]);
+            FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
+        }
+    }
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
-                {route.params && route.params.useid &&
+                {route.params && Boolean(route.params.useid) &&
                     <View style={styles.header_title}>
                         <View style={styles.header_title_left}>
                             <IconButton icon="arrow-left" size={26} onPress={() => navigation.goBack()} />
-                            <Text style={styles.header_title_left_label}>Đặng Vũ Hoàng Trung</Text>
+                            <Text style={styles.header_title_left_label}>{route.params.name}</Text>
                         </View>
                         <Button
                             onPress={() => setVisibleCheckBox(!visibleCheckBox)}
                             uppercase={false}
                             color="#1980FF"
                         >Thêm
+                        </Button>
+                    </View>
+                }
+                {route.params && route.params.transfer &&
+                    <View style={styles.header_title}>
+                        <View style={styles.header_title_left}>
+                            <IconButton icon="arrow-left" size={26} onPress={() => navigation.goBack()} />
+                            <Text style={styles.header_title_left_label}>Đã chọn ({listGroup.length})</Text>
+                        </View>
+                        <Button
+                            onPress={handleSelectAll}
+                            uppercase={false}
+                            color="#1980FF"
+                        >
+                            Select All
                         </Button>
                     </View>
                 }
@@ -128,7 +172,7 @@ const SearchContact = ({ navigation, route }) => {
                         ref={textInputRef}
                     />
                 </View>
-                {visibleCheckBox &&
+                {visibleCheckBox && route.params && Boolean(route.params.useid) &&
                     <View style={styles.header_title}>
                         <Text>Đã chọn ({listGroup.length})</Text>
                         <Button
@@ -166,19 +210,29 @@ const SearchContact = ({ navigation, route }) => {
                 }
                 <ScrollView>
                     {listFilter && listFilter.length != 0 && listFilter.map((item, index) => {
-                        return (
-                            <Contact key={index} item={item} route={route} handleViewContact={handleViewContact} checkListGroup={checkListGroup} handleReActivateButton={handleReActivateButton} listGroup={listGroup} visibleCheckBox={visibleCheckBox} />
-                        )
+                        if (item.owner_id === item.createdBy) {
+                            return (
+                                <Contact key={index} item={item} route={route} handleViewContact={handleViewContact} checkListGroup={checkListGroup} handleReActivateButton={handleReActivateButton} listGroup={listGroup} visibleCheckBox={visibleCheckBox} />
+                            )
+                        }
                     })}
                 </ScrollView>
-                {visibleCheckBox &&
-                    <Button
-                        style={styles.floatButton_team}
-                        mode="contained"
-                    >
-                        Add to group
-                    </Button>}
+                {visibleCheckBox && route.params && route.params.transfer && <Button
+                    style={styles.floatButton_team}
+                    mode="contained"
+                    onPress={() => setVisibleTransfer(true)}
+                >
+                    Chuyển
+                </Button>}
+
+                {visibleCheckBox && route.params && route.params.useid && <Button
+                    style={styles.floatButton_team}
+                    mode="contained"
+                >
+                    Thêm vào nhóm
+                </Button>}
                 <ModalActivate visible={visible} onPressVisable={() => setVisible(false)} onPressSubmit={handleReactivate} />
+                <ModalTransfer visible={visibleTransfer} onPressVisable={() => setVisibleTransfer(false)} onPressSubmit={handleTransfer} />
             </View>
         </SafeAreaView>
     );

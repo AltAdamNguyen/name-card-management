@@ -364,7 +364,7 @@ const ViewContact = ({ navigation, route }) => {
                 <SnackbarComponent visible={snackVisible} onPressVisible={() => setSnackVisible(false)} message={'Đã sao chép'} />
                 <ModalDeactivate visible={modalDeactivateVisible} reason={deactive} onPressVisable={() => setModalDeactivateVisible(false)} onPressSubmit={handleDeactivate} />
             </View>
-            {Boolean(contact) && !Boolean(contact.owner) || route.params.showFooter && <View style={styles.footer}>
+            {route.params && route.params.showFooter && Boolean(contact) && !Boolean(contact.owner) && <View style={styles.footer}>
                 <Pressable style={styles.footer_button} onPress={() => {
                     navigation.navigate("HomeSwap", {
                         screen: "AddContactToManyGroup",

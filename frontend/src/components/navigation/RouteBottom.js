@@ -1,18 +1,20 @@
 import { useContext } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, LogBox } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { GroupContact, Team, Setting, Home } from '../../screen';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from '../../navigation/styles';
 import AuthContext from '../../store/AuthContext';
 import RouteMovingBetweenScanScreen from './RouteMovingBetweenScanScren';
-import { Button } from 'react-native-paper';
-import RouteMovingBetweenGroupContactScreen from './RouteMovingBetweenGroupContactScreen';
 const Tab = createBottomTabNavigator();
 
 const RouteNavigation = () => {
   const authCtx = useContext(AuthContext);
   console.log(authCtx.isMarketer)
+  LogBox.ignoreLogs([
+    "ViewPropTypes will be removed",
+    "ColorPropType will be removed",
+    ])
   return (
     <Tab.Navigator
       initialRouteName={authCtx.isMarketer === 3 ? "TeamScreen" : "HomeScreen"}

@@ -23,7 +23,7 @@ const Tree = ({ item, expand = false, navigation, checked = false, child = false
   }, [checkedItem]);
 
   const handleViewContact = () => {
-    navigation.navigate("HomeSwap", {screen: "SearchContact", params: {useid: item.id}});
+    navigation.navigate("HomeSwap", {screen: "SearchContact", params: {useid: item.id, name: item.name}});
   }
 
   return (

@@ -1,6 +1,6 @@
 //import liraries
 import React from 'react';
-import { View, Text, Modal, TouchableWithoutFeedback, Platform } from 'react-native';
+import { View, Text, Modal, TouchableWithoutFeedback, Platform, Alert } from 'react-native';
 import { TextInput, Button, Card } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import styles from '../../../screen/ViewContact/styles';

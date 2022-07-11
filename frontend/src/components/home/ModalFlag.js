@@ -1,10 +1,4 @@
-import {
-  Text,
-  Modal,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from "react-native";
+import {Text,Modal,TouchableOpacity,TouchableWithoutFeedback,Alert} from "react-native";
 import { Button, Card } from "react-native-paper";
 import styles from "../../screen/Home/styles";
 import i18next from "../../language/i18n"; 

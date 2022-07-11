@@ -27,7 +27,8 @@ export const ContactAPI = {
     SetStatus: "/api/contacts/status",
     ListDeactive: "/api/contacts/de-active",
     ReactiveContact: "/api/contacts/active",
-    RequestTransferContact: "/api/contacts/request"
+    RequestTransferContact: "/api/contacts/request",
+    TransferContact: "/api/contacts/transfer"
 }
 
 export const GroupContactAPI = {
