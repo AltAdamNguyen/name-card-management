@@ -9,5 +9,6 @@ namespace NCMSystem.Models.CallAPI.Group_Contact
     public class AvailableGroupToContact
     {
         [JsonProperty("group_name")] public string GroupName { get; set; }
+        [JsonProperty("group_id")] public int GroupId { get; set; }
     }
 }
