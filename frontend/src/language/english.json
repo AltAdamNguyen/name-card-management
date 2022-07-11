@@ -65,6 +65,17 @@
         "ModalStatus_Label_Reason": "Reasons",
         "ModalStatus_PlaceHolder_Reason": "Enter reasons",
 
+        "ModalAddGroupContact_Title" : "Enter Group Name",
+        "ModalAddGroupContact_Label_Cancel" : "Cancel",
+        "ModalAddGroupContact_Label_Confirm" : "Confirm",
+        "ModalAddGroupContact_Placeholder_GroupName" : "Group Name",
+
+        "ModalGroupContactDetail_Label_AddContact": "ADD CONTACT",
+        "ModalGroupContactDetail_Label_Export": "Export",
+        "ModalGroupContactDetail_Label_ChangeGroupName": "CHANGE GROUP NAME",
+        "ModalGroupContactDetail_Label_DeleteContact": "DELETE CONTACT",
+        "ModalGroupContactDetail_Label_DeleteGroup": "DELETE GROUP",
+
         "Screen_UpdateContact_Button_Header_Title": "Update Contact",
         "Screen_UpdateContact_Button_Header_Modal": "Save",
         "Screen_UpdateContact_Input_Title_FullName": "Full name",
@@ -92,6 +103,33 @@
         "Screen_UpdateContact_ContextOnSubmit_Title": "Update Contact",
         "Screen_UpdateContact_ContextOnSubmit_Message": "Do you want to save changes?",
         "Screen_UpdateContact_ContextOnSubmit_Cancel": "Cancel",
-        "Screen_UpdateContact_ContextOnSubmit_Submit": "Save"
+        "Screen_UpdateContact_ContextOnSubmit_Submit": "Save",
+
+        "Screen_AddContactToGroup_Appbar_Content_Title_Selected": " Selected",
+        "Screen_AddContactToGroup_SearchBar_Placeholder": "Find Contacts",
+        "Screen_AddContactToGroup_ListContact_NoContactFound": "No Contact Found",
+        "Screen_AddContactToGroup_Button_AddContact": "Add",
+        "Screen_AddContactToGroup_ConfirmDialog_Label": "Do you want to add these contacts to the group?",
+        "Screen_AddContactToGroup_ConfirmDialog_LeftButtonTitle": "Cancel",
+        "Screen_AddContactToGroup_ConfirmDialog_RightButtonTitle": "Add",
+
+        "Screen_DeleteContactFromGroup_Appbar_Content_Title_Selected": "Selected ",
+        "Screen_DeleteContactFromGroup_SearchBar_Placeholder": "Find Contacts",
+        "Screen_DeleteContactFromGroup_ListContact_NoContactFound": "No Contact Found",
+        "Screen_DeleteContactFromGroup_Button_DeleteContact": "Delete",
+        "Screen_DeleteContactFromGroup_ConfirmDialog_Label": "Do you want to delete these contacts from this group?",
+        "Screen_DeleteContactFromGroup_ConfirmDialog_LeftButtonTitle": "Cancel",
+        "Screen_DeleteContactFromGroup_ConfirmDialog_RightButtonTitle": "Delete",
+
+        "Screen_GroupContactDetail_ListContact_NoContactFound":"No Contact Found",
+
+        "Screen_AddContactToManyGroup_Appbar_Content_Title_AddToGroup": "Add To Groups",
+        "Screen_AddContactToManyGroup_Title_MyGroups": "My groups",
+        "Screen_AddContactToManyGroup_Title_AddGroup": "+ Add group",
+        "Screen_AddContactToManyGroup_ListGroup_NoGroupFound": "No Group Found",
+        "Screen_AddContactToManyGroup_ConfirmDialog_Label": "Do you want to add this contact to seleted groups?",
+        "Screen_AddContactToManyGroup_ConfirmDialog_LeftButtonTitle": "Cancel",
+        "Screen_AddContactToManyGroup_ConfirmDialog_RightButtonTitle": "Add"
+        
     }
 }

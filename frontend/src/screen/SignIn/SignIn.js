@@ -2,8 +2,8 @@ import {View,Text} from "react-native";
 import React, { useState, useContext } from "react";
 import AuthContext from "../../store/AuthContext";
 import { useTranslation } from "react-i18next";
-import styles from "./styles";
 import i18next from "../../language/i18n";
+import styles from "./styles";
 import CustomInputs from "../../components/CustomInputs";
 import CustomButtons from "../../components/CustomButtons";
 import CustemHeaders from "../../components/CustomHeaders/CustemHeaders";
@@ -24,8 +24,10 @@ const SignIn = ({ navigation }) => {
   const [user, setUser] = useState({
     // email: "anhnche141236@gmail.com",
     // password: "trung123@",
-    email: "person1@gmail.com",
-    password: "Trung123@"
+    // email: "person1@gmail.com",
+    // password: "Trung123@"
+    email: "person2@gmail.com",
+    password: "Trung123@",
   });
   
   const [isSecureEntry, setIsSecureEntry] = useState(true);

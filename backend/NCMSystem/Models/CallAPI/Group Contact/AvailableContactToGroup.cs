@@ -14,5 +14,6 @@ namespace NCMSystem.Models.CallAPI.Group_Contact
         [JsonProperty("contact_jobtitle")] public string JobTitle { get; set; }
         [JsonProperty("contact_company")] public string ContactCompany { get; set; }
         [JsonProperty("contact_createdat")] public DateTime ContactCreatedAt { get; set; }
+        [JsonProperty("contact_ownerid")] public int ContactOwnerId { get; set; }
     }
 }

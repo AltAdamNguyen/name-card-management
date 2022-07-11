@@ -37,10 +37,11 @@ import { Checkbox, Appbar } from "react-native-paper";
 import ConfirmDialog from "../../components/customDialog/dialog/confirmDialog/ConfirmDialog";
 import CustomCheckedBox from "../../components/groupcontact/checkBoxCustom/CustomCheckedBox";
 
+
 const AddContactToManyGroup = ({ route, navigation }) => {
   const [checked, setChecked] = React.useState(false);
   const isFocus = useIsFocused();
-
+  const { t, i18n } = useTranslation();
   const [listGroupContact, setLisGroupContact] = useState([]);
   const [listGroupContactTotal, setListGroupContactTotal] = useState([]);
   const [listGroupSearch, setListGroupSearch] = useState([])
@@ -79,7 +80,7 @@ const AddContactToManyGroup = ({ route, navigation }) => {
     let listSearchGroup = [];
     if (groupName !== "") {
       listGroupContactTotal.map((item, index) => {
-        if (item.group.group_name.includes(groupName)) {
+        if (item.group.group_name != null && item.group.group_name.toLowerCase().includes(groupName.toLowerCase())) {
           listSearchGroup.push(item);
         }
       });
@@ -183,7 +184,7 @@ const AddContactToManyGroup = ({ route, navigation }) => {
           theme={{ colors: { primary: "transparent" } }}
         >
           <Appbar.BackAction onPress={() => navigation.goBack()} />
-          <Appbar.Content title="Thêm vào nhóm" />
+          <Appbar.Content title={t("Screen_AddContactToManyGroup_Appbar_Content_Title_AddToGroup")} />
           <TouchableOpacity></TouchableOpacity>
         </Appbar.Header>
       </View>
@@ -203,17 +204,17 @@ const AddContactToManyGroup = ({ route, navigation }) => {
           </Pressable>
         </View>
         <View style={styles.container_title}>
-          <Text style={styles.container_title_label}>Nhóm của tôi</Text>
+          <Text style={styles.container_title_label}>{t("Screen_AddContactToManyGroup_Title_MyGroups")}</Text>
           <TouchableOpacity onPress={() => setModalAddContactVisible(true)}>
             <Text style={styles.container_label_addNewGroup}>
-              + Thêm Nhóm
+              {t("Screen_AddContactToManyGroup_Title_AddGroup")}
             </Text>
           </TouchableOpacity>
         </View>
         <View style={styles.container_listGroup}>
           {listGroupContact.length == 0 && listGroupSearch.length == 0 && (
             <View style={styles.listContainer_view}>
-              <Text style={styles.listContainer_label}>Không có nhóm</Text>
+              <Text style={styles.listContainer_label}>{t("Screen_AddContactToManyGroup_ListGroup_NoGroupFound")}</Text>
             </View>
           )}
           <ScrollView>
@@ -264,8 +265,8 @@ const AddContactToManyGroup = ({ route, navigation }) => {
         </View>
       </SafeAreaView>
       <ModalAddGroupContact
-        label="Tên nhóm"
-        confirmLabel="Thêm"
+        label={t("ModalAddGroupContact_Placeholder_GroupName")}
+        confirmLabel={t("ModalAddGroupContact_Label_Confirm")}
         onVisible={modalAddContactVisible}
         onDismiss={() => setModalAddContactVisible(false)}
         onPressCancel={() => setModalAddContactVisible(false)}
@@ -273,9 +274,9 @@ const AddContactToManyGroup = ({ route, navigation }) => {
       />
       <ConfirmDialog
         onVisible={confirmDialogVisible}
-        label={"Bạn muốn thêm liên hệ này vào những nhóm đã chọn không?"}
-        leftButtonTitle={"Hủy"}
-        rightButtonTitle={"Thêm"}
+        label={t("Screen_AddContactToManyGroup_ConfirmDialog_Label")}
+        leftButtonTitle={t("Screen_AddContactToManyGroup_ConfirmDialog_LeftButtonTitle")}
+        rightButtonTitle={t("Screen_AddContactToManyGroup_ConfirmDialog_RightButtonTitle")}
         onDismiss={() => {
           setConfirmDialogVisible(false);
         }}
