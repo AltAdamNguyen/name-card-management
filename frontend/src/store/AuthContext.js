@@ -6,6 +6,7 @@ const AuthContext = React.createContext({
     locale: 'vn',
     isLogin: false,
     isMarketer: 0,
+    userId: 0,
     onLogin: () => {},
     onLogout: () => {},
 });
@@ -14,13 +15,17 @@ export const AuthProvider = ({ children }) => {
     const [isLogin, setIsLogin] = useState(false);
     const [locale, setLocale] = useState('vn')
     const [isMarketer, setIsMarketer] = useState(0)
+    const [userId, setUserId] = useState(0)
+
     const handleLogin = async(accessToken, refreshToken) => {
         setIsLogin(true);
         await SecureStore.setItemAsync('access_token',accessToken)
         SecureStore.setItemAsync('refresh_token',refreshToken)
 
         let decoded = jwt_decode(accessToken);
+        console.log(decoded)
         setIsMarketer(decoded.role)
+        setUserId(decoded.uid)
     }
 
     const handleLogout = async() => {
@@ -33,12 +38,12 @@ export const AuthProvider = ({ children }) => {
         setLocale(language)   
     }
     
-
     return (
         <AuthContext.Provider value={{
             locale : locale,
             isLogin: isLogin,
             isMarketer: isMarketer,
+            userId: userId,
             onLogin: handleLogin,
             onLogout: handleLogout,
             language: handleLocale}}>

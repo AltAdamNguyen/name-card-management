@@ -31,6 +31,7 @@ const AddContactToGroup = ({ navigation, route }) => {
     const [listContact, setListContact] = useState([]);
     const [listContactTotal, setListContactTotal] = useState([]);
     const [listSearch, setListSearch] = useState([]);
+    const authCtx = useContext(AuthContext);
 
     const [choosenItems, setChoosenItems] = useState(0);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false)
@@ -89,9 +90,12 @@ const AddContactToGroup = ({ navigation, route }) => {
             Method.POST,
             ContentType.JSON,
             {
-                group_id: route.params.id,
+                user_id : "",
                 contact_ids: [
                     ...listIdSaved
+                ],
+                group_ids: [
+                    {group_id : route.params.id}
                 ]
             },
             addContactsToGroupCallBack
@@ -99,7 +103,9 @@ const AddContactToGroup = ({ navigation, route }) => {
     }
 
     const addContactsToGroupCallBack = (data) => {
-        navigation.goBack()
+        console.log(data)
+        setConfirmDialogVisible(false)
+        //navigation.goBack()
     }
 
     const handleSearch = (contactSearch) => {
@@ -222,7 +228,7 @@ const AddContactToGroup = ({ navigation, route }) => {
                         }} />
                 </SafeAreaView>
             </Portal>
-            <Loading onVisible={isLoading ? true : false }/>
+            <Loading onVisible={isLoading ? true : false} />
         </Provider>
     );
 }

@@ -125,6 +125,21 @@ const SearchContact = ({ navigation, route }) => {
             FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
         }
     }
+    const handleAddContactsToGroups = () => {
+        let selectedContactIds = []
+        for (let i = 0; i < listGroup.length; i++) {
+            selectedContactIds.push({ contact_id: listGroup[i]})
+        }
+        navigation.navigate("HomeSwap", {
+            screen: "AddContactToManyGroup",
+            params: { id: [...selectedContactIds] , userId: route.params.useid}
+        });
+    }
+
+    const addContactToManyGroupAPICallBack = (data) => {
+        navigation.goBack()
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -228,6 +243,7 @@ const SearchContact = ({ navigation, route }) => {
                 {visibleCheckBox && route.params && route.params.useid && <Button
                     style={styles.floatButton_team}
                     mode="contained"
+                    onPress={handleAddContactsToGroups}
                 >
                     Thêm vào nhóm
                 </Button>}
