@@ -18,6 +18,8 @@ namespace NCMSystem.Models.CallAPI.Contact
         [JsonProperty("website")] public string Website { get; set; }
         [JsonProperty("group_name")] public string[] GroupName { get; set; }
         [JsonProperty("status")] public string Status { get; set; }
+        [JsonProperty("owner_id")] public int Owner { get; set; }
+        [JsonProperty("createBy")] public int CreateBy { get; set; }
         [JsonProperty("reason_status")] public string ReasonStatus { get; set; }
         [JsonProperty("note")] public string Note { get; set; }
         [JsonProperty("created_at")] public DateTime CreatedAt { get; set; }
