@@ -661,6 +661,41 @@ namespace NCMSystem.Controllers
             });
         }
 
+        [HttpPatch]
+        [Route("api/contacts/transfer")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
+        public ResponseMessageResult TransferOwnContact([FromBody] TransferContact tranCt)
+        {
+            string email = tranCt.TransferTo ?? "";
+            
+            var user = db.users.FirstOrDefault(u => u.email == email);
+            if (user == null)
+            {
+                return Common.ResponseMessage.BadRequest("C0018");
+            }
+
+            foreach (var ct in tranCt.ContactIds)
+            {
+                var ctId = int.Parse(ct);
+                var contact = db.contacts.FirstOrDefault(c => c.id == ctId);
+                if (contact != null)
+                {
+                    contact.owner_id = user.id;
+                    contact.createdBy = user.id;
+                    db.SaveChanges();
+                }
+            }
+            
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
         [HttpGet]
         [Route("api/contacts/request/{id}/{idDuplicate}")]
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
