@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { View, SafeAreaView, ScrollView, Text } from 'react-native';
 import styles from './styles';
-import { Button, Searchbar } from 'react-native-paper';
+import { Button, Searchbar, FAB } from 'react-native-paper';
 import debounce from 'lodash.debounce';
 import Tree from '../../components/team/Tree';
 import { useIsFocused } from '@react-navigation/native';
@@ -66,7 +66,7 @@ const Team = ({ navigation }) => {
             <View style={styles.header}>
                 <View style={styles.sectionStyle}>
                     <Searchbar
-                        placeholder="Tìm kiếm danh thiếp"
+                        placeholder="Tìm kiếm nhân viên"
                         theme={{
                             roundness: 10,
                             colors: { primary: '#1890FF' }
@@ -77,16 +77,10 @@ const Team = ({ navigation }) => {
                         editable={authCtx.isMarketer !== 1}
                     />
                 </View>
-                <View style={styles.header_label}>
-                    <Button
-                        onPress={() => setChecked(!checked)}
-                        uppercase={false}
-                        color="#1890FF"
-                        disabled={authCtx.isMarketer === 1}
-                    >
-                        <Text style={styles.header_label_button}>Export</Text>
-                    </Button>
-                </View>
+                {checked && <View style={styles.header_label}>
+                        <Text style={styles.header_label_button}>Đã chọn ({listExport.length})</Text>
+                        
+                </View>}
             </View>
             <View style={{ flex: 1, width: '100%', marginTop: 20 }}>
                 {authCtx.isMarketer !== 1 && searchTeam && searchTeam.length === 0 &&
@@ -106,6 +100,7 @@ const Team = ({ navigation }) => {
                         )
                     })}
                 </ScrollView>
+                <FAB icon="export" size={24} color="#FFF" style={styles.fab} onPress={() => setChecked(!checked)} />
             </View>
 
         </SafeAreaView>

@@ -70,6 +70,8 @@ namespace NCMSystem.Controllers
                 {
                     foreach (var c in contact)
                     {
+                        var rq = db.requests.FirstOrDefault(r => r.new_contact_id == c.id);
+
                         HomeContact hc = new HomeContact
                         {
                             Id = c.id,
@@ -80,7 +82,8 @@ namespace NCMSystem.Controllers
                             Flag = c.flag_id,
                             Owner = c.owner_id,
                             CreateBy = c.createdBy,
-                            CreatedAt = c.create_date
+                            CreatedAt = c.create_date,
+                            Request = rq?.status
                         };
                         listCt.Add(hc);
                     }
@@ -170,6 +173,24 @@ namespace NCMSystem.Controllers
                     return Common.ResponseMessage.NotFound("C0002");
                 }
 
+                if (contact.owner_id != contact.createdBy)
+                {
+                    return new ResponseMessageResult(new HttpResponseMessage()
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                        {
+                            Message = "Success",
+                            Data = new
+                            {
+                                name = contact.name,
+                                company = contact.company,
+                                owner = db.users.FirstOrDefault(u => u.id == contact.owner_id)?.name,
+                            }
+                        }), Encoding.UTF8, "application/json")
+                    });
+                }
+
                 Array.ForEach(contact.groups.ToArray(), g => { listGr.Add(g.name); });
 
                 string flag = contact.flag_id;
@@ -191,8 +212,11 @@ namespace NCMSystem.Controllers
                 dc.Website = contact.website;
                 dc.GroupName = listGr.ToArray();
                 dc.Status = contact.status_id;
+                dc.Owner = contact.owner_id;
+                dc.CreateBy = contact.createdBy;
                 dc.ReasonStatus = contact.reason_status;
                 dc.CreatedAt = contact.create_date;
+                dc.Note = contact.note;
             }
             catch (Exception ex)
             {
@@ -205,7 +229,7 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Get detail successfully",
+                    Message = "Success",
                     Data = dc
                 }), Encoding.UTF8, "application/json")
             });
@@ -574,7 +598,8 @@ namespace NCMSystem.Controllers
                         status_id = "S0002",
                         isActive = true,
                         create_date = dateCreated,
-                        createdBy = userId
+                        createdBy = userId,
+                        note = request.Note
                     });
 
                     db.SaveChanges();
@@ -610,7 +635,8 @@ namespace NCMSystem.Controllers
                     status_id = "S0002",
                     isActive = true,
                     create_date = dateCreated,
-                    createdBy = userId
+                    createdBy = userId,
+                    note = request.Note
                 });
 
                 db.SaveChanges();
@@ -629,8 +655,43 @@ namespace NCMSystem.Controllers
                     Message = "C0009",
                     Data = new
                     {
-                        Id = newCt.id
+                        id = newCt.id
                     }
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpPatch]
+        [Route("api/contacts/transfer")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
+        public ResponseMessageResult TransferOwnContact([FromBody] TransferContact tranCt)
+        {
+            string email = tranCt.TransferTo ?? "";
+            
+            var user = db.users.FirstOrDefault(u => u.email == email);
+            if (user == null)
+            {
+                return Common.ResponseMessage.BadRequest("C0018");
+            }
+
+            foreach (var ct in tranCt.ContactIds)
+            {
+                var ctId = int.Parse(ct);
+                var contact = db.contacts.FirstOrDefault(c => c.id == ctId);
+                if (contact != null)
+                {
+                    contact.owner_id = user.id;
+                    contact.createdBy = user.id;
+                    db.SaveChanges();
+                }
+            }
+            
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -638,14 +699,21 @@ namespace NCMSystem.Controllers
         [HttpGet]
         [Route("api/contacts/request/{id}/{idDuplicate}")]
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
-        public ResponseMessageResult RequestTransferContact(int id, int idDuplicate)
+        public ResponseMessageResult RequestTransferContact(int id, int idDuplicate = 0)
         {
             int userId = ((JwtToken)Request.Properties["payload"]).Uid;
             DateTime dateCreated = DateTime.Now;
+            if (idDuplicate < 0) idDuplicate = 0;
 
             var rq = new request();
             try
             {
+                var rqExist = db.requests.FirstOrDefault(c => c.new_contact_id == id);
+                if (rqExist != null)
+                {
+                    idDuplicate = rqExist.old_contact_id ?? 0;
+                }
+
                 var contact = db.contacts.FirstOrDefault(c => c.id == id);
                 if (contact == null)
                 {
@@ -804,6 +872,12 @@ namespace NCMSystem.Controllers
                     return Common.ResponseMessage.BadRequest("C0005");
                 }
 
+                var duplicate = db.contacts.FirstOrDefault(c => c.email == email);
+                if (duplicate != null)
+                {
+                    return Common.ResponseMessage.NotFound("D0005");
+                }
+
                 contact.name = name;
                 contact.job_title = jobTitle;
                 contact.company = company;
@@ -812,6 +886,7 @@ namespace NCMSystem.Controllers
                 contact.email = email;
                 contact.address = address;
                 contact.website = website;
+                contact.note = request.Note;
 
                 db.SaveChanges();
             }

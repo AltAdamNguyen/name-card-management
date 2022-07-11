@@ -1,6 +1,6 @@
 //import liraries
 import React, { useState, useRef, useEffect } from "react";
-import { View, Image, ScrollView, Dimensions } from "react-native";
+import { View, Image, ScrollView, Dimensions, Text } from "react-native";
 import { Provider, Button } from "react-native-paper";
 
 import { StackActions } from "@react-navigation/native";
@@ -77,6 +77,7 @@ const contextDuplicate = {
   cancel: "Không",
   submit: "Chỉnh sửa",
 }
+
 const AddContact = ({ contact, loading, navigation }) => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
@@ -90,6 +91,7 @@ const AddContact = ({ contact, loading, navigation }) => {
     email: "",
     fax: "",
     address: "",
+    note: "",
     website: "",
     img_url: "",
   });
@@ -112,6 +114,19 @@ const AddContact = ({ contact, loading, navigation }) => {
   const [duplicate, setDuplicate] = useState(false);
   const [contactId, setContactId] = useState();
 
+  const [duplicateOther, setDuplicateOther] = useState(false);
+  const [duplicateInfo, setDuplicateInfo] = useState({
+    id_duplicate: "",
+    owner: "",
+  });
+
+  const contextDuplicateOther = {
+    title: "Thông báo",
+    message: `Bản ghi đã tồn tại và có owner là ${duplicateInfo.owner}, bản ghi này sẽ vẫn được lưu lại nhưng bạn ko phải owner. bạn có muốn yêu cầu được cấp quyền owner cho contact này ko?`,
+    cancel: "Không",
+    submit: "Đồng ý",
+  }
+
   const handelerModal = (item, name) => {
     if (formRef.current) {
       formRef.current.setValues({
@@ -129,14 +144,18 @@ const AddContact = ({ contact, loading, navigation }) => {
     console.log(data);
     if (data.message === "D0001") {
       setDuplicate(true)
-      setOnSubmit(false)
       setContactId(data.data.id)
-    } else {
+    }
+    if (data.message === "C0009"){
       navigation.dispatch(StackActions.popToTop());
-      navigation.navigate("HomeScreen", {
-        screen: "Home",
-        params: { visibleModal: true },
-      });
+      navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: data.data.id } })
+    }
+    if (data.message === "D0003") {
+      setDuplicateOther(true)
+      setDuplicateInfo({
+        id_duplicate: data.data.id_duplicate,
+        owner: data.data.user_name,
+      })
     }
   };
 
@@ -148,9 +167,24 @@ const AddContact = ({ contact, loading, navigation }) => {
     });
   }
 
+  const handleDuplicateOther = () => {
+    FetchApi(`${ContactAPI.RequestTransferContact}/${duplicateInfo.id}/${duplicateInfo.id_duplicate}`, Method.GET, ContentType.JSON, undefined, getMessageDuplaicate)
+  }
+
+
+  const handleOnCancel = () => {
+    setDuplicateOther(false)
+    navigation.dispatch(StackActions.popToTop());
+    navigation.navigate("HomeSwap", {
+      screen: "ViewContact",
+      params: { idContact: duplicateInfo.id_duplicate },
+    });
+  }
+
   return (
     <Provider style={styles.container}>
-      <ModalContact visible={duplicate} onPress={handleDuplicate} onPressVisable={() => setDuplicate(false)} context={contextDuplicate} />
+      <ModalContact visible={duplicate} onPress={handleDuplicate} onPressVisable={() => setDuplicate(false)} context={contextDuplicate} onCancel={() => setDuplicate(false)} />
+      <ModalContact visible={duplicateOther} onPress={handleDuplicateOther} onPressVisable={() => setDuplicateOther(false)} context={contextDuplicateOther} onCancel={handleOnCancel} />
       <View style={{ alignItems: "center" }}>
         <ShimmerPlaceholder visible={loading} width={windowWidth * 0.9} height={windowHeight * 0.3} shimmerStyle={{ borderRadius: 10, marginBottom: 10, }}>
           <View style={styles.imgContact}>
@@ -185,17 +219,10 @@ const AddContact = ({ contact, loading, navigation }) => {
                             touched={touched}
                             values={values}
                             loading={loading}
-                            listItem={contact.data.Items}
+                            listItem={contact.data.Items.filter(word => word.length > 3)}
                             onPressRadio={handelerModal}
                           />}
                       </ShimmerPlaceholder>
-                      {errors[item.name] && touched[item.name] ? (
-                        <View style={styles.formInput_item_error}>
-                          <Text style={styles.formInput_item_error_label}>
-                            {errors[item.name]}
-                          </Text>
-                        </View>
-                      ) : null}
                     </View>
                   );
                 })}

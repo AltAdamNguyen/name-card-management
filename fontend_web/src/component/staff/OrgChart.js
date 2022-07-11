@@ -63,48 +63,6 @@ const OrgChart = ({ item }) => {
                     )
                 })}
             </Grid.Container>
-            <Modal
-                closeButton
-                preventClose
-                aria-labelledby="modal-title"
-                open={visible}
-                onClose={() => setVisible(false)}
-            >
-                <Modal.Header>
-                    <Text id="modal-title" size={18}>
-                        Welcome to
-                        <Text b size={18}>
-                            NextUI
-                        </Text>
-                    </Text>
-                </Modal.Header>
-                <Modal.Body>
-                    <Input
-                        clearable
-                        bordered
-                        fullWidth
-                        color="primary"
-                        size="lg"
-                        placeholder="Email"
-                    />
-                    <Input
-                        clearable
-                        bordered
-                        fullWidth
-                        color="primary"
-                        size="lg"
-                        placeholder="Password"
-                    />
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button auto flat color="error">
-                        Close
-                    </Button>
-                    <Button auto>
-                        Sign in
-                    </Button>
-                </Modal.Footer>
-            </Modal>
         </Grid.Container>
     );
 };

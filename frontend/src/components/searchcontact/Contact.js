@@ -64,6 +64,7 @@ const Contact = ({item, route, handleViewContact, checkListGroup, handleReActiva
                         <RadioButton
                             value={item.id}
                             status={listGroup.includes(item.id) ? 'checked' : 'unchecked'}
+                            color={'#1890FF'}
                             onPress={() => {
                                 checkListGroup(item.id, !listGroup.includes(item.id))
                             }}
@@ -99,13 +100,13 @@ const Contact = ({item, route, handleViewContact, checkListGroup, handleReActiva
                 </View>
                 {route.params && route.params.deactive &&
                     <List.Accordion
-                        // title="Lý do"
-                        // titleStyle={{ fontSize: 14 }}
-
+                        title="Lý do"
+                        titleStyle={{ fontSize: 14 }}
+                        theme={{colors: { primary: '#1890FF' }}}
                         right={(props) => <Icon {...props} />}
                         style={{ backgroundColor: '#FFF', padding: 0, margin: 0, borderBottomRightRadius: 10, borderBottomLeftRadius: 10 }}
                     >
-                        <List.Item title={item.reason_da} />
+                        <List.Item titleNumberOfLines={0} title={item.reason_da} />
                     </List.Accordion>
                 }
             </View>

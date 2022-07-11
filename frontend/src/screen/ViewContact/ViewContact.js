@@ -24,6 +24,7 @@ import styles from './styles';
 
 
 const ViewContact = ({ navigation, route }) => {
+    console.log(route)
     const [modalVisible, setModalVisible] = useState(false);
     const [modalStatusVisible, setModalStatusVisible] = useState(false);
     const [snackVisible, setSnackVisible] = useState(false);
@@ -161,18 +162,18 @@ const ViewContact = ({ navigation, route }) => {
             </Appbar.Header>
             <View style={styles.body}>
                 <View style={styles.body_imgContact}>
-                    {contact && <Image source={{ uri: contact.img_url }} style={styles.body_imgContact_image} />}
+                    {contact && <Image source={{ uri: contact.img_url ? contact.img_url : 'https://ncmsystem.azurewebsites.net/Images/noImage.jpg' }} style={styles.body_imgContact_image} />}
                 </View>
-                {contact &&
+                {Boolean(contact) &&
                     <ScrollView style={{ flex: 1 }}>
                         <View style={{ marginTop: 10 }} />
                         <View style={styles.info}>
                             <View style={styles.info_title}>
                                 <Text style={styles.info_title_name}>{contact.name}</Text>
-                                <Text style={styles.info_title_job}><Text style={styles.info_title_job_name}>Chức vụ </Text>{Boolean(contact.job_title) ? contact.job_title : t("Screen_ViewContact_Text_NoJobTitle")}</Text>
+                                {Boolean(contact.job_title) && <Text style={styles.info_title_job}><Text style={styles.info_title_job_name}>Chức vụ </Text>{contact.job_title}</Text>}
                                 <Text style={styles.info_title_job}><Text style={styles.info_title_job_name}>Công ty </Text>{contact.company}</Text>
                             </View>
-                            <View style={styles.info_component}>
+                            {!Boolean(contact.owner) && <View style={styles.info_component}>
                                 {Boolean(contact.phone) &&
                                     <TouchableRipple
                                         borderless={true}
@@ -192,7 +193,7 @@ const ViewContact = ({ navigation, route }) => {
                                         </View>
                                     </TouchableRipple>
                                 }
-                                <TouchableRipple
+                                {Boolean(contact.email) && <TouchableRipple
                                     borderless={true}
                                     style={styles.info_component_button}
                                     onPress={() => Linking.openURL(`mailto:${contact.email}`)}
@@ -208,7 +209,7 @@ const ViewContact = ({ navigation, route }) => {
                                         </View>
                                         <IconButton icon="email" size={16} color="#828282" />
                                     </View>
-                                </TouchableRipple>
+                                </TouchableRipple>}
 
                                 {Boolean(contact.fax) &&
                                     <TouchableRipple
@@ -228,9 +229,9 @@ const ViewContact = ({ navigation, route }) => {
                                         </View>
                                     </TouchableRipple>
                                 }
-                            </View>
-                            <View style={styles.info_component}>
-                                <TouchableRipple
+                            </View>}
+                            {Boolean(contact.address) || Boolean(contact.website) && !Boolean(contact.owner) && <View style={styles.info_component}>
+                                {Boolean(contact.address) && <TouchableRipple
                                     borderless={true}
                                     style={[styles.info_component_button, styles.btl20, styles.btr20]}
                                     onPress={() => Linking.openURL(Platform.OS === 'android' ? `geo:0,0?q=${contact.address}` : `maps:0,0?q=${contact.address}`)}
@@ -238,17 +239,16 @@ const ViewContact = ({ navigation, route }) => {
                                         setSnackVisible(true)
                                         await Clipboard.setStringAsync(contact.address)
                                     }}
-                                    disabled={!Boolean(contact.address)}
                                 >
                                     <View style={[styles.info_contact_des, styles.info_contact_border]}>
                                         <View style={styles.info_contact_des_item}>
                                             <Text style={styles.info_component_des_title}>{t("Screen_ViewContact_Text_Label_Address")}</Text>
-                                            <Text style={styles.info_contact_des_label}>{Boolean(contact.address) ? contact.address : t("Screen_ViewContact_Text_Label_NoAddress")}</Text>
+                                            <Text style={styles.info_contact_des_label}>{contact.address}</Text>
                                         </View>
                                         <IconButton icon="map-marker" size={16} color="#828282" />
                                     </View>
-                                </TouchableRipple>
-                                <TouchableRipple
+                                </TouchableRipple>}
+                                {Boolean(contact.website) && <TouchableRipple
                                     borderless={true}
                                     style={[styles.info_component_button, styles.bbl20, styles.bbr20]}
                                     onPress={() => Linking.openURL(`https://${contact.website}`)}
@@ -256,18 +256,17 @@ const ViewContact = ({ navigation, route }) => {
                                         setSnackVisible(true)
                                         await Clipboard.setStringAsync(contact.website)
                                     }}
-                                    disabled={!Boolean(contact.website)}
                                 >
                                     <View style={styles.info_contact_des}>
                                         <View style={styles.info_contact_des_item}>
                                             <Text style={styles.info_component_des_title}>{t("Screen_ViewContact_Text_Label_Website")}</Text>
-                                            <Text style={styles.info_contact_des_label}>{Boolean(contact.website) ? contact.website : t("Screen_ViewContact_Text_Label_NoWebsite")}</Text>
+                                            <Text style={styles.info_contact_des_label}>{contact.website}</Text>
                                         </View>
                                         <IconButton icon="web" size={16} color="#828282" />
                                     </View>
-                                </TouchableRipple>
-                            </View>
-                            <View style={styles.info_component}>
+                                </TouchableRipple>}
+                            </View>}
+                            {Boolean(contact.note) && <View style={styles.info_component}>
                                 <TouchableRipple
                                     borderless={true}
                                     style={styles.info_component_button}
@@ -275,12 +274,12 @@ const ViewContact = ({ navigation, route }) => {
                                     <View style={styles.info_contact_des}>
                                         <View>
                                             <Text style={styles.info_component_des_title}>Ghi chú</Text>
-                                            <Text style={styles.info_contact_des_label}>abcxyz</Text>
+                                            <Text style={styles.info_contact_des_label}>{contact.note}</Text>
                                         </View>
                                     </View>
                                 </TouchableRipple>
-                            </View>
-                            <View style={styles.info_component}>
+                            </View>}
+                            {!Boolean(contact.owner) && <View style={styles.info_component}>
                                 <TouchableRipple
                                     borderless={true}
                                     style={[styles.info_component_button, styles.btl20, styles.btr20]}
@@ -309,8 +308,8 @@ const ViewContact = ({ navigation, route }) => {
                                         <IconButton icon={listStatus[status.status].icon} color={listStatus[status.status].color} size={16} />
                                     </View>
                                 </TouchableRipple>}
-                            </View>
-                            <View style={styles.info_component}>
+                            </View>}
+                            {!Boolean(contact.owner) && <View style={styles.info_component}>
                                 <TouchableRipple
                                     borderless={true}
                                     style={[styles.info_component_button, styles.btl20, styles.btr20]}
@@ -323,19 +322,39 @@ const ViewContact = ({ navigation, route }) => {
                                         <IconButton icon="calendar-today" size={16} color="#828282" />
                                     </View>
                                 </TouchableRipple>
-                                <TouchableRipple
+                                {Boolean(contact.group_name) && Boolean(contact.group_name.length) && <TouchableRipple
                                     borderless={true}
                                     style={[styles.info_component_button, styles.bbl20, styles.bbr20]}
                                 >
                                     <View style={styles.info_contact_des}>
                                         <View style={styles.info_contact_des_item}>
                                             <Text style={styles.info_component_des_title}>{t("Screen_ViewContact_Text_Label_Group")}</Text>
-                                            <Text style={styles.info_contact_des_label}>FIS</Text>
+                                            <Text style={styles.info_contact_des_label}>
+                                                {contact.group_name.map((item) => {
+                                                    return `${item}, `
+                                                })}
+                                            </Text>
                                         </View>
                                         <IconButton icon="credit-card-multiple-outline" size={16} color="#828282" />
                                     </View>
-                                </TouchableRipple>
-                            </View>
+                                </TouchableRipple>}
+                            </View>}
+                            {Boolean(contact.owner) &&
+                                <View style={styles.info_component}>
+                                    <TouchableRipple
+                                        borderless={true}
+                                        style={styles.info_component_button}
+                                    >
+                                        <View style={styles.info_contact_des}>
+                                            <View style={styles.info_contact_des_item}>
+                                                <Text style={styles.info_component_des_title}>Người sở hữu</Text>
+                                                <Text style={styles.info_contact_des_label}>{contact.owner}</Text>
+                                            </View>
+                                            <IconButton icon="account" size={16} color="#828282" />
+                                        </View>
+                                    </TouchableRipple>                                   
+                                </View>
+                            }
                         </View>
                         <View style={{ marginBottom: 20 }} />
                     </ScrollView>
@@ -366,6 +385,25 @@ const ViewContact = ({ navigation, route }) => {
                         <Text style={styles.footer_button_label}>Vô hiệu hoá</Text>
                     </Pressable>}
                 </View>}
+            {Boolean(contact) && !Boolean(contact.owner) || route.params.showFooter && <View style={styles.footer}>
+                <Pressable style={styles.footer_button} onPress={() => {
+                    navigation.navigate("HomeSwap", {
+                        screen: "AddContactToManyGroup",
+                        params: { id: route.params.idContact }
+                    });
+                }}>
+                    <Icon name="account-multiple-plus-outline" size={24} color="#828282" />
+                    <Text style={styles.footer_button_label}>Thêm nhóm</Text>
+                </Pressable>
+                {route.params && !route.params.useid && <Pressable style={styles.footer_button} onPress={handlePressUpdateContact}>
+                    <Icon name="account-edit-outline" size={24} color="#828282" />
+                    <Text style={styles.footer_button_label}>Sửa</Text>
+                </Pressable>}
+                {route.params && !route.params.useid && <Pressable style={styles.footer_button} onPress={() => setModalDeactivateVisible(true)}>
+                    <Icon name="account-minus-outline" size={24} color="#828282" />
+                    <Text style={styles.footer_button_label}>Vô hiệu hoá</Text>
+                </Pressable>}
+            </View>}
         </SafeAreaView>
     );
 };
