@@ -517,9 +517,9 @@ namespace NCMSystem.Controllers
             });
         }
 
-        [HttpGet]
-        [Route("api/groups/get-manycontactsgroupsforcontact/{contact_id}")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        // [HttpGet]
+        // [Route("api/groups/get-manycontactsgroupsforcontact/{contact_id}")]
+        // [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
 
         //POST
         [HttpPost]
