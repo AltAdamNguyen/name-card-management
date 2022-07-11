@@ -37,10 +37,9 @@ export const GroupContactAPI = {
     DeleteGroupContact: "/api/groups/delete-groupcontact",
     SearchContactInGroup: "/api/groups/search-contactingroupcontact",
     ChangeGroupName:"/api/groups/rename",
-    AddContactsToGroup: "/api/groups/add-contacttogroup",
+    AddContactsToGroup: "/api/groups/add-contactstogroups",
     DeleteContactInGroup: "/api/groups/delete-contactfromgroup",
     ViewAvailableContactsForGroup: "/api/groups/get-contactsavailableforgroup",
-    AddContactToManyGroup: "/api/groups/add-contacttomanygroups"
 }
 
 export const TeamAPI = {
