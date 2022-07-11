@@ -48,7 +48,6 @@ const Tree = ({ item, expand = false, navigation, checked = false, child = false
 
                 <View style={styles.row_label_right}>
                   <Text style={styles.title}>{item.name}</Text>
-                  <Text style={styles.subtitle}>Quản lí {item.id}</Text>
                 </View>
               </View>
               <IconButton icon="chevron-right" size={30} color={'#828282'} onPress={handleViewContact}/>
@@ -85,7 +84,6 @@ const Tree = ({ item, expand = false, navigation, checked = false, child = false
                   )}
                 <View style={styles.row_label_right}>
                   <Text style={styles.title}>{item.name}</Text>
-                  <Text style={styles.subtitle}>Nhân viên {item.id}</Text>
                 </View>
               </View>
               <IconButton icon="chevron-right" size={30} color={'#828282'} onPress={handleViewContact}/>

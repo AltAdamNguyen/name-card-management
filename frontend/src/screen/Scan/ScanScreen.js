@@ -7,8 +7,9 @@ import { IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useIsFocused } from '@react-navigation/native';
 import iconPath from '../../constants/iconPath';
-import  {parseCard}  from '../../validate/ParseVcard';
+import { parseCard } from '../../validate/ParseVcard';
 import styles from './styles';
+import { BarCodeScanner } from 'expo-barcode-scanner';
 
 // create a component
 const ScanScreen = ({ navigation }) => {
@@ -58,20 +59,21 @@ const ScanScreen = ({ navigation }) => {
     }
   };
 
-  const handleScanQr = (data) => {
+  const handleScanQr = ({data}) => {
     let card = parseCard(data)
     let contact = {
       name: card.n ? card.n : card.fn,
       job_title: card.title ? card.title : '',
       company: card.org ? card.org : '',
-      phone: card.tel && card.tel.value ? card.tel.value : '',
+      phone: card.tel && card.tel.value ? card.tel.value.replace('+','') : '',
       email: card.email && card.email.value ? card.email.value : '',
       fax: '',
+      note: '',
       address: card.adr ? card.adr : '',
       website: card.url ? card.url : '',
-      img_url: card.photo ? card.photo : 'https://ncmsystem.azurewebsites.net/Images/noImage.jpg',
+      img_url: 'https://ncmsystem.azurewebsites.net/Images/noImage.jpg',
     }
-    navigation.navigate('HomeSwap', { screen: 'UpdateContact', params: { contact: contact} });
+    navigation.navigate('HomeSwap', { screen: 'UpdateContact', params: { contact: contact } });
     setScanQr(!scanQr)
   }
 
@@ -92,22 +94,26 @@ const ScanScreen = ({ navigation }) => {
       <View style={styles.preview}>
         {
           isFocused &&
-          <Camera
-            style={[styles.preview_camera,{height: height}]}
-            ref={cameraRef}
-            ratio="4:3"
-            flashMode={flashMode}
-            onBarCodeScanned={({ data }) => {
-              scanQr ? handleScanQr(data) : undefined
-            }}
-          >
-            {/* {!scanQr && <View style={styles.preview_suggest}>
-              <Text>Đặt thẻ vào đúng khung hình</Text>
-            </View>} */}
-            <View style={styles.preview_overlay}>
-              <Image style={styles.preview_iconOverlay} source={scanQr ? iconPath.icQr: iconPath.icOverlay} />
-            </View>
-          </Camera>
+          (scanQr ?
+            <BarCodeScanner
+              style={[styles.preview_camera, { height: height }]}
+              onBarCodeScanned={handleScanQr}
+            >
+              <View style={styles.preview_overlay}>
+                <Image style={styles.preview_iconOverlay} source={iconPath.icQr} />
+              </View>
+            </BarCodeScanner>
+            :
+            (<Camera
+              style={[styles.preview_camera, { height: height }]}
+              ref={cameraRef}
+              ratio="4:3"
+              flashMode={flashMode}
+            >
+              <View style={styles.preview_overlay}>
+                <Image style={styles.preview_iconOverlay} source={iconPath.icOverlay} />
+              </View>
+            </Camera>))
         }
       </View>
 
@@ -119,14 +125,14 @@ const ScanScreen = ({ navigation }) => {
             color='#FFF'
             onPress={pickImage}
           />
-          <IconButton size={80} 
-          icon='checkbox-blank-circle' 
-          color='#FFF' 
-          onPress={takePic} 
-          disabled={scanQr}
+          <IconButton size={80}
+            icon='checkbox-blank-circle'
+            color='#FFF'
+            onPress={takePic}
+            disabled={scanQr}
           />
           <IconButton
-            icon={scanQr ? 'qrcode-scan': 'camera'}
+            icon={scanQr ? 'qrcode-scan' : 'camera'}
             size={30}
             color='#FFF'
             onPress={() => setScanQr(!scanQr)}

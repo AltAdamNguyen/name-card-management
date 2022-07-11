@@ -14,9 +14,10 @@ const styles = StyleSheet.create({
         width: '90%',
     },
     header_label: {
+        marginTop: 10,
         width: '100%',
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        justifyContent: 'space-between',
         alignItems: 'center',
     },
     header_label_button: {
@@ -28,5 +29,12 @@ const styles = StyleSheet.create({
         marginTop: 10,
         width: '100%',
     },
+    fab: {
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 0,
+        backgroundColor: '#1890FF'
+    }
 })
 export default styles

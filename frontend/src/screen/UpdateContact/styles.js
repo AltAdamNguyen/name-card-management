@@ -76,7 +76,6 @@ const styles = StyleSheet.create({
     },
     formInput_item_error: {
         width: '100%',
-        justifyContent: 'flex-start',
     },
     formInput_item_error_label:{
         color: '#B22D1D',
