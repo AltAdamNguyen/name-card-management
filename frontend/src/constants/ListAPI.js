@@ -39,7 +39,7 @@ export const GroupContactAPI = {
     ChangeGroupName:"/api/groups/rename",
     AddContactsToGroup: "/api/groups/add-contacttogroup",
     DeleteContactInGroup: "/api/groups/delete-contactfromgroup",
-    ViewAvailableContactsForGroup: "/api/groups/getcontactsavailableforgroup",
+    ViewAvailableContactsForGroup: "/api/groups/get-contactsavailableforgroup",
     AddContactToManyGroup: "/api/groups/add-contacttomanygroups"
 }
 
