@@ -220,6 +220,7 @@
     <Compile Include="Models\CallAPI\Contact\StatusContact.cs" />
     <Compile Include="Models\CallAPI\Group Contact\AvailableContactToGroup.cs" />
     <Compile Include="Models\CallAPI\Group Contact\AvailableGroupToContact.cs" />
+    <Compile Include="Models\CallAPI\Group Contact\AvailableGroupToContactRequest.cs" />
     <Compile Include="Models\CallAPI\Group Contact\ContactIdsRequest.cs" />
     <Compile Include="Models\CallAPI\Group Contact\ContactInGroup.cs" />
     <Compile Include="Models\CallAPI\Group Contact\DeleteContactFromGroupRequest.cs" />
