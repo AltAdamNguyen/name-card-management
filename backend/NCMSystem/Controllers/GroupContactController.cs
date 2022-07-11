@@ -299,33 +299,25 @@ namespace NCMSystem.Controllers
                 //if the logged in user is a manager
                 if (u.role_id == 2)
                 {
-                    List<TeamResponse> listMember = null;
-                    var mem = db.Database.SqlQuery<MemberTeam>("exec user_recurse @SuperBoss_id = " + userId).ToList();
+                    List<MemberTeamGroupContact> listMember = null;
+                    var mem = db.Database.SqlQuery<MemberTeamGroupContact>("exec user_recurse @SuperBoss_id = " + userId).ToList();
                     if (mem != null)
                     {
-                        listMember = MemberRecursive(mem, userId);
+                        listMember = mem;
+                        List<int> listMemberIds = new List<int>();
 
                         //get contacts from members of the manager
-                        foreach (TeamResponse tr in listMember)
+                        foreach (MemberTeamGroupContact mtgc in listMember)
                         {
-                            List<contact> listContactInMember = db.contacts.Where(c => c.owner_id == tr.Id).ToList();
+                            listMemberIds.Add(mtgc.Id);
+                        }
 
-                            foreach (contact c in listContactInMember)
+                        if (listMemberIds.Count > 0)
+                        {
+                            foreach (int id in listMemberIds)
                             {
-                                listContact.Add(c);
-                            }
-
-                            if (tr.Children.Count != 0)
-                            {
-                                foreach (TeamResponse child in tr.Children)
-                                {
-                                    List<contact> listContactInMemberChild = db.contacts.Where(c => c.owner_id == child.Id).ToList();
-
-                                    foreach (contact c in listContactInMemberChild)
-                                    {
-                                        listContact.Add(c);
-                                    }
-                                }
+                                List<contact> listContactInMember = db.contacts.Where(c => c.owner_id == id).ToList();
+                                listContact.AddRange(listContactInMember);
                             }
                         }
                     }
@@ -373,9 +365,9 @@ namespace NCMSystem.Controllers
         }
 
         [HttpGet]
-        [Route("api/groups/get-groupsforcontact/{contact_id}")]
+        [Route("api/groups/get-groupsforcontacts")]
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
-        public ResponseMessageResult GetGroupsAvailableForContact(int contact_id)
+        public ResponseMessageResult GetGroupsAvailableForContacts([FromBody] AvailableGroupToContactRequest request)
         {
             //initialize list of groups that can add the requested contact
             List<AvailableGroupToContact> availableGroups = new List<AvailableGroupToContact>();
@@ -383,110 +375,110 @@ namespace NCMSystem.Controllers
             try
             {
                 int userId = ((JwtToken)Request.Properties["payload"]).Uid;
-
                 user u = db.users.Where(u1 => u1.id == userId).FirstOrDefault();
 
-                contact selectedContact = null;
+                List<ContactIdsRequest> selectedContactIds = request.listContactIds;
 
-                if (u.role_id == 2)
-                {
-                    bool found = false;
-                    List<TeamResponse> listMember = null;
-                    var mem = db.Database.SqlQuery<MemberTeam>("exec user_recurse @SuperBoss_id = " + userId).ToList();
-                    if (mem != null)
-                    {
-                        listMember = MemberRecursive(mem, userId);
-
-                        foreach (TeamResponse tr in listMember)
-                        {
-                            List<contact> listContactInMember = db.contacts.Where(c => c.owner_id == tr.Id).ToList();
-
-                            foreach (contact c in listContactInMember)
-                            {
-                                if (c.id == contact_id)
-                                {
-                                    selectedContact = c;
-                                    found = true;
-                                    break;
-                                }
-                            }
-
-                            if (tr.Children.Count != 0 && !found)
-                            {
-                                foreach (TeamResponse child in tr.Children)
-                                {
-                                    List<contact> listContactInMemberChild = db.contacts.Where(c => c.owner_id == child.Id).ToList();
-
-                                    foreach (contact c in listContactInMemberChild)
-                                    {
-                                        if (c.id == contact_id)
-                                        {
-                                            selectedContact = c;
-                                            found = true;
-                                            break;
-                                        }
-                                    }
-
-                                    if (found)
-                                    {
-                                        break;
-                                    }
-                                }
-                            }
-
-                            if (found)
-                            {
-                                break;
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    selectedContact = db.contacts.Where(c => c.owner_id == userId && c.id == contact_id).FirstOrDefault();
-                }
-
-                if (selectedContact == null)
+                if (selectedContactIds == null)
                 {
                     return new ResponseMessageResult(new HttpResponseMessage()
                     {
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "C0016"
+                            Message = "No contacts selected"
                         }), Encoding.UTF8, "application/json")
                     });
                 }
-                else if (!selectedContact.isActive)
+
+                List<contact> listContacts = db.contacts.Where(c1 => c1.owner_id == userId).ToList();
+
+                if (u.role_id == 2)
+                {
+                    List<MemberTeamGroupContact> listMember = null;
+                    var mem = db.Database.SqlQuery<MemberTeamGroupContact>("exec user_recurse @SuperBoss_id = " + userId).ToList();
+                    if (mem != null)
+                    {
+                        listMember = mem;
+                        List<int> listMemberIds = new List<int>();
+
+                        if (listMember.Count != 0)
+                        {
+                            foreach (MemberTeamGroupContact mtgc in listMember)
+                            {
+                                listMemberIds.Add(mtgc.Id);
+                            }
+                        }
+
+                        foreach (int id in listMemberIds)
+                        {
+                            List<contact> listContactInMember = db.contacts.Where(c => c.owner_id == id).ToList();
+                            listContacts.AddRange(listContactInMember);
+                        }
+                    }
+                }
+
+                List<contact> contactsToAdd = new List<contact>();
+                foreach (ContactIdsRequest cir in selectedContactIds)
+                {
+                    foreach (contact c in listContacts)
+                    {
+                        if (cir.ContactId == c.id && c.isActive)
+                        {
+                            contactsToAdd.Add(c);
+                        }
+                    }
+                }
+
+                if (contactsToAdd.Count == 0)
                 {
                     return new ResponseMessageResult(new HttpResponseMessage()
                     {
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "C0020",
+                            Message = "No Active Contacts to perform action"
                         }), Encoding.UTF8, "application/json")
                     });
                 }
 
                 //get list of groups that the user has
                 List<group> listGroups = db.groups.Where(g => g.user_id == userId).ToList();
-
+                
                 foreach (group g in listGroups)
                 {
-                    List<contact> listContacts = g.contacts.ToList();
+                    List<contact> listContactsInGroup = g.contacts.ToList();
 
-                    if (listContacts.Contains(selectedContact))
+                    foreach(contact c in contactsToAdd)
                     {
-                        continue;
-                    }
-                    else
-                    {
-                        AvailableGroupToContact agtc = new AvailableGroupToContact();
-                        agtc.GroupName = g.name;
-                        availableGroups.Add(agtc);
-                    }
-                }
+                        if (listContactsInGroup.Contains(c))
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            bool exist = false;
+
+                            AvailableGroupToContact agtc = new AvailableGroupToContact();
+                            agtc.GroupId = g.id;
+                            agtc.GroupName = g.name;
+
+                            foreach (AvailableGroupToContact agtc1 in availableGroups)
+                            {
+                                if (agtc1.GroupId == agtc.GroupId && agtc.GroupName.Equals(agtc.GroupName))
+                                {
+                                    exist = true;
+                                    break;
+                                }
+                            }
+
+                            if (!exist)
+                            {
+                                availableGroups.Add(agtc);
+                            }
+                        }
+                    }             
+                }                       
 
                 if (availableGroups.Count == 0)
                 {
@@ -517,15 +509,11 @@ namespace NCMSystem.Controllers
             });
         }
 
-        // [HttpGet]
-        // [Route("api/groups/get-manycontactsgroupsforcontact/{contact_id}")]
-        // [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
-
         //POST
         [HttpPost]
         [Route("api/groups/add-group")]
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
-        public ResponseMessageResult AddGroup([FromBody] GroupContactRequest request)
+        public ResponseMessageResult AddGroup([FromBody] GroupNameRequest request)
         {
             try
             {
@@ -596,7 +584,6 @@ namespace NCMSystem.Controllers
                 int userIdLogin = ((JwtToken)Request.Properties["payload"]).Uid;
 
                 string userIdRequest = request.UserId;
-                var user = db.users.Where(u => u.id == userIdLogin).FirstOrDefault();
 
                 List<ContactIdsRequest> listContactIdRequest = request.ContactIds;
                 List<GroupIdsRequest> listGroupIdRequest = request.GroupIds;
@@ -606,18 +593,6 @@ namespace NCMSystem.Controllers
                 //if the contact is not by member of the team
                 if (string.IsNullOrEmpty(userIdRequest))
                 {
-                    if (user == null)
-                    {
-                        return new ResponseMessageResult(new HttpResponseMessage()
-                        {
-                            StatusCode = System.Net.HttpStatusCode.OK,
-                            Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
-                            {
-                                Message = "C0018",
-                            }), Encoding.UTF8, "application/json")
-                        });
-                    }
-
                     foreach (ContactIdsRequest cir in listContactIdRequest)
                     {
                         int contactId = cir.ContactId;
@@ -659,39 +634,69 @@ namespace NCMSystem.Controllers
                 {
                     int memberId = Convert.ToInt32(userIdRequest);
 
-                    foreach (ContactIdsRequest cir in listContactIdRequest)
+                    bool isMember = false;
+
+                    var mem = db.Database.SqlQuery<MemberTeamGroupContact>("exec user_recurse @SuperBoss_id = " + userIdLogin).ToList();
+
+                    if (mem != null)
                     {
-                        int contactId = cir.ContactId;
-                        var contact = db.contacts.Where(c => c.owner_id == memberId && c.id == contactId).FirstOrDefault();
-
-                        if (contact == null)
+                        List<MemberTeamGroupContact> listMember = mem;
+                        foreach (MemberTeamGroupContact mtgc in listMember)
                         {
-                            continue;
+                            if (mtgc.Id == memberId)
+                            {
+                                isMember = true;
+                            }
                         }
-                        else if (!contact.isActive)
-                        {
-                            continue;
-                        }
+                    }
 
-                        foreach (GroupIdsRequest gir in listGroupIdRequest)
+                    if (isMember)
+                    {
+                        foreach (ContactIdsRequest cir in listContactIdRequest)
                         {
-                            int groupId = gir.GroupId;
-                            var group = db.groups.Where(g => g.user_id == userIdLogin && g.id == groupId).FirstOrDefault();
+                            int contactId = cir.ContactId;
+                            var contact = db.contacts.Where(c => c.owner_id == memberId && c.id == contactId).FirstOrDefault();
 
-                            if (group == null)
+                            if (contact == null)
                             {
                                 continue;
                             }
-                            else
+                            else if (!contact.isActive)
                             {
-                                List<contact> listContactsInGroup = group.contacts.ToList();
-                                if (!listContactsInGroup.Contains(contact))
+                                continue;
+                            }
+
+                            foreach (GroupIdsRequest gir in listGroupIdRequest)
+                            {
+                                int groupId = gir.GroupId;
+                                var group = db.groups.Where(g => g.user_id == userIdLogin && g.id == groupId).FirstOrDefault();
+
+                                if (group == null)
                                 {
-                                    group.contacts.Add(contact);
-                                    successTime++;
+                                    continue;
+                                }
+                                else
+                                {
+                                    List<contact> listContactsInGroup = group.contacts.ToList();
+                                    if (!listContactsInGroup.Contains(contact))
+                                    {
+                                        group.contacts.Add(contact);
+                                        successTime++;
+                                    }
                                 }
                             }
                         }
+                    }
+                    else
+                    {
+                        return new ResponseMessageResult(new HttpResponseMessage()
+                        {
+                            StatusCode = System.Net.HttpStatusCode.OK,
+                            Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                            {
+                                Message = "User Id is not a Member",
+                            }), Encoding.UTF8, "application/json")
+                        });
                     }
                 }
 
@@ -910,33 +915,6 @@ namespace NCMSystem.Controllers
                     Message = "Success"
                 }), Encoding.UTF8, "application/json")
             });
-        }
-
-        public List<TeamResponse> MemberRecursive(List<MemberTeam> mem, int id)
-        {
-            List<TeamResponse> arrayChild = new List<TeamResponse>();
-            foreach (var a in mem)
-            {
-                if (a.ManagerId == id)
-                {
-                    arrayChild.Add(new TeamResponse()
-                    {
-                        Id = a.Id,
-                        Name = a.Name,
-                        Children = new List<TeamResponse>()
-                    });
-                }
-            }
-
-            if (arrayChild.Count != 0)
-            {
-                foreach (var a in arrayChild)
-                {
-                    a.Children = MemberRecursive(mem, a.Id);
-                }
-            }
-
-            return arrayChild;
         }
     }
 }

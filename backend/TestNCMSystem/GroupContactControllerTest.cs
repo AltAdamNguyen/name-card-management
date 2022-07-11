@@ -38,7 +38,7 @@ namespace TestNCMSystem
             controller.Configuration = new HttpConfiguration();
 
             //act
-            var cc = controller.AddGroup(new GroupContactRequest()
+            var cc = controller.AddGroup(new GroupNameRequest()
             {
                 GroupName = "Test Group"
             });
