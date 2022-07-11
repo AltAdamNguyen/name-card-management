@@ -267,9 +267,9 @@ namespace NCMSystem.Controllers
         }
 
         [HttpGet]
-        [Route("api/groups/get-contactsavailableforgroup/{group_id}")]
+        [Route("api/groups/get-contactsavailableforgroup/{type}/{group_id}")]
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
-        public ResponseMessageResult GetContactsAvailableForAGroup(int group_id)
+        public ResponseMessageResult GetContactsAvailableForAGroup(string type, int group_id)
         {
             List<AvailableContactToGroup> availableContacts = new List<AvailableContactToGroup>();
 
@@ -293,59 +293,89 @@ namespace NCMSystem.Controllers
 
                 user u = db.users.Where(u1 => u1.id == userId).FirstOrDefault();
 
-                //get list of contacts that the user has
-                List<contact> listContact = db.contacts.Where(c => c.owner_id == userId).ToList();
+                //get list of contacts in the selected group contact
+                List<contact> listContactInGroup = selectedGroup.contacts.ToList();
 
-                //if the logged in user is a manager
-                if (u.role_id == 2)
+                if (type.Equals("team"))
                 {
-                    List<MemberTeamGroupContact> listMember = null;
-                    var mem = db.Database.SqlQuery<MemberTeamGroupContact>("exec user_recurse @SuperBoss_id = " + userId).ToList();
-                    if (mem != null)
+                    //get list of contacts that the team of the user has
+                    List<contact> listContactTeam = new List<contact>();
+                    //if the logged in user is a manager
+                    if (u.role_id == 2)
                     {
-                        listMember = mem;
-                        List<int> listMemberIds = new List<int>();
-
-                        //get contacts from members of the manager
-                        foreach (MemberTeamGroupContact mtgc in listMember)
+                        List<MemberTeamGroupContact> listMember = null;
+                        var mem = db.Database.SqlQuery<MemberTeamGroupContact>("exec user_recurse @SuperBoss_id = " + userId).ToList();
+                        if (mem != null)
                         {
-                            listMemberIds.Add(mtgc.Id);
-                        }
+                            listMember = mem;
+                            List<int> listMemberIds = new List<int>();
 
-                        if (listMemberIds.Count > 0)
-                        {
-                            foreach (int id in listMemberIds)
+                            //get contacts from members of the manager
+                            foreach (MemberTeamGroupContact mtgc in listMember)
                             {
-                                List<contact> listContactInMember = db.contacts.Where(c => c.owner_id == id).ToList();
-                                listContact.AddRange(listContactInMember);
+                                listMemberIds.Add(mtgc.Id);
+                            }
+
+                            if (listMemberIds.Count > 0)
+                            {
+                                foreach (int id in listMemberIds)
+                                {
+                                    List<contact> listContactInMember = db.contacts.Where(c => c.owner_id == id).ToList();
+                                    listContactTeam.AddRange(listContactInMember);
+                                }
+                            }
+                        }
+                    }
+
+                    foreach (contact contact in listContactTeam)
+                    {
+                        //if this contact is active
+                        if (contact.isActive)
+                        {
+                            if (!listContactInGroup.Contains(contact))
+                            {
+                                AvailableContactToGroup c = new AvailableContactToGroup();
+                                c.ContactId = contact.id;
+                                c.ContactName = contact.name;
+                                c.ImgUrl = contact.image_url;
+                                c.JobTitle = contact.job_title;
+                                c.ContactCompany = contact.company;
+                                c.ContactCreatedAt = contact.create_date;
+                                c.ContactOwnerId = contact.owner_id;
+
+                                availableContacts.Add(c);
                             }
                         }
                     }
                 }
-
-                //get list of contacts in the selected group contact
-                List<contact> listContactInGroup = selectedGroup.contacts.ToList();
-
-                foreach (contact contact in listContact)
+                if (type.Equals("personal"))
                 {
-                    //if this contact is active
-                    if (contact.isActive)
+                    //get list of contacts that the user has
+                    List<contact> listContactPersonal = db.contacts.Where(c => c.owner_id == userId).ToList();
+                    foreach (contact contact in listContactPersonal)
                     {
-                        if (!listContactInGroup.Contains(contact))
+                        //if this contact is active
+                        if (contact.isActive)
                         {
-                            AvailableContactToGroup c = new AvailableContactToGroup();
-                            c.ContactId = contact.id;
-                            c.ContactName = contact.name;
-                            c.ImgUrl = contact.image_url;
-                            c.JobTitle = contact.job_title;
-                            c.ContactCompany = contact.company;
-                            c.ContactCreatedAt = contact.create_date;
-                            c.ContactOwnerId = contact.owner_id;
+                            if (!listContactInGroup.Contains(contact))
+                            {
+                                AvailableContactToGroup c = new AvailableContactToGroup();
+                                c.ContactId = contact.id;
+                                c.ContactName = contact.name;
+                                c.ImgUrl = contact.image_url;
+                                c.JobTitle = contact.job_title;
+                                c.ContactCompany = contact.company;
+                                c.ContactCreatedAt = contact.create_date;
+                                c.ContactOwnerId = contact.owner_id;
 
-                            availableContacts.Add(c);
+                                availableContacts.Add(c);
+                            }
                         }
                     }
                 }
+                
+
+                
             }
             catch (Exception ex)
             {
