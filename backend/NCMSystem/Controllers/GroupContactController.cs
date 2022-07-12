@@ -391,7 +391,8 @@ namespace NCMSystem.Controllers
             });
         }
 
-        [HttpGet]
+        //POST
+        [HttpPost]
         [Route("api/groups/get-groupsforcontacts")]
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
         public ResponseMessageResult GetGroupsAvailableForContacts([FromBody] AvailableGroupToContactRequest request)
@@ -471,12 +472,12 @@ namespace NCMSystem.Controllers
 
                 //get list of groups that the user has
                 List<group> listGroups = db.groups.Where(g => g.user_id == userId).ToList();
-                
+
                 foreach (group g in listGroups)
                 {
                     List<contact> listContactsInGroup = g.contacts.ToList();
 
-                    foreach(contact c in contactsToAdd)
+                    foreach (contact c in contactsToAdd)
                     {
                         if (listContactsInGroup.Contains(c))
                         {
@@ -504,8 +505,8 @@ namespace NCMSystem.Controllers
                                 availableGroups.Add(agtc);
                             }
                         }
-                    }             
-                }                       
+                    }
+                }
 
                 if (availableGroups.Count == 0)
                 {
@@ -536,7 +537,6 @@ namespace NCMSystem.Controllers
             });
         }
 
-        //POST
         [HttpPost]
         [Route("api/groups/add-group")]
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
