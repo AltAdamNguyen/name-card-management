@@ -27,7 +27,8 @@ export const ContactAPI = {
     SetStatus: "/api/contacts/status",
     ListDeactive: "/api/contacts/de-active",
     ReactiveContact: "/api/contacts/active",
-    RequestTransferContact: "/api/contacts/request"
+    RequestTransferContact: "/api/contacts/request",
+    TransferContact: "/api/contacts/transfer"
 }
 
 export const GroupContactAPI = {
@@ -40,10 +41,9 @@ export const GroupContactAPI = {
     DeleteGroupContact: "/api/groups/delete-groupcontact",
     SearchContactInGroup: "/api/groups/search-contactingroupcontact",
     ChangeGroupName:"/api/groups/rename",
-    AddContactsToGroup: "/api/groups/add-contacttogroup",
+    AddContactsToGroup: "/api/groups/add-contactstogroups",
     DeleteContactInGroup: "/api/groups/delete-contactfromgroup",
-    ViewAvailableContactsForGroup: "/api/groups/getcontactsavailableforgroup",
-    AddContactToManyGroup: "/api/groups/add-contacttomanygroups"
+    ViewAvailableContactsForGroup: "/api/groups/get-contactsavailableforgroup",
 }
 
 export const TeamAPI = {

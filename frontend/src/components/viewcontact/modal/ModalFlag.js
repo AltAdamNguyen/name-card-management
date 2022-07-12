@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import i18next from "../../../language/i18n";
 import AuthContext from "../../../store/AuthContext";
 import { useTranslation } from "react-i18next";
-import { Text, Modal, Pressable, TouchableWithoutFeedback, View } from 'react-native';
+import { Text, Modal, Pressable, TouchableWithoutFeedback, Alert } from 'react-native';
 import { Button, Card } from 'react-native-paper';
 import styles from '../../../screen/ViewContact/styles';
 

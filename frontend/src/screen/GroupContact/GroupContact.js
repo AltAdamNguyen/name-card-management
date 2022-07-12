@@ -92,6 +92,8 @@ const GroupContact = ({ navigation }) => {
       setLisGroupContact(data.data);
       setListGroupContactTotal(data.data);
       setLoading(false);
+    }else{
+      setLoading(false)
     }
   };
 

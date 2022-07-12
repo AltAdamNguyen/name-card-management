@@ -161,6 +161,11 @@ const Home = ({ route, navigation }) => {
         setModalFloatVisible(!modalFloatVisible);
     }
 
+    const handlePressTranfer = () => {
+        navigation.navigate('HomeSwap', { screen: 'SearchContact', params: { transfer: true } })
+        setModalFloatVisible(!modalFloatVisible);
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -199,7 +204,7 @@ const Home = ({ route, navigation }) => {
                 >
                     {listFilter.length != 0 && listFilter.map((item, index) => {
                         return (
-                            <Card mode='elevated' style={styles.card} elevation={2} key={index} onPress={() => { navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: item.id, showFooter : true } }) }}>
+                            <Card mode='elevated' style={styles.card} elevation={2} key={index} onPress={() => { navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: item.id, showFooter: true } }) }}>
                                 <View style={styles.item}>
                                     <View style={styles.imgContact}>
                                         <Image source={{ uri: item.status_request || item.owner_id !== item.createdBy ? 'https://ncmsystem.azurewebsites.net/Images/noImage.jpg' : item.img_url }} style={styles.image} />
@@ -237,7 +242,7 @@ const Home = ({ route, navigation }) => {
                     })}
                 </ScrollView>
             </View>
-            <ModalHome visible={modalFloatVisible} onPressVisable={() => setModalFloatVisible(false)} sort={sort} onPressSort={handlePressSort} onPressDeactive={handlePressDeactive} />
+            <ModalHome visible={modalFloatVisible} onPressVisable={() => setModalFloatVisible(false)} sort={sort} onPressSort={handlePressSort} onPressDeactive={handlePressDeactive} onPressTranfer={handlePressTranfer}/>
             <FAB style={styles.floatButton} icon="tune" size={24} color="#fff" onPress={() => setModalFloatVisible(!modalFloatVisible)} />
         </SafeAreaView>
     );

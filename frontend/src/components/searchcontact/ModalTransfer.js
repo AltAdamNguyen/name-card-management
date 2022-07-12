@@ -1,16 +1,15 @@
 //import liraries
 import React from 'react';
-import { View, Text, Modal, TouchableWithoutFeedback, Alert} from 'react-native';
-import { TextInput, Button, Card } from 'react-native-paper';
-import styles from '../../../screen/ViewContact/styles';
-import { Formik } from 'formik';
-import StatusSchema from '../../../validate/ValidateFormStatus';
+import { View, Text, Modal, TouchableWithoutFeedback, TouchableOpacity, Alert } from 'react-native';
+import { Button, Card, TextInput } from 'react-native-paper';
+import styles from '../../screen/ViewContact/styles';
 import { useContext } from 'react';
-import i18next from "../../../language/i18n";
-import AuthContext from "../../../store/AuthContext";
+import AuthContext from '../../store/AuthContext';
 import { useTranslation } from "react-i18next";
+import { Formik } from 'formik';
+import TransferSchema from '../../validate/ValidateFormTransfer';
 // create a component
-const ModalDeactivate = ({ visible, onPressVisable, reason, onPressSubmit }) => {
+const ModalTransfer = ({ visible, onPressVisable, onPressSubmit }) => {
     const { t, i18n } = useTranslation();
     const authCtx = useContext(AuthContext)
     return (
@@ -22,30 +21,31 @@ const ModalDeactivate = ({ visible, onPressVisable, reason, onPressSubmit }) => 
                 Alert.alert('Modal has been closed.');
             }}
         >
-            <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={onPressVisable}>
                 <TouchableWithoutFeedback>
                     <Card elevation={3} style={styles.info_status_modalView}>
-                        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Vô hiệu hoá liên hệ</Text>
+                        <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>Chuyển tới</Text>
+                        <Text>Chuyển đổi người sở hữu liên lạc sẽ làm bạn mất quyền truy cập liên lạc đó</Text>
                         <Formik
-                            initialValues={reason}
+                            initialValues={{email: ''}}
                             onSubmit={onPressSubmit}
-                            validationSchema={StatusSchema}
+                            validationSchema={TransferSchema}
                         >
                             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => {
                                 return (
                                     <View style={{ width: '100%' }}>
                                         <TextInput
                                             mode="outlined"
-                                            label={t("ModalStatus_Label_Reason")}
-                                            placeholder={t("ModalStatus_PlaceHolder_Reason")}
-                                            value={values.reason}
-                                            onChangeText={handleChange('reason')}
-                                            onBlur={handleBlur('reason')}
+                                            label='Người nhận'
+                                            placeholder='Nhập email người nhận'
+                                            value={values.email}
+                                            onChangeText={handleChange('email')}
+                                            onBlur={handleBlur('email')}
                                             style={{ width: '100%' }}
                                             theme={{ roundness: 10, colors: { primary: '#1890FF', error: '#B22D1D' } }}
                                         />
-                                        {errors['reason'] && touched['reason'] ? (
-                                            <Text style={{ color: '#B22D1D', fontSize: 12, }}>{errors['reason']}</Text>
+                                        {errors['email'] && touched['email'] ? (
+                                            <Text style={{ color: '#B22D1D', fontSize: 12, }}>{errors['email']}</Text>
                                         ) : null}
                                         <View style={styles.info_status_modalItem_button}>
                                             <Button
@@ -65,20 +65,18 @@ const ModalDeactivate = ({ visible, onPressVisable, reason, onPressSubmit }) => 
                                                 {t("ModalStatus_Button_Complete")}
                                             </Button>
                                         </View>
-
                                     </View>
                                 )
                             }}
 
                         </Formik>
-
                     </Card>
                 </TouchableWithoutFeedback>
-            </View>
+            </TouchableOpacity>
         </Modal>
     );
 };
 
 
 //make this component available to the app
-export default ModalDeactivate;
+export default ModalTransfer;

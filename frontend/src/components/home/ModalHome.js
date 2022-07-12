@@ -3,17 +3,11 @@ import { useContext, useState } from "react";
 import i18next from "../../language/i18n";
 import AuthContext from "../../store/AuthContext";
 import { useTranslation } from "react-i18next";
-import {
-  Modal,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-  Text,
-} from "react-native";
+import {Modal,TouchableOpacity,TouchableWithoutFeedback,View,Text,Alert} from "react-native";
 import { Button, Card } from "react-native-paper";
 import styles from "../../screen/Home/styles";
 
-const ModalHome = ({ visible, onPressVisable, sort, onPressSort, onPressDeactive }) => {
+const ModalHome = ({ visible, onPressVisable, sort, onPressSort, onPressDeactive, onPressTranfer }) => {
   const { t, i18n } = useTranslation();
   const authCtx = useContext(AuthContext);
   const listSort = [
@@ -105,6 +99,7 @@ const ModalHome = ({ visible, onPressVisable, sort, onPressSort, onPressDeactive
                   labelStyle={{ fontSize: 25 }}
                   style={{ alignItems: "flex-start" }}
                   uppercase={false}
+                  onPress={onPressTranfer}
                 >
                   <Text style={{ fontSize: 14 }}>
                     {t("Screen_Home_ModalHome_Text_Label_TransferNamecard")}
