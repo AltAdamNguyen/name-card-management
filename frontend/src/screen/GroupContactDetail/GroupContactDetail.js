@@ -287,7 +287,7 @@ const GroupContactDetail = ({ navigation, route }) => {
                     onPressAddContact={() => {
                         navigation.navigate("GroupSwap", {
                             screen: "AddContactToGroup",
-                            params: { id: route.params.id },
+                            params: { id: route.params.id, type : "personal" },
                         });
                         setModalVisible(false);
                     }}

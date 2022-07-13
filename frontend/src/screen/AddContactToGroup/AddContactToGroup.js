@@ -40,7 +40,7 @@ const AddContactToGroup = ({ navigation, route }) => {
     useEffect(() => {
         setIsLoading(true)
         FetchApi(
-            `${GroupContactAPI.ViewAvailableContactsForGroup}/${route.params.id}`,
+            `${GroupContactAPI.ViewAvailableContactsForGroup}/${route.params.type}/${route.params.id}`,
             Method.GET,
             ContentType.JSON,
             undefined,
