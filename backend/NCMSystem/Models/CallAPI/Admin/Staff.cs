@@ -2,10 +2,9 @@
 {
     public class Staff
     {
-        public string StaffName { get; set; }
-        public string StaffEmail { get; set; }
-        public string StaffPosition { get; set; }
-        public string StaffPassword { get; set; }
-        public string StaffStatus { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public int Role { get; set; }
+        public string Manager { get; set; }
     }
 }

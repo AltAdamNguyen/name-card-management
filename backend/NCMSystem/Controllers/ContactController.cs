@@ -872,7 +872,7 @@ namespace NCMSystem.Controllers
                     return Common.ResponseMessage.BadRequest("C0005");
                 }
 
-                var duplicate = db.contacts.FirstOrDefault(c => c.email == email);
+                var duplicate = db.contacts.FirstOrDefault(c => c.email == email && c.id != id );
                 if (duplicate != null)
                 {
                     return Common.ResponseMessage.NotFound("D0005");
