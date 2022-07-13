@@ -91,12 +91,12 @@ const Home = ({ route, navigation }) => {
     }, [route.params]);
 
     const onRefresh = useCallback(() => {
+        console.log(sort, flag)
         setRefreshing(true);
         FetchApi(`${ContactAPI.ViewContact}?sortBy=${sort}&flag=${flag}`, Method.GET, ContentType.JSON, undefined, getContactFilter)
     }, []);
 
     const getContact = (data) => {
-        console.log(data)
         if (data.data.length > 0) {
             setListContact(data.data);
             setListFilter(data.data);
@@ -111,16 +111,21 @@ const Home = ({ route, navigation }) => {
     };
 
     const handlePressButtonFlag = (item) => {
+        console.log(item);
         setModalVisible(!modalVisible);
         setFlag(item.value);
         FetchApi(`${ContactAPI.ViewContact}?sortBy=${sort}&flag=${item.value}`, Method.GET, ContentType.JSON, undefined, getContactFilter)
     }
 
     const getContactFilter = (data) => {
+        console.log(data)
         if (data.data) {
             if (data.data.length > 0) {
                 setListFilter(data.data);
                 setContContact(data.data.length);
+            } else {
+                setListFilter([]);
+                setContContact(0);
             }
         } else {
             setListFilter([]);
@@ -129,7 +134,6 @@ const Home = ({ route, navigation }) => {
         setRefreshing(false);
     }
     const deleteFlag = () => {
-        console.log(listContact)
         setFlag('null')
         FetchApi(`${ContactAPI.ViewContact}?sortBy=${sort}`, Method.GET, ContentType.JSON, undefined, getContactFilter)
     }
@@ -138,16 +142,16 @@ const Home = ({ route, navigation }) => {
         if (flag !== 'null') {
             return (
                 <View style={styles.buttonFlag}>
-                    <View style={[{ backgroundColor: listFlag[flag].background }, styles.sectionFlag]}>
+                    <View style={[{ backgroundColor: listFlag[flag].background, borderColor: listFlag[flag].color, borderWidth: 1 }, styles.sectionFlag]}>
                         <Text style={[styles.labelFlag, { color: listFlag[flag].color }]}>{listFlag[flag].title}</Text>
-                        <IconButton icon="close-circle" size={16} onPress={() => { deleteFlag() }} />
+                        <IconButton icon="close-circle" size={16} color="#828282" onPress={() => { deleteFlag() }} />
                     </View>
                 </View>
             )
         } else {
             return (
                 <View style={styles.buttonFlag}>
-                    <View style={[{ backgroundColor: '#82828250' }, styles.sectionFlag]}>
+                    <View style={[{ backgroundColor: '#82828250', borderColor: '#828282', borderWidth: 1 }, styles.sectionFlag]}>
                         <Text style={styles.labelFlag}>{t("Screen_Home_Button_Flag_Label")}</Text>
                         <IconButton icon="chevron-down" size={16} />
                     </View>
@@ -242,7 +246,7 @@ const Home = ({ route, navigation }) => {
                     })}
                 </ScrollView>
             </View>
-            <ModalHome visible={modalFloatVisible} onPressVisable={() => setModalFloatVisible(false)} sort={sort} onPressSort={handlePressSort} onPressDeactive={handlePressDeactive} onPressTranfer={handlePressTranfer}/>
+            <ModalHome visible={modalFloatVisible} onPressVisable={() => setModalFloatVisible(false)} sort={sort} onPressSort={handlePressSort} onPressDeactive={handlePressDeactive} onPressTranfer={handlePressTranfer} />
             <FAB style={styles.floatButton} icon="tune" size={24} color="#fff" onPress={() => setModalFloatVisible(!modalFloatVisible)} />
         </SafeAreaView>
     );

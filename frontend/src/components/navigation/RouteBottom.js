@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { View, Text, LogBox } from 'react-native';
+import { View, Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { GroupContact, Team, Setting, Home } from '../../screen';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -10,14 +10,10 @@ const Tab = createBottomTabNavigator();
 
 const RouteNavigation = () => {
   const authCtx = useContext(AuthContext);
-  console.log(authCtx.isMarketer)
-  LogBox.ignoreLogs([
-    "ViewPropTypes will be removed",
-    "ColorPropType will be removed",
-    ])
   return (
     <Tab.Navigator
       initialRouteName={authCtx.isMarketer === 3 ? "TeamScreen" : "HomeScreen"}
+      
       screenOptions={{
         tabBarShowLabel: false,
         headerShown: false,

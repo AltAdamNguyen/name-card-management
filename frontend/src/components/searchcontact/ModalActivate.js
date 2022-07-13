@@ -1,6 +1,6 @@
 //import liraries
 import React from 'react';
-import { View, Text, Modal, TouchableWithoutFeedback, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, Modal, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import { Button, Card } from 'react-native-paper';
 import styles from '../../screen/ViewContact/styles';
 import { useContext } from 'react';
@@ -16,7 +16,7 @@ const ModalActivate = ({ visible, onPressVisable, onPressSubmit }) => {
             transparent={true}
             visible={visible}
             onRequestClose={() => {
-                Alert.alert('Modal has been closed.');
+                onPressVisable()
             }}
         >
             <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={onPressVisable}>

@@ -23,7 +23,7 @@ const AddContactSchema = Yup.object().shape({
         .matches(phoneRegex, 'Invalid fax number!').nullable(),
     website: Yup.string()
         .max(255, 'Too Long!')
-        .url('Invalid website address!').nullable(),
+        .matches(websiteRegex, 'Invalid website').nullable(),
 });
 
 export default AddContactSchema;

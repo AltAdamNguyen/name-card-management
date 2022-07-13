@@ -1,6 +1,6 @@
 //import liraries
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, SafeAreaView, Image, ScrollView, Pressable, Linking, Platform } from 'react-native';
+import { View, Text, SafeAreaView, Image, ScrollView, Pressable, Linking, Platform, Dimensions } from 'react-native';
 import { Appbar, IconButton, TouchableRipple } from 'react-native-paper';
 import { useIsFocused } from '@react-navigation/native';
 import * as Clipboard from 'expo-clipboard';
@@ -10,6 +10,8 @@ import { ContactAPI, ContentType, Method } from '../../constants/ListAPI';
 import { FetchApi } from '../../service/api/FetchAPI';
 import AuthContext from "../../store/AuthContext";
 import { useTranslation } from "react-i18next";
+import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
+import { LinearGradient } from 'expo-linear-gradient';
 
 import ModalStatus from '../../components/viewcontact/modal/ModalStatus';
 import ModalFlag from '../../components/viewcontact/modal/ModalFlag';
@@ -25,11 +27,14 @@ import styles from './styles';
 
 const ViewContact = ({ navigation, route }) => {
     console.log(route)
+    const windowWidth = Dimensions.get('window').width;
+    const windowHeight = Dimensions.get('window').height;
     const [modalVisible, setModalVisible] = useState(false);
     const [modalStatusVisible, setModalStatusVisible] = useState(false);
     const [snackVisible, setSnackVisible] = useState(false);
     const [modalDeactivateVisible, setModalDeactivateVisible] = useState(false);
-
+    const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient)
+    const [loading, setLoading] = useState(false);
     const isFocused = useIsFocused()
     const [flag, setFlag] = useState();
     const [contact, setContact] = useState();
@@ -118,10 +123,12 @@ const ViewContact = ({ navigation, route }) => {
         console.log(data)
     }
     useEffect(() => {
+        setLoading(true)
         FetchApi(`${ContactAPI.ViewContact}/${route.params.idContact}`, Method.GET, ContentType.JSON, undefined, getContact)
     }, [])
 
     useEffect(() => {
+        setLoading(true)
         FetchApi(`${ContactAPI.ViewContact}/${route.params.idContact}`, Method.GET, ContentType.JSON, undefined, getContact)
     }, [isFocused]);
 
@@ -139,6 +146,7 @@ const ViewContact = ({ navigation, route }) => {
     const getContact = (data) => {
         console.log(data)
         setContact(data.data)
+        setLoading(false)
     }
 
     const handlePressUpdateContact = () => {
@@ -161,10 +169,22 @@ const ViewContact = ({ navigation, route }) => {
                 <Appbar.BackAction onPress={() => navigation.goBack()} />
             </Appbar.Header>
             <View style={styles.body}>
-                <View style={styles.body_imgContact}>
-                    {contact && <Image source={{ uri: contact.img_url ? contact.img_url : 'https://ncmsystem.azurewebsites.net/Images/noImage.jpg' }} style={styles.body_imgContact_image} />}
-                </View>
-                {Boolean(contact) &&
+                <ShimmerPlaceholder visible={!loading} width={windowWidth * 0.95} height={windowHeight * 0.3} shimmerStyle={{ borderRadius: 10, marginBottom: 10 }}>
+                    <View style={styles.body_imgContact}>
+                        {contact && <Image source={{ uri: contact.img_url ? contact.img_url : 'https://ncmsystem.azurewebsites.net/Images/noImage.jpg' }} style={styles.body_imgContact_image} />}
+                    </View>
+                </ShimmerPlaceholder>
+                {!contact &&
+                    <View style={styles.info}>
+                        <View style={styles.info_title}>
+                            <ShimmerPlaceholder visible={!loading} width={windowWidth * 0.5} height={windowHeight * 0.05} shimmerStyle={{ borderRadius: 10, marginBottom: 20 }} />
+                            <ShimmerPlaceholder visible={!loading} width={windowWidth * 0.9} height={windowHeight * 0.02} shimmerStyle={{ borderRadius: 10, marginBottom: 10 }} />
+                            <ShimmerPlaceholder visible={!loading} width={windowWidth * 0.9} height={windowHeight * 0.02} shimmerStyle={{ borderRadius: 10, marginBottom: 10 }} />
+                        </View>
+                    </View>
+
+                }
+                {contact &&
                     <ScrollView style={{ flex: 1 }}>
                         <View style={{ marginTop: 10 }} />
                         <View style={styles.info}>
@@ -352,7 +372,7 @@ const ViewContact = ({ navigation, route }) => {
                                             </View>
                                             <IconButton icon="account" size={16} color="#828282" />
                                         </View>
-                                    </TouchableRipple>                                   
+                                    </TouchableRipple>
                                 </View>
                             }
                         </View>

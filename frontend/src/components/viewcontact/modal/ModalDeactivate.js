@@ -1,6 +1,6 @@
 //import liraries
 import React from 'react';
-import { View, Text, Modal, TouchableWithoutFeedback, Alert} from 'react-native';
+import { View, Text, Modal, TouchableWithoutFeedback} from 'react-native';
 import { TextInput, Button, Card } from 'react-native-paper';
 import styles from '../../../screen/ViewContact/styles';
 import { Formik } from 'formik';
@@ -19,7 +19,7 @@ const ModalDeactivate = ({ visible, onPressVisable, reason, onPressSubmit }) => 
             transparent={true}
             visible={visible}
             onRequestClose={() => {
-                Alert.alert('Modal has been closed.');
+                onPressVisable()
             }}
         >
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

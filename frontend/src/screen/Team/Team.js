@@ -1,16 +1,19 @@
 //import liraries
 import React, { useEffect, useState, useCallback, useContext } from 'react';
-import { View, SafeAreaView, ScrollView, Text } from 'react-native';
+import { View, SafeAreaView, ScrollView, Text, Dimensions } from 'react-native';
 import styles from './styles';
-import { Button, Searchbar, FAB } from 'react-native-paper';
+import { Searchbar, FAB } from 'react-native-paper';
 import debounce from 'lodash.debounce';
 import Tree from '../../components/team/Tree';
 import { useIsFocused } from '@react-navigation/native';
 import { FetchApi } from '../../service/api/FetchAPI';
 import { ContentType, Method, TeamAPI } from '../../constants/ListAPI';
 import AuthContext from '../../store/AuthContext';
+import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'
+import { LinearGradient } from 'expo-linear-gradient';
 // create a component
 const Team = ({ navigation }) => {
+    const windowWidth = Dimensions.get('window').width;
     const [text, setText] = useState("");
     const [team, setTeam] = useState([]);
     const [searchTeam, setSearchTeam] = useState([]);
@@ -19,7 +22,11 @@ const Team = ({ navigation }) => {
     const isFocused = useIsFocused()
     const authCtx = useContext(AuthContext);
 
+    const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient)
+    const [loading, setLoading] = useState(false);
+
     useEffect(() => {
+        setLoading(true)
         FetchApi(TeamAPI.GetTeam, Method.GET, ContentType.JSON, undefined, getTeam)
     }, [])
 
@@ -30,6 +37,7 @@ const Team = ({ navigation }) => {
     const getTeam = (data) => {
         setTeam(data.data);
         setSearchTeam(data.data)
+        setLoading(false)
     }
 
     const checklistExport = (item, check) => {
@@ -78,12 +86,12 @@ const Team = ({ navigation }) => {
                     />
                 </View>
                 {checked && <View style={styles.header_label}>
-                        <Text style={styles.header_label_button}>Đã chọn ({listExport.length})</Text>
-                        
+                    <Text style={styles.header_label_button}>Đã chọn ({listExport.length})</Text>
+
                 </View>}
             </View>
             <View style={{ flex: 1, width: '100%', marginTop: 20 }}>
-                {authCtx.isMarketer !== 1 && searchTeam && searchTeam.length === 0 &&
+                {authCtx.isMarketer !== 1 && searchTeam && searchTeam.length === 0 && !loading &&
                     <View style={styles.container}>
                         <Text>Không có thành viên</Text>
                     </View>
@@ -94,6 +102,14 @@ const Team = ({ navigation }) => {
                     </View>
                 }
                 <ScrollView>
+                    {loading &&
+                        <View style={{alignItems: 'center'}}>
+                            <ShimmerPlaceholder visible={!loading} width={windowWidth * 0.9} height={56} style={{borderRadius: 10, marginBottom: 10}}/>
+                            <ShimmerPlaceholder visible={!loading} width={windowWidth * 0.9} height={56} style={{borderRadius: 10, marginBottom: 10}}/>
+                            <ShimmerPlaceholder visible={!loading} width={windowWidth * 0.9} height={56} style={{borderRadius: 10, marginBottom: 10}}/>
+                        </View>
+
+                    }
                     {searchTeam && searchTeam.map((item, index) => {
                         return (
                             <Tree item={item} navigation={navigation} key={index} checked={checked} checklistExport={checklistExport} listExport={listExport} handleChecked={handleChecked} />

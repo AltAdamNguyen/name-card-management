@@ -18,14 +18,15 @@ export const AuthProvider = ({ children }) => {
     const [userId, setUserId] = useState(0)
 
     const handleLogin = async(accessToken, refreshToken) => {
-        setIsLogin(true);
-        await SecureStore.setItemAsync('access_token',accessToken)
-        SecureStore.setItemAsync('refresh_token',refreshToken)
-
         let decoded = jwt_decode(accessToken);
-        console.log(decoded)
-        setIsMarketer(decoded.role)
-        setUserId(decoded.uid)
+        if(decoded.role !== 4){
+            setIsMarketer(decoded.role)
+            setUserId(decoded.uid)
+            setIsLogin(true);
+            await SecureStore.setItemAsync('access_token',accessToken)
+            SecureStore.setItemAsync('refresh_token',refreshToken)
+        }
+        
     }
 
     const handleLogout = async() => {
