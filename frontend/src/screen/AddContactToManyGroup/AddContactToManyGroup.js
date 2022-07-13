@@ -37,7 +37,6 @@ import { Checkbox, Appbar } from "react-native-paper";
 import ConfirmDialog from "../../components/customDialog/dialog/confirmDialog/ConfirmDialog";
 import CustomCheckedBox from "../../components/groupcontact/checkBoxCustom/CustomCheckedBox";
 
-
 const AddContactToManyGroup = ({ route, navigation }) => {
   const [checked, setChecked] = React.useState(false);
   const isFocus = useIsFocused();
@@ -45,15 +44,15 @@ const AddContactToManyGroup = ({ route, navigation }) => {
   const { t, i18n } = useTranslation();
   const [listGroupContact, setLisGroupContact] = useState([]);
   const [listGroupContactTotal, setListGroupContactTotal] = useState([]);
-  const [listGroupSearch, setListGroupSearch] = useState([])
+  const [listGroupSearch, setListGroupSearch] = useState([]);
 
   const [choosenItems, setChoosenItems] = useState(0);
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [modalAddContactVisible, setModalAddContactVisible] = useState(false);
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
 
   const onAddNewGroupContactPressed = (groupName) => {
-    setIsLoading(true)
+    setIsLoading(true);
     setModalAddContactVisible(false);
     FetchApi(
       GroupContactAPI.AddGroupContact,
@@ -75,26 +74,29 @@ const AddContactToManyGroup = ({ route, navigation }) => {
       );
     } else {
     }
-    setIsLoading(false)
+    setIsLoading(false);
   };
   const searchGroupHandle = (groupName) => {
     let listSearchGroup = [];
     if (groupName !== "") {
       listGroupContactTotal.map((item, index) => {
-        if (item.group.group_name != null && item.group.group_name.toLowerCase().includes(groupName.toLowerCase())) {
+        if (
+          item.group.group_name != null &&
+          item.group.group_name.toLowerCase().includes(groupName.toLowerCase())
+        ) {
           listSearchGroup.push(item);
         }
       });
       setListGroupSearch(listSearchGroup);
-      setLisGroupContact([])
+      setLisGroupContact([]);
     } else {
       setLisGroupContact(listGroupContactTotal);
-      setListGroupSearch([])
+      setListGroupSearch([]);
     }
   };
 
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(true);
     FetchApi(
       GroupContactAPI.ViewGroupContact,
       Method.GET,
@@ -105,7 +107,7 @@ const AddContactToManyGroup = ({ route, navigation }) => {
   }, []);
 
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(true);
     FetchApi(
       GroupContactAPI.ViewGroupContact,
       Method.GET,
@@ -118,48 +120,55 @@ const AddContactToManyGroup = ({ route, navigation }) => {
   const getGroupContact = (data) => {
     if (data.data.length > 0) {
       if (listGroupContactTotal.length > 0) {
-        setListGroupSearch([])
-        setLisGroupContact([...listGroupContactTotal, { isChecked: false, group: data.data[data.data.length - 1] }])
-        setListGroupContactTotal([...listGroupContactTotal, { isChecked: false, group: data.data[data.data.length - 1] }])
-      }
-      else {
-        let initListGroup = []
+        setListGroupSearch([]);
+        setLisGroupContact([
+          ...listGroupContactTotal,
+          { isChecked: false, group: data.data[data.data.length - 1] },
+        ]);
+        setListGroupContactTotal([
+          ...listGroupContactTotal,
+          { isChecked: false, group: data.data[data.data.length - 1] },
+        ]);
+      } else {
+        let initListGroup = [];
         data.data.map((item, index) => {
-          initListGroup.push({ isChecked: false, group: item })
-        })
+          initListGroup.push({ isChecked: false, group: item });
+        });
         setLisGroupContact(initListGroup);
         setListGroupContactTotal(initListGroup);
       }
     }
-    setIsLoading(false)
+    setIsLoading(false);
   };
 
   const checkBoxOnClickCallBack = (id, check) => {
     if (check) {
-      updateStateForListGroup(id, true)
-      setChoosenItems(choosenItems + 1)
+      updateStateForListGroup(id, true);
+      setChoosenItems(choosenItems + 1);
     } else {
-      updateStateForListGroup(id, false)
-      setChoosenItems(choosenItems - 1)
+      updateStateForListGroup(id, false);
+      setChoosenItems(choosenItems - 1);
     }
-  }
+  };
 
   const updateStateForListGroup = (id, check) => {
-    let newState = [...listGroupContactTotal]
-    let index = newState.findIndex(el => el.group.group_id === id)
-    newState[index] = { ...newState[index], isChecked: check }
-    setListGroupContactTotal(newState)
-  }
+    let newState = [...listGroupContactTotal];
+    let index = newState.findIndex((el) => el.group.group_id === id);
+    newState[index] = { ...newState[index], isChecked: check };
+    setListGroupContactTotal(newState);
+  };
 
   const addContactToManyGroupAPICallBack = (data) => {
-    navigation.goBack()
-  }
+    navigation.goBack();
+  };
 
   const AddContactToManyGroup = () => {
-    let selectedGroupIds = []
+    let selectedGroupIds = [];
     for (let i = 0; i < listGroupContactTotal.length; i++) {
       if (listGroupContactTotal[i].isChecked == true) {
-        selectedGroupIds.push({ group_id: listGroupContactTotal[i].group.group_id })
+        selectedGroupIds.push({
+          group_id: listGroupContactTotal[i].group.group_id,
+        });
       }
     }
     setConfirmDialogVisible(false);
@@ -176,7 +185,7 @@ const AddContactToManyGroup = ({ route, navigation }) => {
       },
       addContactToManyGroupAPICallBack
     );
-  }
+  };
 
   return (
     <Provider>
@@ -186,7 +195,11 @@ const AddContactToManyGroup = ({ route, navigation }) => {
           theme={{ colors: { primary: "transparent" } }}
         >
           <Appbar.BackAction onPress={() => navigation.goBack()} />
-          <Appbar.Content title={t("Screen_AddContactToManyGroup_Appbar_Content_Title_AddToGroup")} />
+          <Appbar.Content
+            title={t(
+              "Screen_AddContactToManyGroup_Appbar_Content_Title_AddToGroup"
+            )}
+          />
           <TouchableOpacity></TouchableOpacity>
         </Appbar.Header>
       </View>
@@ -206,7 +219,9 @@ const AddContactToManyGroup = ({ route, navigation }) => {
           </Pressable>
         </View>
         <View style={styles.container_title}>
-          <Text style={styles.container_title_label}>{t("Screen_AddContactToManyGroup_Title_MyGroups")}</Text>
+          <Text style={styles.container_title_label}>
+            {t("Screen_AddContactToManyGroup_Title_MyGroups")}
+          </Text>
           <TouchableOpacity onPress={() => setModalAddContactVisible(true)}>
             <Text style={styles.container_label_addNewGroup}>
               {t("Screen_AddContactToManyGroup_Title_AddGroup")}
@@ -216,7 +231,9 @@ const AddContactToManyGroup = ({ route, navigation }) => {
         <View style={styles.container_listGroup}>
           {listGroupContact.length == 0 && listGroupSearch.length == 0 && (
             <View style={styles.listContainer_view}>
-              <Text style={styles.listContainer_label}>{t("Screen_AddContactToManyGroup_ListGroup_NoGroupFound")}</Text>
+              <Text style={styles.listContainer_label}>
+                {t("Screen_AddContactToManyGroup_ListGroup_NoGroupFound")}
+              </Text>
             </View>
           )}
           <ScrollView>
@@ -225,7 +242,11 @@ const AddContactToManyGroup = ({ route, navigation }) => {
                 return (
                   <TouchableOpacity>
                     <View style={styles.container_listGroup_item}>
-                      <CustomCheckedBox id={item.group.group_id} onClick={checkBoxOnClickCallBack} isChecked={item.isChecked} />
+                      <CustomCheckedBox
+                        id={item.group.group_id}
+                        onClick={checkBoxOnClickCallBack}
+                        isChecked={item.isChecked}
+                      />
                       <Text style={styles.container_listGroup_item_label}>
                         {item.group.group_name}
                       </Text>
@@ -238,7 +259,11 @@ const AddContactToManyGroup = ({ route, navigation }) => {
                 return (
                   <TouchableOpacity>
                     <View style={styles.container_listGroup_item}>
-                      <CustomCheckedBox id={item.group.group_id} onClick={checkBoxOnClickCallBack} isChecked={item.isChecked} />
+                      <CustomCheckedBox
+                        id={item.group.group_id}
+                        onClick={checkBoxOnClickCallBack}
+                        isChecked={item.isChecked}
+                      />
                       <Text style={styles.container_listGroup_item_label}>
                         {item.group.group_name}
                       </Text>
@@ -277,8 +302,12 @@ const AddContactToManyGroup = ({ route, navigation }) => {
       <ConfirmDialog
         onVisible={confirmDialogVisible}
         label={t("Screen_AddContactToManyGroup_ConfirmDialog_Label")}
-        leftButtonTitle={t("Screen_AddContactToManyGroup_ConfirmDialog_LeftButtonTitle")}
-        rightButtonTitle={t("Screen_AddContactToManyGroup_ConfirmDialog_RightButtonTitle")}
+        leftButtonTitle={t(
+          "Screen_AddContactToManyGroup_ConfirmDialog_LeftButtonTitle"
+        )}
+        rightButtonTitle={t(
+          "Screen_AddContactToManyGroup_ConfirmDialog_RightButtonTitle"
+        )}
         onDismiss={() => {
           setConfirmDialogVisible(false);
         }}

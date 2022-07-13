@@ -132,7 +132,7 @@ const SearchContact = ({ navigation, route }) => {
         }
         navigation.navigate("HomeSwap", {
             screen: "AddContactToManyGroup",
-            params: { id: [...selectedContactIds] , userId: route.params.useid}
+            params: { id: [...selectedContactIds] , userId: route.params.useid }
         });
     }
 
