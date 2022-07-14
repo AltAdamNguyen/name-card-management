@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
         SecureStore.setItemAsync('refresh_token',refreshToken)
 
         let decoded = jwt_decode(accessToken);
-        console.log(decoded)
+        
         setIsMarketer(decoded.role)
         setUserId(decoded.uid)
     }

@@ -4,7 +4,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: 'column',
-        backgroundColor: '#ffff', 
+        // backgroundColor: '#ffff', 
+        justifyContent: 'center',
+        width: '100%'
+    },
+    modal: {
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     containerOverLay: {
         backgroundColor: 'rgba(130, 130, 130,0.5)',
@@ -19,10 +25,6 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignItems: 'center',
         width: '100%',
-    },
-    listContainer_view: {
-        justifyContent: 'flex-end',
-        alignItems: 'center',
     },
     listContainer_label: {
         color: '#828282',
@@ -50,7 +52,8 @@ const styles = StyleSheet.create({
         padding: 5,
         marginBottom: 8,
         alignItems: 'center',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        backgroundColor: "#FFF"
     },
     txtContact: {
         flex: 1,
@@ -92,11 +95,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-end',
         alignItems: 'center',
-    },
-    listContainer_view: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
+        
     },
     listContainer_label: {
         color: '#828282',

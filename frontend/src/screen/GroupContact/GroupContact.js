@@ -22,11 +22,11 @@ import Loading from "../../components/customDialog/dialog/loadingDialog/LoadingD
 import {
   IconButton,
   Searchbar,
-  FAB,
   Portal,
   Dialog,
   RadioButton,
   Provider,
+  FAB
 } from "react-native-paper";
 import ModalAddGroupContact from "../../components/groupcontact/ModalAddGroupContact";
 import { FetchApi } from "../../service/api/FetchAPI";
@@ -92,8 +92,8 @@ const GroupContact = ({ navigation }) => {
       setLisGroupContact(data.data);
       setListGroupContactTotal(data.data);
       setLoading(false);
-    }else{
-      setLoading(false)
+    } else {
+      setLoading(false);
     }
   };
 
@@ -149,35 +149,37 @@ const GroupContact = ({ navigation }) => {
                         params: { id: item.group_id, name: item.group_name },
                       });
                     }}
+                    key={index}
                   >
                     <View style={styles.container_listGroup_item}>
-                      <Text style={styles.container_listGroup_item_label}>
+                      <Text style={styles.container_listGroup_item_label} >
                         {item.group_name}
                       </Text>
-                      <Image source={iconPath.icRight} />
+                      <Image source={iconPath.icRight}  />
                     </View>
                   </TouchableOpacity>
                 );
               })}
           </ScrollView>
         </View>
+        <FAB style={styles.floatButton} icon="tune" size={24} color="#fff" onPress={() => setModalAddContactVisible(true)} />
         <View>
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={styles.container_footer}
             onPress={() => setModalAddContactVisible(true)}
           >
-            <Image source={iconPath.icPlus} />
-            <ModalAddGroupContact
-              label={t("ModalAddGroupContact_Placeholder_GroupName")}
-              confirmLabel={t("ModalAddGroupContact_Label_Confirm")}
-              onVisible={modalAddContactVisible}
-              onDismiss={() => setModalAddContactVisible(false)}
-              onPressCancel={() => setModalAddContactVisible(false)}
-              onPressConfirm={onAddNewGroupContactPressed}
-            />
-          </TouchableOpacity>
+            <Image source={iconPath.icPlus} style={styles.icPlus} />
+          </TouchableOpacity> */}
         </View>
       </SafeAreaView>
+      <ModalAddGroupContact
+        label={t("ModalAddGroupContact_Placeholder_GroupName")}
+        confirmLabel={t("ModalAddGroupContact_Label_Confirm")}
+        onVisible={modalAddContactVisible}
+        onDismiss={() => setModalAddContactVisible(false)}
+        onPressCancel={() => setModalAddContactVisible(false)}
+        onPressConfirm={onAddNewGroupContactPressed}
+      />
       <Loading onVisible={isLoading ? true : false} />
     </Provider>
   );
