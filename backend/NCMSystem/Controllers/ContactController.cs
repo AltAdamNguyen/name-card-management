@@ -159,7 +159,7 @@ namespace NCMSystem.Controllers
 
         [HttpGet]
         [Route("api/contacts/{id}")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult GetDetail(int id)
         {
             List<string> listGr = new List<string>();
@@ -237,7 +237,7 @@ namespace NCMSystem.Controllers
 
         [HttpGet]
         [Route("api/contacts/search")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult GetSearch(string value = "", int? userId = 0)
         {
             if (userId == 0 || userId == null)
@@ -374,7 +374,7 @@ namespace NCMSystem.Controllers
 
         [HttpGet]
         [Route("api/contacts/search/de-active")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult GetSearchDa(string value = "")
         {
             int userId = ((JwtToken)Request.Properties["payload"]).Uid;
@@ -661,13 +661,28 @@ namespace NCMSystem.Controllers
             });
         }
 
+        [HttpPost]
+        [Route("api/contacts/export")]
+        // [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.SaleDirector })]
+        public ResponseMessageResult ExportContact([FromBody] string[] arrayId)
+        {
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
         [HttpPatch]
         [Route("api/contacts/transfer")]
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
         public ResponseMessageResult TransferOwnContact([FromBody] TransferContact tranCt)
         {
             string email = tranCt.TransferTo ?? "";
-            
+
             var user = db.users.FirstOrDefault(u => u.email == email);
             if (user == null)
             {
@@ -685,7 +700,7 @@ namespace NCMSystem.Controllers
                     db.SaveChanges();
                 }
             }
-            
+
             return new ResponseMessageResult(new HttpResponseMessage()
             {
                 StatusCode = System.Net.HttpStatusCode.OK,
@@ -872,7 +887,7 @@ namespace NCMSystem.Controllers
                     return Common.ResponseMessage.BadRequest("C0005");
                 }
 
-                var duplicate = db.contacts.FirstOrDefault(c => c.email == email && c.id != id );
+                var duplicate = db.contacts.FirstOrDefault(c => c.email == email && c.id != id);
                 if (duplicate != null)
                 {
                     return Common.ResponseMessage.NotFound("D0005");

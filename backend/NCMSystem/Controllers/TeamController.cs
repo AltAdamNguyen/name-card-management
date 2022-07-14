@@ -22,7 +22,7 @@ namespace NCMSystem.Controllers
         // GET: api/Team
         [HttpGet]
         [Route("api/team")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Marketer, NcmRole.Manager })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.SaleDirector, NcmRole.Manager })]
         public ResponseMessageResult GetListMember()
         {
             int userId = ((JwtToken)Request.Properties["payload"]).Uid;
@@ -79,7 +79,7 @@ namespace NCMSystem.Controllers
 
         [HttpGet]
         [Route("api/team/{id}/contacts")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Marketer, NcmRole.Manager })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.SaleDirector, NcmRole.Manager })]
         public ResponseMessageResult GetDetailMember(int id, int page = 1)
         {
             int pageSize = 10;
@@ -128,7 +128,7 @@ namespace NCMSystem.Controllers
 
         [HttpGet]
         [Route("api/team/search")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Marketer, NcmRole.Manager })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.SaleDirector, NcmRole.Manager })]
         public ResponseMessageResult GetSearchMember(string value = "")
         {
             List<SearchResponse> listMember = new List<SearchResponse>();

@@ -16,7 +16,7 @@ namespace NCMSystem.Filter
     {
         Staff = 1,
         Manager = 2,
-        Marketer = 3,
+        SaleDirector = 3,
         Admin = 4
     }
 

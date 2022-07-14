@@ -8,6 +8,7 @@ namespace NCMSystem.Models.CallAPI.Team
         public int Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
+        public bool IsActive { get; set; }
         public int RoleId { get; set; }
         public int? ManagerId { get; set; }
     }

@@ -24,7 +24,7 @@ namespace NCMSystem.Controllers
         //GET
         [HttpGet]
         [Route("api/groups")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult GetHomeListGroupContact()
         {
             List<HomeGroupContact> listHomeGroupContact = new List<HomeGroupContact>();
@@ -63,7 +63,7 @@ namespace NCMSystem.Controllers
 
         [HttpGet]
         [Route("api/groups/{id}")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult GetGroupContactDetail(int id)
         {
             DetailGroupContact dgc = new DetailGroupContact();
@@ -130,7 +130,7 @@ namespace NCMSystem.Controllers
 
         [HttpGet]
         [Route("api/groups/search-groupcontact/{group_name}")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult SearchGroupContact(string group_name)
         {
             List<SearchGroupContact> listFoundGroup = new List<SearchGroupContact>();
@@ -173,7 +173,7 @@ namespace NCMSystem.Controllers
 
         [HttpGet]
         [Route("api/groups/search-contactingroupcontact/{group_id}/{valueToSearch}")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult SearchContactInGroupContact(int group_id, string valueToSearch)
         {
             List<ContactInGroup> listFoundContactsInGroup = new List<ContactInGroup>();
@@ -268,7 +268,7 @@ namespace NCMSystem.Controllers
 
         [HttpGet]
         [Route("api/groups/get-contactsavailableforgroup/{type}/{group_id}")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult GetContactsAvailableForAGroup(string type, int group_id)
         {
             List<AvailableContactToGroup> availableContacts = new List<AvailableContactToGroup>();
@@ -394,7 +394,7 @@ namespace NCMSystem.Controllers
         //POST
         [HttpPost]
         [Route("api/groups/get-groupsforcontacts")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult GetGroupsAvailableForContacts([FromBody] AvailableGroupToContactRequest request)
         {
             //initialize list of groups that can add the requested contact
@@ -539,7 +539,7 @@ namespace NCMSystem.Controllers
 
         [HttpPost]
         [Route("api/groups/add-group")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult AddGroup([FromBody] GroupNameRequest request)
         {
             try
@@ -603,7 +603,7 @@ namespace NCMSystem.Controllers
 
         [HttpPost]
         [Route("api/groups/add-contactstogroups")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult AddContactsToGroups([FromBody] ContactToGroupRequest request)
         {
             try
@@ -761,7 +761,7 @@ namespace NCMSystem.Controllers
         //DELETE
         [HttpDelete]
         [Route("api/groups/delete-contactfromgroup/")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult DeleteContactFromGroup([FromBody] DeleteContactFromGroupRequest request)
         {
             try
@@ -839,7 +839,7 @@ namespace NCMSystem.Controllers
 
         [HttpDelete]
         [Route("api/groups/delete-groupcontact/{id}")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult DeleteGroupContact(int id)
         {
             try
@@ -886,7 +886,7 @@ namespace NCMSystem.Controllers
         //PATCH
         [HttpPatch]
         [Route("api/groups/rename/{id}")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult PatchGroupName(int id, [FromBody] RenameGroupContact request)
         {
             try

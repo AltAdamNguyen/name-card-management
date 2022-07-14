@@ -216,7 +216,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\CallAPI\Admin\Staff.cs" />
     <Compile Include="Models\CallAPI\CommonResponse.cs" />
     <Compile Include="Models\CallAPI\Contact\ContactRequest.cs" />
     <Compile Include="Models\CallAPI\Contact\DaContact.cs" />
@@ -267,6 +266,9 @@
       <DependentUpon>NcmModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\group.cs">
+      <DependentUpon>NcmModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\import_user.cs">
       <DependentUpon>NcmModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\NcmModel.Context.cs">
@@ -381,8 +383,9 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\HelpPage\Controllers\" />
-    <Folder Include="Files" />
+    <Folder Include="Files\" />
     <Folder Include="Logs\" />
+    <Folder Include="Models\CallAPI\Admin" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

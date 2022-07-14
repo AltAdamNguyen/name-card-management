@@ -11,7 +11,6 @@ using ExcelDataReader;
 using NCMSystem.Filter;
 using NCMSystem.Models;
 using NCMSystem.Models.CallAPI;
-using NCMSystem.Models.CallAPI.Admin;
 using NCMSystem.Models.CallAPI.Team;
 using Newtonsoft.Json;
 using Serilog;
@@ -45,6 +44,8 @@ namespace NCMSystem.Controllers
                     Id = user?.id ?? 0,
                     Name = user?.name ?? "",
                     Email = user?.email ?? "",
+                    IsActive = user?.isActive ?? false,
+                    Role = user?.role_id ?? 0,
                     Children = new List<TeamResponse>()
                 });
                 foreach (var a in listMember)
@@ -82,6 +83,8 @@ namespace NCMSystem.Controllers
                         Id = a.Id,
                         Name = a.Name,
                         Email = a.Email,
+                        Role = a.RoleId,
+                        IsActive = a.IsActive,
                         Children = new List<TeamResponse>()
                     });
                 }
@@ -100,9 +103,9 @@ namespace NCMSystem.Controllers
 
 
         [HttpPost]
-        [Route("api/admin/staff")]
+        [Route("api/admin/import")]
         // [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin })]
-        public ResponseMessageResult AddStaff()
+        public ResponseMessageResult ImportData()
         {
             var temp = HttpContext.Current.Request.Files[0];
             if (temp == null || temp.ContentLength == 0)
@@ -125,44 +128,56 @@ namespace NCMSystem.Controllers
             var boss = db.users.FirstOrDefault(x => x.role_id == 3);
 
             reader.Read();
+            reader.Read();
 
             while (reader.Read())
             {
-                Staff staff = new Staff();
-                for (int column = 0; column < reader.FieldCount; column++)
+                if (reader.GetValue(1) == null)
+                    break;
+
+                string name = "";
+                string email = "";
+                int role = 0;
+                for (int column = 1; column < 4; column++)
                 {
                     switch (column)
                     {
-                        case 0:
-                            staff.Name = reader.GetString(column);
-                            break;
                         case 1:
-                            staff.Email = reader.GetString(column);
+                            name = reader.GetString(column);
                             break;
                         case 2:
+                            email = reader.GetString(column);
+                            break;
+                        case 3:
                             switch (reader.GetString(column))
                             {
                                 case "Staff":
-                                    staff.Role = 1;
+                                    role = 1;
                                     break;
                                 case "Manager":
-                                    staff.Role = 2;
+                                    role = 2;
                                     break;
                                 case "Sale Director":
                                     if (boss != null)
                                     {
-                                        staff.Role = 3;
+                                        return Common.ResponseMessage.BadRequest("A0002");
                                     }
 
-                                    staff.Role = 3;
+                                    role = 3;
                                     break;
                             }
 
                             break;
                     }
-
-                    Console.WriteLine(reader.GetString(column));
                 }
+
+                db.import_user.Add(new import_user()
+                {
+                    name = name,
+                    email = email,
+                    role_id = role,
+                });
+                db.SaveChanges();
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()

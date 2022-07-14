@@ -173,7 +173,7 @@ namespace NCMSystem.Controllers
 
         [HttpPost]
         [Route("api/auth/change-password")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.Marketer })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult ChangePassword([FromBody] ChangePasswordRequest request)
         {
             string newPassword = request.NewPassword;
