@@ -8,6 +8,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    label: {
+        color: '#828282',
+        fontSize: 16,
+    },
     header: {
         flexDirection: 'column',
         alignItems: 'center',
