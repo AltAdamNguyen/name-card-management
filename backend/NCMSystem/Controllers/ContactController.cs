@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Web.Http;
 using System.Web.Http.Results;
+using ClosedXML.Excel;
 using NCMSystem.Filter;
 using NCMSystem.Models;
 using NCMSystem.Models.CallAPI;
@@ -663,9 +664,87 @@ namespace NCMSystem.Controllers
 
         [HttpPost]
         [Route("api/contacts/export")]
-        // [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.SaleDirector })]
-        public ResponseMessageResult ExportContact([FromBody] string[] arrayId)
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.SaleDirector })]
+        public ResponseMessageResult ExportContact([FromBody] ExportRequest eRq)
         {
+            var wbook = new XLWorkbook();
+            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+            var user = db.users.FirstOrDefault(u => u.id == userId);
+            if (user == null)
+            {
+                return Common.ResponseMessage.NotFound("C0018");
+            }
+
+            DateTime dateCreated = DateTime.Now;
+            if (eRq.ArrayId == null || eRq.ArrayId.Length == 0)
+            {
+                return Common.ResponseMessage.BadRequest("C0018");
+            }
+
+            string fileName = AppDomain.CurrentDomain.BaseDirectory + "Files\\ExportContact_" +
+                              dateCreated.ToString("M-d-yyyy") + ".xlsx";
+            var ws = wbook.Worksheets.Add("Contacts");
+
+            string[] headers =
+            {
+                "Name", "Email", "Company", "Job Title", "Phone", "Address", "Website", "Fax", "Note", "Create Date",
+                "Created By"
+            };
+            int row = 1;
+            int col = 1;
+            foreach (var header in headers)
+            {
+                ws.Cell(row, col).Value = header;
+                ws.Cell(row, col).Style.Fill.BackgroundColor = XLColor.BabyBlue;
+                ws.Column(col).Width = 20;
+                col++;
+            }
+
+            row++;
+            col = 1;
+
+            foreach (var id in eRq.ArrayId)
+            {
+                List<contact> contact = db.contacts.Where(c => c.createdBy == id).ToList();
+                if (contact.Count > 0)
+                {
+                    foreach (var c in contact)
+                    {
+                        ws.Cell(row, col).Value = c.name;
+                        col++;
+                        ws.Cell(row, col).Value = c.email;
+                        col++;
+                        ws.Cell(row, col).Value = c.company;
+                        col++;
+                        ws.Cell(row, col).Value = c.job_title;
+                        col++;
+                        ws.Cell(row, col).SetValue(Convert.ToString(c.phone));
+                        col++;
+                        ws.Cell(row, col).Value = c.address;
+                        col++;
+                        ws.Cell(row, col).Value = c.website;
+                        col++;
+                        ws.Cell(row, col).SetValue(Convert.ToString(c.fax));
+                        col++;
+                        ws.Cell(row, col).Value = c.note;
+                        col++;
+                        ws.Cell(row, col).Value = c.create_date;
+                        col++;
+                        ws.Cell(row, col).Value = c.user.name;
+                        row++;
+                        col = 1;
+                    }
+                }
+
+                row++;
+                col = 1;
+            }
+
+            ws.Columns().AdjustToContents();
+            wbook.SaveAs(fileName);
+            SendGridConfig.SendExportFile(user.email,
+                $"https://{Request.RequestUri.Host}/Files/ExportContact_{dateCreated:M-d-yyyy}.xlsx");
+
             return new ResponseMessageResult(new HttpResponseMessage()
             {
                 StatusCode = System.Net.HttpStatusCode.OK,
