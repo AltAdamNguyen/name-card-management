@@ -187,7 +187,7 @@ const AddContactToGroup = ({ navigation, route }) => {
                             <ScrollView>
                                 {listContact.length != 0 && listContact.map((item, index) => {
                                     return (
-                                        <View style={styles.item}>
+                                        <View style={styles.item}  key={index}>
                                             <CustomCheckedBox id={item.contact.contact_id} onClick={checkBoxOnClickCallBack} isChecked={item.isChecked} />
                                             <View style={styles.image}>
                                                 <Image style={styles.image} source={{ uri: item.contact.contact_imgurl }} />

@@ -169,7 +169,7 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
                             )}
                             {listSearch.length != 0 && listSearch.map((item, index) => {
                                 return (
-                                    <View style={styles.item}>
+                                    <View style={styles.item} key={index}>
                                         <CustomCheckedBox id={item.contact.contact_id} onClick={checkBoxOnClickCallBack} isChecked={item.isChecked} />
                                         <View style={styles.image}>
                                             <Image style={styles.image} source={{ uri: item.contact.contact_imgurl }} />
