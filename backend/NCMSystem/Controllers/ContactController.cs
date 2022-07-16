@@ -809,6 +809,17 @@ namespace NCMSystem.Controllers
             var rq = new request();
             try
             {
+                var newCt = db.contacts.FirstOrDefault(c => c.id == idDuplicate);
+                if (newCt == null)
+                {
+                    return Common.ResponseMessage.BadRequest("C0002");
+                }
+
+                if (userId != newCt.createdBy)
+                {
+                    return Common.ResponseMessage.BadRequest("C0018");
+                }
+
                 var contact = db.contacts.FirstOrDefault(c => c.id == id);
                 if (contact == null)
                 {
