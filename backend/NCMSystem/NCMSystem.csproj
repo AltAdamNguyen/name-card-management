@@ -226,6 +226,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\CallAPI\Admin\ImportedUser.cs" />
     <Compile Include="Models\CallAPI\CommonResponse.cs" />
     <Compile Include="Models\CallAPI\Contact\ContactRequest.cs" />
     <Compile Include="Models\CallAPI\Contact\DaContact.cs" />
@@ -396,7 +397,6 @@
     <Folder Include="Areas\HelpPage\Controllers\" />
     <Folder Include="Files\" />
     <Folder Include="Logs\" />
-    <Folder Include="Models\CallAPI\Admin" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

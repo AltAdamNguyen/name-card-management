@@ -11,6 +11,7 @@ using ExcelDataReader;
 using NCMSystem.Filter;
 using NCMSystem.Models;
 using NCMSystem.Models.CallAPI;
+using NCMSystem.Models.CallAPI.Admin;
 using NCMSystem.Models.CallAPI.Team;
 using Newtonsoft.Json;
 using Serilog;
@@ -177,7 +178,71 @@ namespace NCMSystem.Controllers
                     email = email,
                     role_id = role,
                 });
-                db.SaveChanges();
+            }
+
+            db.SaveChanges();
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpGet]
+        [Route("api/admin/import")]
+        // [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin })]
+        public ResponseMessageResult GetListImport()
+        {
+            List<ImportedUser> list = new List<ImportedUser>();
+            try
+            {
+                var users = db.import_user.ToList();
+                foreach (var a in users)
+                {
+                    list.Add(new ImportedUser()
+                    {
+                        Name = a.name,
+                        Email = a.email,
+                        Role = a.role_id,
+                        Manager = a.manager,
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = list
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+        
+        [HttpGet]
+        [Route("api/admin/email")]
+        // [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin })]
+        public ResponseMessageResult GetListEmailManager()
+        {
+            
+            try
+            {
+                
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()

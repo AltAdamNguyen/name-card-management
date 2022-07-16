@@ -176,6 +176,7 @@ namespace NCMSystem.Controllers
 
                 if (contact.owner_id != contact.createdBy)
                 {
+                    var existCt = db.contacts.FirstOrDefault(u => u.email == contact.email);
                     return new ResponseMessageResult(new HttpResponseMessage()
                     {
                         StatusCode = System.Net.HttpStatusCode.OK,
@@ -186,6 +187,10 @@ namespace NCMSystem.Controllers
                             {
                                 name = contact.name,
                                 company = contact.company,
+                                owner_id = contact.owner_id,
+                                createdBy = contact.createdBy,
+                                id = existCt?.id,
+                                idDuplicate = contact.id,
                                 owner = db.users.FirstOrDefault(u => u.id == contact.owner_id)?.name,
                             }
                         }), Encoding.UTF8, "application/json")
@@ -793,21 +798,17 @@ namespace NCMSystem.Controllers
         [HttpGet]
         [Route("api/contacts/request/{id}/{idDuplicate}")]
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
-        public ResponseMessageResult RequestTransferContact(int id, int idDuplicate = 0)
+        public ResponseMessageResult RequestTransferContact(int id = 0, int idDuplicate = 0)
         {
             int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+
             DateTime dateCreated = DateTime.Now;
+            if (id < 0) id = 0;
             if (idDuplicate < 0) idDuplicate = 0;
 
             var rq = new request();
             try
             {
-                var rqExist = db.requests.FirstOrDefault(c => c.new_contact_id == id);
-                if (rqExist != null)
-                {
-                    idDuplicate = rqExist.old_contact_id ?? 0;
-                }
-
                 var contact = db.contacts.FirstOrDefault(c => c.id == id);
                 if (contact == null)
                 {
@@ -826,7 +827,29 @@ namespace NCMSystem.Controllers
                     return Common.ResponseMessage.NotFound("C0018");
                 }
 
-                //random string 30 length
+                var existRq = db.requests.FirstOrDefault(r =>
+                    r.old_contact_id == contact.id && r.new_contact_id == idDuplicate);
+
+                if (existRq != null)
+                {
+                    existRq.status = "R0002";
+                    SendGridConfig.SendRequestTransferContact(userOwner.email, contact, user, existRq);
+                    db.SaveChanges();
+                    return new ResponseMessageResult(new HttpResponseMessage()
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                        {
+                            Message = "Success",
+                            Data = new
+                            {
+                                id_request = existRq.id,
+                                code_request = existRq.code
+                            }
+                        }), Encoding.UTF8, "application/json")
+                    });
+                }
+
                 Random random = new Random();
                 const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
                 var codeRq = new string(Enumerable.Repeat(chars, 30)
@@ -861,8 +884,8 @@ namespace NCMSystem.Controllers
                     Message = "Success",
                     Data = new
                     {
-                        id_request = rq.id,
-                        code_request = rq.code
+                        id_request = rq?.id,
+                        code_request = rq?.code
                     }
                 }), Encoding.UTF8, "application/json")
             });
@@ -1204,6 +1227,38 @@ namespace NCMSystem.Controllers
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
                     Message = "success",
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpPatch]
+        [Route("api/contacts/request/cancel/{id}/{code}")]
+        public ResponseMessageResult CancelTransferContact(int id, string code)
+        {
+            try
+            {
+                var rq = db.requests.FirstOrDefault(c => c.id == id && c.code == code);
+                if (rq == null)
+                {
+                    return Common.ResponseMessage.NotFound("C0019");
+                }
+
+                rq.status = "R0001";
+
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "R0004",
                 }), Encoding.UTF8, "application/json")
             });
         }
