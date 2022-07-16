@@ -53,6 +53,16 @@
           <Property Name="group_id" Type="int" Nullable="false" />
           <Property Name="contact_id" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="import_user">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="255" />
+          <Property Name="email" Type="nvarchar" MaxLength="255" />
+          <Property Name="role_id" Type="int" />
+          <Property Name="manager" Type="nvarchar" MaxLength="255" />
+        </EntityType>
         <EntityType Name="request">
           <Key>
             <PropertyRef Name="id" />
@@ -191,6 +201,18 @@ warning 6035: The relationship 'contact_status_code_fk' has columns that are not
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="import_user_role_id_fk">
+          <End Role="role" Type="Self.role" Multiplicity="0..1" />
+          <End Role="import_user" Type="Self.import_user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="role">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="import_user">
+              <PropertyRef Name="role_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="request_contact_id_fk">
           <End Role="contact" Type="Self.contact" Multiplicity="0..1" />
           <End Role="request" Type="Self.request" Multiplicity="*" />
@@ -283,6 +305,7 @@ warning 6035: The relationship 'request_status_request_code_fk' has columns that
           <EntitySet Name="flag" EntityType="Self.flag" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="group" EntityType="Self.group" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="group_contact" EntityType="Self.group_contact" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="import_user" EntityType="Self.import_user" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="request" EntityType="Self.request" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="role" EntityType="Self.role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="status" EntityType="Self.status" Schema="dbo" store:Type="Tables" />
@@ -309,6 +332,10 @@ warning 6035: The relationship 'request_status_request_code_fk' has columns that
           <AssociationSet Name="group_user_id_fk" Association="Self.group_user_id_fk">
             <End Role="user" EntitySet="user" />
             <End Role="group" EntitySet="group" />
+          </AssociationSet>
+          <AssociationSet Name="import_user_role_id_fk" Association="Self.import_user_role_id_fk">
+            <End Role="role" EntitySet="role" />
+            <End Role="import_user" EntitySet="import_user" />
           </AssociationSet>
           <AssociationSet Name="request_contact_id_fk" Association="Self.request_contact_id_fk">
             <End Role="contact" EntitySet="contact" />
@@ -398,6 +425,11 @@ warning 6035: The relationship 'request_status_request_code_fk' has columns that
             <End Role="contact" EntitySet="contacts" />
             <End Role="group" EntitySet="groups" />
           </AssociationSet>
+          <EntitySet Name="import_user" EntityType="NCMSystemModel.import_user" />
+          <AssociationSet Name="import_user_role_id_fk" Association="NCMSystemModel.import_user_role_id_fk">
+            <End Role="role" EntitySet="roles" />
+            <End Role="import_user" EntitySet="import_user" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="contact">
           <Key>
@@ -470,6 +502,7 @@ warning 6035: The relationship 'request_status_request_code_fk' has columns that
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="users" Relationship="NCMSystemModel.user_role_id_fk" FromRole="role" ToRole="user" />
+          <NavigationProperty Name="import_user" Relationship="NCMSystemModel.import_user_role_id_fk" FromRole="role" ToRole="import_user" />
         </EntityType>
         <EntityType Name="status">
           <Key>
@@ -655,6 +688,29 @@ warning 6035: The relationship 'request_status_request_code_fk' has columns that
           <End Type="NCMSystemModel.contact" Role="contact" Multiplicity="*" />
           <End Type="NCMSystemModel.group" Role="group" Multiplicity="*" />
         </Association>
+        <EntityType Name="import_user">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="role_id" Type="Int32" />
+          <Property Name="manager" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="role" Relationship="NCMSystemModel.import_user_role_id_fk" FromRole="import_user" ToRole="role" />
+        </EntityType>
+        <Association Name="import_user_role_id_fk">
+          <End Type="NCMSystemModel.role" Role="role" Multiplicity="0..1" />
+          <End Type="NCMSystemModel.import_user" Role="import_user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="role">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="import_user">
+              <PropertyRef Name="role_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -789,6 +845,17 @@ warning 6035: The relationship 'request_status_request_code_fk' has columns that
               <ScalarProperty Name="id" ColumnName="contact_id" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="import_user">
+            <EntityTypeMapping TypeName="NCMSystemModel.import_user">
+              <MappingFragment StoreEntitySet="import_user">
+                <ScalarProperty Name="manager" ColumnName="manager" />
+                <ScalarProperty Name="role_id" ColumnName="role_id" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

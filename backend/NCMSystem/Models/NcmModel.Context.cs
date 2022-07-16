@@ -35,5 +35,6 @@ namespace NCMSystem.Models
         public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<token> tokens { get; set; }
         public virtual DbSet<user> users { get; set; }
+        public virtual DbSet<import_user> import_user { get; set; }
     }
 }
