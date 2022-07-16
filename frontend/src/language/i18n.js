@@ -6,6 +6,7 @@ import vietnamese from './vietnamese.json'
 const resources = {};
 
 i18next.use(initReactI18next).init({
+    compatibilityJSON: 'v3',
     lng: 'vn',
     resources: {
         vn: vietnamese,

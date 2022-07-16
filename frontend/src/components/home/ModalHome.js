@@ -3,7 +3,7 @@ import { useContext, useState } from "react";
 import i18next from "../../language/i18n";
 import AuthContext from "../../store/AuthContext";
 import { useTranslation } from "react-i18next";
-import {Modal,TouchableOpacity,TouchableWithoutFeedback,View,Text,Alert} from "react-native";
+import {Modal, TouchableWithoutFeedback, View, Text, Pressable} from "react-native";
 import { Button, Card } from "react-native-paper";
 import styles from "../../screen/Home/styles";
 
@@ -36,10 +36,10 @@ const ModalHome = ({ visible, onPressVisable, sort, onPressSort, onPressDeactive
       transparent={true}
       visible={visible}
       onRequestClose={() => {
-        Alert.alert("Modal has been closed.");
+        onPressVisable()
       }}
     >
-      <TouchableOpacity style={{ flex: 1 }} onPress={onPressVisable}>
+      <Pressable style={{ flex: 1 }} onPress={onPressVisable}>
       <View style={{alignItems: 'center', flex: 1}}>
         <TouchableWithoutFeedback>
 
@@ -122,7 +122,7 @@ const ModalHome = ({ visible, onPressVisable, sort, onPressSort, onPressDeactive
           </Card>
         </TouchableWithoutFeedback>
         </View>
-      </TouchableOpacity>
+      </Pressable>
     </Modal>
   );
 };

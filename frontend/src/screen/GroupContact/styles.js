@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#FFFF',
+        // backgroundColor: '#FFFF',
     },
     container_sectionStyle: {
         width: '90%',
@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'column',
         alignItems: 'center',
-        width: '95%',
+        width: '90%',
     },
     sectionStyle: {
         justifyContent: 'center',
@@ -49,6 +49,13 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: '#1890FF',
     },
+    floatButton: {
+        position: 'absolute',
+        margin: 16,
+        right: 0,
+        bottom: 0,
+        backgroundColor: '#1890FF'
+    },
     container_listGroup: {
         flex: 1,
         flexDirection: 'column',
@@ -63,6 +70,7 @@ const styles = StyleSheet.create({
         borderColor: '#82828225',
         borderRadius: 10,
         padding: 15,
+        backgroundColor: "#FFF"
     },
     container_listGroup_item_label: {
         fontSize: 16,

@@ -57,7 +57,7 @@ const ModalGroupContactDetail = ({
         transparent={true}
         visible={visible}
         onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
+          onPressVisable()
         }}
         onDismiss={onDismiss}
       >

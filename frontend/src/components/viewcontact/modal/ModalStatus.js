@@ -1,6 +1,6 @@
 //import liraries
 import React from 'react';
-import { View, Text, Modal, TouchableWithoutFeedback, Platform, Alert } from 'react-native';
+import { View, Text, Modal, TouchableWithoutFeedback, Platform } from 'react-native';
 import { TextInput, Button, Card } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
 import styles from '../../../screen/ViewContact/styles';
@@ -20,7 +20,7 @@ const ModalStatus = ({ listStatus, visible, onPressVisable, status, onPressSubmi
             transparent={true}
             visible={visible}
             onRequestClose={() => {
-                Alert.alert('Modal has been closed.');
+                onPressVisable()
             }}
         >
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>

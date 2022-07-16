@@ -1,10 +1,11 @@
 //import liraries
-import { Text, View, SafeAreaView, Image, useWindowDimensions, TouchableOpacity, Dimensions, ActivityIndicator } from 'react-native';
+import { Text, View, SafeAreaView, Image, useWindowDimensions, Alert } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import { Camera, FlashMode } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { IconButton } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { isEmpty } from 'lodash';
 import { useIsFocused } from '@react-navigation/native';
 import iconPath from '../../constants/iconPath';
 import { parseCard } from '../../validate/ParseVcard';
@@ -61,20 +62,25 @@ const ScanScreen = ({ navigation }) => {
 
   const handleScanQr = ({data}) => {
     let card = parseCard(data)
-    let contact = {
-      name: card.n ? card.n : card.fn,
-      job_title: card.title ? card.title : '',
-      company: card.org ? card.org : '',
-      phone: card.tel && card.tel.value ? card.tel.value.replace('+','') : '',
-      email: card.email && card.email.value ? card.email.value : '',
-      fax: '',
-      note: '',
-      address: card.adr ? card.adr : '',
-      website: card.url ? card.url : '',
-      img_url: 'https://ncmsystem.azurewebsites.net/Images/noImage.jpg',
+    if (isEmpty(card)) {
+      Alert.alert('Invalid QR code')
+    }else{
+      let contact = {
+        name: card.n ? card.n : card.fn,
+        job_title: card.title ? card.title : '',
+        company: card.org ? card.org : '',
+        phone: card.tel && card.tel.value ? card.tel.value.replace('+','') : '',
+        email: card.email && card.email.value ? card.email.value : '',
+        fax: '',
+        note: '',
+        address: card.adr ? card.adr : '',
+        website: card.url ? card.url : '',
+        img_url: 'https://ncmsystem.azurewebsites.net/Images/noImage.jpg',
+      }
+      navigation.navigate('HomeSwap', { screen: 'UpdateContact', params: { contact: contact } });
+      setScanQr(!scanQr)
     }
-    navigation.navigate('HomeSwap', { screen: 'UpdateContact', params: { contact: contact } });
-    setScanQr(!scanQr)
+    
   }
 
   return (

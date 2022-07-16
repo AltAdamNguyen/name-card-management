@@ -1,6 +1,6 @@
 //import liraries
 import React, { useState, useRef, useEffect, useContext } from 'react';
-import { View, Text, Image, ScrollView, Dimensions } from 'react-native';
+import { View, Text, Image, ScrollView, Dimensions, Alert } from 'react-native';
 import { TextInput, Provider, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { StackActions } from '@react-navigation/native';
@@ -160,6 +160,9 @@ const UpdateContact = ({ route, navigation }) => {
                 id_duplicate: data.data.id_duplicate,
                 owner: data.data.user_name,
             })
+        }
+        if(data.message === "D0005"){
+            Alert.alert('Thông báo', 'Email đã tồn tại', [{ text: 'OK' }])
         }
     }
 

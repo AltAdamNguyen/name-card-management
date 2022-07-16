@@ -22,12 +22,12 @@ const SignIn = ({ navigation }) => {
   
   const { t, i18n } = useTranslation();
   const [user, setUser] = useState({
-    // email: "anhnche141236@gmail.com",
-    // password: "trung123@",
+    email: "anhnche141236@gmail.com",
+    password: "trung123@",
     // email: "person1@gmail.com",
     // password: "Trung123@"
-    email: "person2@gmail.com",
-    password: "Trung123@",
+    // email: "person2@gmail.com",
+    // password: "Trung123@",
   });
   
   const [isSecureEntry, setIsSecureEntry] = useState(true);

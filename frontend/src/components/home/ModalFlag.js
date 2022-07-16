@@ -1,4 +1,4 @@
-import {Text,Modal,TouchableOpacity,TouchableWithoutFeedback,Alert} from "react-native";
+import {Text,Modal,TouchableWithoutFeedback, Pressable} from "react-native";
 import { Button, Card } from "react-native-paper";
 import styles from "../../screen/Home/styles";
 import i18next from "../../language/i18n"; 
@@ -14,10 +14,10 @@ const ModalFlag = ({ listItem, visible, onPress, onPressVisable }) => {
       transparent={true}
       visible={visible}
       onRequestClose={() => {
-        Alert.alert("Modal has been closed.");
+        onPressVisable()
       }}
     >
-      <TouchableOpacity
+      <Pressable
         style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         onPress={onPressVisable}
       >
@@ -40,7 +40,7 @@ const ModalFlag = ({ listItem, visible, onPress, onPressVisable }) => {
             })}
           </Card>
         </TouchableWithoutFeedback>
-      </TouchableOpacity>
+      </Pressable>
     </Modal>
   );
 };

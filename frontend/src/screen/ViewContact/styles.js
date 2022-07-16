@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
     },
     body: {
         flex: 1,
+        alignItems: 'center',
     },
     body_imgContact: {
         width: Dimensions.get('window').width,
