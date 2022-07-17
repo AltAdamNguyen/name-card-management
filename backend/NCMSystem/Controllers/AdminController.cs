@@ -7,6 +7,7 @@ using System.Text;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Results;
+using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using ExcelDataReader;
 using NCMSystem.Filter;
 using NCMSystem.Models;
@@ -228,16 +229,201 @@ namespace NCMSystem.Controllers
                 }), Encoding.UTF8, "application/json")
             });
         }
-        
+
         [HttpGet]
-        [Route("api/admin/email")]
-        // [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin })]
+        [Route("api/admin/list-email-manager")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin })]
         public ResponseMessageResult GetListEmailManager()
         {
-            
+            var listEmail = new List<EmailManagerResponse>();
+
             try
             {
+                db.users.Where(x => x.role_id == 2).ToList().ForEach(x =>
+                {
+                    listEmail.Add(new EmailManagerResponse()
+                    {
+                        Id = x.id,
+                        Email = x.email,
+                    });
+                });
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = listEmail
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpGet]
+        [Route("api/admin/user/{id}")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin })]
+        public ResponseMessageResult GetUserInformation(int id)
+        {
+            UserInformationResponse response = new UserInformationResponse();
+
+            try
+            {
+                var user = db.users.FirstOrDefault(x => x.id == id);
+                if (user == null)
+                    return Common.ResponseMessage.BadRequest("");
+
+                if (user.role_id == 4)
+                    return Common.ResponseMessage.BadRequest("");
+
+                response.UserId = user.id;
+                response.Name = user.name;
+                response.Email = user.email;
+                response.RoleId = user.role_id;
+                response.IsActive = user.isActive;
+                response.IdManager = user.user2?.id;
+                response.EmailManager = user.user2?.name;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = response
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpGet]
+        [Route("api/admin/user-imported")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin })]
+        public ResponseMessageResult GetListUserImported()
+        {
+            var listUser = new List<UserInformationImportedResponse>();
+
+            try
+            {
+                var list = db.import_user.ToList();
+                foreach (var user in list)
+                {
+                    listUser.Add(new UserInformationImportedResponse()
+                    {
+                        Id = user.id,
+                        Email = user.email,
+                        Name = user.name,
+                        RoleId = user.role_id,
+                        EmailManager = user.manager
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = listUser
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpGet]
+        [Route("api/admin/user-imported/{id}")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin })]
+        public ResponseMessageResult GetUserImportedDetail(int id)
+        {
+            var selectUser = new UserInformationImportedResponse();
+
+            try
+            {
+                var user = db.import_user.FirstOrDefault(x => x.id == id);
+
+                if (user == null)
+                    return Common.ResponseMessage.BadRequest("");
+
+                selectUser.Id = user.id;
+                selectUser.Name = user.name;
+                selectUser.Email = user.email;
+                selectUser.RoleId = user.role_id;
+                selectUser.EmailManager = user.manager;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = selectUser
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpPut]
+        [Route("api/admin/user-imported/{id}")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin })]
+        public ResponseMessageResult ChangeUserImported([FromBody] ChangeUserImportedRequest request, int id)
+        {
+            try
+            {
+                if (request == null)
+                    return Common.ResponseMessage.BadRequest("");
+
+                if (request.Name == null || request.Email == null || request.Manager == null)
+                    return Common.ResponseMessage.BadRequest("");
                 
+                if (request.RoleId != 1 && request.RoleId != 2)
+                    return Common.ResponseMessage.BadRequest("");
+
+                if (request.Name.Trim() == "" || request.Email.Trim() == "" || request.Manager.Trim() == "")
+                    return Common.ResponseMessage.BadRequest("");
+
+                if (!Validator.Validator.CheckName(request.Name.Trim()) ||
+                    !Validator.Validator.CheckEmail(request.Email.Trim()) ||
+                    !Validator.Validator.CheckEmail(request.Manager.Trim()))
+                    return Common.ResponseMessage.BadRequest("");
+
+                var selectUserByEmail = db.users.FirstOrDefault(x => x.email == request.Email);
+                if (selectUserByEmail != null)
+                    return Common.ResponseMessage.BadRequest("");
+                
+                var selectUserByEmailManager = db.users.FirstOrDefault(x => x.email == request.Manager);
+                if (selectUserByEmailManager == null)
+                    return Common.ResponseMessage.BadRequest("");
+                
+                var selectUserImported = db.import_user.FirstOrDefault(x => x.id == id);
+                if (selectUserImported == null)
+                    return Common.ResponseMessage.BadRequest("");
+                
+                selectUserImported.name = request.Name;
+                selectUserImported.email = request.Email;
+                selectUserImported.role_id = request.RoleId;
+                selectUserImported.manager = request.Manager;
+                
+                db.SaveChanges();
             }
             catch (Exception ex)
             {
