@@ -26,6 +26,8 @@
         <AssociationConnector Association="NCMSystemModel.token_user_id_fk" />
         <AssociationConnector Association="NCMSystemModel.user_user_id_fk" />
         <AssociationConnector Association="NCMSystemModel.group_contact" />
+        <EntityTypeShape EntityType="NCMSystemModel.import_user" Width="1.5" PointX="3" PointY="8.75" />
+        <AssociationConnector Association="NCMSystemModel.import_user_role_id_fk" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

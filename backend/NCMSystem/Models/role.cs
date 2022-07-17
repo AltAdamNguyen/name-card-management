@@ -18,6 +18,7 @@ namespace NCMSystem.Models
         public role()
         {
             this.users = new HashSet<user>();
+            this.import_user = new HashSet<import_user>();
         }
     
         public int id { get; set; }
@@ -25,5 +26,7 @@ namespace NCMSystem.Models
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<user> users { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<import_user> import_user { get; set; }
     }
 }
