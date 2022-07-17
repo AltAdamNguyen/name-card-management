@@ -163,6 +163,10 @@ const ViewContact = ({ navigation, route }) => {
         navigation.navigate("Bottom", { screen: "HomeScreen" })
     }
 
+    const handleRequest = () => {
+        FetchApi(`${ContactAPI.RequestTransferContact}/${contact.id}/${contact.idDuplicate}`,Method.GET, ContentType.JSON, undefined, getMessage)
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <Appbar.Header theme={{ colors: { primary: "transparent" } }} statusBarHeight={1}>
@@ -384,25 +388,34 @@ const ViewContact = ({ navigation, route }) => {
                 <SnackbarComponent visible={snackVisible} onPressVisible={() => setSnackVisible(false)} message={'Đã sao chép'} />
                 <ModalDeactivate visible={modalDeactivateVisible} reason={deactive} onPressVisable={() => setModalDeactivateVisible(false)} onPressSubmit={handleDeactivate} />
             </View>
-            {route.params && route.params.showFooter && Boolean(contact) && !Boolean(contact.owner) && <View style={styles.footer}>
-                <Pressable style={styles.footer_button} onPress={() => {
-                    navigation.navigate("HomeSwap", {
-                        screen: "AddContactToManyGroup",
-                        params: { id: [{contact_id : route.params.idContact}] , userId : "" }
-                    });
-                }}>
-                    <Icon name="account-multiple-plus-outline" size={24} color="#828282" />
-                    <Text style={styles.footer_button_label}>Thêm nhóm</Text>
-                </Pressable>
-                {route.params && !route.params.useid && <Pressable style={styles.footer_button} onPress={handlePressUpdateContact}>
-                    <Icon name="account-edit-outline" size={24} color="#828282" />
-                    <Text style={styles.footer_button_label}>Sửa</Text>
-                </Pressable>}
-                {route.params && !route.params.useid && <Pressable style={styles.footer_button} onPress={() => setModalDeactivateVisible(true)}>
-                    <Icon name="account-minus-outline" size={24} color="#828282" />
-                    <Text style={styles.footer_button_label}>Vô hiệu hoá</Text>
-                </Pressable>}
-            </View>}
+            {route.params && route.params.showFooter && 
+                <View style={styles.footer}>
+                    {Boolean(contact) && !Boolean(contact.owner) &&
+                        <Pressable style={styles.footer_button} onPress={() => {
+                        navigation.navigate("HomeSwap", {
+                            screen: "AddContactToManyGroup",
+                            params: { id: [{ contact_id: route.params.idContact }], userId: "" }
+                        });
+                    }}>
+                        <Icon name="account-multiple-plus-outline" size={24} color="#828282" />
+                        <Text style={styles.footer_button_label}>Thêm nhóm</Text>
+                    </Pressable>}
+                    {route.params && !route.params.useid && contact && !Boolean(contact.owner) &&
+                        <Pressable style={styles.footer_button} onPress={handlePressUpdateContact}>
+                            <Icon name="account-edit-outline" size={24} color="#828282" />
+                            <Text style={styles.footer_button_label}>Sửa</Text>
+                        </Pressable>}
+                    {route.params && !route.params.useid && contact && !Boolean(contact.owner) &&
+                        <Pressable style={styles.footer_button} onPress={() => setModalDeactivateVisible(true)}>
+                            <Icon name="account-minus-outline" size={24} color="#828282" />
+                            <Text style={styles.footer_button_label}>Vô hiệu hoá</Text>
+                        </Pressable>}
+                    {route.params && route.params.request !== "R0002" && contact && contact.owner_id !== contact.createdBy &&
+                        <Pressable style={styles.footer_button} onPress={handleRequest}>
+                            <Icon name="account-minus-outline" size={24} color="#828282" />
+                            <Text style={styles.footer_button_label}>Gửi yêu cầu</Text>
+                        </Pressable>}
+                </View>}
         </SafeAreaView>
     );
 };

@@ -5,7 +5,7 @@ import jwt_decode from 'jwt-decode';
 const AuthContext = React.createContext({
     locale: 'vn',
     isLogin: false,
-    isMarketer: 0,
+    role: 0,
     userId: 0,
     onLogin: () => {},
     onLogout: () => {},
@@ -14,13 +14,13 @@ const AuthContext = React.createContext({
 export const AuthProvider = ({ children }) => {
     const [isLogin, setIsLogin] = useState(false);
     const [locale, setLocale] = useState('vn')
-    const [isMarketer, setIsMarketer] = useState(0)
+    const [role, setrole] = useState(0)
     const [userId, setUserId] = useState(0)
 
     const handleLogin = async(accessToken, refreshToken) => {
         let decoded = jwt_decode(accessToken);
         if(decoded.role !== 4){
-            setIsMarketer(decoded.role)
+            setrole(decoded.role)
             setUserId(decoded.uid)
             setIsLogin(true);
             await SecureStore.setItemAsync('access_token',accessToken)
@@ -43,7 +43,7 @@ export const AuthProvider = ({ children }) => {
         <AuthContext.Provider value={{
             locale : locale,
             isLogin: isLogin,
-            isMarketer: isMarketer,
+            role: role,
             userId: userId,
             onLogin: handleLogin,
             onLogout: handleLogout,

@@ -19,12 +19,13 @@ import LoadingDialog from '../../components/customDialog/dialog/loadingDialog/Lo
 
 const listRequest = {
     R0001: {
-        label: "Không chấp nhận",
-        color: "#FF0000"
+        color: "#C73E1D",
+        icon: "account-cancel"
+        
     },
     R0002: {
-        label: "Đang xử lý",
-        color: "#FFA500"
+        color: "#F29339",
+        icon: "account-clock"
     },
 
 
@@ -62,8 +63,8 @@ const Home = ({ route, navigation }) => {
         F0003: {
             name: 'not-important',
             title: t("Screen_Home_Button_Flag_NotImportant"),
-            color: '#F2C94C',
-            background: 'rgba(242, 201, 76, 0.2)',
+            color: '#FFCD01',
+            background: '#FFCD0120',
             value: 'F0003',
         },
         F0004: {
@@ -155,7 +156,7 @@ const Home = ({ route, navigation }) => {
         } else {
             return (
                 <View style={styles.buttonFlag}>
-                    <View style={[{ backgroundColor: '#82828250', borderColor: '#828282', borderWidth: 1 }, styles.sectionFlag]}>
+                    <View style={[{ backgroundColor: '#FFF', borderColor: '#828282', borderWidth: 1 }, styles.sectionFlag]}>
                         <Text style={styles.labelFlag}>{t("Screen_Home_Button_Flag_Label")}</Text>
                         <IconButton icon="chevron-down" size={16} />
                     </View>
@@ -214,9 +215,9 @@ const Home = ({ route, navigation }) => {
                             />
                         }
                     >
-                        {listFilter.length != 0 && listFilter.map((item, index) => {
+                        {listFilter.length != 0 && listFilter.map((item, index) => {   
                             return (
-                                <Card mode='elevated' style={styles.card} elevation={2} key={index} onPress={() => { navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: item.id, showFooter: true } }) }}>
+                                <Card mode='elevated' style={styles.card} elevation={2} key={index} onPress={() => { navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: item.id, showFooter: true, request: item.status_request } }) }}>
                                     <View style={styles.item}>
                                         <View style={styles.imgContact}>
                                             <Image source={{ uri: item.status_request || item.owner_id !== item.createdBy ? 'https://ncmsystem.azurewebsites.net/Images/noImage.jpg' : item.img_url }} style={styles.image} />
@@ -226,6 +227,12 @@ const Home = ({ route, navigation }) => {
                                                 <Text style={styles.nameContact}>{item.name}</Text>
                                                 {item.flag !== null &&
                                                     <Icon name="bookmark" size={24} color={listFlag[item.flag].color} />
+                                                }
+                                                {!Boolean(item.status_request) && item.owner_id !== item.createdBy &&
+                                                    <Icon name="account-alert" size={24} color="#cc6e1b" />
+                                                }
+                                                {Boolean(item.status_request) &&
+                                                    <Icon name={listRequest[item.status_request].icon} size={24} color={listRequest[item.status_request].color} />
                                                 }
                                             </View>
                                             {!Boolean(item.status_request) || item.owner_id === item.createdBy &&
@@ -239,16 +246,6 @@ const Home = ({ route, navigation }) => {
                                             </View>
                                         </View>
                                     </View>
-                                    {Boolean(item.status_request) &&
-                                        <View style={styles.card_noti}>
-                                            <Text style={[styles.card_noti_label, { color: listRequest[item.status_request].color }]}>{listRequest[item.status_request].label}</Text>
-                                        </View>
-                                    }
-                                    {!Boolean(item.status_request) && item.owner_id !== item.createdBy &&
-                                        <View style={styles.card_noti}>
-                                            <Text style={styles.card_noti_label}>Không phải người sở hữu</Text>
-                                        </View>
-                                    }
                                 </Card>
                             )
                         })}

@@ -130,9 +130,9 @@ const styles = StyleSheet.create({
         paddingLeft: 5,
     },
     labelFlag: {
-        fontWeight: 'bold',
         fontSize: 16,
-        marginRight: 10,
+        marginLeft: 10,
+        marginRight: 5
     },
 
     listContainer: {

@@ -122,7 +122,7 @@ const AddContact = ({ contact, loading, navigation }) => {
 
   const contextDuplicateOther = {
     title: "Thông báo",
-    message: `Bản ghi đã tồn tại và có owner là ${duplicateInfo.owner}, bản ghi này sẽ vẫn được lưu lại nhưng bạn ko phải owner. bạn có muốn yêu cầu được cấp quyền owner cho contact này ko?`,
+    message: `Bản ghi đã tồn tại và có owner là ${duplicateInfo.owner}, bản ghi này sẽ vẫn được lưu lại nhưng bạn không phải owner. Bạn có muốn yêu cầu được cấp quyền owner cho contact này không?`,
     cancel: "Không",
     submit: "Đồng ý",
   }

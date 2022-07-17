@@ -24,7 +24,7 @@ const SignIn = ({ navigation }) => {
   const [user, setUser] = useState({
     email: "anhnche141236@gmail.com",
     password: "trung123@",
-    // email: "person1@gmail.com",
+    // email: "conganhnguyen33@gmail.com",
     // password: "Trung123@"
     // email: "person2@gmail.com",
     // password: "Trung123@",
@@ -56,8 +56,8 @@ const SignIn = ({ navigation }) => {
   const getMessage = (data) => {
     setLoading(false)
     data.message === "U0001" && authCtx.onLogin(data.data.access_token, data.data.refresh_token);
-    data.message === "U0003" && alert("Email or password is incorrect");
-    data.message === "U0002" && alert("User is not active");
+    data.message === "U0003" && Alert.alert('Thông báo', 'Email hoặc mật khẩu không đúng', [{ text: 'OK' }])
+    data.message === "U0002" && Alert.alert('Thông báo', 'Tài khoản không có quyền truy cập', [{ text: 'OK' }])
   };
 
   const handleChange = (name) => {

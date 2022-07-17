@@ -1,8 +1,8 @@
 //import liraries
 import React, { useEffect, useState, useCallback, useContext } from 'react';
-import { View, SafeAreaView, ScrollView, Text } from 'react-native';
+import { View, SafeAreaView, ScrollView, Text, Alert } from 'react-native';
 import styles from './styles';
-import { Searchbar, FAB, Provider } from 'react-native-paper';
+import { Searchbar, FAB, Provider, Button } from 'react-native-paper';
 import debounce from 'lodash.debounce';
 import Tree from '../../components/team/Tree';
 import { useIsFocused } from '@react-navigation/native';
@@ -24,7 +24,7 @@ const Team = ({ navigation }) => {
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (authCtx.isMarketer !== 1) {
+        if (authCtx.role !== 1) {
             setLoading(true)
             FetchApi(TeamAPI.GetTeam, Method.GET, ContentType.JSON, undefined, getTeam)
         }
@@ -69,11 +69,25 @@ const Team = ({ navigation }) => {
         debounceSearch(value);
     }
 
+    const handleExport = () => {
+        listExport.length === 0 && Alert.alert('Thông báo', 'Vui lòng chọn nhân viên', [{ text: 'OK' }])
+        if (listExport.length > 0) {
+            setLoading(true)
+            FetchApi(TeamAPI.Export, Method.POST, ContentType.JSON, { array_id: listExport }, exportSuccess)
+        } 
+    }
+
+    const exportSuccess = (data) => {
+        console.log(data)
+        setLoading(false)
+        Alert.alert('Thông báo', 'Xuất file thành công\nVui lòng check email của bạn', [{ text: 'OK' }])
+    }
+
     return (
         <Provider>
             <SafeAreaView style={styles.container}>
                 <View style={styles.header}>
-                    <View style={styles.sectionStyle}>
+                    {authCtx.role !== 1 &&<View style={styles.sectionStyle}>
                         <Searchbar
                             placeholder="Tìm kiếm nhân viên"
                             theme={{
@@ -83,21 +97,21 @@ const Team = ({ navigation }) => {
                             value={text}
                             onChangeText={handleSearch}
                             clearIcon="close-circle"
-                            editable={authCtx.isMarketer !== 1}
+                            editable={authCtx.role !== 1}
                         />
-                    </View>
+                    </View>}
                     {checked && <View style={styles.header_label}>
                         <Text style={styles.header_label_button}>Đã chọn ({listExport.length})</Text>
-
+                        <Button uppercase={false} color="#1980FF" onPress={handleExport}>Export</Button>
                     </View>}
                 </View>
-                <View style={{ flex: 1, width: '100%', marginTop: 20 }}>
-                    {authCtx.isMarketer !== 1 && searchTeam && searchTeam.length === 0 && !loading &&
+                <View style={styles.body}>
+                    {authCtx.role !== 1 && searchTeam && searchTeam.length === 0 && !loading &&
                         <View style={styles.container}>
                             <Text style={styles.label}>Không có thành viên</Text>
                         </View>
                     }
-                    {authCtx.isMarketer === 1 &&
+                    {authCtx.role === 1 &&
                         <View style={styles.container}>
                             <Text style={styles.label}>Không khả dụng</Text>
                         </View>
@@ -105,7 +119,7 @@ const Team = ({ navigation }) => {
                     {loading &&
                         <LoadingDialog onVisible={loading} />
                     }
-                    {authCtx.isMarketer !== 1 &&
+                    {authCtx.role !== 1 &&
                         < ScrollView >
                             {searchTeam && searchTeam.map((item, index) => {
                                 return (
@@ -114,7 +128,7 @@ const Team = ({ navigation }) => {
                             })}
                         </ScrollView>
                     }
-                    {authCtx.isMarketer !== 1 &&
+                    {authCtx.role === 3 &&
                         <FAB icon="export" size={24} color="#FFF" style={styles.fab} onPress={() => setChecked(!checked)} />
                     }
                 </View>

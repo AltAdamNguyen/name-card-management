@@ -63,7 +63,8 @@ const ScanScreen = ({ navigation }) => {
   const handleScanQr = ({data}) => {
     let card = parseCard(data)
     if (isEmpty(card)) {
-      Alert.alert('Invalid QR code')
+      Alert.alert('Thông báo', 'Mã QR không hợp lệ', [{ text: 'Quét lại' }])
+      setScanQr(true)
     }else{
       let contact = {
         name: card.n ? card.n : card.fn,
@@ -79,8 +80,7 @@ const ScanScreen = ({ navigation }) => {
       }
       navigation.navigate('HomeSwap', { screen: 'UpdateContact', params: { contact: contact } });
       setScanQr(!scanQr)
-    }
-    
+    }  
   }
 
   return (
