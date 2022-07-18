@@ -72,9 +72,9 @@ const Home = ({ route, navigation }) => {
             value: 'F0004',
         }
     }
-    useEffect(() => {
-        setLoading(true);
+    useEffect(() => {      
         FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
+        setLoading(true);
     }, [])
 
     useEffect(() => {
@@ -183,7 +183,8 @@ const Home = ({ route, navigation }) => {
                                 roundness: 10,
                                 colors: { primary: '#1890FF' }
                             }}
-                            editable={false}
+                            editable={false}   
+                            pointerEvents="none"                        
                         />
                     </Pressable>
                 </View>

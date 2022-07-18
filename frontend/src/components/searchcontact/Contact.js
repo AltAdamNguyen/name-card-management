@@ -53,11 +53,22 @@ const listStatus = {
         value: 'S0003',
     }
 }
+
+const listRequest = {
+    R0001: {
+        color: "#C73E1D",
+        icon: "account-cancel"    
+    },
+    R0002: {
+        color: "#F29339",
+        icon: "account-clock"
+    },
+}
 // create a component
 const Contact = ({ item, route, handleViewContact, checkListGroup, handleReActivateButton, listGroup = [], visibleCheckBox }) => {
 
     return (
-        <Card mode='elevated' style={styles.card} elevation={2} onPress={() => handleViewContact(item.id)}>
+        <Card mode='elevated' style={styles.card} elevation={2} onPress={() => handleViewContact(item)}>
             <View>
                 <View style={styles.item}>
                     {visibleCheckBox &&
