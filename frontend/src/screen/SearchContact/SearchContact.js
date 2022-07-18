@@ -14,6 +14,17 @@ import ModalActivate from '../../components/searchcontact/ModalActivate';
 import Contact from '../../components/searchcontact/Contact';
 import ModalTransfer from '../../components/searchcontact/ModalTransfer';
 
+const listRequest = {
+    R0001: {
+        color: "#C73E1D",
+        icon: "account-cancel"    
+    },
+    R0002: {
+        color: "#F29339",
+        icon: "account-clock"
+    },
+}
+
 // create a component
 const SearchContact = ({ navigation, route }) => {
     const [listContact, setListContact] = useState([]);
@@ -62,7 +73,7 @@ const SearchContact = ({ navigation, route }) => {
     }
 
     const handleViewContact = (id) => {
-        !route.params && navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: id } })
+        !route.params && navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: id, showFooter: true, request: item.status_request } })
         route.params && route.params.useid && navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: id, viewOnly: true } })
     }
 

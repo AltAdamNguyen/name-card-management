@@ -20,15 +20,12 @@ import LoadingDialog from '../../components/customDialog/dialog/loadingDialog/Lo
 const listRequest = {
     R0001: {
         color: "#C73E1D",
-        icon: "account-cancel"
-        
+        icon: "account-cancel"    
     },
     R0002: {
         color: "#F29339",
         icon: "account-clock"
     },
-
-
 }
 
 const Home = ({ route, navigation }) => {
