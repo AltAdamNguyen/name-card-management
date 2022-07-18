@@ -246,7 +246,7 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult GetSearch(string value = "", int? userId = 0)
         {
-            if (userId == 0 || userId == null)
+            if (userId <= 0 || userId == null)
             {
                 userId = ((JwtToken)Request.Properties["payload"]).Uid;
             }
@@ -256,6 +256,7 @@ namespace NCMSystem.Controllers
             try
             {
                 var query = db.contacts.Where(c => c.createdBy == userId && c.isActive == true);
+
                 if (value == null)
                 {
                     value = "";
@@ -264,14 +265,11 @@ namespace NCMSystem.Controllers
                 var draft = query;
 
                 SearchContact sc;
-
-                List<contact> listSearch;
-                draft = draft.Where(c => c.name.Contains(value));
-                listSearch = draft.ToList();
-                if (listSearch.Count != 0)
+                foreach (var c in draft)
                 {
-                    foreach (var c in listSearch)
+                    if (RemoveSign4VietnameseString(c.name).Contains(value.Trim().ToLower()))
                     {
+                        var rq = db.requests.FirstOrDefault(r => r.new_contact_id == c.id);
                         sc = new SearchContact
                         {
                             Id = c.id,
@@ -281,6 +279,9 @@ namespace NCMSystem.Controllers
                             Company = c.company,
                             Email = c.email,
                             Status = c.status_id,
+                            Owner = c.owner_id,
+                            CreateBy = c.createdBy,
+                            Request = rq?.status,
                             Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id,
                             CreatedAt = c.create_date
                         };
@@ -290,12 +291,11 @@ namespace NCMSystem.Controllers
 
                 // clear query
                 draft = query;
-                draft = draft.Where(c => c.company.Contains(value));
-                listSearch = draft.ToList();
-                if (listSearch.Count != 0)
+                foreach (var c in draft)
                 {
-                    foreach (var c in listSearch)
+                    if (RemoveSign4VietnameseString(c.company).Contains(value.Trim().ToLower()))
                     {
+                        var rq = db.requests.FirstOrDefault(r => r.new_contact_id == c.id);
                         sc = new SearchContact
                         {
                             Id = c.id,
@@ -305,6 +305,36 @@ namespace NCMSystem.Controllers
                             Company = c.company,
                             Email = c.email,
                             Status = c.status_id,
+                            Owner = c.owner_id,
+                            CreateBy = c.createdBy,
+                            Request = rq?.status,
+                            Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id,
+                            CreatedAt = c.create_date
+                        };
+                        listCt.Add(sc);
+                    }
+                }
+                
+                draft = query;
+                draft = draft.Where(c => c.email.Trim().ToLower().Contains(value.Trim().ToLower()));
+                var listSearch = draft.ToList();
+                if (listSearch.Count != 0)
+                {
+                    foreach (var c in listSearch)
+                    {
+                        var rq = db.requests.FirstOrDefault(r => r.new_contact_id == c.id);
+                        sc = new SearchContact
+                        {
+                            Id = c.id,
+                            ImgUrl = c.image_url,
+                            Name = c.name,
+                            JobTitle = c.job_title,
+                            Company = c.company,
+                            Email = c.email,
+                            Status = c.status_id,
+                            Owner = c.owner_id,
+                            CreateBy = c.createdBy,
+                            Request = rq?.status,
                             Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id,
                             CreatedAt = c.create_date
                         };
@@ -312,14 +342,14 @@ namespace NCMSystem.Controllers
                     }
                 }
 
-                // clear query
                 draft = query;
-                draft = draft.Where(c => c.email.Contains(value));
+                draft = draft.Where(c => c.phone.Trim().Contains(value.Trim().ToLower()));
                 listSearch = draft.ToList();
                 if (listSearch.Count != 0)
                 {
                     foreach (var c in listSearch)
                     {
+                        var rq = db.requests.FirstOrDefault(r => r.new_contact_id == c.id);
                         sc = new SearchContact
                         {
                             Id = c.id,
@@ -329,29 +359,9 @@ namespace NCMSystem.Controllers
                             Company = c.company,
                             Email = c.email,
                             Status = c.status_id,
-                            Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id,
-                            CreatedAt = c.create_date
-                        };
-                        listCt.Add(sc);
-                    }
-                }
-
-                draft = query;
-                draft = draft.Where(c => c.phone.Contains(value));
-                listSearch = draft.ToList();
-                if (listSearch.Count != 0)
-                {
-                    foreach (var c in listSearch)
-                    {
-                        sc = new SearchContact
-                        {
-                            Id = c.id,
-                            ImgUrl = c.image_url,
-                            Name = c.name,
-                            JobTitle = c.job_title,
-                            Company = c.company,
-                            Email = c.email,
-                            Status = c.status_id,
+                            Owner = c.owner_id,
+                            CreateBy = c.createdBy,
+                            Request = rq?.status,
                             Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id,
                             CreatedAt = c.create_date
                         };
@@ -376,6 +386,50 @@ namespace NCMSystem.Controllers
                     Data = listCt
                 }), Encoding.UTF8, "application/json")
             });
+        }
+
+        private static readonly string[] VietnameseSigns = new string[]
+        {
+            "aAeEoOuUiIdDyYBbCcDdFfGgHhJjKkLlMmNnPpQqRrSsTtVvWwXxYyZz",
+
+            "áàạảãâấầậẩẫăắằặẳẵ",
+
+            "ÁÀẠẢÃÂẤẦẬẨẪĂẮẰẶẲẴ",
+
+            "éèẹẻẽêếềệểễ",
+
+            "ÉÈẸẺẼÊẾỀỆỂỄ",
+
+            "óòọỏõôốồộổỗơớờợởỡ",
+
+            "ÓÒỌỎÕÔỐỒỘỔỖƠỚỜỢỞỠ",
+
+            "úùụủũưứừựửữ",
+
+            "ÚÙỤỦŨƯỨỪỰỬỮ",
+
+            "íìịỉĩ",
+
+            "ÍÌỊỈĨ",
+
+            "đ",
+
+            "Đ",
+
+            "ýỳỵỷỹ",
+
+            "ÝỲỴỶỸ"
+        };
+
+        private static string RemoveSign4VietnameseString(string str)
+        {
+            for (int i = 1; i < VietnameseSigns.Length; i++)
+            {
+                for (int j = 0; j < VietnameseSigns[i].Length; j++)
+                    str = str.Replace(VietnameseSigns[i][j], VietnameseSigns[0][i - 1]);
+            }
+
+            return str.ToLower();
         }
 
         [HttpGet]

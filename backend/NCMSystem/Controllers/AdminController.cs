@@ -7,7 +7,6 @@ using System.Text;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Results;
-using DocumentFormat.OpenXml.Office2010.ExcelAc;
 using ExcelDataReader;
 using NCMSystem.Filter;
 using NCMSystem.Models;
@@ -19,6 +18,7 @@ using Serilog;
 
 namespace NCMSystem.Controllers
 {
+    [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin })]
     public class AdminController : ApiController
     {
         private NCMSystemEntities db = new NCMSystemEntities(Environment.GetEnvironmentVariable("NCMSystemEntities"));
@@ -26,7 +26,6 @@ namespace NCMSystem.Controllers
 
         [HttpGet]
         [Route("api/admin/team")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin })]
         public ResponseMessageResult GetListMember(int id = 0)
         {
             if (id < 0) id = 0;
@@ -106,117 +105,91 @@ namespace NCMSystem.Controllers
 
         [HttpPost]
         [Route("api/admin/import")]
-        // [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin })]
         public ResponseMessageResult ImportData()
         {
-            var temp = HttpContext.Current.Request.Files[0];
-            if (temp == null || temp.ContentLength == 0)
-            {
-                return Common.ResponseMessage.BadRequest("A0001");
-            }
-
-            long timeStart = DateTime.Now.Ticks;
-            string fileName = AppDomain.CurrentDomain.BaseDirectory + "Files\\staff_" + timeStart + ".xlsx";
-            temp.SaveAs(fileName);
-
-            var stream = File.Open(fileName, FileMode.Open, FileAccess.Read);
-            var reader = ExcelReaderFactory.CreateReader(stream);
-
-            if (reader == null)
-            {
-                return Common.ResponseMessage.BadRequest("A0002");
-            }
-
-            var boss = db.users.FirstOrDefault(x => x.role_id == 3);
-
-            reader.Read();
-            reader.Read();
-
-            while (reader.Read())
-            {
-                if (reader.GetValue(1) == null)
-                    break;
-
-                string name = "";
-                string email = "";
-                int role = 0;
-                for (int column = 1; column < 4; column++)
-                {
-                    switch (column)
-                    {
-                        case 1:
-                            name = reader.GetString(column);
-                            break;
-                        case 2:
-                            email = reader.GetString(column);
-                            break;
-                        case 3:
-                            switch (reader.GetString(column))
-                            {
-                                case "Staff":
-                                    role = 1;
-                                    break;
-                                case "Manager":
-                                    role = 2;
-                                    break;
-                                case "Sale Director":
-                                    if (boss != null)
-                                    {
-                                        return Common.ResponseMessage.BadRequest("A0002");
-                                    }
-
-                                    role = 3;
-                                    break;
-                            }
-
-                            break;
-                    }
-                }
-
-                db.import_user.Add(new import_user()
-                {
-                    name = name,
-                    email = email,
-                    role_id = role,
-                });
-            }
-
-            db.SaveChanges();
-
-            return new ResponseMessageResult(new HttpResponseMessage()
-            {
-                StatusCode = System.Net.HttpStatusCode.OK,
-                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
-                {
-                    Message = "Success",
-                }), Encoding.UTF8, "application/json")
-            });
-        }
-
-        [HttpGet]
-        [Route("api/admin/import")]
-        // [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin })]
-        public ResponseMessageResult GetListImport()
-        {
-            List<ImportedUser> list = new List<ImportedUser>();
             try
             {
-                var users = db.import_user.ToList();
-                foreach (var a in users)
+                db.import_user.RemoveRange(db.import_user);
+                var temp = HttpContext.Current.Request.Files[0];
+                if (temp == null || temp.ContentLength == 0)
                 {
-                    list.Add(new ImportedUser()
+                    return Common.ResponseMessage.BadRequest("A0001");
+                }
+
+
+                long timeStart = DateTime.Now.Ticks;
+                string fileName = AppDomain.CurrentDomain.BaseDirectory + "Files\\staff_" + timeStart + ".xlsx";
+                temp.SaveAs(fileName);
+
+                var stream = File.Open(fileName, FileMode.Open, FileAccess.Read);
+                var reader = ExcelReaderFactory.CreateReader(stream);
+
+                if (reader == null)
+                {
+                    return Common.ResponseMessage.BadRequest("A0002");
+                }
+
+                var boss = db.users.FirstOrDefault(x => x.role_id == 3);
+
+                reader.Read();
+                reader.Read();
+
+                while (reader.Read())
+                {
+                    if (reader.GetValue(1) == null)
+                        break;
+
+                    string name = "";
+                    string email = "";
+                    int role = 0;
+                    for (int column = 1; column < 4; column++)
                     {
-                        Name = a.name,
-                        Email = a.email,
-                        Role = a.role_id,
-                        Manager = a.manager,
+                        switch (column)
+                        {
+                            case 1:
+                                name = reader.GetString(column);
+                                break;
+                            case 2:
+                                email = reader.GetString(column);
+                                break;
+                            case 3:
+                                switch (reader.GetValue(column))
+                                {
+                                    case "Staff":
+                                        role = 1;
+                                        break;
+                                    case "Manager":
+                                        role = 2;
+                                        break;
+                                    case "Sale Director":
+                                        if (boss != null)
+                                        {
+                                            return Common.ResponseMessage.BadRequest("A0002");
+                                        }
+
+                                        role = 3;
+                                        break;
+                                }
+
+                                break;
+                        }
+                    }
+
+                    db.import_user.Add(new import_user()
+                    {
+                        name = name,
+                        email = email,
+                        role_id = role,
                     });
                 }
+
+                db.SaveChanges();
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("Failed");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -225,14 +198,12 @@ namespace NCMSystem.Controllers
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
                     Message = "Success",
-                    Data = list
                 }), Encoding.UTF8, "application/json")
             });
         }
 
         [HttpGet]
         [Route("api/admin/list-email-manager")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin })]
         public ResponseMessageResult GetListEmailManager()
         {
             var listEmail = new List<EmailManagerResponse>();
@@ -267,7 +238,6 @@ namespace NCMSystem.Controllers
 
         [HttpGet]
         [Route("api/admin/user/{id}")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin })]
         public ResponseMessageResult GetUserInformation(int id)
         {
             UserInformationResponse response = new UserInformationResponse();
@@ -308,7 +278,6 @@ namespace NCMSystem.Controllers
 
         [HttpGet]
         [Route("api/admin/user-imported")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin })]
         public ResponseMessageResult GetListUserImported()
         {
             var listUser = new List<UserInformationImportedResponse>();
@@ -324,7 +293,8 @@ namespace NCMSystem.Controllers
                         Email = user.email,
                         Name = user.name,
                         RoleId = user.role_id,
-                        EmailManager = user.manager
+                        EmailManager = user.manager,
+                        CheckEmail = db.users.FirstOrDefault(x => x.email == user.email) != null,
                     });
                 }
             }
@@ -347,7 +317,6 @@ namespace NCMSystem.Controllers
 
         [HttpGet]
         [Route("api/admin/user-imported/{id}")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin })]
         public ResponseMessageResult GetUserImportedDetail(int id)
         {
             var selectUser = new UserInformationImportedResponse();
@@ -384,7 +353,6 @@ namespace NCMSystem.Controllers
 
         [HttpPut]
         [Route("api/admin/user-imported/{id}")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin })]
         public ResponseMessageResult ChangeUserImported([FromBody] ChangeUserImportedRequest request, int id)
         {
             try
@@ -394,7 +362,7 @@ namespace NCMSystem.Controllers
 
                 if (request.Name == null || request.Email == null || request.Manager == null)
                     return Common.ResponseMessage.BadRequest("");
-                
+
                 if (request.RoleId != 1 && request.RoleId != 2)
                     return Common.ResponseMessage.BadRequest("");
 
@@ -409,20 +377,20 @@ namespace NCMSystem.Controllers
                 var selectUserByEmail = db.users.FirstOrDefault(x => x.email == request.Email);
                 if (selectUserByEmail != null)
                     return Common.ResponseMessage.BadRequest("");
-                
+
                 var selectUserByEmailManager = db.users.FirstOrDefault(x => x.email == request.Manager);
                 if (selectUserByEmailManager == null)
                     return Common.ResponseMessage.BadRequest("");
-                
+
                 var selectUserImported = db.import_user.FirstOrDefault(x => x.id == id);
                 if (selectUserImported == null)
                     return Common.ResponseMessage.BadRequest("");
-                
+
                 selectUserImported.name = request.Name;
                 selectUserImported.email = request.Email;
                 selectUserImported.role_id = request.RoleId;
                 selectUserImported.manager = request.Manager;
-                
+
                 db.SaveChanges();
             }
             catch (Exception ex)

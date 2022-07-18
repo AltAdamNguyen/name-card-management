@@ -228,7 +228,6 @@
     </Compile>
     <Compile Include="Models\CallAPI\Admin\ChangeUserImportedRequest.cs" />
     <Compile Include="Models\CallAPI\Admin\EmailManagerResponse.cs" />
-    <Compile Include="Models\CallAPI\Admin\ImportedUser.cs" />
     <Compile Include="Models\CallAPI\Admin\UserInformationImportedResponse.cs" />
     <Compile Include="Models\CallAPI\Admin\UserInformationResponse.cs" />
     <Compile Include="Models\CallAPI\CommonResponse.cs" />
