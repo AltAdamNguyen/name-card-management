@@ -27,6 +27,7 @@ import styles from './styles';
 
 const ViewContact = ({ navigation, route }) => {
     console.log(route)
+
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
     const [modalVisible, setModalVisible] = useState(false);
@@ -410,7 +411,7 @@ const ViewContact = ({ navigation, route }) => {
                             <Icon name="account-minus-outline" size={24} color="#828282" />
                             <Text style={styles.footer_button_label}>Vô hiệu hoá</Text>
                         </Pressable>}
-                    {route.params && route.params.request !== "R0002" && contact && contact.owner_id !== contact.createdBy &&
+                    {route.params && route.params.request !== "R0002" && contact && contact.owner_id !== contact.createBy &&
                         <Pressable style={styles.footer_button} onPress={handleRequest}>
                             <Icon name="account-minus-outline" size={24} color="#828282" />
                             <Text style={styles.footer_button_label}>Gửi yêu cầu</Text>
