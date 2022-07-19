@@ -61,7 +61,7 @@ const ModalGroupContactDetail = ({
         }}
         onDismiss={onDismiss}
       >
-        <TouchableOpacity style={{ flex: 1 }} onPress={onPressVisable}>
+        <TouchableOpacity style={{ flex: 1, alignItems: "center" }} onPress={onPressVisable}>
           <TouchableWithoutFeedback>
             <View style={styles.modelViewFloat}>
               <View>
@@ -74,14 +74,6 @@ const ModalGroupContactDetail = ({
                     onPress={onPressAddContact}
                   >
                     <Text style={{ fontSize: 14 }}>{t("ModalGroupContactDetail_Label_AddContact")}</Text>
-                  </Button>
-                  <Button
-                    icon="export"
-                    color="#000000"
-                    labelStyle={{ fontSize: 25 }}
-                    style={{ alignItems: "flex-start" }}
-                  >
-                    <Text style={{ fontSize: 14 }}>{t("ModalGroupContactDetail_Label_Export")}</Text>
                   </Button>
                   <Button
                     icon="swap-horizontal"
