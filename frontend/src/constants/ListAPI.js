@@ -28,6 +28,8 @@ export const ContactAPI = {
     ListDeactive: "/api/contacts/de-active",
     ReactiveContact: "/api/contacts/active",
     RequestTransferContact: "/api/contacts/request",
+    ListTransferContact: "/api/contacts/transfer-list",
+    SearchContactTransfer: "/api/contacts/search-list-transfer",
     TransferContact: "/api/contacts/transfer",
 }
 

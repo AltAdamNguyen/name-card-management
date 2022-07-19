@@ -9,7 +9,6 @@ const App = () => {
     "ViewPropTypes will be removed",
     "ColorPropType will be removed",
   ])
-  console.log(Appearance.getColorScheme());
   useEffect(() => {
     Appearance.getColorScheme() === 'dark' ? StatusBar.setBarStyle('light-content') : StatusBar.setBarStyle('dark-content');
     Platform.OS === "android" && StatusBar.setBackgroundColor(Appearance.getColorScheme() === 'dark' ? '#000' : '#fff');

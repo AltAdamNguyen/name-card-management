@@ -49,6 +49,10 @@ const UpdateContact = ({ route, navigation }) => {
             formRef.current.setValues(route.params.contact)
             setLoading(true)
         }
+        if(route.params && route.params.addContact && formRef.current){
+            formRef.current.setValues({...value, img_url : 'https://ncmsystem.azurewebsites.net/Images/noImage.jpg'})
+            setLoading(true)
+        }
     }, [route.params])
 
     const [duplicate, setDuplicate] = useState(false);
@@ -136,6 +140,7 @@ const UpdateContact = ({ route, navigation }) => {
         setIsLoading(true)
         route.params && route.params.idContact && FetchApi(`${ContactAPI.UpdateContact}/${route.params.idContact}`, Method.PUT, ContentType.JSON, values, getMessage)
         route.params && route.params.contact && FetchApi(ContactAPI.AddContact, Method.POST, ContentType.JSON, values, getMessage);
+        route.params && route.params.addContact && FetchApi(ContactAPI.AddContact, Method.POST, ContentType.JSON, values, getMessage);
     }
 
     const getMessage = (data) => {
