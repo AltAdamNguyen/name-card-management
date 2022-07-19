@@ -1,5 +1,5 @@
-import React from 'react';
-import { SafeAreaView, Text, View, StatusBar, LogBox } from 'react-native';
+import React, { useEffect } from 'react';
+import { SafeAreaView, StatusBar, LogBox, Appearance, Platform } from 'react-native';
 import Route from './src/navigation/Router';
 import { GroupContactDetail } from './src/screen';
 import { AuthProvider } from './src/store/AuthContext';
@@ -8,15 +8,21 @@ const App = () => {
   LogBox.ignoreLogs([
     "ViewPropTypes will be removed",
     "ColorPropType will be removed",
-    ])
+  ])
+  console.log(Appearance.getColorScheme());
+  useEffect(() => {
+    Appearance.getColorScheme() === 'dark' ? StatusBar.setBarStyle('light-content') : StatusBar.setBarStyle('dark-content');
+    Platform.OS === "android" && StatusBar.setBackgroundColor(Appearance.getColorScheme() === 'dark' ? '#000' : '#fff');
+  }, []);
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <AuthProvider>
-        <StatusBar backgroundColor="#1890FF" />
+        <StatusBar barStyle="dark-content" />
         <Route />
       </AuthProvider>
     </SafeAreaView>
-   );
+  );
 };
 
 

@@ -148,7 +148,7 @@ const AddContact = ({ contact, loading, navigation }) => {
     }
     if (data.message === "C0009"){
       navigation.dispatch(StackActions.popToTop());
-      navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: data.data.id } })
+      navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: data.data.id, showFooter: true } })
     }
     if (data.message === "D0003") {
       setDuplicateOther(true)
@@ -177,7 +177,7 @@ const AddContact = ({ contact, loading, navigation }) => {
     navigation.dispatch(StackActions.popToTop());
     navigation.navigate("HomeSwap", {
       screen: "ViewContact",
-      params: { idContact: duplicateInfo.id_duplicate },
+      params: { idContact: duplicateInfo.id_duplicate, showFooter: true },
     });
   }
 

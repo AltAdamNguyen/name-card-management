@@ -8,20 +8,10 @@ const styles = StyleSheet.create({
         backgroundColor: '#000000',
     },
     header: {
-        alignItems: 'center',
         width: '100%',
-        height: '10%',
-        justifyContent: 'center',
-        padding: 15,
-    },
-    header_content: {
-        flexDirection: 'row',
         justifyContent: 'space-between',
-        width: '100%',
-    },
-    header_content_buttonClose: {
         alignItems: 'center',
-        justifyContent: 'center',
+        flexDirection: 'row',
     },
     header_content_buttonClose_iconClose: {
         tintColor: '#BDBDBD',
@@ -30,7 +20,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
-        height: '70%',
     },
     preview_camera: {
         width: "100%", 
@@ -69,19 +58,19 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         
     },
-    footer_buttonScan: {
-        width: '20%',
-        height: '50%',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#BDBDBD',
-        borderRadius: 100000,
-    },
-    footer_buttonScan_iconScan: {
-        tintColor: '#ffff',
-        width: '50%',
-        height: '50%',
-    },
+    // footer_buttonScan: {
+    //     width: '20%',
+    //     height: '50%',
+    //     alignItems: 'center',
+    //     justifyContent: 'center',
+    //     backgroundColor: '#BDBDBD',
+    //     borderRadius: 100000,
+    // },
+    // footer_buttonScan_iconScan: {
+    //     tintColor: '#ffff',
+    //     width: '50%',
+    //     height: '50%',
+    // },
 });
 
 export default styles;

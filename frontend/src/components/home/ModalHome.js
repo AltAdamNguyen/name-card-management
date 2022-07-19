@@ -82,17 +82,6 @@ const ModalHome = ({ visible, onPressVisable, sort, onPressSort, onPressDeactive
                     {t("Screen_Home_ModalHome_Text_Label_AddNameCard")}
                   </Text>
                 </Button>
-                {/* <Button
-                  icon="export"
-                  color="#000000"
-                  labelStyle={{ fontSize: 25 }}
-                  style={{ alignItems: "flex-start" }}
-                  uppercase={false}
-                >
-                  <Text style={{ fontSize: 14 }}>
-                    {t("Screen_Home_ModalHome_Text_Label_Export")}
-                  </Text>
-                </Button> */}
                 <Button
                   icon="swap-horizontal"
                   color="#000000"

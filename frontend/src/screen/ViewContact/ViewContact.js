@@ -190,7 +190,7 @@ const ViewContact = ({ navigation, route }) => {
 
                 }
                 {contact &&
-                    <ScrollView style={{ flex: 1 }}>
+                    <ScrollView style={{ flex: 1, width: '100%' }}>
                         <View style={{ marginTop: 10 }} />
                         <View style={styles.info}>
                             <View style={styles.info_title}>
@@ -413,7 +413,7 @@ const ViewContact = ({ navigation, route }) => {
                         </Pressable>}
                     {route.params && route.params.request !== "R0002" && contact && contact.owner_id !== contact.createBy &&
                         <Pressable style={styles.footer_button} onPress={handleRequest}>
-                            <Icon name="account-minus-outline" size={24} color="#828282" />
+                            <Icon name="account-question-outline" size={24} color="#828282" />
                             <Text style={styles.footer_button_label}>Gửi yêu cầu</Text>
                         </Pressable>}
                 </View>}

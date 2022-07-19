@@ -20,15 +20,12 @@ import LoadingDialog from '../../components/customDialog/dialog/loadingDialog/Lo
 const listRequest = {
     R0001: {
         color: "#C73E1D",
-        icon: "account-cancel"
-        
+        icon: "account-cancel"    
     },
     R0002: {
         color: "#F29339",
         icon: "account-clock"
     },
-
-
 }
 
 const Home = ({ route, navigation }) => {
@@ -75,9 +72,9 @@ const Home = ({ route, navigation }) => {
             value: 'F0004',
         }
     }
-    useEffect(() => {
-        setLoading(true);
+    useEffect(() => {      
         FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
+        setLoading(true);
     }, [])
 
     useEffect(() => {
@@ -186,7 +183,8 @@ const Home = ({ route, navigation }) => {
                                 roundness: 10,
                                 colors: { primary: '#1890FF' }
                             }}
-                            editable={false}
+                            editable={false}   
+                            pointerEvents="none"                        
                         />
                     </Pressable>
                 </View>

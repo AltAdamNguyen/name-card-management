@@ -1,5 +1,5 @@
 //import liraries
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import { View, Text, Image } from 'react-native';
 import { Card, RadioButton, List } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -53,11 +53,22 @@ const listStatus = {
         value: 'S0003',
     }
 }
+
+const listRequest = {
+    R0001: {
+        color: "#C73E1D",
+        icon: "account-cancel"    
+    },
+    R0002: {
+        color: "#F29339",
+        icon: "account-clock"
+    },
+}
 // create a component
-const Contact = ({item, route, handleViewContact, checkListGroup, handleReActivateButton, listGroup = [], visibleCheckBox}) => {
+const Contact = ({ item, route, handleViewContact, checkListGroup, handleReActivateButton, listGroup = [], visibleCheckBox }) => {
 
     return (
-        <Card mode='elevated' style={styles.card} elevation={2} onPress={() => handleViewContact(item.id)}>
+        <Card mode='elevated' style={styles.card} elevation={2} onPress={() => handleViewContact(item)}>
             <View>
                 <View style={styles.item}>
                     {visibleCheckBox &&
@@ -88,6 +99,12 @@ const Contact = ({item, route, handleViewContact, checkListGroup, handleReActiva
                                     color={"#828282"}
                                     onPress={() => handleReActivateButton(item.id)} />
                             }
+                            {!Boolean(item.status_request) && item.owner_id !== item.createdBy &&
+                                <Icon name="account-alert" size={24} color="#cc6e1b" />
+                            }
+                            {Boolean(item.status_request) &&
+                                <Icon name={listRequest[item.status_request].icon} size={24} color={listRequest[item.status_request].color} />
+                            }
                         </View>
                         <Text style={styles.titleContact}>{item.job_title}</Text>
                         <View style={styles.title}>
@@ -102,7 +119,7 @@ const Contact = ({item, route, handleViewContact, checkListGroup, handleReActiva
                     <List.Accordion
                         title="Lý do"
                         titleStyle={{ fontSize: 14 }}
-                        theme={{colors: { primary: '#1890FF' }}}
+                        theme={{ colors: { primary: '#1890FF' } }}
                         right={(props) => <Icon {...props} />}
                         style={{ backgroundColor: '#FFF', padding: 0, margin: 0, borderBottomRightRadius: 10, borderBottomLeftRadius: 10 }}
                     >

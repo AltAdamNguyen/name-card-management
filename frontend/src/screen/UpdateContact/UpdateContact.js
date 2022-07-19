@@ -143,11 +143,11 @@ const UpdateContact = ({ route, navigation }) => {
         setIsLoading(false)
         if (data.message === "C0009") {
             navigation.dispatch(StackActions.popToTop());
-            route.params && route.params.contact && navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: data.data.id } })
+            route.params && route.params.contact && navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: data.data.id, showFooter: true } })
         }
         if (data.message === "C0010") {
             navigation.dispatch(StackActions.popToTop());
-            route.params && route.params.idContact && navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: route.params.idContact } })
+            route.params && route.params.idContact && navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: route.params.idContact, showFooter: true } })
         }
         if (data.message === "D0001") {
             setDuplicate(true)

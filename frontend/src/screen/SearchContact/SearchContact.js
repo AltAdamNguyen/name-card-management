@@ -14,6 +14,17 @@ import ModalActivate from '../../components/searchcontact/ModalActivate';
 import Contact from '../../components/searchcontact/Contact';
 import ModalTransfer from '../../components/searchcontact/ModalTransfer';
 
+const listRequest = {
+    R0001: {
+        color: "#C73E1D",
+        icon: "account-cancel"
+    },
+    R0002: {
+        color: "#F29339",
+        icon: "account-clock"
+    },
+}
+
 // create a component
 const SearchContact = ({ navigation, route }) => {
     const [listContact, setListContact] = useState([]);
@@ -29,7 +40,10 @@ const SearchContact = ({ navigation, route }) => {
     const [contactId, setContactId] = useState();
 
     useEffect(() => {
-        !route.params && textInputRef.current && textInputRef.current.focus();
+        if (!route.params && textInputRef.current) {
+            textInputRef.current.focus();
+            FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
+        }
         if (route.params && route.params.useid) {
             FetchApi(`${TeamAPI.ViewContactMember}/${route.params.useid}/contacts`, Method.GET, ContentType.JSON, undefined, getContact)
         }
@@ -48,6 +62,7 @@ const SearchContact = ({ navigation, route }) => {
     }
 
     const getContact = (data) => {
+        console.log(data)
         setLoading(false);
         route.params && setListContact(data.data)
         setListFilter(data.data)
@@ -61,9 +76,10 @@ const SearchContact = ({ navigation, route }) => {
         setListFilter([]);
     }
 
-    const handleViewContact = (id) => {
-        !route.params && navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: id } })
-        route.params && route.params.useid && navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: id, viewOnly: true } })
+    const handleViewContact = (item) => {
+        !route.params && navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: item.id, showFooter: true, request: item.status_request } })
+        route.params && route.params.useid && navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: item.id, viewOnly: true } })
+        route.params && route.params.transfer && checkListGroup(item.id, !listGroup.includes(item.id))
     }
 
     const handleReActivateButton = (id) => {
@@ -128,11 +144,11 @@ const SearchContact = ({ navigation, route }) => {
     const handleAddContactsToGroups = () => {
         let selectedContactIds = []
         for (let i = 0; i < listGroup.length; i++) {
-            selectedContactIds.push({ contact_id: listGroup[i]})
+            selectedContactIds.push({ contact_id: listGroup[i] })
         }
         navigation.navigate("HomeSwap", {
             screen: "AddContactToManyGroup",
-            params: { id: [...selectedContactIds] , userId: route.params.useid }
+            params: { id: [...selectedContactIds], userId: route.params.useid }
         });
     }
 
@@ -225,11 +241,9 @@ const SearchContact = ({ navigation, route }) => {
                 }
                 <ScrollView>
                     {listFilter && listFilter.length != 0 && listFilter.map((item, index) => {
-                        if (item.owner_id === item.createdBy) {
-                            return (
-                                <Contact key={index} item={item} route={route} handleViewContact={handleViewContact} checkListGroup={checkListGroup} handleReActivateButton={handleReActivateButton} listGroup={listGroup} visibleCheckBox={visibleCheckBox} />
-                            )
-                        }
+                        return (
+                            <Contact key={index} item={item} route={route} handleViewContact={handleViewContact} checkListGroup={checkListGroup} handleReActivateButton={handleReActivateButton} listGroup={listGroup} visibleCheckBox={visibleCheckBox} />
+                        )
                     })}
                 </ScrollView>
                 {visibleCheckBox && route.params && route.params.transfer && <Button
