@@ -28,7 +28,7 @@ export const ContactAPI = {
     ListDeactive: "/api/contacts/de-active",
     ReactiveContact: "/api/contacts/active",
     RequestTransferContact: "/api/contacts/request",
-    TransferContact: "/api/contacts/transfer"
+    TransferContact: "/api/contacts/transfer",
 }
 
 export const GroupContactAPI = {
@@ -49,5 +49,6 @@ export const GroupContactAPI = {
 export const TeamAPI = {
     GetTeam: "/api/team",
     ViewContactMember: "/api/team",
-    SearchMember: "/api/team/search"
+    SearchMember: "/api/team/search",
+    Export: "/api/contacts/export"
 }

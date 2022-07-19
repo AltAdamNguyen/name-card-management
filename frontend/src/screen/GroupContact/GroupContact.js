@@ -43,14 +43,19 @@ const GroupContact = ({ navigation }) => {
   const isFocus = useIsFocused();
   const [modalAddContactVisible, setModalAddContactVisible] = useState(false);
   const onAddNewGroupContactPressed = (groupName) => {
-    setModalAddContactVisible(false);
-    FetchApi(
-      GroupContactAPI.AddGroupContact,
-      Method.POST,
-      ContentType.JSON,
-      { group_name: groupName },
-      addGroupContact
-    );
+    if(groupName.trim() == ""){
+      alert("Group name cannot be empty")
+    }else{
+      setModalAddContactVisible(false);
+      FetchApi(
+        GroupContactAPI.AddGroupContact,
+        Method.POST,
+        ContentType.JSON,
+        { group_name: groupName },
+        addGroupContact
+      );
+    }
+   
   };
 
   useEffect(() => {
@@ -64,10 +69,11 @@ const GroupContact = ({ navigation }) => {
   }, []);
 
   const searchGroupHandle = (groupName) => {
+    
     let listSearchGroup = [];
     if (groupName !== "") {
       listGroupContactTotal.map((item, index) => {
-        if (item.group_name.includes(groupName)) {
+        if (item.group_name.toLowerCase().includes(groupName.toLowerCase())) {
           listSearchGroup.push(item);
         }
       });
@@ -162,15 +168,7 @@ const GroupContact = ({ navigation }) => {
               })}
           </ScrollView>
         </View>
-        <FAB style={styles.floatButton} icon="tune" size={24} color="#fff" onPress={() => setModalAddContactVisible(true)} />
-        <View>
-          {/* <TouchableOpacity
-            style={styles.container_footer}
-            onPress={() => setModalAddContactVisible(true)}
-          >
-            <Image source={iconPath.icPlus} style={styles.icPlus} />
-          </TouchableOpacity> */}
-        </View>
+        <FAB style={styles.floatButton} icon="plus" size={24} color="#fff" onPress={() => setModalAddContactVisible(true)} />
       </SafeAreaView>
       <ModalAddGroupContact
         label={t("ModalAddGroupContact_Placeholder_GroupName")}

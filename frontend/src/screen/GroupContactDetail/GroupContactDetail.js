@@ -253,8 +253,9 @@ const GroupContactDetail = ({ navigation, route }) => {
                           },
                         });
                       }}
+                      key={index}
                     >
-                      <View style={styles.item}>
+                      <View style={styles.item} >
                         <View style={styles.image}>
                           <Image
                             source={{ uri: item.contact_imgurl }}

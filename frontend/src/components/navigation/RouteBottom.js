@@ -12,7 +12,7 @@ const RouteNavigation = () => {
   const authCtx = useContext(AuthContext);
   return (
     <Tab.Navigator
-      initialRouteName={authCtx.isMarketer === 3 ? "TeamScreen" : "HomeScreen"}
+      initialRouteName={authCtx.role === 3 ? "TeamScreen" : "HomeScreen"}
       
       screenOptions={{
         tabBarShowLabel: false,
@@ -27,7 +27,7 @@ const RouteNavigation = () => {
         tabBarHideOnKeyboard: true,
       }}
     >
-      {authCtx.isMarketer !== 3 && <Tab.Screen name="HomeScreen"
+      {authCtx.role !== 3 && <Tab.Screen name="HomeScreen"
         component={Home}
         options={{
           tabBarIcon: ({ focused }) => {
@@ -58,7 +58,7 @@ const RouteNavigation = () => {
           }
         }}
       />
-      {authCtx.isMarketer !== 3 && <Tab.Screen name="ScanScreen"
+      {authCtx.role !== 3 && <Tab.Screen name="ScanScreen"
         component={RouteMovingBetweenScanScreen}
         options={{
           tabBarIcon: ({ focused }) => {

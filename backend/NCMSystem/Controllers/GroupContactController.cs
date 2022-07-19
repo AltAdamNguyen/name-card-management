@@ -82,7 +82,8 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "G0001"
+                            Message = "G0001",
+                            Data = ""
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -192,7 +193,8 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "G0001"
+                            Message = "G0001",
+                            Data = ""
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -286,7 +288,8 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "G0001"
+                            Message = "G0001",
+                            Data = ""
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -296,7 +299,7 @@ namespace NCMSystem.Controllers
                 //get list of contacts in the selected group contact
                 List<contact> listContactInGroup = selectedGroup.contacts.ToList();
 
-                if (type.Equals("team"))
+                if (type.Trim().Equals("team"))
                 {
                     //get list of contacts that the team of the user has
                     List<contact> listContactTeam = new List<contact>();
@@ -348,7 +351,7 @@ namespace NCMSystem.Controllers
                         }
                     }
                 }
-                if (type.Equals("personal"))
+                if (type.Trim().Equals("personal"))
                 {
                     //get list of contacts that the user has
                     List<contact> listContactPersonal = db.contacts.Where(c => c.owner_id == userId).ToList();
@@ -414,7 +417,8 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "G0002"
+                            Message = "G0002",
+                            Data = ""
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -465,7 +469,8 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "G0003"
+                            Message = "G0003",
+                            Data = ""
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -515,7 +520,8 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "G0004"
+                            Message = "G0004",
+                            Data = ""
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -542,10 +548,11 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult AddGroup([FromBody] GroupNameRequest request)
         {
+            string groupName = request.GroupName.Trim();
+
             try
             {
                 int userId = ((JwtToken)Request.Properties["payload"]).Uid;
-                string groupName = request.GroupName;
 
                 if (!Validator.Validator.CheckInputLengthGroupName(groupName))
                 {
@@ -555,6 +562,7 @@ namespace NCMSystem.Controllers
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
                             Message = "G0005",
+                            Data = ""
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -571,7 +579,8 @@ namespace NCMSystem.Controllers
                             StatusCode = System.Net.HttpStatusCode.OK,
                             Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                             {
-                                Message = "G0006"
+                                Message = "G0006",
+                                Data = ""
                             }), Encoding.UTF8, "application/json")
                         });
                     }
@@ -597,6 +606,7 @@ namespace NCMSystem.Controllers
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
                     Message = "Success",
+                    Data = groupName
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -722,6 +732,7 @@ namespace NCMSystem.Controllers
                             Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                             {
                                 Message = "G0007",
+                                Data = ""
                             }), Encoding.UTF8, "application/json")
                         });
                     }
@@ -735,6 +746,7 @@ namespace NCMSystem.Controllers
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
                             Message = "G0008",
+                            Data = ""
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -753,6 +765,7 @@ namespace NCMSystem.Controllers
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
                     Message = "Success",
+                    Data = ""
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -778,7 +791,8 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "G0009"
+                            Message = "G0009",
+                            Data = ""
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -809,7 +823,8 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "G0010"
+                            Message = "G0010",
+                            Data = ""
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -832,7 +847,8 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Success"
+                    Message = "Success",
+                    Data = ""
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -856,7 +872,8 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "G0009"
+                            Message = "G0009",
+                            Data = ""
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -878,7 +895,8 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Success"
+                    Message = "Success",
+                    Data = ""
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -889,6 +907,8 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult PatchGroupName(int id, [FromBody] RenameGroupContact request)
         {
+            string newGroupName = request.GroupName.Trim();
+
             try
             {
                 int userId = ((JwtToken)Request.Properties["payload"]).Uid;
@@ -902,7 +922,8 @@ namespace NCMSystem.Controllers
                         StatusCode = System.Net.HttpStatusCode.OK,
                         Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                         {
-                            Message = "G0009"
+                            Message = "G0009",
+                            Data = ""
                         }), Encoding.UTF8, "application/json")
                     });
                 }
@@ -911,20 +932,21 @@ namespace NCMSystem.Controllers
 
                 foreach (group g in list)
                 {
-                    if (g.name == request.GroupName)
+                    if (g.name == newGroupName)
                     {
                         return new ResponseMessageResult(new HttpResponseMessage()
                         {
                             StatusCode = System.Net.HttpStatusCode.OK,
                             Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                             {
-                                Message = "G0006"
+                                Message = "G0006",
+                                Data = ""
                             }), Encoding.UTF8, "application/json")
                         });
                     }
                 }
 
-                group.name = request.GroupName;
+                group.name = newGroupName;
 
                 db.SaveChanges();
             }
@@ -939,7 +961,8 @@ namespace NCMSystem.Controllers
                 StatusCode = System.Net.HttpStatusCode.OK,
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
-                    Message = "Success"
+                    Message = "Success",
+                    Data = ""
                 }), Encoding.UTF8, "application/json")
             });
         }

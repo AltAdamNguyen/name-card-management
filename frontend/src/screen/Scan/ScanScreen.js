@@ -21,7 +21,7 @@ const ScanScreen = ({ navigation }) => {
   const [flashMode, setFlashMode] = useState(FlashMode.off);
   const [scanQr, setScanQr] = useState(false);
   const { width } = useWindowDimensions();
-  const height = Math.round((width * 4) / 3);
+  const height = Math.round((width * 4) / 3)
 
   useEffect(() => {
     (async () => {
@@ -63,7 +63,8 @@ const ScanScreen = ({ navigation }) => {
   const handleScanQr = ({data}) => {
     let card = parseCard(data)
     if (isEmpty(card)) {
-      Alert.alert('Invalid QR code')
+      Alert.alert('Thông báo', 'Mã QR không hợp lệ', [{ text: 'Quét lại' }])
+      setScanQr(true)
     }else{
       let contact = {
         name: card.n ? card.n : card.fn,
@@ -79,25 +80,21 @@ const ScanScreen = ({ navigation }) => {
       }
       navigation.navigate('HomeSwap', { screen: 'UpdateContact', params: { contact: contact } });
       setScanQr(!scanQr)
-    }
-    
+    }  
   }
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.header_content}>
-          <IconButton icon="close-circle" size={30} color="#fff" onPress={() => navigation.goBack()} />
+        <View style={styles.header}>
+          <IconButton icon="close-circle" size={26} color="#fff" onPress={() => navigation.goBack()} />
           <IconButton
             icon={flashMode === FlashMode.on ? "flash" : "flash-off"}
-            size={30}
+            size={26}
             color="#fff"
             onPress={() => setFlashMode(flashMode === FlashMode.off ? FlashMode.on : FlashMode.off)}
           />
         </View>
-
-      </View>
-      <View style={styles.preview}>
+      <View style={[styles.preview,{height: height}]}>
         {
           isFocused &&
           (scanQr ?
@@ -130,6 +127,7 @@ const ScanScreen = ({ navigation }) => {
             size={30}
             color='#FFF'
             onPress={pickImage}
+            disabled={scanQr}
           />
           <IconButton size={80}
             icon='checkbox-blank-circle'
@@ -138,7 +136,7 @@ const ScanScreen = ({ navigation }) => {
             disabled={scanQr}
           />
           <IconButton
-            icon={scanQr ? 'qrcode-scan' : 'camera'}
+            icon={scanQr ?  'camera' : 'qrcode-scan'}
             size={30}
             color='#FFF'
             onPress={() => setScanQr(!scanQr)}

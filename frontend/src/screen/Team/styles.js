@@ -33,6 +33,11 @@ const styles = StyleSheet.create({
         marginTop: 10,
         width: '100%',
     },
+    body: {
+        flex: 1, 
+        width: '100%', 
+        marginTop: 20
+    },
     fab: {
         position: 'absolute',
         margin: 16,
