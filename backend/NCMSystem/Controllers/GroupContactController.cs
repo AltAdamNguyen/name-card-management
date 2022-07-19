@@ -236,7 +236,7 @@ namespace NCMSystem.Controllers
                         }
 
                         if (cName.ToLower().Contains(valueToSearch.ToLower()) || cJobTitle.ToLower().Contains(valueToSearch.ToLower()) ||
-                        cCompany.ToLower().Contains(valueToSearch.ToLower())
+                        cCompany.ToLower().Contains(valueToSearch.ToLower()))
                         {
                             listFoundContactsInGroup.Add(new ContactInGroup()
                             {
