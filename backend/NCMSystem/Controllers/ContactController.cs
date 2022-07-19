@@ -110,7 +110,7 @@ namespace NCMSystem.Controllers
         [HttpGet]
         [Route("api/contacts/de-active")]
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
-        public ResponseMessageResult GetListDaContact(string sortBy = "create_date", int page = 1)
+        public ResponseMessageResult GetListDaContact(int page = 1)
         {
             int pageSize = 10;
             if (page < 1) page = 1;
@@ -138,6 +138,57 @@ namespace NCMSystem.Controllers
                             CreatedAt = c.create_date
                         };
                         listCt.Add(dc);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = listCt
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpGet]
+        [Route("api/contacts/transfer-list")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
+        public ResponseMessageResult GetListTransferContact(string sortBy = "create_date", int page = 1)
+        {
+            int pageSize = 10;
+            if (page < 1) page = 1;
+            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+
+            List<HomeContact> listCt = new List<HomeContact>();
+            try
+            {
+                var contact = db.contacts
+                    .Where(c => c.owner_id == userId && c.createdBy == userId && c.isActive == true)
+                    .OrderByDescending(x => x.create_date).Skip((page - 1) * pageSize)
+                    .Take(pageSize).ToList();
+
+                if (contact.Count != 0)
+                {
+                    foreach (var c in contact)
+                    {
+                        HomeContact hc = new HomeContact
+                        {
+                            Id = c.id,
+                            ImgUrl = c.image_url,
+                            Name = c.name,
+                            JobTitle = c.job_title,
+                            Company = c.company,
+                            CreatedAt = c.create_date,
+                        };
+                        listCt.Add(hc);
                     }
                 }
             }
@@ -262,12 +313,72 @@ namespace NCMSystem.Controllers
                     value = "";
                 }
 
-                var draft = query;
+                listCt = SearchContacts(listCt, value, query);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
 
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = listCt
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpGet]
+        [Route("api/contacts/search-list-transfer")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
+        public ResponseMessageResult GetSearchListTransfer(string value = "")
+        {
+            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+
+            List<SearchContact> listCt = new List<SearchContact>();
+
+            try
+            {
+                var query = db.contacts.Where(c => c.owner_id == userId && c.createdBy == userId && c.isActive == true);
+
+                if (value == null)
+                {
+                    value = "";
+                }
+
+                listCt = SearchContacts(listCt, value, query);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = listCt
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        public List<SearchContact> SearchContacts(List<SearchContact> listCt, string value, IQueryable<contact> query)
+        {
+            var draft = query;
+            try
+            {
                 SearchContact sc;
                 foreach (var c in draft)
                 {
-                    if (RemoveSign4VietnameseString(c.name).Contains(value.Trim().ToLower()))
+                    if (RemoveSign4VietnameseString(c.name)
+                        .Contains(RemoveSign4VietnameseString(value.Trim())))
                     {
                         var rq = db.requests.FirstOrDefault(r => r.new_contact_id == c.id);
                         sc = new SearchContact
@@ -293,7 +404,8 @@ namespace NCMSystem.Controllers
                 draft = query;
                 foreach (var c in draft)
                 {
-                    if (RemoveSign4VietnameseString(c.company).Contains(value.Trim().ToLower()))
+                    if (RemoveSign4VietnameseString(c.name)
+                        .Contains(RemoveSign4VietnameseString(value.Trim())))
                     {
                         var rq = db.requests.FirstOrDefault(r => r.new_contact_id == c.id);
                         sc = new SearchContact
@@ -314,7 +426,7 @@ namespace NCMSystem.Controllers
                         listCt.Add(sc);
                     }
                 }
-                
+
                 draft = query;
                 draft = draft.Where(c => c.email.Trim().ToLower().Contains(value.Trim().ToLower()));
                 var listSearch = draft.ToList();
@@ -377,15 +489,7 @@ namespace NCMSystem.Controllers
                 Log.CloseAndFlush();
             }
 
-            return new ResponseMessageResult(new HttpResponseMessage()
-            {
-                StatusCode = System.Net.HttpStatusCode.OK,
-                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
-                {
-                    Message = "Success",
-                    Data = listCt
-                }), Encoding.UTF8, "application/json")
-            });
+            return listCt;
         }
 
         private static readonly string[] VietnameseSigns = new string[]
@@ -833,6 +937,10 @@ namespace NCMSystem.Controllers
                 var contact = db.contacts.FirstOrDefault(c => c.id == ctId);
                 if (contact != null)
                 {
+                    contact.groups.Clear();
+                    contact.status_id = "S0002";
+                    contact.note = null;
+                    contact.flag_id = null;
                     contact.owner_id = user.id;
                     contact.createdBy = user.id;
                     db.SaveChanges();
