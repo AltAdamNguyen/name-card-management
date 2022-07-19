@@ -143,7 +143,7 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
                     <Appbar.Header statusBarHeight={1} theme={{ colors: { primary: "transparent" } }}>
                         <Appbar.BackAction onPress={() => navigation.goBack()} />
                         <Appbar.Content title={t("Screen_DeleteContactFromGroup_Appbar_Content_Title_Selected") + choosenItems} />
-                        <Appbar.Action icon={"dots-horizontal"} />
+                      
                     </Appbar.Header>
                     <View style={styles.header}>
                         <Pressable style={styles.sectionStyle} >
@@ -192,7 +192,7 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
                             <ScrollView>
                                 {listContact.length != 0 && listContact.map((item, index) => {
                                     return (
-                                        <View style={styles.item}>
+                                        <View style={styles.item} key={index}>
                                             <CustomCheckedBox id={item.contact.contact_id} onClick={checkBoxOnClickCallBack} isChecked={item.isChecked} />
                                             <View style={styles.image}>
                                                 <Image style={styles.image} source={{ uri: item.contact.contact_imgurl }} />

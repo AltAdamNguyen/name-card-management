@@ -241,7 +241,7 @@ const AddContactToManyGroup = ({ route, navigation }) => {
               listGroupSearch.map((item, index) => {
                 return (
                   <TouchableOpacity>
-                    <View style={styles.container_listGroup_item}>
+                    <View style={styles.container_listGroup_item} key={index}>
                       <CustomCheckedBox
                         id={item.group.group_id}
                         onClick={checkBoxOnClickCallBack}
@@ -258,7 +258,7 @@ const AddContactToManyGroup = ({ route, navigation }) => {
               listGroupContact.map((item, index) => {
                 return (
                   <TouchableOpacity>
-                    <View style={styles.container_listGroup_item}>
+                    <View style={styles.container_listGroup_item} key={index}>
                       <CustomCheckedBox
                         id={item.group.group_id}
                         onClick={checkBoxOnClickCallBack}

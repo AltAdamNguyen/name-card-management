@@ -14,10 +14,6 @@ import i18next from "../../language/i18n";
 const ModalAddGroupContact = ({onVisible, label, value, confirmLabel, context, onPress, onDismiss, icon, onPressCancel, onPressConfirm}) => {
     const [inputVal, setInputVal] = useState("");
     const { t, i18n } = useTranslation();
-    const onCancelPress = () => {
-      onVisible = false;
-      setInputVal("")
-    }
   return (
     <Portal>
       <Dialog visible={onVisible}  style={{ borderRadius: 10, alignContent: 'center' }} onDismiss={() => {onDismiss(); setInputVal("")}}>
@@ -34,7 +30,7 @@ const ModalAddGroupContact = ({onVisible, label, value, confirmLabel, context, o
         />
         </Dialog.Content>
         <Dialog.Actions>
-          <Button color="red"  onPress={() => {onPressCancel(); setInputVal("")}}>
+          <Button color="#1890FF"  onPress={() => {onPressCancel(); setInputVal("")}}>
           {t("ModalAddGroupContact_Label_Cancel")}
           </Button>
           <Button color="#1890FF" onPress={() => {onPressConfirm(inputVal); setInputVal("")}}>

@@ -110,7 +110,7 @@ namespace NCMSystem.Controllers
         [HttpGet]
         [Route("api/contacts/de-active")]
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
-        public ResponseMessageResult GetListDaContact(string sortBy = "create_date", int page = 1)
+        public ResponseMessageResult GetListDaContact(int page = 1)
         {
             int pageSize = 10;
             if (page < 1) page = 1;
@@ -138,6 +138,57 @@ namespace NCMSystem.Controllers
                             CreatedAt = c.create_date
                         };
                         listCt.Add(dc);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = listCt
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpGet]
+        [Route("api/contacts/transfer-list")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
+        public ResponseMessageResult GetListTransferContact(string sortBy = "create_date", int page = 1)
+        {
+            int pageSize = 10;
+            if (page < 1) page = 1;
+            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+
+            List<HomeContact> listCt = new List<HomeContact>();
+            try
+            {
+                var contact = db.contacts
+                    .Where(c => c.owner_id == userId && c.createdBy == userId && c.isActive == true)
+                    .OrderByDescending(x => x.create_date).Skip((page - 1) * pageSize)
+                    .Take(pageSize).ToList();
+
+                if (contact.Count != 0)
+                {
+                    foreach (var c in contact)
+                    {
+                        HomeContact hc = new HomeContact
+                        {
+                            Id = c.id,
+                            ImgUrl = c.image_url,
+                            Name = c.name,
+                            JobTitle = c.job_title,
+                            Company = c.company,
+                            CreatedAt = c.create_date,
+                        };
+                        listCt.Add(hc);
                     }
                 }
             }
@@ -246,7 +297,7 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult GetSearch(string value = "", int? userId = 0)
         {
-            if (userId == 0 || userId == null)
+            if (userId <= 0 || userId == null)
             {
                 userId = ((JwtToken)Request.Properties["payload"]).Uid;
             }
@@ -256,110 +307,13 @@ namespace NCMSystem.Controllers
             try
             {
                 var query = db.contacts.Where(c => c.createdBy == userId && c.isActive == true);
+
                 if (value == null)
                 {
                     value = "";
                 }
 
-                var draft = query;
-
-                SearchContact sc;
-
-                List<contact> listSearch;
-                draft = draft.Where(c => c.name.Contains(value));
-                listSearch = draft.ToList();
-                if (listSearch.Count != 0)
-                {
-                    foreach (var c in listSearch)
-                    {
-                        sc = new SearchContact
-                        {
-                            Id = c.id,
-                            ImgUrl = c.image_url,
-                            Name = c.name,
-                            JobTitle = c.job_title,
-                            Company = c.company,
-                            Email = c.email,
-                            Status = c.status_id,
-                            Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id,
-                            CreatedAt = c.create_date
-                        };
-                        listCt.Add(sc);
-                    }
-                }
-
-                // clear query
-                draft = query;
-                draft = draft.Where(c => c.company.Contains(value));
-                listSearch = draft.ToList();
-                if (listSearch.Count != 0)
-                {
-                    foreach (var c in listSearch)
-                    {
-                        sc = new SearchContact
-                        {
-                            Id = c.id,
-                            ImgUrl = c.image_url,
-                            Name = c.name,
-                            JobTitle = c.job_title,
-                            Company = c.company,
-                            Email = c.email,
-                            Status = c.status_id,
-                            Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id,
-                            CreatedAt = c.create_date
-                        };
-                        listCt.Add(sc);
-                    }
-                }
-
-                // clear query
-                draft = query;
-                draft = draft.Where(c => c.email.Contains(value));
-                listSearch = draft.ToList();
-                if (listSearch.Count != 0)
-                {
-                    foreach (var c in listSearch)
-                    {
-                        sc = new SearchContact
-                        {
-                            Id = c.id,
-                            ImgUrl = c.image_url,
-                            Name = c.name,
-                            JobTitle = c.job_title,
-                            Company = c.company,
-                            Email = c.email,
-                            Status = c.status_id,
-                            Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id,
-                            CreatedAt = c.create_date
-                        };
-                        listCt.Add(sc);
-                    }
-                }
-
-                draft = query;
-                draft = draft.Where(c => c.phone.Contains(value));
-                listSearch = draft.ToList();
-                if (listSearch.Count != 0)
-                {
-                    foreach (var c in listSearch)
-                    {
-                        sc = new SearchContact
-                        {
-                            Id = c.id,
-                            ImgUrl = c.image_url,
-                            Name = c.name,
-                            JobTitle = c.job_title,
-                            Company = c.company,
-                            Email = c.email,
-                            Status = c.status_id,
-                            Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id,
-                            CreatedAt = c.create_date
-                        };
-                        listCt.Add(sc);
-                    }
-                }
-
-                listCt = listCt.GroupBy(x => x.Id).Select(x => x.First()).OrderByDescending(x => x.CreatedAt).ToList();
+                listCt = SearchContacts(listCt, value, query);
             }
             catch (Exception ex)
             {
@@ -376,6 +330,210 @@ namespace NCMSystem.Controllers
                     Data = listCt
                 }), Encoding.UTF8, "application/json")
             });
+        }
+
+        [HttpGet]
+        [Route("api/contacts/search-list-transfer")]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
+        public ResponseMessageResult GetSearchListTransfer(string value = "")
+        {
+            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+
+            List<SearchContact> listCt = new List<SearchContact>();
+
+            try
+            {
+                var query = db.contacts.Where(c => c.owner_id == userId && c.createdBy == userId && c.isActive == true);
+
+                if (value == null)
+                {
+                    value = "";
+                }
+
+                listCt = SearchContacts(listCt, value, query);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = listCt
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        public List<SearchContact> SearchContacts(List<SearchContact> listCt, string value, IQueryable<contact> query)
+        {
+            var draft = query;
+            try
+            {
+                SearchContact sc;
+                foreach (var c in draft)
+                {
+                    if (RemoveSign4VietnameseString(c.name)
+                        .Contains(RemoveSign4VietnameseString(value.Trim())))
+                    {
+                        var rq = db.requests.FirstOrDefault(r => r.new_contact_id == c.id);
+                        sc = new SearchContact
+                        {
+                            Id = c.id,
+                            ImgUrl = c.image_url,
+                            Name = c.name,
+                            JobTitle = c.job_title,
+                            Company = c.company,
+                            Email = c.email,
+                            Status = c.status_id,
+                            Owner = c.owner_id,
+                            CreateBy = c.createdBy,
+                            Request = rq?.status,
+                            Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id,
+                            CreatedAt = c.create_date
+                        };
+                        listCt.Add(sc);
+                    }
+                }
+
+                // clear query
+                draft = query;
+                foreach (var c in draft)
+                {
+                    if (RemoveSign4VietnameseString(c.name)
+                        .Contains(RemoveSign4VietnameseString(value.Trim())))
+                    {
+                        var rq = db.requests.FirstOrDefault(r => r.new_contact_id == c.id);
+                        sc = new SearchContact
+                        {
+                            Id = c.id,
+                            ImgUrl = c.image_url,
+                            Name = c.name,
+                            JobTitle = c.job_title,
+                            Company = c.company,
+                            Email = c.email,
+                            Status = c.status_id,
+                            Owner = c.owner_id,
+                            CreateBy = c.createdBy,
+                            Request = rq?.status,
+                            Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id,
+                            CreatedAt = c.create_date
+                        };
+                        listCt.Add(sc);
+                    }
+                }
+
+                draft = query;
+                draft = draft.Where(c => c.email.Trim().ToLower().Contains(value.Trim().ToLower()));
+                var listSearch = draft.ToList();
+                if (listSearch.Count != 0)
+                {
+                    foreach (var c in listSearch)
+                    {
+                        var rq = db.requests.FirstOrDefault(r => r.new_contact_id == c.id);
+                        sc = new SearchContact
+                        {
+                            Id = c.id,
+                            ImgUrl = c.image_url,
+                            Name = c.name,
+                            JobTitle = c.job_title,
+                            Company = c.company,
+                            Email = c.email,
+                            Status = c.status_id,
+                            Owner = c.owner_id,
+                            CreateBy = c.createdBy,
+                            Request = rq?.status,
+                            Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id,
+                            CreatedAt = c.create_date
+                        };
+                        listCt.Add(sc);
+                    }
+                }
+
+                draft = query;
+                draft = draft.Where(c => c.phone.Trim().Contains(value.Trim().ToLower()));
+                listSearch = draft.ToList();
+                if (listSearch.Count != 0)
+                {
+                    foreach (var c in listSearch)
+                    {
+                        var rq = db.requests.FirstOrDefault(r => r.new_contact_id == c.id);
+                        sc = new SearchContact
+                        {
+                            Id = c.id,
+                            ImgUrl = c.image_url,
+                            Name = c.name,
+                            JobTitle = c.job_title,
+                            Company = c.company,
+                            Email = c.email,
+                            Status = c.status_id,
+                            Owner = c.owner_id,
+                            CreateBy = c.createdBy,
+                            Request = rq?.status,
+                            Flag = (c.flag_id != null && c.flag_id.Equals("null")) ? null : c.flag_id,
+                            CreatedAt = c.create_date
+                        };
+                        listCt.Add(sc);
+                    }
+                }
+
+                listCt = listCt.GroupBy(x => x.Id).Select(x => x.First()).OrderByDescending(x => x.CreatedAt).ToList();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return listCt;
+        }
+
+        private static readonly string[] VietnameseSigns = new string[]
+        {
+            "aAeEoOuUiIdDyYBbCcDdFfGgHhJjKkLlMmNnPpQqRrSsTtVvWwXxYyZz",
+
+            "áàạảãâấầậẩẫăắằặẳẵ",
+
+            "ÁÀẠẢÃÂẤẦẬẨẪĂẮẰẶẲẴ",
+
+            "éèẹẻẽêếềệểễ",
+
+            "ÉÈẸẺẼÊẾỀỆỂỄ",
+
+            "óòọỏõôốồộổỗơớờợởỡ",
+
+            "ÓÒỌỎÕÔỐỒỘỔỖƠỚỜỢỞỠ",
+
+            "úùụủũưứừựửữ",
+
+            "ÚÙỤỦŨƯỨỪỰỬỮ",
+
+            "íìịỉĩ",
+
+            "ÍÌỊỈĨ",
+
+            "đ",
+
+            "Đ",
+
+            "ýỳỵỷỹ",
+
+            "ÝỲỴỶỸ"
+        };
+
+        private static string RemoveSign4VietnameseString(string str)
+        {
+            for (int i = 1; i < VietnameseSigns.Length; i++)
+            {
+                for (int j = 0; j < VietnameseSigns[i].Length; j++)
+                    str = str.Replace(VietnameseSigns[i][j], VietnameseSigns[0][i - 1]);
+            }
+
+            return str.ToLower();
         }
 
         [HttpGet]
@@ -779,6 +937,10 @@ namespace NCMSystem.Controllers
                 var contact = db.contacts.FirstOrDefault(c => c.id == ctId);
                 if (contact != null)
                 {
+                    contact.groups.Clear();
+                    contact.status_id = "S0002";
+                    contact.note = null;
+                    contact.flag_id = null;
                     contact.owner_id = user.id;
                     contact.createdBy = user.id;
                     db.SaveChanges();

@@ -13,6 +13,9 @@ namespace NCMSystem.Models.CallAPI.Contact
         [JsonProperty("email")] public string Email { get; set; }
         [JsonProperty("status_id")] public string Status { get; set; }
         [JsonProperty("flag_id")] public string Flag { get; set; }
+        [JsonProperty("owner_id")] public int? Owner { get; set; }
+        [JsonProperty("createdBy")] public int CreateBy { get; set; }
+        [JsonProperty("status_request")] public string Request { get; set; }
         [JsonProperty("created_at")] public DateTime CreatedAt { get; set; }
     }
 }
