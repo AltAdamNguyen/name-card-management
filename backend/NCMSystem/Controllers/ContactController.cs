@@ -492,8 +492,7 @@ namespace NCMSystem.Controllers
             return listCt;
         }
 
-        private static readonly string[] VietnameseSigns = new string[]
-        {
+        private static readonly string[] VietnameseSigns = new string[]{
             "aAeEoOuUiIdDyYBbCcDdFfGgHhJjKkLlMmNnPpQqRrSsTtVvWwXxYyZz",
 
             "áàạảãâấầậẩẫăắằặẳẵ",
