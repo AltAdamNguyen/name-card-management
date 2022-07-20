@@ -27,7 +27,8 @@ const ConfirmDialogg = ({ visible, onPressVisable, value, setValue, onPressSubmi
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <TouchableWithoutFeedback>
                     <Card elevation={3} style={styles.info_status_modalView}>
-                        <Text style={{ fontSize: 20, fontWeight: 'bold', margin: 10 }}>{title}</Text>
+                        <Text style={{ fontSize: 20, textAlign: 'center' }}>Thông báo</Text>
+                        <Text style={{ fontSize: 16, margin: 10 }}>{title}</Text>
                        
                                     <View style={{ width: '100%' }}>
 
