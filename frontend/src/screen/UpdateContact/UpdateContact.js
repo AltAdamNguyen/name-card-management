@@ -1,6 +1,7 @@
 //import liraries
 import React, { useState, useRef, useEffect, useContext } from 'react';
-import { View, Text, Image, ScrollView, Dimensions, Alert } from 'react-native';
+import { View, Text, Image, ScrollView, Dimensions, Alert, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { TextInput, Provider, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { StackActions } from '@react-navigation/native';
@@ -21,7 +22,7 @@ const contextDuplicate = {
     message: "Liên hệ đã tồn tại bạn có muốn chỉnh sửa",
     cancel: "Không",
     submit: "Sửa",
-  }
+}
 
 const UpdateContact = ({ route, navigation }) => {
     const windowWidth = Dimensions.get('window').width;
@@ -49,8 +50,8 @@ const UpdateContact = ({ route, navigation }) => {
             formRef.current.setValues(route.params.contact)
             setLoading(true)
         }
-        if(route.params && route.params.addContact && formRef.current){
-            formRef.current.setValues({...value, img_url : 'https://ncmsystem.azurewebsites.net/Images/noImage.jpg'})
+        if (route.params && route.params.addContact && formRef.current) {
+            formRef.current.setValues({ ...value, img_url: 'https://ncmsystem.azurewebsites.net/Images/noImage.jpg' })
             setLoading(true)
         }
     }, [route.params])
@@ -69,7 +70,7 @@ const UpdateContact = ({ route, navigation }) => {
         message: `Bản ghi đã tồn tại và có owner là ${duplicateInfo.owner}, bản ghi này sẽ vẫn được lưu lại nhưng bạn không phải owner. Bạn có muốn yêu cầu được cấp quyền owner cho contact này không?`,
         cancel: "Không",
         submit: "Đồng ý",
-      }
+    }
 
     const formInput = [
         {
@@ -156,7 +157,7 @@ const UpdateContact = ({ route, navigation }) => {
         }
         if (data.message === "D0001") {
             setDuplicate(true)
-            setDuplicateInfo({...duplicateInfo, id: data.data.id})
+            setDuplicateInfo({ ...duplicateInfo, id: data.data.id })
         }
         if (data.message === "D0003") {
             setDuplicateOther(true)
@@ -166,7 +167,7 @@ const UpdateContact = ({ route, navigation }) => {
                 owner: data.data.user_name,
             })
         }
-        if(data.message === "D0005"){
+        if (data.message === "D0005") {
             Alert.alert('Thông báo', 'Email đã tồn tại', [{ text: 'OK' }])
         }
     }
@@ -181,17 +182,17 @@ const UpdateContact = ({ route, navigation }) => {
         navigation.navigate("HomeSwap", {
             screen: "ViewContact",
             params: { idContact: duplicateInfo.id_duplicate },
-          });
+        });
     }
 
     const handleDuplicate = () => {
         console.log(duplicateInfo)
         navigation.dispatch(StackActions.popToTop());
         navigation.navigate("HomeSwap", {
-          screen: "UpdateContact",
-          params: { idContact: duplicateInfo.id },
+            screen: "UpdateContact",
+            params: { idContact: duplicateInfo.id },
         });
-      }
+    }
 
     const handleOnCancel = () => {
         setDuplicateOther(false)
@@ -199,14 +200,14 @@ const UpdateContact = ({ route, navigation }) => {
         navigation.navigate("HomeSwap", {
             screen: "ViewContact",
             params: { idContact: duplicateInfo.id_duplicate },
-          });
+        });
     }
 
     return (
         <Provider style={styles.container}>
             <LoadingDialog onVisible={isLoading} />
-            <ModalContact visible={duplicate} onPress={handleDuplicate} onPressVisable={() => setDuplicate(false)} context={contextDuplicate} onCancel={() => setDuplicate(false)}/>
-            <ModalContact visible={duplicateOther} onPress={handleDuplicateOther} onPressVisable={() => setDuplicateOther(false)} context={contextDuplicateOther} onCancel={handleOnCancel}/>
+            <ModalContact visible={duplicate} onPress={handleDuplicate} onPressVisable={() => setDuplicate(false)} context={contextDuplicate} onCancel={() => setDuplicate(false)} />
+            <ModalContact visible={duplicateOther} onPress={handleDuplicateOther} onPressVisable={() => setDuplicateOther(false)} context={contextDuplicateOther} onCancel={handleOnCancel} />
             <View style={{ alignItems: 'center' }}>
                 <ShimmerPlaceholder visible={loading} width={windowWidth * 0.9} height={windowHeight * 0.3} shimmerStyle={{ borderRadius: 10, marginBottom: 10, }}>
                     <View style={styles.imgContact}>
@@ -222,57 +223,59 @@ const UpdateContact = ({ route, navigation }) => {
                 innerRef={formRef}
             >
                 {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => {
-                    return (
+                    return (                     
                         <View style={styles.formInput}>
-                            <ScrollView>
-                                {formInput.map((item, index) => {
-                                    return (
-                                        <View key={index} style={styles.formInput_component}>
-                                            <View style={styles.formInput_item} >
-                                                <ShimmerPlaceholder
-                                                    visible={loading}
-                                                    style={{ width: '100%' }}
-                                                    shimmerStyle={styles.shimmer_FormInput}
-                                                >
-                                                    <View style={styles.formInput_item_component}>
-                                                        <Icon size={20} name={item.icon} color="#1890FF" />
-                                                        <View style={{ width: '100%', marginLeft: 10 }}>
-                                                            <Text style={{ fontWeight: '600', color: '#1890FF' }}>{item.title}</Text>
-                                                            <TextInput
-                                                                placeholder={item.placeholder}
-                                                                value={values[item.name]}
-                                                                multiline={true}
-                                                                dense={true}
-                                                                style={styles.formInput_item_input}
-                                                                onChangeText={handleChange(item.name)}
-                                                                onBlur={handleBlur(item.name)}
-                                                                error={errors[item.name] && touched[item.name]}
-                                                                theme={{
-                                                                    colors: {
-                                                                        primary: '#1890FF',
-                                                                        error: '#B22D1D',
-                                                                    },
-                                                                }}
-                                                            />
-                                                            {errors[item.name] && touched[item.name] ? (
-                                                                <View style={styles.formInput_item_error}>
-                                                                    <Text style={styles.formInput_item_error_label}>{errors[item.name]}</Text>
-                                                                </View>
-                                                            ) : null}
+                            <KeyboardAwareScrollView contentContainerStyle={{flexGrow: 1}} >
+                                    {formInput.map((item, index) => {
+                                        return (
+                                            <View key={index} style={styles.formInput_component}>
+                                                <View style={styles.formInput_item} >
+                                                    <ShimmerPlaceholder
+                                                        visible={loading}
+                                                        style={{ width: '100%' }}
+                                                        shimmerStyle={styles.shimmer_FormInput}
+                                                    >
+                                                        <View style={styles.formInput_item_component}>
+                                                            <Icon size={20} name={item.icon} color="#1890FF" />
+                                                            <View style={{ width: '100%', marginLeft: 10 }}>
+                                                                <Text style={{ fontWeight: '600', color: '#1890FF' }}>{item.title}</Text>
+                                                                <TextInput
+                                                                    placeholder={item.placeholder}
+                                                                    value={values[item.name]}
+                                                                    multiline={true}
+                                                                    dense={true}
+                                                                    style={styles.formInput_item_input}
+                                                                    onChangeText={handleChange(item.name)}
+                                                                    onFocus={(e) => console.log(e.target)}
+                                                                    onBlur={handleBlur(item.name)}
+                                                                    error={errors[item.name] && touched[item.name]}
+                                                                    theme={{
+                                                                        colors: {
+                                                                            primary: '#1890FF',
+                                                                            error: '#B22D1D',
+                                                                        },
+                                                                    }}
+                                                                />
+                                                                {errors[item.name] && touched[item.name] ? (
+                                                                    <View style={styles.formInput_item_error}>
+                                                                        <Text style={styles.formInput_item_error_label}>{errors[item.name]}</Text>
+                                                                    </View>
+                                                                ) : null}
+                                                            </View>
                                                         </View>
-                                                    </View>
-                                                </ShimmerPlaceholder>
+                                                    </ShimmerPlaceholder>
+                                                </View>
                                             </View>
-                                        </View>
-                                    )
-                                })}
-                                <View style={{ marginBottom: 15 }} />
-                            </ScrollView>
+                                        )
+                                    })}
+                                    <View style={{ marginBottom: 15 }} />
+                                </KeyboardAwareScrollView>
                             <View style={styles.footer}>
                                 <Button onPress={() => navigation.goBack()} style={styles.footer_button_label} color="#1890FF">Thoát</Button>
                                 <Button style={styles.footer_button_label} color="#1890FF" onPress={handleSubmit}>Lưu</Button>
                             </View>
                         </View>
+                        
                     )
                 }}
             </Formik>

@@ -40,7 +40,20 @@ const ScanScreen = ({ navigation }) => {
       </View>
     )
   } else if (!hasCameraPermission) {
-    return <Text>Permission for camera not granted. Please change this in settings.</Text>
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Card elevation={2} style={{ width: '80%', padding: 20 }}>
+          <Card.Content>
+            <Title>Thông báo</Title>
+            <Paragraph>Máy ảnh chưa được cấp phép. {"\n"}Vui lòng thay đổi ở trong cài đặt</Paragraph>
+          </Card.Content>
+          <Card.Actions>
+            <Button>Cancel</Button>
+            <Button>Ok</Button>
+          </Card.Actions>
+        </Card>
+      </View>
+    )
   }
 
   const takePic = async () => {
@@ -91,80 +104,66 @@ const ScanScreen = ({ navigation }) => {
   }
 
   return (
-    // <SafeAreaView style={styles.container}>
-    //     <View style={styles.header}>
-    //       <IconButton icon="close-circle" size={26} color="#fff" onPress={() => navigation.goBack()} />
-    //       <IconButton
-    //         icon={flashMode === FlashMode.on ? "flash" : "flash-off"}
-    //         size={26}
-    //         color="#fff"
-    //         onPress={() => setFlashMode(flashMode === FlashMode.off ? FlashMode.on : FlashMode.off)}
-    //       />
-    //     </View>
-    //   <View style={[styles.preview,{height: height}]}>
-    //     {
-    //       isFocused &&
-    //       (scanQr ?
-    //         <BarCodeScanner
-    //           style={[styles.preview_camera, { height: height }]}
-    //           onBarCodeScanned={handleScanQr}
-    //         >
-    //           <View style={styles.preview_overlay}>
-    //             <Image style={styles.preview_iconOverlay} source={iconPath.icQr} />
-    //           </View>
-    //         </BarCodeScanner>
-    //         :
-    //         (<Camera
-    //           style={[styles.preview_camera, { height: height }]}
-    //           ref={cameraRef}
-    //           ratio="4:3"
-    //           flashMode={flashMode}
-    //         >
-    //           <View style={styles.preview_overlay}>
-    //             <Image style={styles.preview_iconOverlay} source={iconPath.icOverlay} />
-    //           </View>
-    //         </Camera>))
-    //     }
-    //   </View>
+    <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <IconButton icon="close-circle" size={26} color="#fff" onPress={() => navigation.goBack()} />
+          <IconButton
+            icon={flashMode === FlashMode.on ? "flash" : "flash-off"}
+            size={26}
+            color="#fff"
+            onPress={() => setFlashMode(flashMode === FlashMode.off ? FlashMode.on : FlashMode.off)}
+          />
+        </View>
+      <View style={[styles.preview,{height: height}]}>
+        {
+          isFocused &&
+          (scanQr ?
+            <BarCodeScanner
+              style={[styles.preview_camera, { height: height }]}
+              onBarCodeScanned={handleScanQr}
+            >
+              <View style={styles.preview_overlay}>
+                <Image style={styles.preview_iconOverlay} source={iconPath.icQr} />
+              </View>
+            </BarCodeScanner>
+            :
+            (<Camera
+              style={[styles.preview_camera, { height: height }]}
+              ref={cameraRef}
+              ratio="4:3"
+              flashMode={flashMode}
+            >
+              <View style={styles.preview_overlay}>
+                <Image style={styles.preview_iconOverlay} source={iconPath.icOverlay} />
+              </View>
+            </Camera>))
+        }
+      </View>
 
-    //   <View style={styles.footer}>
-    //     <View style={styles.footer_content}>
-    //       <IconButton
-    //         icon='image'
-    //         size={30}
-    //         color='#FFF'
-    //         onPress={pickImage}
-    //         disabled={scanQr}
-    //       />
-    //       <IconButton size={80}
-    //         icon='checkbox-blank-circle'
-    //         color='#FFF'
-    //         onPress={takePic}
-    //         disabled={scanQr}
-    //       />
-    //       <IconButton
-    //         icon={scanQr ?  'camera' : 'qrcode-scan'}
-    //         size={30}
-    //         color='#FFF'
-    //         onPress={() => setScanQr(!scanQr)}
-    //       />
-    //     </View>
-    //   </View>
-    // </SafeAreaView>
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Card elevation={2} style={{ width: '80%', padding: 20 }}>
-        <Card.Content>
-          <Title>Thông báo</Title>
-          <Paragraph>Máy ảnh chưa được cấp phép. {"\n"}Vui lòng thay đổi ở trong cài đặt</Paragraph>
-        </Card.Content>
-        {/* <Card.Cover source={}/> */}
-        <Card.Actions>
-          <Button>Cancel</Button>
-          <Button>Ok</Button>
-        </Card.Actions>
-      </Card>
-    </View>
-
+      <View style={styles.footer}>
+        <View style={styles.footer_content}>
+          <IconButton
+            icon='image'
+            size={30}
+            color='#FFF'
+            onPress={pickImage}
+            disabled={scanQr}
+          />
+          <IconButton size={80}
+            icon='checkbox-blank-circle'
+            color='#FFF'
+            onPress={takePic}
+            disabled={scanQr}
+          />
+          <IconButton
+            icon={scanQr ?  'camera' : 'qrcode-scan'}
+            size={30}
+            color='#FFF'
+            onPress={() => setScanQr(!scanQr)}
+          />
+        </View>
+      </View>
+    </SafeAreaView>
   );
 };
 

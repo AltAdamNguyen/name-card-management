@@ -9,23 +9,23 @@ const emailRegex = /^[a-zA-Z0-9\.]+@([\w]+\.)+[\w]{2,4}$/;
 const AddContactSchema = Yup.object().shape({
     name: Yup.string()
         .max(255, 'Too Long!')
-        .required('Required'),
+        .required('Required').nullable(),
     company: Yup.string()
         .max(255, 'Too Long!')
-        .required('Required'),
+        .required('Required').nullable(),
     phone: Yup.string()
         .matches(phoneRegex, 'Invalid phone number!')
-        .required('Required'),
+        .required('Required').nullable(),
     email: Yup.string()
         .matches(emailRegex,'Invalid email address!')
-        .required('Required'),
+        .required('Required').nullable(),
     fax: Yup.string()
         .matches(phoneRegex, 'Invalid fax number!')
         .nullable(),
-    website: Yup.string()
-        .max(255, 'Too Long!')
-        .url('Invalid website address!')
-        .nullable(),
+    // website: Yup.string()
+    //     .max(255, 'Too Long!')
+    //     .url('Invalid website address!')
+    //     .nullable(),
 });
 
 export default AddContactSchema;
