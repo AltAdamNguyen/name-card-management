@@ -70,11 +70,10 @@
         "ModalAddGroupContact_Label_Confirm" : "Confirm",
         "ModalAddGroupContact_Placeholder_GroupName" : "Group Name",
 
-        "ModalGroupContactDetail_Label_AddContact": "ADD CONTACT",
-        "ModalGroupContactDetail_Label_Export": "Export",
-        "ModalGroupContactDetail_Label_ChangeGroupName": "CHANGE GROUP NAME",
-        "ModalGroupContactDetail_Label_DeleteContact": "DELETE CONTACT",
-        "ModalGroupContactDetail_Label_DeleteGroup": "DELETE GROUP",
+        "ModalGroupContactDetail_Label_AddContact": "Add",
+        "ModalGroupContactDetail_Label_ChangeGroupName": "Change group name",
+        "ModalGroupContactDetail_Label_DeleteContact": "Delete contact",
+        "ModalGroupContactDetail_Label_DeleteGroup": "Delete group",
 
         "Screen_UpdateContact_Button_Header_Title": "Update Contact",
         "Screen_UpdateContact_Button_Header_Modal": "Save",

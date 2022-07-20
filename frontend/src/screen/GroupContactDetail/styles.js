@@ -116,8 +116,19 @@ const styles = StyleSheet.create({
     bottomButtonDisable: {
         width: '95%',
         backgroundColor: 'grey'
-    }
+    },
     // End Bottom Buttom Region
+    footer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        padding: 5,
+    },
+    footer_button: {
+        alignItems: 'center',
+    },
+    footer_button_label: {
+        fontSize: 10,
+    }
 });
 
 export default styles;
