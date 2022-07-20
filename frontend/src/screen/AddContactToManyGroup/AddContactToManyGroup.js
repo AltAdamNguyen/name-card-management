@@ -29,7 +29,7 @@ import {
   Provider,
   Button,
 } from "react-native-paper";
-import ModalAddGroupContact from "../../components/groupcontact/ModalAddGroupContact";
+import ModalAddGroup from "../../components/groupcontact/ModalAddGroup";
 import { FetchApi } from "../../service/api/FetchAPI";
 import { GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
 import { useIsFocused } from "@react-navigation/native";
@@ -291,31 +291,15 @@ const AddContactToManyGroup = ({ route, navigation }) => {
           </Button>
         </View>
       </SafeAreaView>
-      <ModalAddGroupContact
-        label={t("ModalAddGroupContact_Placeholder_GroupName")}
-        confirmLabel={t("ModalAddGroupContact_Label_Confirm")}
-        onVisible={modalAddContactVisible}
-        onDismiss={() => setModalAddContactVisible(false)}
-        onPressCancel={() => setModalAddContactVisible(false)}
-        onPressConfirm={onAddNewGroupContactPressed}
-      />
-      <ConfirmDialog
-        onVisible={confirmDialogVisible}
-        label={t("Screen_AddContactToManyGroup_ConfirmDialog_Label")}
-        leftButtonTitle={t(
-          "Screen_AddContactToManyGroup_ConfirmDialog_LeftButtonTitle"
-        )}
-        rightButtonTitle={t(
-          "Screen_AddContactToManyGroup_ConfirmDialog_RightButtonTitle"
-        )}
-        onDismiss={() => {
-          setConfirmDialogVisible(false);
-        }}
-        onPressConfirm={AddContactToManyGroup}
-        onPressCancel={() => {
-          setConfirmDialogVisible(false);
-        }}
-      />
+      <ModalAddGroup visible={modalAddContactVisible}  onPressConfirm={onAddNewGroupContactPressed} onPressVisable={() => setModalAddContactVisible(!modalAddContactVisible)}/>
+       <ConfirmDialog
+            visible={confirmDialogVisible}
+            title={t("Screen_AddContactToManyGroup_ConfirmDialog_Label")}
+            leftButtonTitle={t( "Screen_AddContactToManyGroup_ConfirmDialog_LeftButtonTitle")}
+            rightButtonTitle={t("Screen_AddContactToManyGroup_ConfirmDialog_RightButtonTitle")}
+            onPressVisable={() => {setConfirmDialogVisible(false)}}
+            onPressConfirm={AddContactToManyGroup}
+          />
     </Provider>
   );
 };

@@ -20,6 +20,7 @@ import {
 } from "react-native-paper";
 import { FormatDate } from '../../validate/FormatDate';
 import CustomCheckedBox from "../../components/groupcontact/checkBoxCustom/CustomCheckedBox";
+
 import ConfirmDialog from "../../components/customDialog/dialog/confirmDialog/ConfirmDialog";
 import { FetchApi } from "../../service/api/FetchAPI";
 import { GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
@@ -220,17 +221,14 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
                             {t("Screen_DeleteContactFromGroup_Button_DeleteContact")}
                         </Button>
                     </View>
-                    <ConfirmDialog onVisible={confirmDialogVisible}
-                        label={t("Screen_DeleteContactFromGroup_ConfirmDialog_Label")}
-                        leftButtonTitle={t("Screen_DeleteContactFromGroup_ConfirmDialog_LeftButtonTitle")}
-                        rightButtonTitle={t("Screen_DeleteContactFromGroup_ConfirmDialog_RightButtonTitle")}
-                        onDismiss={() => {
-                            setConfirmDialogVisible(false)
-                        }}
-                        onPressConfirm={deleteContactFromGroup}
-                        onPressCancel={() => {
-                            setConfirmDialogVisible(false)
-                        }} />
+                        <ConfirmDialog
+                            visible={confirmDialogVisible}
+                            title={t("Screen_DeleteContactFromGroup_ConfirmDialog_Label")}
+                            leftButtonTitle={t("Screen_DeleteContactFromGroup_ConfirmDialog_LeftButtonTitle")}
+                            rightButtonTitle={t("Screen_DeleteContactFromGroup_ConfirmDialog_RightButtonTitle")}
+                            onPressVisable={() => {setConfirmDialogVisible(false)}}
+                            onPressConfirm={deleteContactFromGroup}
+          />    
                 </SafeAreaView>
             </Portal>
             <Loading onVisible={isLoading ? true : false }/>

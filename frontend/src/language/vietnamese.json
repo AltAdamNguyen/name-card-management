@@ -70,11 +70,10 @@
         "ModalAddGroupContact_Label_Confirm" : "Thêm",
         "ModalAddGroupContact_Placeholder_GroupName" : "Tên nhóm",
 
-        "ModalGroupContactDetail_Label_AddContact": "THÊM DANH THIẾP",
-        "ModalGroupContactDetail_Label_Export": "XUẤT THÔNG TIN",
-        "ModalGroupContactDetail_Label_ChangeGroupName": "ĐỔI TÊN NHÓM",
-        "ModalGroupContactDetail_Label_DeleteContact": "XÓA DANH THIẾP",
-        "ModalGroupContactDetail_Label_DeleteGroup": "XÓA NHÓM",
+        "ModalGroupContactDetail_Label_AddContact": "Thêm",
+        "ModalGroupContactDetail_Label_ChangeGroupName": "Đổi tên",
+        "ModalGroupContactDetail_Label_DeleteContact": "Xóa danh thiếp",
+        "ModalGroupContactDetail_Label_DeleteGroup": "Xóa nhóm",
 
         "Screen_UpdateContact_Button_Header_Title": "Chỉnh sửa liên hệ",
         "Screen_UpdateContact_Button_Header_Modal": "Sửa",
