@@ -3,7 +3,7 @@ import React from 'react';
 import { View, Text, Modal, TouchableWithoutFeedback, Platform } from 'react-native';
 import { TextInput, Button, Card } from 'react-native-paper';
 import { Picker } from '@react-native-picker/picker';
-import styles from '../inputDialog/styles';
+import styles from '../confirmDialog/styles';
 import { Formik } from 'formik';
 import StatusSchema from '../../../../validate/ValidateFormStatus';
 import { useContext ,useState} from 'react';
