@@ -228,6 +228,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\CallAPI\Admin\ChangeUserImportedRequest.cs" />
+    <Compile Include="Models\CallAPI\Admin\ContactOfDaUserResponse.cs" />
     <Compile Include="Models\CallAPI\Admin\EmailManagerResponse.cs" />
     <Compile Include="Models\CallAPI\Admin\UserInformationImportedResponse.cs" />
     <Compile Include="Models\CallAPI\Admin\UserInformationResponse.cs" />
@@ -336,6 +337,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Images\1.png" />
+    <Content Include="Images\noImage.jpg" />
     <Content Include="Models\NcmModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>NcmModel.edmx</DependentUpon>

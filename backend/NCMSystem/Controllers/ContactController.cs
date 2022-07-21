@@ -492,7 +492,8 @@ namespace NCMSystem.Controllers
             return listCt;
         }
 
-        private static readonly string[] VietnameseSigns = new string[]{
+        private static readonly string[] VietnameseSigns = new string[]
+        {
             "aAeEoOuUiIdDyYBbCcDdFfGgHhJjKkLlMmNnPpQqRrSsTtVvWwXxYyZz",
 
             "áàạảãâấầậẩẫăắằặẳẵ",
@@ -919,7 +920,7 @@ namespace NCMSystem.Controllers
 
         [HttpPatch]
         [Route("api/contacts/transfer")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin, NcmRole.Staff, NcmRole.Manager })]
         public ResponseMessageResult TransferOwnContact([FromBody] TransferContact tranCt)
         {
             string email = tranCt.TransferTo ?? "";
