@@ -13,7 +13,6 @@ import {
   Pressable,
   Platform,
 } from "react-native";
-import iconPath from "../../constants/iconPath";
 import styles from "./styles";
 import i18next from "../../language/i18n";
 import { useTranslation } from "react-i18next";
@@ -28,6 +27,7 @@ import {
   Provider,
   FAB
 } from "react-native-paper";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { FetchApi } from "../../service/api/FetchAPI";
 import { GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
@@ -161,7 +161,7 @@ const GroupContact = ({ navigation }) => {
                       <Text style={styles.container_listGroup_item_label} >
                         {item.group_name}
                       </Text>
-                      <Image source={iconPath.icRight}  />
+                      <Icon name="chevron-right" size={20}/>
                     </View>
                   </TouchableOpacity>
                 );

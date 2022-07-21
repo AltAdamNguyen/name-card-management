@@ -13,7 +13,6 @@ import {
   Pressable,
   Platform,
 } from "react-native";
-import iconPath from "../../constants/iconPath";
 import styles from "./styles";
 import i18next from "../../language/i18n";
 import { useTranslation } from "react-i18next";

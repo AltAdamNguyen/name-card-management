@@ -19,7 +19,7 @@ const Route = () => {
 
   return (
     <NavigationContainer>
-      {isLoading ? <Splash /> : (authCtx.isLogin ? <RouteMovingBetweenScreen /> : <RouteAuthentication />)}
+      {authCtx.isLogin ? <RouteMovingBetweenScreen /> : <RouteAuthentication />}
     </NavigationContainer>
   );
 }
