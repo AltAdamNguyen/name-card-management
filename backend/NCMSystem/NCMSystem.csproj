@@ -222,6 +222,7 @@
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Filter\JwtAuthorizeFilter.cs" />
+    <Compile Include="Filter\JwtToken.cs" />
     <Compile Include="Filter\LogException.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -335,7 +336,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Images\1.png" />
-    <Content Include="Images\noImage.jpg" />
     <Content Include="Models\NcmModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>NcmModel.edmx</DependentUpon>

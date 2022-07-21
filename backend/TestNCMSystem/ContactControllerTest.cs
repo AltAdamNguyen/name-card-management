@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using NCMSystem.Controllers;
+using NCMSystem.Models;
+using NCMSystem.Filter;
 using NUnit.Framework;
 
 namespace TestNCMSystem
@@ -10,32 +13,31 @@ namespace TestNCMSystem
     [TestFixture]
     public class ContactControllerTest
     {
-        Token token = new Token();
+        private NCMSystemEntities db = new NCMSystemEntities(Environment.GetEnvironmentVariable("NCMSystemEntities"));
 
         [Test]
         public void ContactController_GetListHome_Success()
         {
-            //arrange
-            var controller = new ContactController();
-            DateTimeOffset dateCreateToken = DateTimeOffset.Now;
-            DateTimeOffset dateExpireToken = dateCreateToken.AddMinutes(5);
-            var tokenStr=token.GenerateToken(2, dateCreateToken.ToUnixTimeSeconds(), dateExpireToken.ToUnixTimeSeconds(), 1);
-            Console.Out.WriteLine("token: " + tokenStr);
-            //add token to request header
-            var request = new HttpRequestMessage()
+            // init information of user
+            int userId = 2;
+            int? role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
+            JwtToken payload = new JwtToken()
             {
-                Method = HttpMethod.Get,
-                Headers = { { "Authorization", "Bearer " + tokenStr } }
+                Uid = userId,
+                Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
+                Exp = DateTimeOffset.Now.AddMinutes(5).ToUnixTimeSeconds(),
             };
+
+            // add property to request
+            var request = new HttpRequestMessage();
+            request.Properties.Add("payload", payload);
+            request.Properties.Add("role", role);
             
+            ContactController controller = new ContactController();
             controller.Request = request;
-            controller.Configuration = new HttpConfiguration();
-
-            //act
-            var result = controller.GetListHome("create_date",1,"");
-
-            //assert
-            Assert.AreEqual(result.Response.StatusCode, HttpStatusCode.OK);
+            var res = controller.GetListHome();
+            
+            Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
         }
     }
 }
