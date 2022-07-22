@@ -3,7 +3,7 @@ import { View, Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { GroupContact, Team, Setting, Home } from '../../screen';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import styles from '../../Navigation/styles';
+import styles from '../../navigation/styles';
 import AuthContext from '../../store/AuthContext';
 import RouteMovingBetweenScanScreen from './RouteMovingBetweenScanScren';
 const Tab = createBottomTabNavigator();

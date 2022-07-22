@@ -75,8 +75,11 @@ const Home = ({ route, navigation }) => {
         }
     }
     useEffect(() => {
-        FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
-        setLoading(true);
+        if(true) {
+            FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
+            setLoading(true);
+        }
+
     }, [])
 
     useEffect(() => {
