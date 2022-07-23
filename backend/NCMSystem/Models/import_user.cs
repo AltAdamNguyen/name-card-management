@@ -19,6 +19,7 @@ namespace NCMSystem.Models
         public string email { get; set; }
         public Nullable<int> role_id { get; set; }
         public string manager { get; set; }
+        public Nullable<int> status { get; set; }
     
         public virtual role role { get; set; }
     }

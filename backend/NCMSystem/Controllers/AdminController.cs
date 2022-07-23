@@ -33,7 +33,7 @@ namespace NCMSystem.Controllers
             try
             {
                 var user = id == 0
-                    ? db.users.FirstOrDefault(x => x.role_id == 3)
+                    ? db.users.FirstOrDefault(x => x.role_id == 3 && x.isActive == true)
                     : db.users.FirstOrDefault(x => x.id == id);
                 int userId = user?.id ?? 0;
                 var mem = id == 0
@@ -179,6 +179,7 @@ namespace NCMSystem.Controllers
                         name = name,
                         email = email,
                         role_id = role,
+                        status = 1
                     });
                 }
 
@@ -243,7 +244,7 @@ namespace NCMSystem.Controllers
 
             try
             {
-                db.users.ToList().ForEach(x =>
+                db.users.Where(u => u.isActive == true &&(u.role_id == 1 || u.role_id == 2)).ToList().ForEach(x =>
                 {
                     listEmail.Add(new EmailManagerResponse()
                     {
@@ -402,6 +403,7 @@ namespace NCMSystem.Controllers
                         Email = user.email,
                         Name = user.name,
                         RoleId = user.role_id,
+                        Status = user.status,
                         EmailManager = user.manager,
                         CheckEmail = db.users.FirstOrDefault(x => x.email == user.email) != null,
                     });
@@ -517,6 +519,119 @@ namespace NCMSystem.Controllers
                     Message = "Success",
                 }), Encoding.UTF8, "application/json")
             });
+        }
+
+        [HttpPost]
+        [Route("api/admin/user-imported/{id}")]
+        public ResponseMessageResult AddUser(int id)
+        {
+            try
+            {
+                var selectUserImported = db.import_user.FirstOrDefault(x => x.id == id);
+                if (selectUserImported == null)
+                    return Common.ResponseMessage.BadRequest("A0006");
+
+                if (selectUserImported.manager == null && selectUserImported.role_id < 3)
+                    return Common.ResponseMessage.BadRequest("A0005");
+
+                var selectUser = db.users.FirstOrDefault(x => x.email == selectUserImported.email);
+                if (selectUser != null)
+                    return Common.ResponseMessage.BadRequest("A0008");
+
+                var selectUserManager = db.users.FirstOrDefault(x => x.email == selectUserImported.manager);
+                if (selectUserManager == null && (selectUserImported.role_id == 1 || selectUserImported.role_id == 2))
+                    return Common.ResponseMessage.BadRequest("A0005");
+
+                var boss = db.users.FirstOrDefault(x => x.role_id == 3);
+                if (boss != null && (selectUserImported.manager == null || selectUserImported.manager.Trim() == ""))
+                {
+                    var user = db.users.Add(new user()
+                    {
+                        name = selectUserImported.name,
+                        password = PasswordGenerator.Generate(),
+                        email = selectUserImported.email,
+                        role_id = selectUserImported.role_id ?? 1,
+                        isActive = true,
+                        manager_id = null
+                    });
+
+                    var listUser = db.users.Where(x => x.manager_id == boss.id).ToList();
+                    if (listUser.Count > 0)
+                    {
+                        foreach (var u in listUser)
+                        {
+                            u.manager_id = user.id;
+                        }
+                    }
+
+                    boss.isActive = false;
+                    selectUserImported.status = 2;
+                    db.SaveChanges();
+                    return new ResponseMessageResult(new HttpResponseMessage
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                        {
+                            Message = "Success",
+                        }), Encoding.UTF8, "application/json")
+                    });
+                }
+
+                if (selectUserImported.role_id > 3)
+                    return Common.ResponseMessage.BadRequest("A0009");
+
+                db.users.Add(new user()
+                {
+                    name = selectUserImported.name,
+                    password = PasswordGenerator.Generate(),
+                    email = selectUserImported.email,
+                    role_id = selectUserImported.role_id ?? 1,
+                    isActive = true,
+                    manager_id = selectUserManager?.id
+                });
+                
+                selectUserImported.status = 2;
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        private static class PasswordGenerator
+        {
+            private static readonly Random Rand = new Random();
+
+            public static string Generate()
+            {
+                string upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                string lowerChars = "abcdefghijklmnopqrstuvwxyz";
+                string specialChars = "!@#$%^&*+?~";
+                string numbers = "0123456789";
+                string password = "";
+                //random 1 char in upperChars
+                password += upperChars[Rand.Next(0, upperChars.Length)];
+                password += specialChars[Rand.Next(0, specialChars.Length)];
+                password += numbers[Rand.Next(0, numbers.Length)];
+                for (int i = 0; i < 5; i++)
+                {
+                    password += lowerChars[Rand.Next(0, lowerChars.Length)];
+                }
+
+                return password;
+            }
         }
     }
 }

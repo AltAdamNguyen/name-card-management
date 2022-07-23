@@ -1378,6 +1378,18 @@ namespace NCMSystem.Controllers
                     return Common.ResponseMessage.NotFound("C0018");
                 }
 
+                var rqChange = db.requests.Where(c => c.old_contact_id == rq.old_contact_id);
+                if (rqChange.Count() > 0)
+                {
+                    contact ct;
+                    foreach (var r in rqChange)
+                    {
+                        ct = db.contacts.FirstOrDefault(c => c.id == r.new_contact_id);
+                        if (ct != null) ct.owner_id = rq.requester;
+                        r.old_contact_id = rq.new_contact_id;
+                    }
+                }
+
                 rq.old_contact_id = null;
                 rq.new_contact_id = null;
 
