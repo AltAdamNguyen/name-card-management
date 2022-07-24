@@ -2,9 +2,11 @@
     "translation" : {
         "Screen_Login_Placeholder_Username": "Email",
         "Screen_Login_Placeholder_Password": "Mật Khẩu",
-        "Screen_Login_Button_ForgotPassword": "Quên mật khẩu",
         "Screen_Login_Button_Login": "Đăng nhập",
         "Screen_Login_Text_Signature": "@2022 Phát triển bởi FIS",
+        "Screen_Login_Text_Error_Empty": "Email hoặc mật khẩu không được để trống",
+        "Screen_Login_Text_Error_U0002": "Tài khoản không có quyền truy cập ",
+        "Screen_Login_Text_Error_U0003": "Email hoặc mật khẩu không đúng",
 
         "Screen_ForgotPassword_Button_ResetPassword": "Đặt lại mật khẩu",
 

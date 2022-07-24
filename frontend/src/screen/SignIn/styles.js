@@ -8,11 +8,12 @@ const styles = StyleSheet.create({
         width:'100%',
         alignItems:'center'
     },
-    button_forgotPassword:{
-        width:'100%',
+    error_text:{
+        width:'85%',
         textAlign: 'right',
-        alignItems:'center'
-        
+        // alignItems:'center',
+        marginTop: '3%',
+        marginBottom: '3%',
     },  
     root: {
         alignItems: 'center',

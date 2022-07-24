@@ -118,7 +118,7 @@ const Home = ({ route, navigation }) => {
     }
 
     const handleLoadMore = (e) => {
-        console.log('load more');
+        // console.log('load more');
         FetchApi(`${ContactAPI.ViewContact}?sortBy=${sort}&flag=${flag}&page=${page + 1}`, Method.GET, ContentType.JSON, undefined, getContactLoadMore)
         setLoadMore(true);
     }
