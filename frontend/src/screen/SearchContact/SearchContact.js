@@ -1,8 +1,8 @@
 //import liraries
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, Text, SafeAreaView, Image, ScrollView, Alert } from 'react-native';
+import { View, Text, SafeAreaView, Image, ScrollView, Alert, FlatList } from 'react-native';
 
-import { Searchbar, Card, List, IconButton, Button, RadioButton, FAB } from 'react-native-paper'
+import { Searchbar, Card, List, IconButton, Button, RadioButton, FAB, ActivityIndicator } from 'react-native-paper'
 import debounce from 'lodash.debounce';
 import styles from '../Home/styles';
 import { FetchApi } from '../../service/api/FetchAPI';
@@ -34,9 +34,11 @@ const SearchContact = ({ navigation, route }) => {
     const [visible, setVisible] = useState(false);
     const [visibleCheckBox, setVisibleCheckBox] = useState(false);
     const [visibleTransfer, setVisibleTransfer] = useState(false);
+    const [page, setPage] = useState(1);
     const textInputRef = useRef();
     const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
     const [loading, setLoading] = useState(false);
+    const [loadMore, setLoadMore] = useState(false);
     const [contactId, setContactId] = useState();
 
     useEffect(() => {
@@ -51,7 +53,7 @@ const SearchContact = ({ navigation, route }) => {
             FetchApi(`${ContactAPI.ListDeactive}`, Method.GET, ContentType.JSON, undefined, getContact)
         }
         if (route.params && route.params.transfer) {
-            FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
+            FetchApi(ContactAPI.ListTransferContact, Method.GET, ContentType.JSON, undefined, getContact)
             setVisibleCheckBox(true)
         }
     }, []);
@@ -59,6 +61,7 @@ const SearchContact = ({ navigation, route }) => {
     const SearchApi = (value) => {
         route.params && route.params.useid && FetchApi(`${ContactAPI.SearchContact}?value=${value}&userId=${route.params.useid}`, Method.GET, ContentType.JSON, undefined, getContact)
         !route.params && FetchApi(`${ContactAPI.SearchContact}?value=${value}`, Method.GET, ContentType.JSON, undefined, getContact)
+        route.params && route.params.transfer && FetchApi(`${ContactAPI.SearchContactTransfer}?value=${value}`, Method.GET, ContentType.JSON, undefined, getContact)
     }
 
     const getContact = (data) => {
@@ -156,6 +159,45 @@ const SearchContact = ({ navigation, route }) => {
         navigation.goBack()
     }
 
+    const CardContact = ({item}) => {
+        return (
+            <Contact item={item} route={route} handleViewContact={handleViewContact} checkListGroup={checkListGroup} handleReActivateButton={handleReActivateButton} listGroup={listGroup} visibleCheckBox={visibleCheckBox} />
+        )
+    }
+
+    const EmptyList = () => {
+        return (
+            <View >
+                <Text style={styles.listContainer_label}>Không có danh thiếp</Text>
+            </View>
+        )
+    }
+
+    const FooterList = () => {
+        return (
+            loadMore ? <View>
+                <ActivityIndicator color="#1890FF" size="large" />
+            </View>: null
+        )
+    }
+
+    const handleLoadMore = (e) => {
+        // console.log('load more');
+        FetchApi(`${ContactAPI.ListTransferContact}?&page=${page + 1}`, Method.GET, ContentType.JSON, undefined, getContactLoadMore)
+        setLoadMore(true);
+    }
+
+    const getContactLoadMore = (data) => {
+        if (data.data) {
+            if (data.data.length > 0) {
+                setListFilter([...listFilter, ...data.data]);
+                setContContact(listFilter.length + data.data.length);
+                setPage(page + 1);
+            } 
+        }
+        setLoadMore(false);
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <View style={styles.header}>
@@ -217,10 +259,6 @@ const SearchContact = ({ navigation, route }) => {
                 }
             </View>
             <View style={styles.listContainer}>
-                {listFilter && listFilter.length == 0 && loading == false &&
-                    <View style={styles.listContainer_view}>
-                        <Text style={styles.listContainer_label}>Không có danh thiếp</Text>
-                    </View>}
                 {loading &&
                     <Card mode='elevated' style={styles.card} elevation={2}>
                         <View style={styles.item}>
@@ -239,13 +277,19 @@ const SearchContact = ({ navigation, route }) => {
                         </View>
                     </Card>
                 }
-                <ScrollView>
-                    {listFilter && listFilter.length != 0 && listFilter.map((item, index) => {
-                        return (
-                            <Contact key={index} item={item} route={route} handleViewContact={handleViewContact} checkListGroup={checkListGroup} handleReActivateButton={handleReActivateButton} listGroup={listGroup} visibleCheckBox={visibleCheckBox} />
-                        )
-                    })}
-                </ScrollView>
+                <FlatList
+                    style={{ width: '100%', }}
+                    contentContainerStyle={{ flexGrow: 1, justifyContent: listFilter.length === 0 ? 'center' : 'flex-start' }}
+                    data={listFilter}
+                    renderItem={CardContact}
+                    keyExtractor={(item) => item.id}
+                    showsVerticalScrollIndicator={false}
+                    onEndReached={handleLoadMore}
+                    onEndReachedThreshold={Platform.OS === 'android' ? 0.1 : 0.5}
+                    ListEmptyComponent={EmptyList}
+                    ListFooterComponent={FooterList}
+                />
+
                 {visibleCheckBox && route.params && route.params.transfer && <Button
                     style={styles.floatButton_team}
                     mode="contained"

@@ -1,6 +1,6 @@
 //import liraries
 import React, { useState, useRef, useEffect } from "react";
-import { View, Image, ScrollView, Dimensions, Text } from "react-native";
+import { View, Image, ScrollView, Dimensions, Text, KeyboardAvoidingView } from "react-native";
 import { Provider, Button } from "react-native-paper";
 
 import { StackActions } from "@react-navigation/native";
@@ -13,6 +13,7 @@ import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
 import { LinearGradient } from "expo-linear-gradient";
 import ModalContact from "../../components/addcontact/ModelContact";
 import TextInputItem from "../../components/addcontact/TextInputItem";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 // create a component
 
 const formInput = [
@@ -146,7 +147,7 @@ const AddContact = ({ contact, loading, navigation }) => {
       setDuplicate(true)
       setContactId(data.data.id)
     }
-    if (data.message === "C0009"){
+    if (data.message === "C0009") {
       navigation.dispatch(StackActions.popToTop());
       navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: data.data.id, showFooter: true } })
     }
@@ -201,7 +202,7 @@ const AddContact = ({ contact, loading, navigation }) => {
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => {
           return (
             <View style={styles.formInput}>
-              <ScrollView>
+              <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }} >
                 {formInput.map((item, index) => {
                   return (
                     <View key={index} style={styles.formInput_component}>
@@ -227,7 +228,7 @@ const AddContact = ({ contact, loading, navigation }) => {
                   );
                 })}
                 <View style={{ marginBottom: 15 }} />
-              </ScrollView>
+              </KeyboardAwareScrollView>
               <View style={styles.footer}>
                 <Button onPress={() => navigation.goBack()} style={styles.footer_button_label} color="#1890FF">Thoát</Button>
                 <Button style={styles.footer_button_label} color="#1890FF" onPress={handleSubmit}>Lưu</Button>

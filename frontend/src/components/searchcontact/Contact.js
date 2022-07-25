@@ -99,7 +99,7 @@ const Contact = ({ item, route, handleViewContact, checkListGroup, handleReActiv
                                     color={"#828282"}
                                     onPress={() => handleReActivateButton(item.id)} />
                             }
-                            {!Boolean(item.status_request) && item.owner_id !== item.createdBy &&
+                            {!Boolean(item.status_request) && item.owner_id !== item.createdBy && !route.params &&
                                 <Icon name="account-alert" size={24} color="#cc6e1b" />
                             }
                             {Boolean(item.status_request) &&

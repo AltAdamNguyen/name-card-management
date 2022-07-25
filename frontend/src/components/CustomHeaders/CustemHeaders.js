@@ -19,7 +19,7 @@ const CustemHeaders = ({text_PRIMARY, text_title, Logo}) => {
 
 const styles = StyleSheet.create({
   root: {
-    width: '90%',
+    width: '100%',
     alignItems:'center'
   },
   logo: {
@@ -27,7 +27,8 @@ const styles = StyleSheet.create({
     maxWidth: 300,
     height: 80,
     marginBottom: 10,
-    marginTop: '10%'
+    marginTop: '10%',
+    alignItems: 'center'
   },
   text_PRIMARY: {
     fontWeight: 'bold',

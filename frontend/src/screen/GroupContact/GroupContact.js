@@ -13,7 +13,6 @@ import {
   Pressable,
   Platform,
 } from "react-native";
-import iconPath from "../../constants/iconPath";
 import styles from "./styles";
 import i18next from "../../language/i18n";
 import { useTranslation } from "react-i18next";
@@ -28,11 +27,12 @@ import {
   Provider,
   FAB
 } from "react-native-paper";
-import ModalAddGroupContact from "../../components/groupcontact/ModalAddGroupContact";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+
 import { FetchApi } from "../../service/api/FetchAPI";
 import { GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
 import { useIsFocused } from "@react-navigation/native";
-
+import ModalAddGroup from "../../components/groupcontact/ModalAddGroup"
 // create a component
 const GroupContact = ({ navigation }) => {
   const [isLoading, setLoading] = useState(true);
@@ -44,7 +44,7 @@ const GroupContact = ({ navigation }) => {
   const [modalAddContactVisible, setModalAddContactVisible] = useState(false);
   const onAddNewGroupContactPressed = (groupName) => {
     if(groupName.trim() == ""){
-      alert("Group name cannot be empty")
+      // alert("Group name cannot be empty")
     }else{
       setModalAddContactVisible(false);
       FetchApi(
@@ -161,7 +161,7 @@ const GroupContact = ({ navigation }) => {
                       <Text style={styles.container_listGroup_item_label} >
                         {item.group_name}
                       </Text>
-                      <Image source={iconPath.icRight}  />
+                      <Icon name="chevron-right" size={20}/>
                     </View>
                   </TouchableOpacity>
                 );
@@ -170,14 +170,15 @@ const GroupContact = ({ navigation }) => {
         </View>
         <FAB style={styles.floatButton} icon="plus" size={24} color="#fff" onPress={() => setModalAddContactVisible(true)} />
       </SafeAreaView>
-      <ModalAddGroupContact
+      {/* <ModalAddGroupContact
         label={t("ModalAddGroupContact_Placeholder_GroupName")}
         confirmLabel={t("ModalAddGroupContact_Label_Confirm")}
         onVisible={modalAddContactVisible}
         onDismiss={() => setModalAddContactVisible(false)}
         onPressCancel={() => setModalAddContactVisible(false)}
         onPressConfirm={onAddNewGroupContactPressed}
-      />
+      /> */}
+      <ModalAddGroup visible={modalAddContactVisible}  onPressConfirm={onAddNewGroupContactPressed} onPressVisable={() => setModalAddContactVisible(!modalAddContactVisible)}/>
       <Loading onVisible={isLoading ? true : false} />
     </Provider>
   );

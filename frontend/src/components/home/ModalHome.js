@@ -7,7 +7,7 @@ import {Modal, TouchableWithoutFeedback, View, Text, Pressable} from "react-nati
 import { Button, Card } from "react-native-paper";
 import styles from "../../screen/Home/styles";
 
-const ModalHome = ({ visible, onPressVisable, sort, onPressSort, onPressDeactive, onPressTranfer }) => {
+const ModalHome = ({ visible, onPressVisable, sort, onPressSort, onPressDeactive, onPressTranfer, onPressAdd }) => {
   const { t, i18n } = useTranslation();
   const authCtx = useContext(AuthContext);
   const listSort = [
@@ -77,6 +77,7 @@ const ModalHome = ({ visible, onPressVisable, sort, onPressSort, onPressDeactive
                   labelStyle={{ fontSize: 25 }}
                   style={{ alignItems: "flex-start" }}
                   uppercase={false}
+                  onPress={onPressAdd}
                 >
                   <Text style={{ fontSize: 14 }}>
                     {t("Screen_Home_ModalHome_Text_Label_AddNameCard")}

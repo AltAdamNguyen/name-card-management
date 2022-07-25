@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import { SafeAreaView, ActivityIndicator } from "react-native";
+import { SafeAreaView, ActivityIndicator, Alert } from "react-native";
 import { manipulateAsync } from 'expo-image-manipulator';
 import { AddContact } from "../../../screen";
 import { FetchApi } from "../../../service/api/FetchAPI";
 import { Method, ContentType, ContactAPI } from "../../../constants/ListAPI";
 
-const SkeletonAddContact = ({route, navigation}) => {
-    console.log(route)
+const SkeletonAddContact = ({ route, navigation }) => {
     const [contact, setContact] = useState();
     const [visible, setVisible] = useState(false);
     const crop = async () => {
@@ -32,35 +31,41 @@ const SkeletonAddContact = ({route, navigation}) => {
         return manipResult
     }
     useEffect(() => {
-        if(route.params.newPhoto) {
+        if (route.params.newPhoto) {
             crop()
-            .then((e) => {
-                FetchApi(ContactAPI.Scan, 
-                    Method.POST, 
-                    ContentType.JSON,
-                    { image: "data:image/jpg;base64," + e.base64 },
-                    getData)
-            })
-            .catch()
+                .then((e) => {
+                    FetchApi(ContactAPI.Scan,
+                        Method.POST,
+                        ContentType.JSON,
+                        { image: "data:image/jpg;base64," + e.base64 },
+                        getData)
+                })
+                .catch()
         }
-        if(route.params.pickPhoto) {
-            FetchApi(ContactAPI.Scan, 
-                Method.POST, 
+        if (route.params.pickPhoto) {
+            FetchApi(ContactAPI.Scan,
+                Method.POST,
                 ContentType.JSON,
                 { image: "data:image/jpg;base64," + route.params.pickPhoto.base64 },
                 getData)
         }
-        
+
     }, [])
 
     const getData = (data) => {
-        setContact(data.data)
-        setVisible(true)
+        console.log(data)
+        if (data.message === "Scan fail") {
+            Alert.alert('Thông báo', 'Quét thất bại. Vui lòng chụp lại', [{ text: 'OK', onPress: () => navigation.goBack() }])
+        }
+        if (data.message === "Success") {
+            setContact(data.data)
+            setVisible(true)
+        }
     }
 
-    console.log(contact)
-    return(
-        <SafeAreaView style={{flex: 1}}>
+    console.log("contact", contact)
+    return (
+        <SafeAreaView style={{ flex: 1 }}>
             <AddContact contact={contact} loading={visible} navigation={navigation} />
         </SafeAreaView>
     )

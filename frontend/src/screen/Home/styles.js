@@ -141,12 +141,8 @@ const styles = StyleSheet.create({
         width: '90%',
         flexDirection: 'column',
     },
-    listContainer_view: {
-        flex: 1,
-        justifyContent: 'flex-end',
-        alignItems: 'center',
-    },
     listContainer_label: {
+        textAlign: 'center',
         color: '#828282',
         fontSize: 16,
     },
@@ -226,9 +222,7 @@ const styles = StyleSheet.create({
     },
     floatButton_team: {
         marginBottom: 20, 
-        position: 'absolute', 
         width: '100%', 
-        bottom: 0,
         backgroundColor: '#1890FF'
     }
 

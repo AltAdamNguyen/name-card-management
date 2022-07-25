@@ -3,7 +3,7 @@ import { Text, View, SafeAreaView, Image, useWindowDimensions, Alert } from 'rea
 import { useEffect, useRef, useState } from 'react';
 import { Camera, FlashMode } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
-import { IconButton } from 'react-native-paper';
+import { ActivityIndicator, Button, Card, IconButton, Paragraph, Title } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { isEmpty } from 'lodash';
 import { useIsFocused } from '@react-navigation/native';
@@ -31,9 +31,29 @@ const ScanScreen = ({ navigation }) => {
   }, []);
 
   if (hasCameraPermission === undefined) {
-    return <Text>Requesting permissions...</Text>
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Card elevation={2} style={{ width: '80%', padding: 20 }}>
+          <ActivityIndicator size="large" color="#1980FF" />
+          <Text style={{ textAlign: 'center', fontSize: 16 }}>Requesting permissions</Text>
+        </Card>
+      </View>
+    )
   } else if (!hasCameraPermission) {
-    return <Text>Permission for camera not granted. Please change this in settings.</Text>
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Card elevation={2} style={{ width: '80%', padding: 20 }}>
+          <Card.Content>
+            <Title>Thông báo</Title>
+            <Paragraph>Máy ảnh chưa được cấp phép. {"\n"}Vui lòng thay đổi ở trong cài đặt</Paragraph>
+          </Card.Content>
+          <Card.Actions>
+            <Button>Cancel</Button>
+            <Button>Ok</Button>
+          </Card.Actions>
+        </Card>
+      </View>
+    )
   }
 
   const takePic = async () => {
@@ -60,17 +80,17 @@ const ScanScreen = ({ navigation }) => {
     }
   };
 
-  const handleScanQr = ({data}) => {
+  const handleScanQr = ({ data }) => {
     let card = parseCard(data)
     if (isEmpty(card)) {
       Alert.alert('Thông báo', 'Mã QR không hợp lệ', [{ text: 'Quét lại' }])
       setScanQr(true)
-    }else{
+    } else {
       let contact = {
         name: card.n ? card.n : card.fn,
         job_title: card.title ? card.title : '',
         company: card.org ? card.org : '',
-        phone: card.tel && card.tel.value ? card.tel.value.replace('+','') : '',
+        phone: card.tel && card.tel.value ? card.tel.value.replace('+', '') : '',
         email: card.email && card.email.value ? card.email.value : '',
         fax: '',
         note: '',
@@ -80,7 +100,7 @@ const ScanScreen = ({ navigation }) => {
       }
       navigation.navigate('HomeSwap', { screen: 'UpdateContact', params: { contact: contact } });
       setScanQr(!scanQr)
-    }  
+    }
   }
 
   return (
@@ -144,7 +164,6 @@ const ScanScreen = ({ navigation }) => {
         </View>
       </View>
     </SafeAreaView>
-
   );
 };
 

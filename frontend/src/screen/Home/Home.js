@@ -1,10 +1,10 @@
 //import liraries
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { View, Text, SafeAreaView, Image, TouchableOpacity, ScrollView, Pressable, RefreshControl } from 'react-native';
+import { View, Text, SafeAreaView, Image, TouchableOpacity, ScrollView, Pressable, RefreshControl, FlatList, Dimensions, Platform } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
-import { IconButton, Searchbar, FAB, Card, Provider } from 'react-native-paper';
+import { IconButton, Searchbar, FAB, Card, Provider, ActivityIndicator } from 'react-native-paper';
 import styles from './styles';
-
+import { FormatDate } from '../../validate/FormatDate';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { FetchApi } from '../../service/api/FetchAPI';
 import { ContactAPI, ContentType, Method } from '../../constants/ListAPI';
@@ -13,14 +13,15 @@ import { useTranslation } from "react-i18next";
 import AuthContext from '../../store/AuthContext';
 import ModalHome from '../../components/home/ModalHome';
 import ModalFlag from '../../components/home/ModalFlag';
-import { FormatDate } from '../../validate/FormatDate';
+
 import LoadingDialog from '../../components/customDialog/dialog/loadingDialog/LoadingDialog';
+
 // create a component
 
 const listRequest = {
     R0001: {
         color: "#C73E1D",
-        icon: "account-cancel"    
+        icon: "account-cancel"
     },
     R0002: {
         color: "#F29339",
@@ -30,7 +31,6 @@ const listRequest = {
 
 const Home = ({ route, navigation }) => {
     const [refreshing, setRefreshing] = useState(false);
-    const [visibleModal, setVisibleModal] = useState(false);
     const [countContact, setContContact] = useState(0);
     const [listContact, setListContact] = useState();
     const [loading, setLoading] = useState(false);
@@ -42,6 +42,8 @@ const Home = ({ route, navigation }) => {
     const isFocused = useIsFocused()
     const authCtx = useContext(AuthContext);
     const { t, i18n } = useTranslation();
+    const [page, setPage] = useState(1);
+    const [loadMore, setLoadMore] = useState(false);
     const listFlag = {
         F0001: {
             name: 'very-important',
@@ -72,9 +74,12 @@ const Home = ({ route, navigation }) => {
             value: 'F0004',
         }
     }
-    useEffect(() => {      
-        FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
-        setLoading(true);
+    useEffect(() => {
+        if(true) {
+            FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
+            setLoading(true);
+        }
+
     }, [])
 
     useEffect(() => {
@@ -82,14 +87,8 @@ const Home = ({ route, navigation }) => {
     }, [route.params, navigation]);
 
     useEffect(() => {
-        FetchApi(`${ContactAPI.ViewContact}?sortBy=${sort}&flag=${flag}`, Method.GET, ContentType.JSON, undefined, getContactFilter)
+        isFocused && FetchApi(`${ContactAPI.ViewContact}?sortBy=${sort}&flag=${flag}`, Method.GET, ContentType.JSON, undefined, getContactFilter)
     }, [isFocused]);
-
-    useEffect(() => {
-        if (route.params) {
-            setVisibleModal(route.params.visibleModal);
-        }
-    }, [route.params]);
 
     const onRefresh = useCallback(() => {
         setRefreshing(true);
@@ -118,6 +117,12 @@ const Home = ({ route, navigation }) => {
         FetchApi(`${ContactAPI.ViewContact}?sortBy=${sort}&flag=${item.value}`, Method.GET, ContentType.JSON, undefined, getContactFilter)
     }
 
+    const handleLoadMore = (e) => {
+        // console.log('load more');
+        FetchApi(`${ContactAPI.ViewContact}?sortBy=${sort}&flag=${flag}&page=${page + 1}`, Method.GET, ContentType.JSON, undefined, getContactLoadMore)
+        setLoadMore(true);
+    }
+
     const getContactFilter = (data) => {
         if (data.data) {
             if (data.data.length > 0) {
@@ -131,6 +136,7 @@ const Home = ({ route, navigation }) => {
             setListFilter([]);
             setContContact(0);
         }
+        setPage(1)
         setLoading(false);
         setRefreshing(false);
     }
@@ -138,6 +144,16 @@ const Home = ({ route, navigation }) => {
         setLoading(true);
         setFlag('null')
         FetchApi(`${ContactAPI.ViewContact}?sortBy=${sort}`, Method.GET, ContentType.JSON, undefined, getContactFilter)
+    }
+    const getContactLoadMore = (data) => {
+        if (data.data) {
+            if (data.data.length > 0) {
+                setListFilter([...listFilter, ...data.data]);
+                setContContact(listFilter.length + data.data.length);
+                setPage(page + 1);
+            } 
+        }
+        setLoadMore(false);
     }
 
     const changeTextButtonFlag = (flag) => {
@@ -172,6 +188,63 @@ const Home = ({ route, navigation }) => {
         setModalFloatVisible(!modalFloatVisible);
     }
 
+    const handleAddContact = () => {
+        navigation.navigate('HomeSwap', { screen: 'UpdateContact', params: { addContact: true } })
+        setModalFloatVisible(!modalFloatVisible);
+    }
+
+
+    const CardContact = ({ item }) => {
+        return (
+            <Card mode='elevated' style={styles.card} elevation={2} onPress={() => { navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: item.id, showFooter: true, request: item.status_request } }) }}>
+                <View style={styles.item}>
+                    <View style={styles.imgContact}>
+                        <Image source={{ uri: item.status_request || item.owner_id !== item.createdBy ? 'https://ncmsystem.azurewebsites.net/Images/noImage.jpg' : item.img_url }} style={styles.image} />
+                    </View>
+                    <View style={styles.txtContact}>
+                        <View style={[styles.title, { flexDirection: 'row', justifyContent: 'space-between' }]}>
+                            <Text style={styles.nameContact}>{item.name}</Text>
+                            {item.flag !== null &&
+                                <Icon name="bookmark" size={24} color={listFlag[item.flag].color} />
+                            }
+                            {!Boolean(item.status_request) && item.owner_id !== item.createdBy &&
+                                <Icon name="account-alert" size={24} color="#cc6e1b" />
+                            }
+                            {Boolean(item.status_request) &&
+                                <Icon name={listRequest[item.status_request].icon} size={24} color={listRequest[item.status_request].color} />
+                            }
+                        </View>
+                        {!Boolean(item.status_request) || item.owner_id === item.createdBy &&
+                            <Text style={styles.titleContact}>{item.job_title}</Text>
+                        }
+                        <View style={styles.title}>
+                            <Text numberOfLines={1} style={styles.companyContact}>{item.company}</Text>
+                            <View style={{ alignItems: 'flex-end' }}>
+                                <Text style={styles.date}>{FormatDate(item.created_at)}</Text>
+                            </View>
+                        </View>
+                    </View>
+                </View>
+            </Card>
+        )
+    }
+
+    const EmptyList = () => {
+        return (
+            <View >
+                <Text style={styles.listContainer_label}>Không có danh thiếp</Text>
+            </View>
+        )
+    }
+
+    const FooterList = () => {
+        return (
+            loadMore ? <View>
+                <ActivityIndicator color="#1890FF" size="large" />
+            </View>: null
+        )
+    }
+
     return (
         <Provider>
             <SafeAreaView style={styles.container}>
@@ -183,8 +256,8 @@ const Home = ({ route, navigation }) => {
                                 roundness: 10,
                                 colors: { primary: '#1890FF' }
                             }}
-                            editable={false}   
-                            pointerEvents="none"                        
+                            editable={false}
+                            pointerEvents="none"
                         />
                     </Pressable>
                 </View>
@@ -196,60 +269,29 @@ const Home = ({ route, navigation }) => {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.listContainer}>
-                    {listFilter.length == 0 && !loading &&
-                        <View style={styles.listContainer_view}>
-                            <Text style={styles.listContainer_label}>Không có danh thiếp</Text>
-                        </View>}
                     {loading &&
                         <LoadingDialog onVisible={loading} />
                     }
-                    <ScrollView
+                    <FlatList
                         refreshControl={
                             <RefreshControl
                                 refreshing={refreshing}
                                 onRefresh={onRefresh}
-                                colors={['#1890FF']}
-                                tintColor="#1890FF"
                             />
                         }
-                    >
-                        {listFilter.length != 0 && listFilter.map((item, index) => {   
-                            return (
-                                <Card mode='elevated' style={styles.card} elevation={2} key={index} onPress={() => { navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: item.id, showFooter: true, request: item.status_request } }) }}>
-                                    <View style={styles.item}>
-                                        <View style={styles.imgContact}>
-                                            <Image source={{ uri: item.status_request || item.owner_id !== item.createdBy ? 'https://ncmsystem.azurewebsites.net/Images/noImage.jpg' : item.img_url }} style={styles.image} />
-                                        </View>
-                                        <View style={styles.txtContact}>
-                                            <View style={[styles.title, { flexDirection: 'row', justifyContent: 'space-between' }]}>
-                                                <Text style={styles.nameContact}>{item.name}</Text>
-                                                {item.flag !== null &&
-                                                    <Icon name="bookmark" size={24} color={listFlag[item.flag].color} />
-                                                }
-                                                {!Boolean(item.status_request) && item.owner_id !== item.createdBy &&
-                                                    <Icon name="account-alert" size={24} color="#cc6e1b" />
-                                                }
-                                                {Boolean(item.status_request) &&
-                                                    <Icon name={listRequest[item.status_request].icon} size={24} color={listRequest[item.status_request].color} />
-                                                }
-                                            </View>
-                                            {!Boolean(item.status_request) || item.owner_id === item.createdBy &&
-                                                <Text style={styles.titleContact}>{item.job_title}</Text>
-                                            }
-                                            <View style={styles.title}>
-                                                <Text numberOfLines={1} style={styles.companyContact}>{item.company}</Text>
-                                                <View style={{ alignItems: 'flex-end' }}>
-                                                    <Text style={styles.date}>{FormatDate(item.created_at)}</Text>
-                                                </View>
-                                            </View>
-                                        </View>
-                                    </View>
-                                </Card>
-                            )
-                        })}
-                    </ScrollView>
+                        style={{ width: '100%', }}
+                        contentContainerStyle={{ flexGrow: 1, justifyContent: listFilter.length === 0 ? 'center' : 'flex-start' }}
+                        data={listFilter}
+                        renderItem={CardContact}
+                        keyExtractor={(item) => item.id}
+                        showsVerticalScrollIndicator={false}
+                        onEndReached={handleLoadMore}
+                        onEndReachedThreshold={Platform.OS === 'android' ? 0.1 : 0.5}
+                        ListEmptyComponent={EmptyList}
+                        ListFooterComponent={FooterList}
+                    />
                 </View>
-                <ModalHome visible={modalFloatVisible} onPressVisable={() => setModalFloatVisible(false)} sort={sort} onPressSort={handlePressSort} onPressDeactive={handlePressDeactive} onPressTranfer={handlePressTranfer} />
+                <ModalHome visible={modalFloatVisible} onPressVisable={() => setModalFloatVisible(false)} sort={sort} onPressSort={handlePressSort} onPressDeactive={handlePressDeactive} onPressTranfer={handlePressTranfer} onPressAdd={handleAddContact} />
                 <FAB style={styles.floatButton} icon="tune" size={24} color="#fff" onPress={() => setModalFloatVisible(!modalFloatVisible)} />
             </SafeAreaView>
         </Provider>

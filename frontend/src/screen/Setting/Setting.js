@@ -21,7 +21,9 @@ const Setting = ({ navigation }) => {
   const [isLoading, setLoading] = useState(false);
   //i18n.changeLanguage("en")
   const onChangePasswordPressed = () => {
-    navigation.navigate("ChangePassword");
+    navigation.navigate("SettingSwap", {
+      screen: "ChangePassword",
+    });
   };
   const onLogoutPressed = () => {
     authCtx.onLogout();
