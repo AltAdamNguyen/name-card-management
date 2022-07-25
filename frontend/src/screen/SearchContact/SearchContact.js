@@ -127,8 +127,9 @@ const SearchContact = ({ navigation, route }) => {
             , Method.PATCH,
             ContentType.JSON,
             {
+                from: "",
                 contact_id: listGroup,
-                email: values.email,
+                to: values.email,
             },
             getMessageTransfer)
     }
