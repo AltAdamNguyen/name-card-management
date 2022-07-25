@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { SafeAreaView, StatusBar, LogBox, Appearance, Platform } from 'react-native';
 import Route from './src/navigation/Router';
-import { GroupContactDetail } from './src/screen';
+import { ChangePassword } from './src/screen';
 import { AuthProvider } from './src/store/AuthContext';
 
 const App = () => {
@@ -19,8 +19,10 @@ const App = () => {
       <AuthProvider>
         <StatusBar barStyle="dark-content" />
         <Route />
+        
       </AuthProvider>
     </SafeAreaView>
+   // <ChangePassword />
   );
 };
 

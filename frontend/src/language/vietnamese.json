@@ -5,7 +5,7 @@
         "Screen_Login_Button_Login": "Đăng nhập",
         "Screen_Login_Text_Signature": "@2022 Phát triển bởi FIS",
         "Screen_Login_Text_Error_Empty": "Email hoặc mật khẩu không được để trống",
-        "Screen_Login_Text_Error_U0002": "Tài khoản không có quyền truy cập ",
+        "Screen_Login_Text_Error_U0002": "Tài khoản đã bị vô hiệu hóa",
         "Screen_Login_Text_Error_U0003": "Email hoặc mật khẩu không đúng",
 
         "Screen_ForgotPassword_Button_ResetPassword": "Đặt lại mật khẩu",

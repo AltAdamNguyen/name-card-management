@@ -21,14 +21,14 @@ const options = [
 const SignIn = ({ navigation }) => {
   const { t, i18n } = useTranslation();
   const [user, setUser] = useState({
-    email: "",
-    password: "",
+    // email: "",
+    // password: "",
     // email: "anhnche141236@gmail.com",
     // password: "trung123@",
     // email: "conganhnguyen33@gmail.com",
     // password: "Trung123@"
-    // email: "person2@gmail.com",
-    // password: "Trung123@",
+    email: "person2@gmail.com",
+    password: "Trung123@",
   });
   const [errorLoginText, setErrorLoginText] = useState({
     errorText: "",
@@ -74,6 +74,7 @@ const SignIn = ({ navigation }) => {
         errorText: t("Screen_Login_Text_Error_U0003"),
         errorKey: "Screen_Login_Text_Error_U0003",
       });
+   
     data.message === "U0002" &&
       setErrorLoginText({
         errorText: t("Screen_Login_Text_Error_U0002"),
@@ -146,7 +147,7 @@ const SignIn = ({ navigation }) => {
             authCtx.language(language);
             setErrorLoginText({
               errorText: t(errorLoginText.errorKey),
-              errorKey: errorLoginText.errorKey
+              errorKey: errorLoginText.errorKey,
             });
           }}
         />

@@ -164,7 +164,6 @@ const GroupContactDetail = ({ navigation, route }) => {
         >
           <Appbar.BackAction onPress={() => navigation.goBack()} />
           <Appbar.Content title={route.params.name} />
-          <TouchableOpacity></TouchableOpacity>
         </Appbar.Header>
         <View style={styles.header}>
           <Pressable style={styles.sectionStyle}>
