@@ -7,7 +7,7 @@
         "Screen_Login_Text_Error_Empty": "Email or password cannot be empty",
         "Screen_Login_Text_Error_U0002": "Account has been disabled",
         "Screen_Login_Text_Error_U0003": "Email or password is incorrect",
-        
+        "Screen_Login_Button_ForgotPassword": "Forgot Password",
         "Screen_ForgotPassword_Button_ResetPassword": "Reset Password",
 
         "Screen_Setting_Button_Title": "Setting",

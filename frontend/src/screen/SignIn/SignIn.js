@@ -125,9 +125,17 @@ const SignIn = ({ navigation }) => {
             onpress={onVisibilityPasswordPressed}
           />
         </View>
-        <View style={styles.error_text}>
+        <View style={styles.button_forgotPassword}>
+        <CustomButtons
+          text={t("Screen_Login_Button_ForgotPassword")}
+          onPress={onForgotPasswordPressed}
+          type="TERTIARY"
+        />
+      </View>
+        {/* <View style={styles.error_text}>
           <Text style={{ color: "red" }}>{errorLoginText.errorText}</Text>
-        </View>
+        </View> */}
+
         <View style={styles.button_login}>
           <CustomButtons
             text={t("Screen_Login_Button_Login")}

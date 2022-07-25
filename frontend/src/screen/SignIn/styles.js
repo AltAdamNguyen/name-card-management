@@ -12,8 +12,6 @@ const styles = StyleSheet.create({
         width:'85%',
         textAlign: 'right',
         // alignItems:'center',
-        marginTop: '3%',
-        marginBottom: '3%',
     },  
     root: {
         alignItems: 'center',
@@ -41,6 +39,9 @@ const styles = StyleSheet.create({
     input:{
         width: '100%',
         alignItems: 'center'
+    },
+    button_forgotPassword:{
+        width:'100%'
     }
 })
 
