@@ -2,10 +2,12 @@
     "translation" : {
         "Screen_Login_Placeholder_Username": "Email",
         "Screen_Login_Placeholder_Password": "Password",
-        "Screen_Login_Button_ForgotPassword": "Forgot Password",
         "Screen_Login_Button_Login": "Login",
         "Screen_Login_Text_Signature": "@2022 Developed by FIS",
-
+        "Screen_Login_Text_Error_Empty": "Email or password cannot be empty",
+        "Screen_Login_Text_Error_U0002": "Account does not have access",
+        "Screen_Login_Text_Error_U0003": "Email or password is incorrect",
+        
         "Screen_ForgotPassword_Button_ResetPassword": "Reset Password",
 
         "Screen_Setting_Button_Title": "Setting",

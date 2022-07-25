@@ -182,7 +182,7 @@ const SearchContact = ({ navigation, route }) => {
     }
 
     const handleLoadMore = (e) => {
-        console.log('load more');
+        // console.log('load more');
         FetchApi(`${ContactAPI.ListTransferContact}?&page=${page + 1}`, Method.GET, ContentType.JSON, undefined, getContactLoadMore)
         setLoadMore(true);
     }
