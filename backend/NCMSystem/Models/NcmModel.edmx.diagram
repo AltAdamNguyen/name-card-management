@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="ede3e05fbe844691a635a97b1491ebab" Name="Diagram1" ZoomLevel="61">
+        <EntityTypeShape EntityType="NCMSystemModel.contact" Width="1.5" PointX="5.25" PointY="4.5" />
+        <EntityTypeShape EntityType="NCMSystemModel.flag" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="NCMSystemModel.group" Width="1.5" PointX="7.5" PointY="5.75" />
+        <EntityTypeShape EntityType="NCMSystemModel.request" Width="1.5" PointX="10.5" PointY="5.125" />
+        <EntityTypeShape EntityType="NCMSystemModel.role" Width="1.5" PointX="0.75" PointY="5" />
+        <EntityTypeShape EntityType="NCMSystemModel.status" Width="1.5" PointX="7.75" PointY="0.75" />
+        <EntityTypeShape EntityType="NCMSystemModel.status_request" Width="1.5" PointX="7.75" PointY="8.75" />
+        <EntityTypeShape EntityType="NCMSystemModel.sysdiagram" Width="1.5" PointX="9.75" PointY="0.75" />
+        <EntityTypeShape EntityType="NCMSystemModel.token" Width="1.5" PointX="5.25" PointY="1.625" />
+        <EntityTypeShape EntityType="NCMSystemModel.user" Width="1.5" PointX="3" PointY="3.5" />
+        <AssociationConnector Association="NCMSystemModel.contact_user_id_fk" />
+        <AssociationConnector Association="NCMSystemModel.contact_user_id_fk_2" />
+        <AssociationConnector Association="NCMSystemModel.request_contact_id_fk" />
+        <AssociationConnector Association="NCMSystemModel.request_contact_id_fk_2" />
+        <AssociationConnector Association="NCMSystemModel.group_user_id_fk" />
+        <AssociationConnector Association="NCMSystemModel.request_user_id_fk" />
+        <AssociationConnector Association="NCMSystemModel.request_user_id_fk_2" />
+        <AssociationConnector Association="NCMSystemModel.user_role_id_fk" />
+        <AssociationConnector Association="NCMSystemModel.token_user_id_fk" />
+        <AssociationConnector Association="NCMSystemModel.user_user_id_fk" />
+        <AssociationConnector Association="NCMSystemModel.group_contact" />
+        <EntityTypeShape EntityType="NCMSystemModel.import_user" Width="1.5" PointX="3" PointY="8.75" />
+        <AssociationConnector Association="NCMSystemModel.import_user_role_id_fk" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

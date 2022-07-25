@@ -1,0 +1,885 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="NCMSystemModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="contact">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="255" />
+          <Property Name="email" Type="nvarchar" MaxLength="255" />
+          <Property Name="image_url" Type="nvarchar" MaxLength="255" />
+          <Property Name="company" Type="nvarchar" MaxLength="255" />
+          <Property Name="job_title" Type="nvarchar" MaxLength="255" />
+          <Property Name="phone" Type="nvarchar" MaxLength="11" />
+          <Property Name="address" Type="nvarchar" MaxLength="255" />
+          <Property Name="website" Type="nvarchar" MaxLength="255" />
+          <Property Name="fax" Type="nvarchar" MaxLength="255" />
+          <Property Name="reason_status" Type="nvarchar" MaxLength="255" />
+          <Property Name="owner_id" Type="int" Nullable="false" />
+          <Property Name="flag_id" Type="nvarchar" MaxLength="10" />
+          <Property Name="status_id" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="isActive" Type="bit" Nullable="false" />
+          <Property Name="create_date" Type="datetime" Nullable="false" />
+          <Property Name="createdBy" Type="int" Nullable="false" />
+          <Property Name="reason_deactive" Type="nvarchar" MaxLength="255" />
+          <Property Name="note" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="flag">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="code" Type="nvarchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="group">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="user_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="group_contact">
+          <Key>
+            <PropertyRef Name="group_id" />
+            <PropertyRef Name="contact_id" />
+          </Key>
+          <Property Name="group_id" Type="int" Nullable="false" />
+          <Property Name="contact_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="import_user">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="255" />
+          <Property Name="email" Type="nvarchar" MaxLength="255" />
+          <Property Name="role_id" Type="int" />
+          <Property Name="manager" Type="nvarchar" MaxLength="255" />
+          <Property Name="status" Type="int" />
+        </EntityType>
+        <EntityType Name="request">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="requester" Type="int" Nullable="false" />
+          <Property Name="receiver" Type="int" Nullable="false" />
+          <Property Name="status" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="create_date" Type="datetime" />
+          <Property Name="old_contact_id" Type="int" />
+          <Property Name="new_contact_id" Type="int" />
+          <Property Name="code" Type="nvarchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="role">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="status">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="code" Type="nvarchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="status_request">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="255" />
+          <Property Name="code" Type="nvarchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <EntityType Name="token">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="refresh_token" Type="nvarchar" MaxLength="1000" Nullable="false" />
+          <Property Name="user_id" Type="int" Nullable="false" />
+          <Property Name="created_date" Type="datetime" Nullable="false" />
+          <Property Name="expired_date" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="password" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="email" Type="nvarchar" MaxLength="255" />
+          <Property Name="isActive" Type="bit" />
+          <Property Name="role_id" Type="int" Nullable="false" />
+          <Property Name="manager_id" Type="int" />
+          <Property Name="code_resetPw" Type="nvarchar" MaxLength="6" />
+          <Property Name="exp_code" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6035: The relationship 'contact_flag_code_fk' has columns that are not part of the key of the table on the primary side of the relationship. The relationship was excluded.
+        <Association Name="contact_flag_code_fk" />-->
+        <!--Errors Found During Generation:
+warning 6035: The relationship 'contact_status_code_fk' has columns that are not part of the key of the table on the primary side of the relationship. The relationship was excluded.
+        <Association Name="contact_status_code_fk" />-->
+        <Association Name="contact_user_id_fk">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
+          <End Role="contact" Type="Self.contact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="contact">
+              <PropertyRef Name="owner_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="contact_user_id_fk_2">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
+          <End Role="contact" Type="Self.contact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="contact">
+              <PropertyRef Name="createdBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="group_contact_contact_id_fk">
+          <End Role="contact" Type="Self.contact" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="group_contact" Type="Self.group_contact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="contact">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="group_contact">
+              <PropertyRef Name="contact_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="group_contact_group_id_fk">
+          <End Role="group" Type="Self.group" Multiplicity="1" />
+          <End Role="group_contact" Type="Self.group_contact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="group">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="group_contact">
+              <PropertyRef Name="group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="group_user_id_fk">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
+          <End Role="group" Type="Self.group" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="group">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="import_user_role_id_fk">
+          <End Role="role" Type="Self.role" Multiplicity="0..1" />
+          <End Role="import_user" Type="Self.import_user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="role">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="import_user">
+              <PropertyRef Name="role_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="request_contact_id_fk">
+          <End Role="contact" Type="Self.contact" Multiplicity="0..1" />
+          <End Role="request" Type="Self.request" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="contact">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="request">
+              <PropertyRef Name="old_contact_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="request_contact_id_fk_2">
+          <End Role="contact" Type="Self.contact" Multiplicity="0..1" />
+          <End Role="request" Type="Self.request" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="contact">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="request">
+              <PropertyRef Name="new_contact_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <!--Errors Found During Generation:
+warning 6035: The relationship 'request_status_request_code_fk' has columns that are not part of the key of the table on the primary side of the relationship. The relationship was excluded.
+        <Association Name="request_status_request_code_fk" />-->
+        <Association Name="request_user_id_fk">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
+          <End Role="request" Type="Self.request" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="request">
+              <PropertyRef Name="requester" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="request_user_id_fk_2">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
+          <End Role="request" Type="Self.request" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="request">
+              <PropertyRef Name="receiver" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="token_user_id_fk">
+          <End Role="user" Type="Self.user" Multiplicity="1" />
+          <End Role="token" Type="Self.token" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="token">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="user_role_id_fk">
+          <End Role="role" Type="Self.role" Multiplicity="1" />
+          <End Role="user" Type="Self.user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="role">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="user">
+              <PropertyRef Name="role_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="user_user_id_fk">
+          <End Role="user" Type="Self.user" Multiplicity="0..1" />
+          <End Role="user1" Type="Self.user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="user1">
+              <PropertyRef Name="manager_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="NCMSystemModelStoreContainer">
+          <EntitySet Name="contact" EntityType="Self.contact" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="flag" EntityType="Self.flag" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="group" EntityType="Self.group" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="group_contact" EntityType="Self.group_contact" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="import_user" EntityType="Self.import_user" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="request" EntityType="Self.request" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="role" EntityType="Self.role" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="status" EntityType="Self.status" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="status_request" EntityType="Self.status_request" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="token" EntityType="Self.token" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="user" EntityType="Self.user" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="contact_user_id_fk" Association="Self.contact_user_id_fk">
+            <End Role="user" EntitySet="user" />
+            <End Role="contact" EntitySet="contact" />
+          </AssociationSet>
+          <AssociationSet Name="contact_user_id_fk_2" Association="Self.contact_user_id_fk_2">
+            <End Role="user" EntitySet="user" />
+            <End Role="contact" EntitySet="contact" />
+          </AssociationSet>
+          <AssociationSet Name="group_contact_contact_id_fk" Association="Self.group_contact_contact_id_fk">
+            <End Role="contact" EntitySet="contact" />
+            <End Role="group_contact" EntitySet="group_contact" />
+          </AssociationSet>
+          <AssociationSet Name="group_contact_group_id_fk" Association="Self.group_contact_group_id_fk">
+            <End Role="group" EntitySet="group" />
+            <End Role="group_contact" EntitySet="group_contact" />
+          </AssociationSet>
+          <AssociationSet Name="group_user_id_fk" Association="Self.group_user_id_fk">
+            <End Role="user" EntitySet="user" />
+            <End Role="group" EntitySet="group" />
+          </AssociationSet>
+          <AssociationSet Name="import_user_role_id_fk" Association="Self.import_user_role_id_fk">
+            <End Role="role" EntitySet="role" />
+            <End Role="import_user" EntitySet="import_user" />
+          </AssociationSet>
+          <AssociationSet Name="request_contact_id_fk" Association="Self.request_contact_id_fk">
+            <End Role="contact" EntitySet="contact" />
+            <End Role="request" EntitySet="request" />
+          </AssociationSet>
+          <AssociationSet Name="request_contact_id_fk_2" Association="Self.request_contact_id_fk_2">
+            <End Role="contact" EntitySet="contact" />
+            <End Role="request" EntitySet="request" />
+          </AssociationSet>
+          <AssociationSet Name="request_user_id_fk" Association="Self.request_user_id_fk">
+            <End Role="user" EntitySet="user" />
+            <End Role="request" EntitySet="request" />
+          </AssociationSet>
+          <AssociationSet Name="request_user_id_fk_2" Association="Self.request_user_id_fk_2">
+            <End Role="user" EntitySet="user" />
+            <End Role="request" EntitySet="request" />
+          </AssociationSet>
+          <AssociationSet Name="token_user_id_fk" Association="Self.token_user_id_fk">
+            <End Role="user" EntitySet="user" />
+            <End Role="token" EntitySet="token" />
+          </AssociationSet>
+          <AssociationSet Name="user_role_id_fk" Association="Self.user_role_id_fk">
+            <End Role="role" EntitySet="role" />
+            <End Role="user" EntitySet="user" />
+          </AssociationSet>
+          <AssociationSet Name="user_user_id_fk" Association="Self.user_user_id_fk">
+            <End Role="user" EntitySet="user" />
+            <End Role="user1" EntitySet="user" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="NCMSystemModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="contacts" EntityType="NCMSystemModel.contact" />
+          <EntitySet Name="flags" EntityType="NCMSystemModel.flag" />
+          <EntitySet Name="groups" EntityType="NCMSystemModel.group" />
+          <EntitySet Name="requests" EntityType="NCMSystemModel.request" />
+          <EntitySet Name="roles" EntityType="NCMSystemModel.role" />
+          <EntitySet Name="status" EntityType="NCMSystemModel.status" />
+          <EntitySet Name="status_request" EntityType="NCMSystemModel.status_request" />
+          <EntitySet Name="sysdiagrams" EntityType="NCMSystemModel.sysdiagram" />
+          <EntitySet Name="tokens" EntityType="NCMSystemModel.token" />
+          <EntitySet Name="users" EntityType="NCMSystemModel.user" />
+          <AssociationSet Name="contact_user_id_fk" Association="NCMSystemModel.contact_user_id_fk">
+            <End Role="user" EntitySet="users" />
+            <End Role="contact" EntitySet="contacts" />
+          </AssociationSet>
+          <AssociationSet Name="contact_user_id_fk_2" Association="NCMSystemModel.contact_user_id_fk_2">
+            <End Role="user" EntitySet="users" />
+            <End Role="contact" EntitySet="contacts" />
+          </AssociationSet>
+          <AssociationSet Name="request_contact_id_fk" Association="NCMSystemModel.request_contact_id_fk">
+            <End Role="contact" EntitySet="contacts" />
+            <End Role="request" EntitySet="requests" />
+          </AssociationSet>
+          <AssociationSet Name="request_contact_id_fk_2" Association="NCMSystemModel.request_contact_id_fk_2">
+            <End Role="contact" EntitySet="contacts" />
+            <End Role="request" EntitySet="requests" />
+          </AssociationSet>
+          <AssociationSet Name="group_user_id_fk" Association="NCMSystemModel.group_user_id_fk">
+            <End Role="user" EntitySet="users" />
+            <End Role="group" EntitySet="groups" />
+          </AssociationSet>
+          <AssociationSet Name="request_user_id_fk" Association="NCMSystemModel.request_user_id_fk">
+            <End Role="user" EntitySet="users" />
+            <End Role="request" EntitySet="requests" />
+          </AssociationSet>
+          <AssociationSet Name="request_user_id_fk_2" Association="NCMSystemModel.request_user_id_fk_2">
+            <End Role="user" EntitySet="users" />
+            <End Role="request" EntitySet="requests" />
+          </AssociationSet>
+          <AssociationSet Name="user_role_id_fk" Association="NCMSystemModel.user_role_id_fk">
+            <End Role="role" EntitySet="roles" />
+            <End Role="user" EntitySet="users" />
+          </AssociationSet>
+          <AssociationSet Name="token_user_id_fk" Association="NCMSystemModel.token_user_id_fk">
+            <End Role="user" EntitySet="users" />
+            <End Role="token" EntitySet="tokens" />
+          </AssociationSet>
+          <AssociationSet Name="user_user_id_fk" Association="NCMSystemModel.user_user_id_fk">
+            <End Role="user" EntitySet="users" />
+            <End Role="user1" EntitySet="users" />
+          </AssociationSet>
+          <AssociationSet Name="group_contact" Association="NCMSystemModel.group_contact">
+            <End Role="contact" EntitySet="contacts" />
+            <End Role="group" EntitySet="groups" />
+          </AssociationSet>
+          <EntitySet Name="import_user" EntityType="NCMSystemModel.import_user" />
+          <AssociationSet Name="import_user_role_id_fk" Association="NCMSystemModel.import_user_role_id_fk">
+            <End Role="role" EntitySet="roles" />
+            <End Role="import_user" EntitySet="import_user" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="contact">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="image_url" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="company" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="job_title" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="phone" Type="String" MaxLength="11" FixedLength="false" Unicode="true" />
+          <Property Name="address" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="website" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="fax" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="reason_status" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="owner_id" Type="Int32" Nullable="false" />
+          <Property Name="flag_id" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="status_id" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="isActive" Type="Boolean" Nullable="false" />
+          <Property Name="create_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="createdBy" Type="Int32" Nullable="false" />
+          <Property Name="reason_deactive" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="user" Relationship="NCMSystemModel.contact_user_id_fk" FromRole="contact" ToRole="user" />
+          <NavigationProperty Name="user1" Relationship="NCMSystemModel.contact_user_id_fk_2" FromRole="contact" ToRole="user" />
+          <NavigationProperty Name="requests" Relationship="NCMSystemModel.request_contact_id_fk" FromRole="contact" ToRole="request" />
+          <NavigationProperty Name="requests1" Relationship="NCMSystemModel.request_contact_id_fk_2" FromRole="contact" ToRole="request" />
+          <NavigationProperty Name="groups" Relationship="NCMSystemModel.group_contact" FromRole="contact" ToRole="group" />
+          <Property Name="note" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="flag">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="group">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="user_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="user" Relationship="NCMSystemModel.group_user_id_fk" FromRole="group" ToRole="user" />
+          <NavigationProperty Name="contacts" Relationship="NCMSystemModel.group_contact" FromRole="group" ToRole="contact" />
+        </EntityType>
+        <EntityType Name="request">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="requester" Type="Int32" Nullable="false" />
+          <Property Name="receiver" Type="Int32" Nullable="false" />
+          <Property Name="status" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="create_date" Type="DateTime" Precision="3" />
+          <Property Name="old_contact_id" Type="Int32" />
+          <Property Name="new_contact_id" Type="Int32" />
+          <Property Name="code" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="contact" Relationship="NCMSystemModel.request_contact_id_fk" FromRole="request" ToRole="contact" />
+          <NavigationProperty Name="contact1" Relationship="NCMSystemModel.request_contact_id_fk_2" FromRole="request" ToRole="contact" />
+          <NavigationProperty Name="user" Relationship="NCMSystemModel.request_user_id_fk" FromRole="request" ToRole="user" />
+          <NavigationProperty Name="user1" Relationship="NCMSystemModel.request_user_id_fk_2" FromRole="request" ToRole="user" />
+        </EntityType>
+        <EntityType Name="role">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="users" Relationship="NCMSystemModel.user_role_id_fk" FromRole="role" ToRole="user" />
+          <NavigationProperty Name="import_user" Relationship="NCMSystemModel.import_user_role_id_fk" FromRole="role" ToRole="import_user" />
+        </EntityType>
+        <EntityType Name="status">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="status_request">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="code" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="token">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="refresh_token" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="user_id" Type="Int32" Nullable="false" />
+          <Property Name="created_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="expired_date" Type="DateTime" Nullable="false" Precision="3" />
+          <NavigationProperty Name="user" Relationship="NCMSystemModel.token_user_id_fk" FromRole="token" ToRole="user" />
+        </EntityType>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="password" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="isActive" Type="Boolean" />
+          <Property Name="role_id" Type="Int32" Nullable="false" />
+          <Property Name="manager_id" Type="Int32" />
+          <Property Name="code_resetPw" Type="String" MaxLength="6" FixedLength="false" Unicode="true" />
+          <Property Name="exp_code" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="contacts" Relationship="NCMSystemModel.contact_user_id_fk" FromRole="user" ToRole="contact" />
+          <NavigationProperty Name="contacts1" Relationship="NCMSystemModel.contact_user_id_fk_2" FromRole="user" ToRole="contact" />
+          <NavigationProperty Name="groups" Relationship="NCMSystemModel.group_user_id_fk" FromRole="user" ToRole="group" />
+          <NavigationProperty Name="requests" Relationship="NCMSystemModel.request_user_id_fk" FromRole="user" ToRole="request" />
+          <NavigationProperty Name="requests1" Relationship="NCMSystemModel.request_user_id_fk_2" FromRole="user" ToRole="request" />
+          <NavigationProperty Name="role" Relationship="NCMSystemModel.user_role_id_fk" FromRole="user" ToRole="role" />
+          <NavigationProperty Name="tokens" Relationship="NCMSystemModel.token_user_id_fk" FromRole="user" ToRole="token" />
+          <NavigationProperty Name="user1" Relationship="NCMSystemModel.user_user_id_fk" FromRole="user" ToRole="user1" />
+          <NavigationProperty Name="user2" Relationship="NCMSystemModel.user_user_id_fk" FromRole="user1" ToRole="user" />
+        </EntityType>
+        <Association Name="contact_user_id_fk">
+          <End Type="NCMSystemModel.user" Role="user" Multiplicity="1" />
+          <End Type="NCMSystemModel.contact" Role="contact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="contact">
+              <PropertyRef Name="owner_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="contact_user_id_fk_2">
+          <End Type="NCMSystemModel.user" Role="user" Multiplicity="1" />
+          <End Type="NCMSystemModel.contact" Role="contact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="contact">
+              <PropertyRef Name="createdBy" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="request_contact_id_fk">
+          <End Type="NCMSystemModel.contact" Role="contact" Multiplicity="0..1" />
+          <End Type="NCMSystemModel.request" Role="request" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="contact">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="request">
+              <PropertyRef Name="old_contact_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="request_contact_id_fk_2">
+          <End Type="NCMSystemModel.contact" Role="contact" Multiplicity="0..1" />
+          <End Type="NCMSystemModel.request" Role="request" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="contact">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="request">
+              <PropertyRef Name="new_contact_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="group_user_id_fk">
+          <End Type="NCMSystemModel.user" Role="user" Multiplicity="1" />
+          <End Type="NCMSystemModel.group" Role="group" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="group">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="request_user_id_fk">
+          <End Type="NCMSystemModel.user" Role="user" Multiplicity="1" />
+          <End Type="NCMSystemModel.request" Role="request" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="request">
+              <PropertyRef Name="requester" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="request_user_id_fk_2">
+          <End Type="NCMSystemModel.user" Role="user" Multiplicity="1" />
+          <End Type="NCMSystemModel.request" Role="request" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="request">
+              <PropertyRef Name="receiver" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="user_role_id_fk">
+          <End Type="NCMSystemModel.role" Role="role" Multiplicity="1" />
+          <End Type="NCMSystemModel.user" Role="user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="role">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="user">
+              <PropertyRef Name="role_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="token_user_id_fk">
+          <End Type="NCMSystemModel.user" Role="user" Multiplicity="1" />
+          <End Type="NCMSystemModel.token" Role="token" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="token">
+              <PropertyRef Name="user_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="user_user_id_fk">
+          <End Type="NCMSystemModel.user" Role="user" Multiplicity="0..1" />
+          <End Type="NCMSystemModel.user" Role="user1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="user">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="user1">
+              <PropertyRef Name="manager_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="group_contact">
+          <End Type="NCMSystemModel.contact" Role="contact" Multiplicity="*" />
+          <End Type="NCMSystemModel.group" Role="group" Multiplicity="*" />
+        </Association>
+        <EntityType Name="import_user">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="role_id" Type="Int32" />
+          <Property Name="manager" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="role" Relationship="NCMSystemModel.import_user_role_id_fk" FromRole="import_user" ToRole="role" />
+          <Property Name="status" Type="Int32" />
+        </EntityType>
+        <Association Name="import_user_role_id_fk">
+          <End Type="NCMSystemModel.role" Role="role" Multiplicity="0..1" />
+          <End Type="NCMSystemModel.import_user" Role="import_user" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="role">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="import_user">
+              <PropertyRef Name="role_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="NCMSystemModelStoreContainer" CdmEntityContainer="Entities">
+          <EntitySetMapping Name="contacts">
+            <EntityTypeMapping TypeName="NCMSystemModel.contact">
+              <MappingFragment StoreEntitySet="contact">
+                <ScalarProperty Name="note" ColumnName="note" />
+                <ScalarProperty Name="reason_deactive" ColumnName="reason_deactive" />
+                <ScalarProperty Name="createdBy" ColumnName="createdBy" />
+                <ScalarProperty Name="create_date" ColumnName="create_date" />
+                <ScalarProperty Name="isActive" ColumnName="isActive" />
+                <ScalarProperty Name="status_id" ColumnName="status_id" />
+                <ScalarProperty Name="flag_id" ColumnName="flag_id" />
+                <ScalarProperty Name="owner_id" ColumnName="owner_id" />
+                <ScalarProperty Name="reason_status" ColumnName="reason_status" />
+                <ScalarProperty Name="fax" ColumnName="fax" />
+                <ScalarProperty Name="website" ColumnName="website" />
+                <ScalarProperty Name="address" ColumnName="address" />
+                <ScalarProperty Name="phone" ColumnName="phone" />
+                <ScalarProperty Name="job_title" ColumnName="job_title" />
+                <ScalarProperty Name="company" ColumnName="company" />
+                <ScalarProperty Name="image_url" ColumnName="image_url" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="flags">
+            <EntityTypeMapping TypeName="NCMSystemModel.flag">
+              <MappingFragment StoreEntitySet="flag">
+                <ScalarProperty Name="code" ColumnName="code" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="groups">
+            <EntityTypeMapping TypeName="NCMSystemModel.group">
+              <MappingFragment StoreEntitySet="group">
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="requests">
+            <EntityTypeMapping TypeName="NCMSystemModel.request">
+              <MappingFragment StoreEntitySet="request">
+                <ScalarProperty Name="code" ColumnName="code" />
+                <ScalarProperty Name="new_contact_id" ColumnName="new_contact_id" />
+                <ScalarProperty Name="old_contact_id" ColumnName="old_contact_id" />
+                <ScalarProperty Name="create_date" ColumnName="create_date" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="receiver" ColumnName="receiver" />
+                <ScalarProperty Name="requester" ColumnName="requester" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="roles">
+            <EntityTypeMapping TypeName="NCMSystemModel.role">
+              <MappingFragment StoreEntitySet="role">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="status">
+            <EntityTypeMapping TypeName="NCMSystemModel.status">
+              <MappingFragment StoreEntitySet="status">
+                <ScalarProperty Name="code" ColumnName="code" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="status_request">
+            <EntityTypeMapping TypeName="NCMSystemModel.status_request">
+              <MappingFragment StoreEntitySet="status_request">
+                <ScalarProperty Name="code" ColumnName="code" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="NCMSystemModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tokens">
+            <EntityTypeMapping TypeName="NCMSystemModel.token">
+              <MappingFragment StoreEntitySet="token">
+                <ScalarProperty Name="expired_date" ColumnName="expired_date" />
+                <ScalarProperty Name="created_date" ColumnName="created_date" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="refresh_token" ColumnName="refresh_token" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="users">
+            <EntityTypeMapping TypeName="NCMSystemModel.user">
+              <MappingFragment StoreEntitySet="user">
+                <ScalarProperty Name="exp_code" ColumnName="exp_code" />
+                <ScalarProperty Name="code_resetPw" ColumnName="code_resetPw" />
+                <ScalarProperty Name="manager_id" ColumnName="manager_id" />
+                <ScalarProperty Name="role_id" ColumnName="role_id" />
+                <ScalarProperty Name="isActive" ColumnName="isActive" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="group_contact" TypeName="NCMSystemModel.group_contact" StoreEntitySet="group_contact">
+            <EndProperty Name="group">
+              <ScalarProperty Name="id" ColumnName="group_id" />
+            </EndProperty>
+            <EndProperty Name="contact">
+              <ScalarProperty Name="id" ColumnName="contact_id" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <EntitySetMapping Name="import_user">
+            <EntityTypeMapping TypeName="NCMSystemModel.import_user">
+              <MappingFragment StoreEntitySet="import_user">
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="manager" ColumnName="manager" />
+                <ScalarProperty Name="role_id" ColumnName="role_id" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
