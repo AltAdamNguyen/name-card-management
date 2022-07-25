@@ -33,7 +33,7 @@ namespace NCMSystem.Controllers
             try
             {
                 var user = id == 0
-                    ? db.users.FirstOrDefault(x => x.role_id == 3)
+                    ? db.users.FirstOrDefault(x => x.role_id == 3 && x.isActive == true)
                     : db.users.FirstOrDefault(x => x.id == id);
                 int userId = user?.id ?? 0;
                 var mem = id == 0
@@ -101,7 +101,6 @@ namespace NCMSystem.Controllers
 
             return arrayChild;
         }
-
 
         [HttpPost]
         [Route("api/admin/import")]
@@ -180,6 +179,7 @@ namespace NCMSystem.Controllers
                         name = name,
                         email = email,
                         role_id = role,
+                        status = 1
                     });
                 }
 
@@ -237,6 +237,117 @@ namespace NCMSystem.Controllers
         }
 
         [HttpGet]
+        [Route("api/admin/list-email-user")]
+        public ResponseMessageResult GetListEmailActiveUser()
+        {
+            var listEmail = new List<EmailManagerResponse>();
+
+            try
+            {
+                db.users.Where(u => u.isActive == true && (u.role_id == 1 || u.role_id == 2)).ToList().ForEach(x =>
+                {
+                    listEmail.Add(new EmailManagerResponse()
+                    {
+                        Email = x.email,
+                    });
+                });
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = listEmail
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpGet]
+        [Route("api/admin/list-user-da")]
+        public ResponseMessageResult GetListDaUser()
+        {
+            var listUser = new List<UserInformationImportedResponse>();
+            try
+            {
+                var user = db.users.Where(x => x.isActive == false);
+                foreach (var u in user)
+                {
+                    listUser.Add(new UserInformationImportedResponse()
+                    {
+                        Id = u.id,
+                        Name = u.name,
+                        Email = u.email,
+                        RoleId = u.role_id,
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = listUser
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpGet]
+        [Route("api/admin/contacts/list-user-da/{id}")]
+        public ResponseMessageResult GetListContactDaUser(int id)
+        {
+            var listCt = new List<ContactOfDaUserResponse>();
+            var user = db.users.FirstOrDefault(x => x.id == id && x.isActive == false);
+            if (user == null)
+            {
+                return Common.ResponseMessage.BadRequest("C0018");
+            }
+
+            try
+            {
+                var ct = db.contacts.Where(x => x.owner_id == user.id && x.createdBy == user.id);
+                foreach (var u in ct)
+                {
+                    listCt.Add(new ContactOfDaUserResponse
+                    {
+                        Id = u.id,
+                        Name = u.name,
+                        Company = u.company,
+                        IsActive = u.isActive
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = listCt
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpGet]
         [Route("api/admin/user/{id}")]
         public ResponseMessageResult GetUserInformation(int id)
         {
@@ -246,10 +357,10 @@ namespace NCMSystem.Controllers
             {
                 var user = db.users.FirstOrDefault(x => x.id == id);
                 if (user == null)
-                    return Common.ResponseMessage.BadRequest("");
+                    return Common.ResponseMessage.BadRequest("C0018");
 
                 if (user.role_id == 4)
-                    return Common.ResponseMessage.BadRequest("");
+                    return Common.ResponseMessage.BadRequest("C0021");
 
                 response.UserId = user.id;
                 response.Name = user.name;
@@ -293,6 +404,7 @@ namespace NCMSystem.Controllers
                         Email = user.email,
                         Name = user.name,
                         RoleId = user.role_id,
+                        Status = user.status,
                         EmailManager = user.manager,
                         CheckEmail = db.users.FirstOrDefault(x => x.email == user.email) != null,
                     });
@@ -326,7 +438,7 @@ namespace NCMSystem.Controllers
                 var user = db.import_user.FirstOrDefault(x => x.id == id);
 
                 if (user == null)
-                    return Common.ResponseMessage.BadRequest("");
+                    return Common.ResponseMessage.BadRequest("C0018");
 
                 selectUser.Id = user.id;
                 selectUser.Name = user.name;
@@ -357,34 +469,35 @@ namespace NCMSystem.Controllers
         {
             try
             {
+                var boss = db.users.FirstOrDefault(x => x.role_id == 3);
                 if (request == null)
-                    return Common.ResponseMessage.BadRequest("");
+                    return Common.ResponseMessage.BadRequest("A0004");
 
                 if (request.Name == null || request.Email == null || request.Manager == null)
-                    return Common.ResponseMessage.BadRequest("");
+                    return Common.ResponseMessage.BadRequest("A0004");
 
-                if (request.RoleId != 1 && request.RoleId != 2)
-                    return Common.ResponseMessage.BadRequest("");
+                if (request.RoleId == 3 && boss != null)
+                    return Common.ResponseMessage.Good("A0007");
 
                 if (request.Name.Trim() == "" || request.Email.Trim() == "" || request.Manager.Trim() == "")
-                    return Common.ResponseMessage.BadRequest("");
+                    return Common.ResponseMessage.BadRequest("A0004");
 
                 if (!Validator.Validator.CheckName(request.Name.Trim()) ||
                     !Validator.Validator.CheckEmail(request.Email.Trim()) ||
                     !Validator.Validator.CheckEmail(request.Manager.Trim()))
-                    return Common.ResponseMessage.BadRequest("");
+                    return Common.ResponseMessage.BadRequest("A0004");
 
                 var selectUserByEmail = db.users.FirstOrDefault(x => x.email == request.Email);
                 if (selectUserByEmail != null)
-                    return Common.ResponseMessage.BadRequest("");
+                    return Common.ResponseMessage.BadRequest("A0005");
 
                 var selectUserByEmailManager = db.users.FirstOrDefault(x => x.email == request.Manager);
                 if (selectUserByEmailManager == null)
-                    return Common.ResponseMessage.BadRequest("");
+                    return Common.ResponseMessage.BadRequest("A0005");
 
                 var selectUserImported = db.import_user.FirstOrDefault(x => x.id == id);
                 if (selectUserImported == null)
-                    return Common.ResponseMessage.BadRequest("");
+                    return Common.ResponseMessage.BadRequest("A0006");
 
                 selectUserImported.name = request.Name;
                 selectUserImported.email = request.Email;
@@ -407,6 +520,119 @@ namespace NCMSystem.Controllers
                     Message = "Success",
                 }), Encoding.UTF8, "application/json")
             });
+        }
+
+        [HttpPost]
+        [Route("api/admin/user-imported/{id}")]
+        public ResponseMessageResult AddUser(int id)
+        {
+            try
+            {
+                var selectUserImported = db.import_user.FirstOrDefault(x => x.id == id);
+                if (selectUserImported == null)
+                    return Common.ResponseMessage.BadRequest("A0006");
+
+                if (selectUserImported.manager == null && selectUserImported.role_id < 3)
+                    return Common.ResponseMessage.BadRequest("A0005");
+
+                var selectUser = db.users.FirstOrDefault(x => x.email == selectUserImported.email);
+                if (selectUser != null)
+                    return Common.ResponseMessage.BadRequest("A0008");
+
+                var selectUserManager = db.users.FirstOrDefault(x => x.email == selectUserImported.manager);
+                if (selectUserManager == null && (selectUserImported.role_id == 1 || selectUserImported.role_id == 2))
+                    return Common.ResponseMessage.BadRequest("A0005");
+
+                var boss = db.users.FirstOrDefault(x => x.role_id == 3);
+                if (boss != null && (selectUserImported.manager == null || selectUserImported.manager.Trim() == ""))
+                {
+                    var user = db.users.Add(new user()
+                    {
+                        name = selectUserImported.name,
+                        password = PasswordGenerator.Generate(),
+                        email = selectUserImported.email,
+                        role_id = selectUserImported.role_id ?? 1,
+                        isActive = true,
+                        manager_id = null
+                    });
+
+                    var listUser = db.users.Where(x => x.manager_id == boss.id).ToList();
+                    if (listUser.Count > 0)
+                    {
+                        foreach (var u in listUser)
+                        {
+                            u.manager_id = user.id;
+                        }
+                    }
+
+                    boss.isActive = false;
+                    selectUserImported.status = 2;
+                    db.SaveChanges();
+                    return new ResponseMessageResult(new HttpResponseMessage
+                    {
+                        StatusCode = System.Net.HttpStatusCode.OK,
+                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                        {
+                            Message = "Success",
+                        }), Encoding.UTF8, "application/json")
+                    });
+                }
+
+                if (selectUserImported.role_id > 3)
+                    return Common.ResponseMessage.BadRequest("A0009");
+
+                db.users.Add(new user()
+                {
+                    name = selectUserImported.name,
+                    password = PasswordGenerator.Generate(),
+                    email = selectUserImported.email,
+                    role_id = selectUserImported.role_id ?? 1,
+                    isActive = true,
+                    manager_id = selectUserManager?.id
+                });
+                
+                selectUserImported.status = 2;
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        private static class PasswordGenerator
+        {
+            private static readonly Random Rand = new Random();
+
+            public static string Generate()
+            {
+                string upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                string lowerChars = "abcdefghijklmnopqrstuvwxyz";
+                string specialChars = "!@#$%^&*+?~";
+                string numbers = "0123456789";
+                string password = "";
+                //random 1 char in upperChars
+                password += upperChars[Rand.Next(0, upperChars.Length)];
+                password += specialChars[Rand.Next(0, specialChars.Length)];
+                password += numbers[Rand.Next(0, numbers.Length)];
+                for (int i = 0; i < 5; i++)
+                {
+                    password += lowerChars[Rand.Next(0, lowerChars.Length)];
+                }
+
+                return password;
+            }
         }
     }
 }

@@ -920,7 +920,7 @@ namespace NCMSystem.Controllers
 
         [HttpPatch]
         [Route("api/contacts/transfer")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin, NcmRole.Staff, NcmRole.Manager })]
         public ResponseMessageResult TransferOwnContact([FromBody] TransferContact tranCt)
         {
             string email = tranCt.TransferTo ?? "";
@@ -939,10 +939,10 @@ namespace NCMSystem.Controllers
                 {
                     contact.groups.Clear();
                     contact.status_id = "S0002";
-                    contact.note = null;
                     contact.flag_id = null;
                     contact.owner_id = user.id;
                     contact.createdBy = user.id;
+                    contact.create_date = DateTime.Now;
                     db.SaveChanges();
                 }
             }
@@ -1376,6 +1376,18 @@ namespace NCMSystem.Controllers
                 if (oldCt == null)
                 {
                     return Common.ResponseMessage.NotFound("C0018");
+                }
+
+                var rqChange = db.requests.Where(c => c.old_contact_id == rq.old_contact_id);
+                if (rqChange.Count() > 0)
+                {
+                    contact ct;
+                    foreach (var r in rqChange)
+                    {
+                        ct = db.contacts.FirstOrDefault(c => c.id == r.new_contact_id);
+                        if (ct != null) ct.owner_id = rq.requester;
+                        r.old_contact_id = rq.new_contact_id;
+                    }
                 }
 
                 rq.old_contact_id = null;
