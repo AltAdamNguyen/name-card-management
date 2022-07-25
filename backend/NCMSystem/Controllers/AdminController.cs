@@ -12,6 +12,7 @@ using NCMSystem.Filter;
 using NCMSystem.Models;
 using NCMSystem.Models.CallAPI;
 using NCMSystem.Models.CallAPI.Admin;
+using NCMSystem.Models.CallAPI.Contact;
 using NCMSystem.Models.CallAPI.Team;
 using Newtonsoft.Json;
 using Serilog;
@@ -510,6 +511,52 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+        
+        [HttpPatch]
+        [Route("api/admin/transfer")]
+        public ResponseMessageResult TransferContactFromDaUser([FromBody] TransferContact tranCt)
+        {
+            if (!string.IsNullOrEmpty(tranCt.TransferFrom))
+            {
+                var from = db.users.FirstOrDefault(u => u.email == tranCt.TransferFrom && u.isActive == true);
+                if (from != null)
+                {
+                    return Common.ResponseMessage.BadRequest("C0018");
+                }
+            }
+            string email = tranCt.TransferTo ?? "";
+
+            var user = db.users.FirstOrDefault(u => u.email == email);
+            if (user == null)
+            {
+                return Common.ResponseMessage.BadRequest("C0018");
+            }
+
+            foreach (var ct in tranCt.ContactIds)
+            {
+                var ctId = int.Parse(ct);
+                var contact = db.contacts.FirstOrDefault(c => c.id == ctId);
+                if (contact != null)
+                {
+                    contact.groups.Clear();
+                    contact.status_id = "S0002";
+                    contact.flag_id = null;
+                    contact.owner_id = user.id;
+                    contact.createdBy = user.id;
+                    contact.create_date = DateTime.Now;
+                    db.SaveChanges();
+                }
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()

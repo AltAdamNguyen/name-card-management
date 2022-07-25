@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -43,10 +44,23 @@ namespace NCMSystem.Controllers
                 });
             }
 
-            var user = db.users.FirstOrDefault(x => x.email == email && x.password == password);
+            var user = db.users.FirstOrDefault(x => x.email == email);
 
             // check user exist
             if (user == null)
+            {
+                return new ResponseMessageResult(new HttpResponseMessage()
+                {
+                    StatusCode = System.Net.HttpStatusCode.BadRequest,
+                    Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                    {
+                        Message = "U0003",
+                    }), Encoding.UTF8, "application/json")
+                });
+            }
+
+            // check password
+            if (user.password != password)
             {
                 return new ResponseMessageResult(new HttpResponseMessage()
                 {
@@ -127,7 +141,7 @@ namespace NCMSystem.Controllers
                 });
             }
 
-            var selectToken = db.tokens.FirstOrDefault(e => e.refresh_token == refreshToken);
+            var selectToken = db.tokens.FirstOrDefault(e => compareString(e.refresh_token ,refreshToken));
             var selectUser = db.users.FirstOrDefault(e => e.id == selectToken.user_id);
 
             // check refresh token exist
@@ -149,12 +163,13 @@ namespace NCMSystem.Controllers
                     }), Encoding.UTF8, "application/json")
                 });
             }
-            
+
             // init date create-expire for token
             DateTimeOffset dateCreateToken = DateTimeOffset.Now;
             DateTimeOffset dateExpireToken = dateCreateToken.AddMinutes(30);
-            
-            var token = GenerateToken(selectToken.user_id, dateCreateToken.ToUnixTimeSeconds(), dateExpireToken.ToUnixTimeSeconds(), selectUser.role_id);
+
+            var token = GenerateToken(selectToken.user_id, dateCreateToken.ToUnixTimeSeconds(),
+                dateExpireToken.ToUnixTimeSeconds(), selectUser.role_id);
 
             // return success response
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -411,7 +426,8 @@ namespace NCMSystem.Controllers
         private string GenerateToken(int userId, long createTime, long expireTime, int userRole)
         {
             Jwk keyToken =
-                new Jwk(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET_KEY_TOKEN") ?? string.Empty));
+                new Jwk(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET_KEY_TOKEN") ??
+                                                string.Empty));
 
             // init date create-expire for token and refresh token
 
@@ -429,7 +445,8 @@ namespace NCMSystem.Controllers
         private string GenerateRefreshToken(int userId, long createTime, long expireTime)
         {
             Jwk keyRefreshToken =
-                new Jwk(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET_KEY_REFRESH_TOKEN") ?? string.Empty));
+                new Jwk(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET_KEY_REFRESH_TOKEN") ??
+                                                string.Empty));
 
             // init date create-expire for token and refresh token
             DateTimeOffset dateCreateToken = DateTimeOffset.Now;
@@ -444,6 +461,14 @@ namespace NCMSystem.Controllers
             }, keyRefreshToken, JwsAlgorithm.HS256);
 
             return refreshToken;
+        }
+
+        private bool compareString(string str1, string str2)
+        {
+            if (str1 == null || str2 == null)
+                return false;
+
+            return str1.Equals(str2);
         }
     }
 }

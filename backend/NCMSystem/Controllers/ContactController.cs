@@ -956,6 +956,8 @@ namespace NCMSystem.Controllers
                 }), Encoding.UTF8, "application/json")
             });
         }
+        
+        
 
         [HttpGet]
         [Route("api/contacts/request/{id}/{idDuplicate}")]
