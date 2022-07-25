@@ -9,7 +9,6 @@ const RouteMovingBetweenSettingScreen = () => {
         headerShown: false,
       }}
       >
-      <Stack.Screen name="Setting" component={Setting} />
       <Stack.Screen name="ChangePassword" component={ChangePassword} />
     </Stack.Navigator>
   )
