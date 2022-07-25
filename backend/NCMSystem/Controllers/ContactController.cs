@@ -939,10 +939,10 @@ namespace NCMSystem.Controllers
                 {
                     contact.groups.Clear();
                     contact.status_id = "S0002";
-                    contact.note = null;
                     contact.flag_id = null;
                     contact.owner_id = user.id;
                     contact.createdBy = user.id;
+                    contact.create_date = DateTime.Now;
                     db.SaveChanges();
                 }
             }

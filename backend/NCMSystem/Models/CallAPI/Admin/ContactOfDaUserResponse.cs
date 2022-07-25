@@ -7,5 +7,6 @@ namespace NCMSystem.Models.CallAPI.Admin
         [JsonProperty("id")] public int Id { get; set; }
         [JsonProperty("name")] public string Name { get; set; }
         [JsonProperty("company")] public string Company { get; set; }
+        [JsonProperty("active")] public bool IsActive { get; set; }
     }
 }

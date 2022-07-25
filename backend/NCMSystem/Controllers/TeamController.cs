@@ -61,6 +61,7 @@ namespace NCMSystem.Controllers
                     {
                         Id = a.Id,
                         Name = a.Name,
+                        Email = a.Email,
                         Children = new List<TeamResponse>()
                     });
                 }

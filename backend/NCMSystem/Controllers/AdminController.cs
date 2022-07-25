@@ -238,13 +238,13 @@ namespace NCMSystem.Controllers
 
         [HttpGet]
         [Route("api/admin/list-email-user")]
-        public ResponseMessageResult GetListEmailUser()
+        public ResponseMessageResult GetListEmailActiveUser()
         {
             var listEmail = new List<EmailManagerResponse>();
 
             try
             {
-                db.users.Where(u => u.isActive == true &&(u.role_id == 1 || u.role_id == 2)).ToList().ForEach(x =>
+                db.users.Where(u => u.isActive == true && (u.role_id == 1 || u.role_id == 2)).ToList().ForEach(x =>
                 {
                     listEmail.Add(new EmailManagerResponse()
                     {
@@ -325,7 +325,8 @@ namespace NCMSystem.Controllers
                     {
                         Id = u.id,
                         Name = u.name,
-                        Company = u.company
+                        Company = u.company,
+                        IsActive = u.isActive
                     });
                 }
             }
