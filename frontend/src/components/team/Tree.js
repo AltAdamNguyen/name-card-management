@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Card, Checkbox, TouchableRipple, IconButton } from "react-native-paper";
-import { View, Text, StyleSheet, Platform, UIManager, Pressable } from "react-native";
+import { View, Text, StyleSheet, Platform, UIManager} from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 
 const Tree = ({ item, expand = false, navigation, checked = false, child = false, checklistExport, listExport = [], handleChecked }) => {
+  console.log(item);
   const [expanded, setExpanded] = useState(expand);
   const [checkedItem, setCheckedItem] = useState(listExport.includes(item.id) ? true : false);
   useEffect(() => {
@@ -48,26 +49,24 @@ const Tree = ({ item, expand = false, navigation, checked = false, child = false
 
                 <View style={styles.row_label_right}>
                   <Text style={styles.title}>{item.name}</Text>
+                  <Text style={styles.subtitle}>{item.email}</Text>
                 </View>
               </View>
-              <IconButton icon="chevron-right" size={30} color={'#828282'} onPress={handleViewContact}/>
+              <IconButton icon="chevron-right" size={26} color={'#828282'} onPress={handleViewContact}/>
             </View>
           </TouchableRipple>
-          {item.children.map((element, index) => {
+          {expanded && item.children.map((element, index) => {
             return (
               <View key={index}>
                 <View style={styles.parentHr} />
-                {
-                  expanded &&
                   <Tree item={element} navigation={navigation} checked={checked} child={true} listExport={listExport} checklistExport={checklistExport} handleChecked={handleChecked} />
-                }
               </View>
             )
           })}
         </Card>
       ) : (
         <Card mode={child ? "outlined" : "elevated"} style={styles.card}>
-          <TouchableRipple borderless={true} style={styles.row} onLongPress={() => console.log('a')}>
+          <TouchableRipple borderless={true} style={styles.row} onLongPress={handleChecked}>
             <View style={styles.row_item}>
               <View style={styles.row_label}>
                 {checked ?
@@ -84,9 +83,10 @@ const Tree = ({ item, expand = false, navigation, checked = false, child = false
                   )}
                 <View style={styles.row_label_right}>
                   <Text style={styles.title}>{item.name}</Text>
+                  <Text style={styles.subtitle}>{item.email}</Text>
                 </View>
               </View>
-              <IconButton icon="chevron-right" size={30} color={'#828282'} onPress={handleViewContact}/>
+              <IconButton icon="chevron-right" size={26} color={'#828282'} onPress={handleViewContact}/>
             </View>
 
           </TouchableRipple>
@@ -100,12 +100,11 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     width: '100%',
-    paddingBottom: 10
+    marginBottom: 10
   },
   card: {
     width: '90%',
     borderRadius: 10,
-
   },
   title: {
     fontSize: 16,
@@ -116,11 +115,9 @@ const styles = StyleSheet.create({
   },
   row: {
     justifyContent: 'center',
-    height: 56,
     width: '100%',
     borderRadius: 10,
     backgroundColor: '#FFF',
-    borderRadius: 10,
   },
   row_item: {
     flexDirection: 'row',
