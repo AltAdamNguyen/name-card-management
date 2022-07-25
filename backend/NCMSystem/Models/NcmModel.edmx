@@ -62,6 +62,7 @@
           <Property Name="email" Type="nvarchar" MaxLength="255" />
           <Property Name="role_id" Type="int" />
           <Property Name="manager" Type="nvarchar" MaxLength="255" />
+          <Property Name="status" Type="int" />
         </EntityType>
         <EntityType Name="request">
           <Key>
@@ -698,6 +699,7 @@ warning 6035: The relationship 'request_status_request_code_fk' has columns that
           <Property Name="role_id" Type="Int32" />
           <Property Name="manager" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="role" Relationship="NCMSystemModel.import_user_role_id_fk" FromRole="import_user" ToRole="role" />
+          <Property Name="status" Type="Int32" />
         </EntityType>
         <Association Name="import_user_role_id_fk">
           <End Type="NCMSystemModel.role" Role="role" Multiplicity="0..1" />
@@ -848,6 +850,7 @@ warning 6035: The relationship 'request_status_request_code_fk' has columns that
           <EntitySetMapping Name="import_user">
             <EntityTypeMapping TypeName="NCMSystemModel.import_user">
               <MappingFragment StoreEntitySet="import_user">
+                <ScalarProperty Name="status" ColumnName="status" />
                 <ScalarProperty Name="manager" ColumnName="manager" />
                 <ScalarProperty Name="role_id" ColumnName="role_id" />
                 <ScalarProperty Name="email" ColumnName="email" />

@@ -222,11 +222,13 @@
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Filter\JwtAuthorizeFilter.cs" />
+    <Compile Include="Filter\JwtToken.cs" />
     <Compile Include="Filter\LogException.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\CallAPI\Admin\ChangeUserImportedRequest.cs" />
+    <Compile Include="Models\CallAPI\Admin\ContactOfDaUserResponse.cs" />
     <Compile Include="Models\CallAPI\Admin\EmailManagerResponse.cs" />
     <Compile Include="Models\CallAPI\Admin\UserInformationImportedResponse.cs" />
     <Compile Include="Models\CallAPI\Admin\UserInformationResponse.cs" />
