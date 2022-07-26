@@ -1,6 +1,6 @@
 //import liraries
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { View, Text, SafeAreaView, Image, TouchableOpacity, ScrollView, Pressable, RefreshControl, FlatList, Dimensions, Platform } from 'react-native';
+import { View, Text, SafeAreaView, Image, TouchableOpacity, Pressable, RefreshControl, FlatList, Platform } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { IconButton, Searchbar, FAB, Card, Provider, ActivityIndicator } from 'react-native-paper';
 import styles from './styles';
@@ -75,7 +75,7 @@ const Home = ({ route, navigation }) => {
         }
     }
     useEffect(() => {
-        if(true) {
+        if (true) {
             FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
             setLoading(true);
         }
@@ -96,12 +96,16 @@ const Home = ({ route, navigation }) => {
     }, []);
 
     const getContact = (data) => {
-        setLoading(false);
-        if (data.data.length > 0) {
-            setListContact(data.data);
-            setListFilter(data.data);
-            setContContact(data.data.length);
+        authCtx.checkToken()
+        if(data){
+            setLoading(false);
+            if (data.data.length > 0) {
+                setListContact(data.data);
+                setListFilter(data.data);
+                setContContact(data.data.length);
+            }
         }
+
     }
 
     const handlePressSort = (item) => {
@@ -123,21 +127,25 @@ const Home = ({ route, navigation }) => {
     }
 
     const getContactFilter = (data) => {
-        if (data.data) {
-            if (data.data.length > 0) {
-                setListFilter(data.data);
-                setContContact(data.data.length);
+        authCtx.checkToken()
+        if (data) {
+            if (data.data) {
+                if (data.data.length > 0) {
+                    setListFilter(data.data);
+                    setContContact(data.data.length);
+                } else {
+                    setListFilter([]);
+                    setContContact(0);
+                }
             } else {
                 setListFilter([]);
                 setContContact(0);
             }
-        } else {
-            setListFilter([]);
-            setContContact(0);
+            setPage(1)
+            setLoading(false);
+            setRefreshing(false);
         }
-        setPage(1)
-        setLoading(false);
-        setRefreshing(false);
+
     }
     const deleteFlag = () => {
         setLoading(true);
@@ -150,7 +158,7 @@ const Home = ({ route, navigation }) => {
                 setListFilter([...listFilter, ...data.data]);
                 setContContact(listFilter.length + data.data.length);
                 setPage(page + 1);
-            } 
+            }
         }
         setLoadMore(false);
     }
@@ -240,7 +248,7 @@ const Home = ({ route, navigation }) => {
         return (
             loadMore ? <View>
                 <ActivityIndicator color="#1890FF" size="large" />
-            </View>: null
+            </View> : null
         )
     }
 

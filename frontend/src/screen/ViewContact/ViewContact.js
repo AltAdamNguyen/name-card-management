@@ -21,13 +21,7 @@ import SnackbarComponent from '../../components/viewcontact/Snackbar';
 
 import styles from './styles';
 
-// create a component
-
-
-
 const ViewContact = ({ navigation, route }) => {
-    console.log(route)
-
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
     const [modalVisible, setModalVisible] = useState(false);
@@ -121,7 +115,7 @@ const ViewContact = ({ navigation, route }) => {
     }
 
     const getFlag = (data) => {
-        console.log(data)
+        authCtx.checkToken()
     }
     useEffect(() => {
         setLoading(true)
@@ -145,9 +139,12 @@ const ViewContact = ({ navigation, route }) => {
     }, [contact])
 
     const getContact = (data) => {
-        console.log(data)
-        setContact(data.data)
-        setLoading(false)
+        authCtx.checkToken()
+        if(data){
+            setContact(data.data)
+            setLoading(false)
+        }
+
     }
 
     const handlePressUpdateContact = () => {
@@ -160,8 +157,10 @@ const ViewContact = ({ navigation, route }) => {
     }
 
     const getMessage = (data) => {
-        console.log(data)
-        navigation.navigate("Bottom", { screen: "HomeScreen" })
+        authCtx.checkToken()
+        if(data){
+            navigation.navigate("Bottom", { screen: "HomeScreen" })
+        }
     }
 
     const handleRequest = () => {

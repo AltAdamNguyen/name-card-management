@@ -1,15 +1,6 @@
 import { AuthAPI, BaseUrl, Method, ContentType } from "../../constants/ListAPI";
 import * as SecureStore from 'expo-secure-store';
-import jwt_decode from 'jwt-decode';
 
-const isTokenExpired = (token) => {
-    const decoded = jwt_decode(token);
-    const currentTime = Date.now() / 1000;
-    if (decoded.exp < currentTime) {
-        return true;
-    }
-    return false;
-}
 
 export const FetchApiAuth = (url, method, contentType, param, callback) => {
     fetch(`${BaseUrl}${url}`,
@@ -32,29 +23,30 @@ export const FetchApiAuth = (url, method, contentType, param, callback) => {
         })
 }
 
-const RefeshToken = async(refresh_token) => {
-    let response = await fetch(`${BaseUrl}${AuthAPI.RefreshToken}`,
+const RefeshToken = async (refresh_token) => {
+    let response = await fetch(`${BaseUrl}${AuthAPI.RefeshToken}`,
         {
             method: Method.POST,
             headers: {
-                'Content-Type': ContentType.JSON,              
+                'Content-Type': ContentType.JSON,
             },
             body: JSON.stringify({
                 refresh_token: refresh_token
             })
         }
     )
+    if (!response.ok) {
+        console.log('error')
+        await SecureStore.deleteItemAsync('access_token')
+        await SecureStore.deleteItemAsync('refresh_token')
+        return null
+    }
     let data = await response.json()
     return data
 }
 
-export const FetchApi = async(url, method, contentType, param, callback) => {
-    let token = await SecureStore.getItemAsync('access_token');
-    if (token && isTokenExpired(token)) {
-        let refresh_token = await SecureStore.getItemAsync('refresh_token');       
-        token = await RefeshToken(refresh_token)
-        await SecureStore.setItemAsync('access_token',token)
-    }
+export const FetchApi = async (url, method, contentType, param, callback) => {
+    let refresh_token = await SecureStore.getItemAsync('refresh_token');
     fetch(`${BaseUrl}${url}`,
         {
             method: method,
@@ -65,10 +57,41 @@ export const FetchApi = async(url, method, contentType, param, callback) => {
             body: JSON.stringify(param),
         })
         .then((response) => {
-            return response.json()
-        })
-        .then((data) => {
-            callback(data)
+            if (response.status === 401) {
+                RefeshToken(refresh_token)
+                    .then((data) => {
+                        if (data && data.data) {
+                            fetch(`${BaseUrl}${url}`, {
+                                method: method,
+                                headers: {
+                                    'Content-Type': contentType,
+                                    'Authorization': 'Bearer ' + data.data.access_token,
+                                },
+                                body: JSON.stringify(param),
+                            }).then((response) => {
+                                if (response.status === 200) {
+                                    return response.json()
+                                        .then((data) => {
+                                            callback(data)
+                                        })
+                                }
+                            }).catch((error) => {
+                                console.log(error)
+                            })
+                        }
+                        if(data === null) {
+                            callback(null)
+                        }
+                    }).catch((err) => {
+                        console.log(err)
+                    })
+            }
+            if (response.status === 200) {
+                return response.json()
+                    .then((data) => {
+                        callback(data)
+                    })
+            }
         })
         .catch((error) => {
             console.log(error)
