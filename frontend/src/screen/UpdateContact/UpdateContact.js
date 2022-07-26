@@ -1,6 +1,6 @@
 //import liraries
 import React, { useState, useRef, useEffect, useContext } from 'react';
-import { View, Text, Image, ScrollView, Dimensions, Alert, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, Image, Dimensions, Alert, } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { TextInput, Provider, Button } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -15,7 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from "react-i18next";
 import ModalContact from '../../components/addcontact/ModelContact';
 import LoadingDialog from '../../components/customDialog/dialog/loadingDialog/LoadingDialog';
-// create a component
+import AuthContext from '../../store/AuthContext';
 
 const contextDuplicate = {
     title: "Thông báo",
@@ -25,6 +25,7 @@ const contextDuplicate = {
 }
 
 const UpdateContact = ({ route, navigation }) => {
+    const authCtx = useContext(AuthContext)
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
     const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient)
@@ -130,9 +131,12 @@ const UpdateContact = ({ route, navigation }) => {
     ]
 
     const getContact = (data) => {
-        if (data.data) {
-            formRef.current.setValues(data.data)
-            setLoading(true)
+        authCtx.checkToken()
+        if (data) {
+            if (data.data) {
+                formRef.current.setValues(data.data)
+                setLoading(true)
+            }
         }
     }
 
@@ -145,30 +149,32 @@ const UpdateContact = ({ route, navigation }) => {
     }
 
     const getMessage = (data) => {
-        console.log(data)
-        setIsLoading(false)
-        if (data.message === "C0009") {
-            navigation.dispatch(StackActions.popToTop());
-            route.params && route.params.contact && navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: data.data.id, showFooter: true } })
-        }
-        if (data.message === "C0010") {
-            navigation.dispatch(StackActions.popToTop());
-            route.params && route.params.idContact && navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: route.params.idContact, showFooter: true } })
-        }
-        if (data.message === "D0001") {
-            setDuplicate(true)
-            setDuplicateInfo({ ...duplicateInfo, id: data.data.id })
-        }
-        if (data.message === "D0003") {
-            setDuplicateOther(true)
-            setDuplicateInfo({
-                id: data.data.id,
-                id_duplicate: data.data.id_duplicate,
-                owner: data.data.user_name,
-            })
-        }
-        if (data.message === "D0005") {
-            Alert.alert('Thông báo', 'Email đã tồn tại', [{ text: 'OK' }])
+        authCtx.checkToken()
+        if (data) {
+            setIsLoading(false)
+            if (data.message === "C0009") {
+                navigation.dispatch(StackActions.popToTop());
+                route.params && route.params.contact && navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: data.data.id, showFooter: true } })
+            }
+            if (data.message === "C0010") {
+                navigation.dispatch(StackActions.popToTop());
+                route.params && route.params.idContact && navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: route.params.idContact, showFooter: true } })
+            }
+            if (data.message === "D0001") {
+                setDuplicate(true)
+                setDuplicateInfo({ ...duplicateInfo, id: data.data.id })
+            }
+            if (data.message === "D0003") {
+                setDuplicateOther(true)
+                setDuplicateInfo({
+                    id: data.data.id,
+                    id_duplicate: data.data.id_duplicate,
+                    owner: data.data.user_name,
+                })
+            }
+            if (data.message === "D0005") {
+                Alert.alert('Thông báo', 'Email đã tồn tại', [{ text: 'OK' }])
+            }
         }
     }
 
@@ -177,16 +183,19 @@ const UpdateContact = ({ route, navigation }) => {
     }
 
     const getMessageDuplaicate = (data) => {
-        setDuplicateOther(false)
-        navigation.dispatch(StackActions.popToTop());
-        navigation.navigate("HomeSwap", {
-            screen: "ViewContact",
-            params: { idContact: duplicateInfo.id_duplicate },
-        });
+        authCtx.checkToken()
+        if(data){
+            setDuplicateOther(false)
+            navigation.dispatch(StackActions.popToTop());
+            navigation.navigate("HomeSwap", {
+                screen: "ViewContact",
+                params: { idContact: duplicateInfo.id_duplicate },
+            });
+        }
+
     }
 
     const handleDuplicate = () => {
-        console.log(duplicateInfo)
         navigation.dispatch(StackActions.popToTop());
         navigation.navigate("HomeSwap", {
             screen: "UpdateContact",
@@ -223,59 +232,59 @@ const UpdateContact = ({ route, navigation }) => {
                 innerRef={formRef}
             >
                 {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => {
-                    return (                     
+                    return (
                         <View style={styles.formInput}>
-                            <KeyboardAwareScrollView contentContainerStyle={{flexGrow: 1}} >
-                                    {formInput.map((item, index) => {
-                                        return (
-                                            <View key={index} style={styles.formInput_component}>
-                                                <View style={styles.formInput_item} >
-                                                    <ShimmerPlaceholder
-                                                        visible={loading}
-                                                        style={{ width: '100%' }}
-                                                        shimmerStyle={styles.shimmer_FormInput}
-                                                    >
-                                                        <View style={styles.formInput_item_component}>
-                                                            <Icon size={20} name={item.icon} color="#1890FF" />
-                                                            <View style={{ width: '100%', marginLeft: 10 }}>
-                                                                <Text style={{ fontWeight: '600', color: '#1890FF' }}>{item.title}</Text>
-                                                                <TextInput
-                                                                    placeholder={item.placeholder}
-                                                                    value={values[item.name]}
-                                                                    multiline={true}
-                                                                    dense={true}
-                                                                    style={styles.formInput_item_input}
-                                                                    onChangeText={handleChange(item.name)}
-                                                                    onFocus={(e) => console.log(e.target)}
-                                                                    onBlur={handleBlur(item.name)}
-                                                                    error={errors[item.name] && touched[item.name]}
-                                                                    theme={{
-                                                                        colors: {
-                                                                            primary: '#1890FF',
-                                                                            error: '#B22D1D',
-                                                                        },
-                                                                    }}
-                                                                />
-                                                                {errors[item.name] && touched[item.name] ? (
-                                                                    <View style={styles.formInput_item_error}>
-                                                                        <Text style={styles.formInput_item_error_label}>{errors[item.name]}</Text>
-                                                                    </View>
-                                                                ) : null}
-                                                            </View>
+                            <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }} >
+                                {formInput.map((item, index) => {
+                                    return (
+                                        <View key={index} style={styles.formInput_component}>
+                                            <View style={styles.formInput_item} >
+                                                <ShimmerPlaceholder
+                                                    visible={loading}
+                                                    style={{ width: '100%' }}
+                                                    shimmerStyle={styles.shimmer_FormInput}
+                                                >
+                                                    <View style={styles.formInput_item_component}>
+                                                        <Icon size={20} name={item.icon} color="#1890FF" />
+                                                        <View style={{ width: '100%', marginLeft: 10 }}>
+                                                            <Text style={{ fontWeight: '600', color: '#1890FF' }}>{item.title}</Text>
+                                                            <TextInput
+                                                                placeholder={item.placeholder}
+                                                                value={values[item.name]}
+                                                                multiline={true}
+                                                                dense={true}
+                                                                style={styles.formInput_item_input}
+                                                                onChangeText={handleChange(item.name)}
+                                                                onFocus={(e) => console.log(e.target)}
+                                                                onBlur={handleBlur(item.name)}
+                                                                error={errors[item.name] && touched[item.name]}
+                                                                theme={{
+                                                                    colors: {
+                                                                        primary: '#1890FF',
+                                                                        error: '#B22D1D',
+                                                                    },
+                                                                }}
+                                                            />
+                                                            {errors[item.name] && touched[item.name] ? (
+                                                                <View style={styles.formInput_item_error}>
+                                                                    <Text style={styles.formInput_item_error_label}>{errors[item.name]}</Text>
+                                                                </View>
+                                                            ) : null}
                                                         </View>
-                                                    </ShimmerPlaceholder>
-                                                </View>
+                                                    </View>
+                                                </ShimmerPlaceholder>
                                             </View>
-                                        )
-                                    })}
-                                    <View style={{ marginBottom: 15 }} />
-                                </KeyboardAwareScrollView>
+                                        </View>
+                                    )
+                                })}
+                                <View style={{ marginBottom: 15 }} />
+                            </KeyboardAwareScrollView>
                             <View style={styles.footer}>
                                 <Button onPress={() => navigation.goBack()} style={styles.footer_button_label} color="#1890FF">Thoát</Button>
                                 <Button style={styles.footer_button_label} color="#1890FF" onPress={handleSubmit}>Lưu</Button>
                             </View>
                         </View>
-                        
+
                     )
                 }}
             </Formik>
@@ -284,6 +293,4 @@ const UpdateContact = ({ route, navigation }) => {
     );
 };
 
-
-//make this component available to the app
 export default UpdateContact;

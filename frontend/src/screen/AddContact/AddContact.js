@@ -1,6 +1,6 @@
 //import liraries
-import React, { useState, useRef, useEffect } from "react";
-import { View, Image, ScrollView, Dimensions, Text, KeyboardAvoidingView } from "react-native";
+import React, { useState, useRef, useEffect, useContext } from "react";
+import { View, Image, Dimensions, } from "react-native";
 import { Provider, Button } from "react-native-paper";
 
 import { StackActions } from "@react-navigation/native";
@@ -14,6 +14,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import ModalContact from "../../components/addcontact/ModelContact";
 import TextInputItem from "../../components/addcontact/TextInputItem";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import AuthContext from "../../store/AuthContext";
 // create a component
 
 const formInput = [
@@ -80,6 +81,7 @@ const contextDuplicate = {
 }
 
 const AddContact = ({ contact, loading, navigation }) => {
+  const authCtx = useContext(AuthContext)
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
   const formRef = useRef();
@@ -142,21 +144,23 @@ const AddContact = ({ contact, loading, navigation }) => {
   };
 
   const getMessage = (data) => {
-    console.log(data);
-    if (data.message === "D0001") {
-      setDuplicate(true)
-      setContactId(data.data.id)
-    }
-    if (data.message === "C0009") {
-      navigation.dispatch(StackActions.popToTop());
-      navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: data.data.id, showFooter: true } })
-    }
-    if (data.message === "D0003") {
-      setDuplicateOther(true)
-      setDuplicateInfo({
-        id_duplicate: data.data.id_duplicate,
-        owner: data.data.user_name,
-      })
+    authCtx.checkToken()
+    if(data){
+      if (data.message === "D0001") {
+        setDuplicate(true)
+        setContactId(data.data.id)
+      }
+      if (data.message === "C0009") {
+        navigation.dispatch(StackActions.popToTop());
+        navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: data.data.id, showFooter: true } })
+      }
+      if (data.message === "D0003") {
+        setDuplicateOther(true)
+        setDuplicateInfo({
+          id_duplicate: data.data.id_duplicate,
+          owner: data.data.user_name,
+        })
+      }
     }
   };
 

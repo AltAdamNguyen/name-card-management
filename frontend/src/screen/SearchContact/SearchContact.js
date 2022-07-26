@@ -1,8 +1,8 @@
 //import liraries
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { View, Text, SafeAreaView, Image, ScrollView, Alert, FlatList } from 'react-native';
+import React, { useState, useEffect, useCallback, useRef, useContext } from 'react';
+import { View, Text, SafeAreaView, Alert, FlatList } from 'react-native';
 
-import { Searchbar, Card, List, IconButton, Button, RadioButton, FAB, ActivityIndicator } from 'react-native-paper'
+import { Searchbar, Card, IconButton, Button, ActivityIndicator } from 'react-native-paper'
 import debounce from 'lodash.debounce';
 import styles from '../Home/styles';
 import { FetchApi } from '../../service/api/FetchAPI';
@@ -13,19 +13,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import ModalActivate from '../../components/searchcontact/ModalActivate';
 import Contact from '../../components/searchcontact/Contact';
 import ModalTransfer from '../../components/searchcontact/ModalTransfer';
+import AuthContext from '../../store/AuthContext';
 
-const listRequest = {
-    R0001: {
-        color: "#C73E1D",
-        icon: "account-cancel"
-    },
-    R0002: {
-        color: "#F29339",
-        icon: "account-clock"
-    },
-}
-
-// create a component
 const SearchContact = ({ navigation, route }) => {
     const [listContact, setListContact] = useState([]);
     const [listFilter, setListFilter] = useState([]);
@@ -40,6 +29,7 @@ const SearchContact = ({ navigation, route }) => {
     const [loading, setLoading] = useState(false);
     const [loadMore, setLoadMore] = useState(false);
     const [contactId, setContactId] = useState();
+    const authCtx = useContext(AuthContext)
 
     useEffect(() => {
         if (!route.params && textInputRef.current) {
@@ -65,10 +55,13 @@ const SearchContact = ({ navigation, route }) => {
     }
 
     const getContact = (data) => {
-        console.log(data)
-        setLoading(false);
-        route.params && setListContact(data.data)
-        setListFilter(data.data)
+        authCtx.checkToken()
+        if(data){
+            setLoading(false);
+            route.params && setListContact(data.data)
+            setListFilter(data.data)
+        }
+
     }
     const debounceSearch = useCallback(debounce((nextValue) => SearchApi(nextValue), 200), [])
     const handleSearch = (value) => {
@@ -95,8 +88,12 @@ const SearchContact = ({ navigation, route }) => {
     }
 
     const getMessage = (data) => {
-        setVisible(false);
-        FetchApi(`${ContactAPI.ListDeactive}`, Method.GET, ContentType.JSON, undefined, getContact)
+        authCtx.checkToken()
+        if (data) {
+            setVisible(false);
+            FetchApi(`${ContactAPI.ListDeactive}`, Method.GET, ContentType.JSON, undefined, getContact)
+        }
+
     }
 
     const checkListGroup = (item, check) => {
@@ -135,7 +132,17 @@ const SearchContact = ({ navigation, route }) => {
     }
 
     const getMessageTransfer = (data) => {
-        console.log(data)
+        authCtx.checkToken()
+        if(data){
+            if (data.message === "C0018") {
+                Alert.alert("Email không tồn tại")
+            }
+            if (data.message === "Success") {
+                setVisibleTransfer(false);
+                setListGroup([]);
+                FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
+            }
+        }
         if (data.message === "C0018") {
             Alert.alert("Email không tồn tại")
         }
@@ -183,20 +190,23 @@ const SearchContact = ({ navigation, route }) => {
     }
 
     const handleLoadMore = (e) => {
-        // console.log('load more');
         FetchApi(`${ContactAPI.ListTransferContact}?&page=${page + 1}`, Method.GET, ContentType.JSON, undefined, getContactLoadMore)
         setLoadMore(true);
     }
 
     const getContactLoadMore = (data) => {
-        if (data.data) {
-            if (data.data.length > 0) {
-                setListFilter([...listFilter, ...data.data]);
-                setContContact(listFilter.length + data.data.length);
-                setPage(page + 1);
-            } 
-        }
+        console.log(data)
         setLoadMore(false);
+        authCtx.checkToken()
+        if(data){
+            if (data.data) {
+                if (data.data.length > 0) {
+                    setListFilter([...listFilter, ...data.data]);
+                    setContContact(listFilter.length + data.data.length);
+                    setPage(page + 1);
+                } 
+            }          
+        }
     }
 
     return (
@@ -313,5 +323,4 @@ const SearchContact = ({ navigation, route }) => {
     );
 };
 
-//make this component available to the app
 export default SearchContact;
