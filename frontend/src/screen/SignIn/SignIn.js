@@ -132,9 +132,9 @@ const SignIn = ({ navigation }) => {
           type="TERTIARY"
         />
       </View>
-        {/* <View style={styles.error_text}>
+        <View style={styles.error_text}>
           <Text style={{ color: "red" }}>{errorLoginText.errorText}</Text>
-        </View> */}
+        </View>
 
         <View style={styles.button_login}>
           <CustomButtons
