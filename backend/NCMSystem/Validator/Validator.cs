@@ -4,7 +4,7 @@ namespace NCMSystem.Validator
 {
     public static class Validator
     {
-        public static bool CheckEmail(string value)
+        public static bool CheckEmailCorrect(string value)
         {
             if (!string.IsNullOrEmpty(value))
             {

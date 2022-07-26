@@ -146,7 +146,8 @@ namespace NCMSystem.Controllers
                     listMember.Add(new SearchResponse()
                     {
                         Id = a.Id,
-                        Name = a.Name
+                        Name = a.Name,
+                        Email = a.Email
                     });
                 }
             }

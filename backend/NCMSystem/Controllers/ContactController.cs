@@ -297,16 +297,23 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult GetSearch(string value = "", int? userId = 0)
         {
+            bool mem = true;
             if (userId <= 0 || userId == null)
             {
                 userId = ((JwtToken)Request.Properties["payload"]).Uid;
+                mem = false;
             }
 
             List<SearchContact> listCt = new List<SearchContact>();
 
             try
             {
-                var query = db.contacts.Where(c => c.createdBy == userId && c.isActive == true);
+                IQueryable<contact> query;
+                query = db.contacts.Where(c => c.owner_id == userId && c.createdBy == userId && c.isActive == true);
+                if (!mem)
+                {
+                    query = db.contacts.Where(c => c.createdBy == userId && c.isActive == true);
+                }
 
                 if (value == null)
                 {
@@ -689,7 +696,8 @@ namespace NCMSystem.Controllers
             var newCt = new contact();
             try
             {
-                if (Validator.Validator.CheckName(name) == false || Validator.Validator.CheckEmail(email) == false ||
+                if (Validator.Validator.CheckName(name) == false ||
+                    Validator.Validator.CheckEmailCorrect(email) == false ||
                     Validator.Validator.CheckPhoneOrFax(phone) == false ||
                     Validator.Validator.CheckEmptyvLength(company) == false ||
                     Validator.Validator.CheckInputLength(jobTitle) == false ||
@@ -956,8 +964,6 @@ namespace NCMSystem.Controllers
                 }), Encoding.UTF8, "application/json")
             });
         }
-        
-        
 
         [HttpGet]
         [Route("api/contacts/request/{id}/{idDuplicate}")]
@@ -1153,7 +1159,8 @@ namespace NCMSystem.Controllers
                 string website = request.Website;
                 string fax = request.Fax;
 
-                if (Validator.Validator.CheckName(name) == false || Validator.Validator.CheckEmail(email) == false ||
+                if (Validator.Validator.CheckName(name) == false ||
+                    Validator.Validator.CheckEmailCorrect(email) == false ||
                     Validator.Validator.CheckPhoneOrFax(phone) == false ||
                     Validator.Validator.CheckEmptyvLength(company) == false ||
                     Validator.Validator.CheckInputLength(jobTitle) == false ||

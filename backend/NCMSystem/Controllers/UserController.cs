@@ -44,23 +44,10 @@ namespace NCMSystem.Controllers
                 });
             }
 
-            var user = db.users.FirstOrDefault(x => x.email == email);
+            var user = db.users.FirstOrDefault(x => x.email == email & x.password == password);
 
             // check user exist
             if (user == null)
-            {
-                return new ResponseMessageResult(new HttpResponseMessage()
-                {
-                    StatusCode = System.Net.HttpStatusCode.BadRequest,
-                    Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
-                    {
-                        Message = "U0003",
-                    }), Encoding.UTF8, "application/json")
-                });
-            }
-
-            // check password
-            if (user.password != password)
             {
                 return new ResponseMessageResult(new HttpResponseMessage()
                 {
@@ -141,18 +128,29 @@ namespace NCMSystem.Controllers
                 });
             }
 
-            var selectToken = db.tokens.FirstOrDefault(e => compareString(e.refresh_token ,refreshToken));
+            var selectToken = db.tokens.FirstOrDefault(e => e.refresh_token == refreshToken);
+
+            // check token exist
+            if (selectToken == null)
+            {
+                return new ResponseMessageResult(new HttpResponseMessage()
+                {
+                    StatusCode = System.Net.HttpStatusCode.BadRequest,
+                    Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                    {
+                        Message = "U0005",
+                    }), Encoding.UTF8, "application/json")
+                });
+            }
+
             var selectUser = db.users.FirstOrDefault(e => e.id == selectToken.user_id);
 
             // check refresh token exist
-            if (selectToken == null || selectToken.expired_date < DateTime.Now)
+            if (selectToken.expired_date < DateTime.Now)
             {
-                if (selectToken != null)
-                {
-                    // delete refresh token
-                    db.tokens.Remove(selectToken);
-                    db.SaveChanges();
-                }
+                // delete refresh token
+                db.tokens.Remove(selectToken);
+                db.SaveChanges();
 
                 return new ResponseMessageResult(new HttpResponseMessage()
                 {
@@ -203,25 +201,28 @@ namespace NCMSystem.Controllers
             newPassword = newPassword.Trim();
             oldPassword = oldPassword.Trim();
 
+            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+            var selectUser = db.users.FirstOrDefault(e => e.id == userId);
+            if (selectUser == null)
+            {
+                return Common.ResponseMessage.BadRequest("C0018");
+            }
+
+            if (!selectUser.password.Equals(oldPassword))
+            {
+                return Common.ResponseMessage.BadRequest("U0007");
+            }
+
             // check match new password and old password
             if (newPassword == oldPassword)
             {
-                return Common.ResponseMessage.BadRequest("New password must be different from old password");
+                return Common.ResponseMessage.BadRequest("U0005");
             }
 
             // check new password regex
             if (!Regex.IsMatch(newPassword, @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}$"))
             {
-                return Common.ResponseMessage.BadRequest(
-                    "New password must be at least 8 characters, contain at least one lowercase letter, one uppercase letter, one number and one special character");
-            }
-
-            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
-            var selectUser = db.users.FirstOrDefault(e => e.id == userId);
-
-            if (!selectUser.password.Equals(oldPassword))
-            {
-                return Common.ResponseMessage.BadRequest("Old password is incorrect");
+                return Common.ResponseMessage.BadRequest("U0006");
             }
 
             selectUser.password = newPassword;
@@ -280,7 +281,7 @@ namespace NCMSystem.Controllers
             email = email.Trim();
 
             // check email regex
-            var isValidate = Validator.Validator.CheckEmail(email);
+            var isValidate = Validator.Validator.CheckEmailCorrect(email);
 
             if (!isValidate)
                 return Common.ResponseMessage.BadRequest("Email is invalid");
@@ -461,14 +462,6 @@ namespace NCMSystem.Controllers
             }, keyRefreshToken, JwsAlgorithm.HS256);
 
             return refreshToken;
-        }
-
-        private bool compareString(string str1, string str2)
-        {
-            if (str1 == null || str2 == null)
-                return false;
-
-            return str1.Equals(str2);
         }
     }
 }

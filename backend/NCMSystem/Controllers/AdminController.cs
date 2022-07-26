@@ -211,7 +211,17 @@ namespace NCMSystem.Controllers
 
             try
             {
-                db.users.Where(x => x.role_id == 2).ToList().ForEach(x =>
+                var saleDirector = db.users.FirstOrDefault(x => x.role_id == 3 && x.isActive == true);
+                if (saleDirector != null)
+                {
+                    listEmail.Add(new EmailManagerResponse()
+                    {
+                        Id = saleDirector.id,
+                        Email = saleDirector.email,
+                    });
+                }
+
+                db.users.Where(x => x.role_id == 2 && x.isActive == true).ToList().ForEach(x =>
                 {
                     listEmail.Add(new EmailManagerResponse()
                     {
@@ -470,31 +480,40 @@ namespace NCMSystem.Controllers
         {
             try
             {
-                var boss = db.users.FirstOrDefault(x => x.role_id == 3);
                 if (request == null)
                     return Common.ResponseMessage.BadRequest("A0004");
 
-                if (request.Name == null || request.Email == null || request.Manager == null)
+                if ((request.RoleId == 2 || request.RoleId == 1) &&
+                    (request.Name == null || request.Email == null || request.Manager == null))
                     return Common.ResponseMessage.BadRequest("A0004");
 
-                if (request.RoleId == 3 && boss != null)
+                if (request.RoleId == 3 && request.Manager != "")
                     return Common.ResponseMessage.Good("A0007");
 
-                if (request.Name.Trim() == "" || request.Email.Trim() == "" || request.Manager.Trim() == "")
+                if ((request.RoleId == 2 || request.RoleId == 1) && (request.Name.Trim() == "" ||
+                                                                     request.Email.Trim() == "" ||
+                                                                     request.Manager.Trim() == ""))
                     return Common.ResponseMessage.BadRequest("A0004");
 
                 if (!Validator.Validator.CheckName(request.Name.Trim()) ||
-                    !Validator.Validator.CheckEmail(request.Email.Trim()) ||
-                    !Validator.Validator.CheckEmail(request.Manager.Trim()))
+                    !Validator.Validator.CheckEmailCorrect(request.Email.Trim()) ||
+                    (!Validator.Validator.CheckEmailCorrect(request.Manager.Trim()) && request.RoleId != 3))
                     return Common.ResponseMessage.BadRequest("A0004");
 
                 var selectUserByEmail = db.users.FirstOrDefault(x => x.email == request.Email);
                 if (selectUserByEmail != null)
                     return Common.ResponseMessage.BadRequest("A0005");
 
-                var selectUserByEmailManager = db.users.FirstOrDefault(x => x.email == request.Manager);
-                if (selectUserByEmailManager == null)
-                    return Common.ResponseMessage.BadRequest("A0005");
+                if (request.RoleId != 3 && request.Manager.Trim() != "")
+                {
+                    var selectUserByEmailManager = db.users.FirstOrDefault(x => x.email == request.Manager);
+                    var selectUserByEmailManagerRq = db.import_user.FirstOrDefault(x => x.email == request.Manager);
+                    if (selectUserByEmailManager == null && selectUserByEmailManagerRq == null)
+                        return Common.ResponseMessage.BadRequest("A0005");
+                    if (selectUserByEmailManagerRq != null && request.Manager == selectUserByEmailManagerRq.email &&
+                        selectUserByEmailManagerRq.role_id == 1)
+                        return Common.ResponseMessage.BadRequest("A0010");
+                }
 
                 var selectUserImported = db.import_user.FirstOrDefault(x => x.id == id);
                 if (selectUserImported == null)
@@ -504,6 +523,8 @@ namespace NCMSystem.Controllers
                 selectUserImported.email = request.Email;
                 selectUserImported.role_id = request.RoleId;
                 selectUserImported.manager = request.Manager;
+                if (request.RoleId == 3)
+                    selectUserImported.manager = null;
 
                 db.SaveChanges();
             }
@@ -522,7 +543,7 @@ namespace NCMSystem.Controllers
                 }), Encoding.UTF8, "application/json")
             });
         }
-        
+
         [HttpPatch]
         [Route("api/admin/transfer")]
         public ResponseMessageResult TransferContactFromDaUser([FromBody] TransferContact tranCt)
@@ -535,6 +556,7 @@ namespace NCMSystem.Controllers
                     return Common.ResponseMessage.BadRequest("C0018");
                 }
             }
+
             string email = tranCt.TransferTo ?? "";
 
             var user = db.users.FirstOrDefault(u => u.email == email);
@@ -627,6 +649,11 @@ namespace NCMSystem.Controllers
 
                 if (selectUserImported.role_id > 3)
                     return Common.ResponseMessage.BadRequest("A0009");
+                
+                var selectUserByEmailManagerRq = db.import_user.FirstOrDefault(x => x.email == selectUserImported.manager);
+                if (selectUserByEmailManagerRq != null && selectUserImported.manager == selectUserByEmailManagerRq.email &&
+                    selectUserByEmailManagerRq.role_id == 1)
+                    return Common.ResponseMessage.BadRequest("A0010");
 
                 db.users.Add(new user()
                 {
@@ -637,7 +664,7 @@ namespace NCMSystem.Controllers
                     isActive = true,
                     manager_id = selectUserManager?.id
                 });
-                
+
                 selectUserImported.status = 2;
                 db.SaveChanges();
             }
