@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Alert } from "react-native";
 import React, { useState, useContext } from "react";
 import AuthContext from "../../store/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -27,8 +27,8 @@ const SignIn = ({ navigation }) => {
     // password: "trung123@",
     // email: "conganhnguyen33@gmail.com",
     // password: "Trung123@"
-    email: "person2@gmail.com",
-    password: "Trung123@",
+    email: "luongquoccuong2103@gmail.com",
+    password: "Trung1234@",
   });
   const [errorLoginText, setErrorLoginText] = useState({
     errorText: "",
@@ -59,27 +59,23 @@ const SignIn = ({ navigation }) => {
 
   const getMessage = (data) => {
     setLoading(false);
-    if (user.email == "" || user.password == "") {
-      setErrorLoginText({
-        errorText: t("Screen_Login_Text_Error_Empty"),
-        errorKey: "Screen_Login_Text_Error_Empty",
-      });
+    if (data.message == "Internet Error") {
+      Alert.alert("", "Internet Error")
+    }
+    else if (user.email == "" || user.password == "") {
+      Alert.alert(t("Screen_Login_Text_Error_Empty"))
       return;
     }
     data.message === "U0001" &&
       authCtx.onLogin(data.data.access_token, data.data.refresh_token) &&
       setErrorLoginText({ errorText: "U0001", errorKey: "U0001" });
     data.message === "U0003" &&
-      setErrorLoginText({
-        errorText: t("Screen_Login_Text_Error_U0003"),
-        errorKey: "Screen_Login_Text_Error_U0003",
-      });
-   
+
+      Alert.alert(t("Screen_Login_Text_Error_U0003"))
     data.message === "U0002" &&
-      setErrorLoginText({
-        errorText: t("Screen_Login_Text_Error_U0002"),
-        errorKey: "Screen_Login_Text_Error_U0002",
-      });
+
+      Alert.alert(errorLoginText.errorText)
+
   };
 
   const handleChange = (name) => {
@@ -125,16 +121,12 @@ const SignIn = ({ navigation }) => {
             onpress={onVisibilityPasswordPressed}
           />
         </View>
-        <View style={styles.button_forgotPassword}>
+        
         <CustomButtons
           text={t("Screen_Login_Button_ForgotPassword")}
           onPress={onForgotPasswordPressed}
           type="TERTIARY"
         />
-      </View>
-        <View style={styles.error_text}>
-          <Text style={{ color: "red" }}>{errorLoginText.errorText}</Text>
-        </View>
 
         <View style={styles.button_login}>
           <CustomButtons

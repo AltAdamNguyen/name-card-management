@@ -8,7 +8,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: 'white',
         height: '100%',
-        width: '100%',
+        width: '100%'
     },
     header: {
         backgroundColor: 'white'
@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
         maxWidth: 300,
         alignItems: "center",
         paddingHorizontal: "50%",
-        marginBottom: 25
+        
       },
     
       text_PRIMARY: {

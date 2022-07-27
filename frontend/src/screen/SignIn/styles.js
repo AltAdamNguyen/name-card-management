@@ -41,7 +41,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     button_forgotPassword:{
-        width:'100%'
+        width:'100%',
+        
     }
 })
 

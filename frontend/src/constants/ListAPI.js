@@ -17,6 +17,13 @@ export const AuthAPI = {
     RefeshToken: '/api/auth/refresh-token',
 }
 
+export const UserAPI = {
+    ChangePassword: '/api/auth/change-password',
+    ForgetPasswordEmail: '/api/auth/forgot-password/send-email',
+    ForgetPasswordCode : '/api/auth/forgot-password/check-code',
+    SubmitPasswordForgot: '/api/auth/forgot-password/submit'
+}
+
 export const ContactAPI = {
     Scan: "/api/scan",
     AddContact: "/api/contacts",
