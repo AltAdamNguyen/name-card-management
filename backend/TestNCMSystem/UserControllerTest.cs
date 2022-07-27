@@ -135,7 +135,8 @@ namespace TestNCMSystem
             //act
             var cc = controller.PostRefreshToken(new RefreshTokenRequest()
             {
-                RefreshToken = ""
+                RefreshToken =
+                    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjMsImlhdCI6MTY1ODQxMzkzNCwiZXhwIjoxNjYxMDkyMzM0fQ.ztwplji1yReNVOJ1g4T1bvQhZUUjiekXD9_iHZNpR0Y"
             });
 
             //assert

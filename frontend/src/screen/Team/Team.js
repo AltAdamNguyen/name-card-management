@@ -35,8 +35,11 @@ const Team = ({ navigation }) => {
     }, [isFocused]);
 
     const getTeam = (data) => {
-        setTeam(data.data);
-        setSearchTeam(data.data)
+        authCtx.checkToken()
+        if(data){
+            setTeam(data.data);
+            setSearchTeam(data.data)
+        }
         setLoading(false)
     }
 
@@ -56,17 +59,23 @@ const Team = ({ navigation }) => {
     }
 
     const getMember = (data) => {
-        setSearchTeam(data.data)
+        authCtx.checkToken()
+        if (data) {
+            setSearchTeam(data.data)
+        }
     }
 
     const debounceSearch = useCallback(debounce((nextValue) => SearchApi(nextValue), 500), [])
 
     const handleSearch = (value) => {
         if (value === "") {
+            console.log(team)
             setSearchTeam(team)
         }
+        if(value !== ""){
+            debounceSearch(value);
+        }
         setText(value);
-        debounceSearch(value);
     }
 
     const handleExport = () => {
@@ -78,9 +87,11 @@ const Team = ({ navigation }) => {
     }
 
     const exportSuccess = (data) => {
-        console.log(data)
-        setLoading(false)
-        Alert.alert('Thông báo', 'Xuất file thành công\nVui lòng check email của bạn', [{ text: 'OK' }])
+        authCtx.checkToken()
+        if(data){
+            setLoading(false)
+            Alert.alert('Thông báo', 'Xuất file thành công\nVui lòng check email của bạn', [{ text: 'OK' }])
+        }
     }
 
     return (

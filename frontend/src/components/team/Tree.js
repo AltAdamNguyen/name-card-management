@@ -5,7 +5,6 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 
 const Tree = ({ item, expand = false, navigation, checked = false, child = false, checklistExport, listExport = [], handleChecked }) => {
-  console.log(item);
   const [expanded, setExpanded] = useState(expand);
   const [checkedItem, setCheckedItem] = useState(listExport.includes(item.id) ? true : false);
   useEffect(() => {

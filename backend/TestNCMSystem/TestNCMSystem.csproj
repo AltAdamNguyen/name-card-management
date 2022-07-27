@@ -65,7 +65,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContactControllerTest.cs" />
     <Compile Include="GroupContactControllerTest.cs" />
+    <Compile Include="Token.cs" />
     <Compile Include="UserControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

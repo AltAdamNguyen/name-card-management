@@ -9,6 +9,7 @@ const AuthContext = React.createContext({
     userId: 0,
     onLogin: () => {},
     onLogout: () => {},
+    checkToken: () => {},
 });
 
 export const AuthProvider = ({ children }) => {
@@ -17,22 +18,46 @@ export const AuthProvider = ({ children }) => {
     const [role, setrole] = useState(0)
     const [userId, setUserId] = useState(0)
 
+    const getToken = async () => {
+        const refresh_token = await SecureStore.getItemAsync('refresh_token');
+        const access_token = await SecureStore.getItemAsync('access_token');
+        if(refresh_token && access_token){
+            const decoded = jwt_decode(access_token);
+            if(decoded.role !== 4) {
+                setIsLogin(true);
+                setrole(decoded.role);
+                setUserId(decoded.userId);
+            }
+        }
+        if(!refresh_token || !access_token){
+            setIsLogin(false);
+            setrole(0);
+            setUserId(0);
+        }
+    }
+
+    useEffect(() => {
+        getToken();
+    }, [])
+
     const handleLogin = async(accessToken, refreshToken) => {
+        console.log(accessToken, refreshToken)
         let decoded = jwt_decode(accessToken);
         if(decoded.role !== 4){
+            await SecureStore.setItemAsync('access_token',accessToken)
+            await SecureStore.setItemAsync('refresh_token',refreshToken)
             setrole(decoded.role)
             setUserId(decoded.uid)
             setIsLogin(true);
-            await SecureStore.setItemAsync('access_token',accessToken)
-            SecureStore.setItemAsync('refresh_token',refreshToken)
-        }
-        
+        }       
     }
 
     const handleLogout = async() => {
-        setIsLogin(false);  
-        SecureStore.deleteItemAsync('access_token')
-        SecureStore.deleteItemAsync('refresh_token')
+        setIsLogin(false); 
+        setrole(0);
+        setUserId(0);
+        await SecureStore.deleteItemAsync('access_token')
+        await SecureStore.deleteItemAsync('refresh_token')
     }
 
     const handleLocale = (language) => {      
@@ -47,6 +72,7 @@ export const AuthProvider = ({ children }) => {
             userId: userId,
             onLogin: handleLogin,
             onLogout: handleLogout,
+            checkToken: getToken,
             language: handleLocale}}>
             {children}
         </AuthContext.Provider>
