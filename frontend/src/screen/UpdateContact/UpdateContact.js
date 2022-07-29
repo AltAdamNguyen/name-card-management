@@ -16,13 +16,8 @@ import { useTranslation } from "react-i18next";
 import ModalContact from '../../components/addcontact/ModelContact';
 import LoadingDialog from '../../components/customDialog/dialog/loadingDialog/LoadingDialog';
 import AuthContext from '../../store/AuthContext';
-
-const contextDuplicate = {
-    title: "Thông báo",
-    message: "Liên hệ đã tồn tại bạn có muốn chỉnh sửa",
-    cancel: "Không",
-    submit: "Sửa",
-}
+import { FormInput } from '../../components/updatecontact/ContextUpdateContact';
+import { DuplicateInfoModel, DuplicateModel } from '../../components/addcontact/ContextAddContact';
 
 const UpdateContact = ({ route, navigation }) => {
     const authCtx = useContext(AuthContext)
@@ -66,69 +61,7 @@ const UpdateContact = ({ route, navigation }) => {
         owner: "",
     });
 
-    const contextDuplicateOther = {
-        title: "Thông báo",
-        message: `Bản ghi đã tồn tại và có owner là ${duplicateInfo.owner}, bản ghi này sẽ vẫn được lưu lại nhưng bạn không phải owner. Bạn có muốn yêu cầu được cấp quyền owner cho contact này không?`,
-        cancel: "Không",
-        submit: "Đồng ý",
-    }
-
-    const formInput = [
-        {
-            name: 'name',
-            title: t("Screen_UpdateContact_Input_Title_FullName"),
-            placeholder: t("Screen_UpdateContact_Input_PlaceHolder_FullName"),
-            icon: 'account',
-        },
-        {
-            name: 'job_title',
-            title: t("Screen_UpdateContact_Input_Title_JobTitle"),
-            placeholder: t("Screen_UpdateContact_Input_PlaceHolder_JobTitle"),
-            icon: "briefcase"
-        },
-        {
-            name: 'company',
-            title: t("Screen_UpdateContact_Input_Title_Company"),
-            placeholder: t("Screen_UpdateContact_Input_PlaceHolder_Company"),
-            icon: "office-building"
-        },
-        {
-            name: 'phone',
-            title: t("Screen_UpdateContact_Input_Title_PhoneNumber"),
-            placeholder: t("Screen_UpdateContact_Input_PlaceHolder_PhoneNumber"),
-            icon: "cellphone"
-        },
-        {
-            name: 'email',
-            title: t("Screen_UpdateContact_Input_Title_Email"),
-            placeholder: t("Screen_UpdateContact_Input_PlaceHolder_Email"),
-            icon: "email"
-        },
-        {
-            name: 'fax',
-            title: t("Screen_UpdateContact_Input_Title_Fax"),
-            placeholder: t("Screen_UpdateContact_Input_PlaceHolder_Fax"),
-            icon: "fax"
-        },
-        {
-            name: 'address',
-            title: t("Screen_UpdateContact_Input_Title_Address"),
-            placeholder: t("Screen_UpdateContact_Input_PlaceHolder_Address"),
-            icon: "map-marker"
-        },
-        {
-            name: 'note',
-            title: t("Screen_UpdateContact_Input_Title_Note"),
-            placeholder: t("Screen_UpdateContact_Input_PlaceHolder_Note"),
-            icon: "text-box"
-        },
-        {
-            name: 'website',
-            title: t("Screen_UpdateContact_Input_Title_Website"),
-            placeholder: t("Screen_UpdateContact_Input_PlaceHolder_Website"),
-            icon: "web"
-        }
-    ]
+    const formInput = FormInput()
 
     const getContact = (data) => {
         authCtx.checkToken()
@@ -150,8 +83,8 @@ const UpdateContact = ({ route, navigation }) => {
 
     const getMessage = (data) => {
         authCtx.checkToken()
+        setIsLoading(false)
         if (data) {
-            setIsLoading(false)
             if (data.message === "C0009") {
                 navigation.dispatch(StackActions.popToTop());
                 route.params && route.params.contact && navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: data.data.id, showFooter: true } })
@@ -173,7 +106,7 @@ const UpdateContact = ({ route, navigation }) => {
                 })
             }
             if (data.message === "D0005") {
-                Alert.alert('Thông báo', 'Email đã tồn tại', [{ text: 'OK' }])
+                Alert.alert(t("Screen_UpdateContact_Alert_Title"), t("Screen_UpdateContact_Alert_Message"), [{ text: 'OK' }])
             }
         }
     }
@@ -215,8 +148,8 @@ const UpdateContact = ({ route, navigation }) => {
     return (
         <Provider style={styles.container}>
             <LoadingDialog onVisible={isLoading} />
-            <ModalContact visible={duplicate} onPress={handleDuplicate} onPressVisable={() => setDuplicate(false)} context={contextDuplicate} onCancel={() => setDuplicate(false)} />
-            <ModalContact visible={duplicateOther} onPress={handleDuplicateOther} onPressVisable={() => setDuplicateOther(false)} context={contextDuplicateOther} onCancel={handleOnCancel} />
+            <ModalContact visible={duplicate} onPress={handleDuplicate} onPressVisable={() => setDuplicate(false)} context={DuplicateModel()} onCancel={() => setDuplicate(false)} />
+            <ModalContact visible={duplicateOther} onPress={handleDuplicateOther} onPressVisable={() => setDuplicateOther(false)} context={DuplicateInfoModel(duplicateInfo.owner)} onCancel={handleOnCancel} />
             <View style={{ alignItems: 'center' }}>
                 <ShimmerPlaceholder visible={loading} width={windowWidth * 0.9} height={windowHeight * 0.3} shimmerStyle={{ borderRadius: 10, marginBottom: 10, }}>
                     <View style={styles.imgContact}>
@@ -280,8 +213,8 @@ const UpdateContact = ({ route, navigation }) => {
                                 <View style={{ marginBottom: 15 }} />
                             </KeyboardAwareScrollView>
                             <View style={styles.footer}>
-                                <Button onPress={() => navigation.goBack()} style={styles.footer_button_label} color="#1890FF">Thoát</Button>
-                                <Button style={styles.footer_button_label} color="#1890FF" onPress={handleSubmit}>Lưu</Button>
+                                <Button onPress={() => navigation.goBack()} style={styles.footer_button_label} color="#1890FF">{t("Screen_UpdateContact_BottomSheet_Text_Cancel")}</Button>
+                                <Button style={styles.footer_button_label} color="#1890FF" onPress={handleSubmit}>{t("Screen_UpdateContact_BottomSheet_Text_Update")}</Button>
                             </View>
                         </View>
 

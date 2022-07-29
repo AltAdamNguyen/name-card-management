@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { SafeAreaView, StatusBar, LogBox, Appearance, Platform } from 'react-native';
 import Route from './src/navigation/Router';
-import { ChangePassword } from './src/screen';
 import { AuthProvider } from './src/store/AuthContext';
 
 const App = () => {

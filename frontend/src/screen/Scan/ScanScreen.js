@@ -1,18 +1,16 @@
-//import liraries
 import { Text, View, SafeAreaView, Image, useWindowDimensions, Alert } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import { Camera, FlashMode } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { ActivityIndicator, Button, Card, IconButton, Paragraph, Title } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { isEmpty } from 'lodash';
 import { useIsFocused } from '@react-navigation/native';
 import iconPath from '../../constants/iconPath';
 import { parseCard } from '../../validate/ParseVcard';
 import styles from './styles';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import { t } from 'i18next';
 
-// create a component
 const ScanScreen = ({ navigation }) => {
   const isFocused = useIsFocused();
 
@@ -35,7 +33,7 @@ const ScanScreen = ({ navigation }) => {
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Card elevation={2} style={{ width: '80%', padding: 20 }}>
           <ActivityIndicator size="large" color="#1980FF" />
-          <Text style={{ textAlign: 'center', fontSize: 16 }}>Requesting permissions</Text>
+          <Text style={{ textAlign: 'center', fontSize: 16 }}>{t("Screen_Scan_Alert_Permission")}</Text>
         </Card>
       </View>
     )
@@ -44,12 +42,12 @@ const ScanScreen = ({ navigation }) => {
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <Card elevation={2} style={{ width: '80%', padding: 20 }}>
           <Card.Content>
-            <Title>Thông báo</Title>
-            <Paragraph>Máy ảnh chưa được cấp phép. {"\n"}Vui lòng thay đổi ở trong cài đặt</Paragraph>
+            <Title>{t("Screen_Scan_Alert_Erorr")}</Title>
+            <Paragraph>{t("Screen_Scan_Alert_Erorr_Message_Camera")}</Paragraph>
           </Card.Content>
           <Card.Actions>
-            <Button>Cancel</Button>
-            <Button>Ok</Button>
+            <Button onPress={() => navigation.goBack()}>{t("Screen_Scan_Alert_Button_Cancel")}</Button>
+            <Button>{t("Screen_Scan_Alert_Button_Ok")}</Button>
           </Card.Actions>
         </Card>
       </View>
@@ -168,5 +166,4 @@ const ScanScreen = ({ navigation }) => {
 };
 
 
-//make this component available to the app
 export default ScanScreen;

@@ -46,13 +46,16 @@ const RefeshToken = async (refresh_token) => {
 }
 
 export const FetchApi = async (url, method, contentType, param, callback) => {
+    console.log(url)
     let refresh_token = await SecureStore.getItemAsync('refresh_token');
+    let access_token = await SecureStore.getItemAsync('access_token');
+    console.log(access_token)
     fetch(`${BaseUrl}${url}`,
         {
             method: method,
             headers: {
                 'Content-Type': contentType,
-                'Authorization': 'Bearer ' + await SecureStore.getItemAsync('access_token'),
+                'Authorization': 'Bearer ' + access_token,
             },
             body: JSON.stringify(param),
         })
@@ -68,10 +71,11 @@ export const FetchApi = async (url, method, contentType, param, callback) => {
                                     'Authorization': 'Bearer ' + data.data.access_token,
                                 },
                                 body: JSON.stringify(param),
-                            }).then((response) => {
+                            }).then((response) => {                           
                                 if (response.status === 200) {
                                     return response.json()
                                         .then((data) => {
+                                            console.log(data)
                                             callback(data)
                                         })
                                 }
@@ -89,6 +93,7 @@ export const FetchApi = async (url, method, contentType, param, callback) => {
             if (response.status === 200) {
                 return response.json()
                     .then((data) => {
+                        console.log(data)
                         callback(data)
                     })
             }

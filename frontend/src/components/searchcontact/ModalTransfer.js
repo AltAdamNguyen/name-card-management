@@ -11,7 +11,6 @@ import TransferSchema from '../../validate/ValidateFormTransfer';
 // create a component
 const ModalTransfer = ({ visible, onPressVisable, onPressSubmit }) => {
     const { t, i18n } = useTranslation();
-    const authCtx = useContext(AuthContext)
     return (
         <Modal
             animationType="fade"
@@ -24,8 +23,8 @@ const ModalTransfer = ({ visible, onPressVisable, onPressSubmit }) => {
             <TouchableOpacity style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} onPress={onPressVisable}>
                 <TouchableWithoutFeedback>
                     <Card elevation={3} style={styles.info_status_modalView}>
-                        <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>Chuyển tới</Text>
-                        <Text>Chuyển đổi người sở hữu liên lạc sẽ làm bạn mất quyền truy cập liên lạc đó</Text>
+                        <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>{t("ModalTransfer_Title")}</Text>
+                        <Text>{t("ModalTransfer_Message_Transfer")}</Text>
                         <Formik
                             initialValues={{email: ''}}
                             onSubmit={onPressSubmit}
@@ -36,8 +35,8 @@ const ModalTransfer = ({ visible, onPressVisable, onPressSubmit }) => {
                                     <View style={{ width: '100%' }}>
                                         <TextInput
                                             mode="outlined"
-                                            label='Người nhận'
-                                            placeholder='Nhập email người nhận'
+                                            label={t("ModalTransfer_Input_Title_Receiver")}
+                                            placeholder={t("ModalTransfer_Input_Placeholder_Receiver")}
                                             value={values.email}
                                             onChangeText={handleChange('email')}
                                             onBlur={handleBlur('email')}

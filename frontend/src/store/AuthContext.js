@@ -10,6 +10,7 @@ const AuthContext = React.createContext({
     onLogin: () => {},
     onLogout: () => {},
     checkToken: () => {},
+    language: () => {},
 });
 
 export const AuthProvider = ({ children }) => {
@@ -41,7 +42,6 @@ export const AuthProvider = ({ children }) => {
     }, [])
 
     const handleLogin = async(accessToken, refreshToken) => {
-        console.log(accessToken, refreshToken)
         let decoded = jwt_decode(accessToken);
         if(decoded.role !== 4){
             await SecureStore.setItemAsync('access_token',accessToken)

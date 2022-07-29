@@ -15,72 +15,12 @@ import ModalContact from "../../components/addcontact/ModelContact";
 import TextInputItem from "../../components/addcontact/TextInputItem";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import AuthContext from "../../store/AuthContext";
-// create a component
+import { DuplicateInfoModel, DuplicateModel, FormInput } from "../../components/addcontact/ContextAddContact";
+import { useTranslation } from "react-i18next";
 
-const formInput = [
-  {
-    name: "name",
-    title: "Họ và tên",
-    placeholder: "Nhập họ và tên",
-    icon: 'account',
-  },
-  {
-    name: "job_title",
-    title: "Chức vụ",
-    placeholder: "Nhập chức vụ",
-    icon: "briefcase"
-  },
-  {
-    name: "company",
-    title: "Công ty",
-    placeholder: "Nhập công ty",
-    icon: "office-building"
-  },
-  {
-    name: "phone",
-    title: "Số điện thoại",
-    placeholder: "Nhập số điện thoại",
-    icon: "cellphone"
-  },
-  {
-    name: "email",
-    title: "Email",
-    placeholder: "Nhập email",
-    icon: "email"
-  },
-  {
-    name: "fax",
-    title: "Fax",
-    placeholder: "Nhập fax",
-    icon: "fax"
-  },
-  {
-    name: "address",
-    title: "Địa chỉ",
-    placeholder: "Nhập địa chỉ",
-    icon: "map-marker"
-  },
-  {
-    name: 'note',
-    title: 'Ghi chú',
-    placeholder: 'Nhập ghi chú',
-    icon: "text-box"
-  },
-  {
-    name: "website",
-    title: "Website",
-    placeholder: "Nhập website",
-    icon: "web"
-  },
-];
-const contextDuplicate = {
-  title: "Thông báo",
-  message: "Liên hệ đã tồn tại bạn có muốn chỉnh sửa",
-  cancel: "Không",
-  submit: "Chỉnh sửa",
-}
 
 const AddContact = ({ contact, loading, navigation }) => {
+  const { t, i18n } = useTranslation()
   const authCtx = useContext(AuthContext)
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
@@ -122,13 +62,6 @@ const AddContact = ({ contact, loading, navigation }) => {
     id_duplicate: "",
     owner: "",
   });
-
-  const contextDuplicateOther = {
-    title: "Thông báo",
-    message: `Bản ghi đã tồn tại và có owner là ${duplicateInfo.owner}, bản ghi này sẽ vẫn được lưu lại nhưng bạn không phải owner. Bạn có muốn yêu cầu được cấp quyền owner cho contact này không?`,
-    cancel: "Không",
-    submit: "Đồng ý",
-  }
 
   const handelerModal = (item, name) => {
     if (formRef.current) {
@@ -188,8 +121,8 @@ const AddContact = ({ contact, loading, navigation }) => {
 
   return (
     <Provider style={styles.container}>
-      <ModalContact visible={duplicate} onPress={handleDuplicate} onPressVisable={() => setDuplicate(false)} context={contextDuplicate} onCancel={() => setDuplicate(false)} />
-      <ModalContact visible={duplicateOther} onPress={handleDuplicateOther} onPressVisable={() => setDuplicateOther(false)} context={contextDuplicateOther} onCancel={handleOnCancel} />
+      <ModalContact visible={duplicate} onPress={handleDuplicate} onPressVisable={() => setDuplicate(false)} context={DuplicateModel()} onCancel={() => setDuplicate(false)} />
+      <ModalContact visible={duplicateOther} onPress={handleDuplicateOther} onPressVisable={() => setDuplicateOther(false)} context={DuplicateInfoModel(duplicateInfo.owner)} onCancel={handleOnCancel} />
       <View style={{ alignItems: "center" }}>
         <ShimmerPlaceholder visible={loading} width={windowWidth * 0.9} height={windowHeight * 0.3} shimmerStyle={{ borderRadius: 10, marginBottom: 10, }}>
           <View style={styles.imgContact}>
@@ -207,7 +140,7 @@ const AddContact = ({ contact, loading, navigation }) => {
           return (
             <View style={styles.formInput}>
               <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }} >
-                {formInput.map((item, index) => {
+                {FormInput().map((item, index) => {
                   return (
                     <View key={index} style={styles.formInput_component}>
                       <ShimmerPlaceholder
@@ -234,8 +167,8 @@ const AddContact = ({ contact, loading, navigation }) => {
                 <View style={{ marginBottom: 15 }} />
               </KeyboardAwareScrollView>
               <View style={styles.footer}>
-                <Button onPress={() => navigation.goBack()} style={styles.footer_button_label} color="#1890FF">Thoát</Button>
-                <Button style={styles.footer_button_label} color="#1890FF" onPress={handleSubmit}>Lưu</Button>
+                <Button onPress={() => navigation.goBack()} style={styles.footer_button_label} color="#1890FF">{t("Screen_AddContact_FormInput_Button_Cancel")}</Button>
+                <Button style={styles.footer_button_label} color="#1890FF" onPress={handleSubmit}>{t("Screen_AddContact_FormInput_Button_Add")}</Button>
               </View>
             </View>
           );
@@ -245,5 +178,4 @@ const AddContact = ({ contact, loading, navigation }) => {
   );
 };
 
-//make this component available to the app
 export default AddContact;

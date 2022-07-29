@@ -14,6 +14,7 @@ import ModalActivate from '../../components/searchcontact/ModalActivate';
 import Contact from '../../components/searchcontact/Contact';
 import ModalTransfer from '../../components/searchcontact/ModalTransfer';
 import AuthContext from '../../store/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 const SearchContact = ({ navigation, route }) => {
     const [listContact, setListContact] = useState([]);
@@ -30,6 +31,7 @@ const SearchContact = ({ navigation, route }) => {
     const [loadMore, setLoadMore] = useState(false);
     const [contactId, setContactId] = useState();
     const authCtx = useContext(AuthContext)
+    const { t, i18n } = useTranslation()
 
     useEffect(() => {
         if (!route.params && textInputRef.current) {
@@ -49,14 +51,14 @@ const SearchContact = ({ navigation, route }) => {
     }, []);
 
     const SearchApi = (value) => {
-        route.params && route.params.useid && FetchApi(`${ContactAPI.SearchContact}?value=${value}&userId=${route.params.useid}`, Method.GET, ContentType.JSON, undefined, getContact)
+        route.params && route.params.useid && FetchApi(`${ContactAPI.SearchContact}?userId=${route.params.useid}`, Method.GET, ContentType.JSON, undefined, getContact)
         !route.params && FetchApi(`${ContactAPI.SearchContact}?value=${value}`, Method.GET, ContentType.JSON, undefined, getContact)
         route.params && route.params.transfer && FetchApi(`${ContactAPI.SearchContactTransfer}?value=${value}`, Method.GET, ContentType.JSON, undefined, getContact)
     }
 
     const getContact = (data) => {
         authCtx.checkToken()
-        if(data){
+        if (data) {
             setLoading(false);
             route.params && setListContact(data.data)
             setListFilter(data.data)
@@ -133,9 +135,9 @@ const SearchContact = ({ navigation, route }) => {
 
     const getMessageTransfer = (data) => {
         authCtx.checkToken()
-        if(data){
+        if (data) {
             if (data.message === "C0018") {
-                Alert.alert("Email không tồn tại")
+                Alert.alert(t("Screen_SearchContact_Alert_Error"),t("Screen_SearchContact_Alert_EmailNotFound"))
             }
             if (data.message === "Success") {
                 setVisibleTransfer(false);
@@ -144,7 +146,7 @@ const SearchContact = ({ navigation, route }) => {
             }
         }
         if (data.message === "C0018") {
-            Alert.alert("Email không tồn tại")
+            Alert.alert(t("Screen_SearchContact_Alert_Error"),t("Screen_SearchContact_Alert_EmailNotFound"))
         }
         if (data.message === "Success") {
             setVisibleTransfer(false);
@@ -167,45 +169,55 @@ const SearchContact = ({ navigation, route }) => {
         navigation.goBack()
     }
 
-    const CardContact = ({item}) => {
+    const CardContact = ({ item }) => {
         return (
-            <Contact item={item} route={route} handleViewContact={handleViewContact} checkListGroup={checkListGroup} handleReActivateButton={handleReActivateButton} listGroup={listGroup} visibleCheckBox={visibleCheckBox} />
+            <Contact
+                item={item}
+                route={route}
+                handleViewContact={handleViewContact}
+                checkListGroup={checkListGroup}
+                handleReActivateButton={handleReActivateButton}
+                listGroup={listGroup}
+                visibleCheckBox={visibleCheckBox}
+            />
         )
     }
 
     const EmptyList = () => {
         return (
             <View >
-                <Text style={styles.listContainer_label}>Không có danh thiếp</Text>
+                <Text style={styles.listContainer_label}>{t("Screen_SearchContact_Text_NoContactFound")}</Text>
             </View>
         )
     }
 
     const FooterList = () => {
         return (
-            loadMore ? <View>
-                <ActivityIndicator color="#1890FF" size="large" />
-            </View>: null
+            <View>
+                <ActivityIndicator color="#1890FF" size="small" />
+            </View>
         )
     }
 
     const handleLoadMore = (e) => {
-        FetchApi(`${ContactAPI.ListTransferContact}?&page=${page + 1}`, Method.GET, ContentType.JSON, undefined, getContactLoadMore)
-        setLoadMore(true);
+        if(route.params && route.params.transfer){
+            FetchApi(`${ContactAPI.ListTransferContact}?&page=${page}`, Method.GET, ContentType.JSON, undefined, getContactLoadMore)
+        }
+        if(route.params && route.params.useid){
+            FetchApi(`${TeamAPI.ViewContactMember}/${route.params.useid}/contacts?page=${page}`, Method.GET, ContentType.JSON, undefined, getContactLoadMore)
+        }
+        
     }
 
     const getContactLoadMore = (data) => {
-        console.log(data)
-        setLoadMore(false);
         authCtx.checkToken()
-        if(data){
+        if (data) {
             if (data.data) {
                 if (data.data.length > 0) {
                     setListFilter([...listFilter, ...data.data]);
-                    setContContact(listFilter.length + data.data.length);
                     setPage(page + 1);
-                } 
-            }          
+                }
+            }
         }
     }
 
@@ -222,7 +234,8 @@ const SearchContact = ({ navigation, route }) => {
                             onPress={() => setVisibleCheckBox(!visibleCheckBox)}
                             uppercase={false}
                             color="#1980FF"
-                        >Thêm
+                        >
+                            {t("Screen_SearchContact_Button_AddGroup")}
                         </Button>
                     </View>
                 }
@@ -237,7 +250,7 @@ const SearchContact = ({ navigation, route }) => {
                             uppercase={false}
                             color="#1980FF"
                         >
-                            Select All
+                            {t("Screen_SearchContact_Button_SelectAll")}
                         </Button>
                     </View>
                 }
@@ -258,13 +271,13 @@ const SearchContact = ({ navigation, route }) => {
                 </View>
                 {visibleCheckBox && route.params && Boolean(route.params.useid) &&
                     <View style={styles.header_title}>
-                        <Text>Đã chọn ({listGroup.length})</Text>
+                        <Text>{t("Screen_SearchContact_Button_Selected")} ({listGroup.length})</Text>
                         <Button
                             onPress={handleSelectAll}
                             uppercase={false}
                             color="#1980FF"
                         >
-                            Select All
+                            {t("Screen_SearchContact_Text_SelectAll")}
                         </Button>
                     </View>
                 }
@@ -306,7 +319,7 @@ const SearchContact = ({ navigation, route }) => {
                     mode="contained"
                     onPress={() => setVisibleTransfer(true)}
                 >
-                    Chuyển
+                    {t("Screen_SearchContact_Button_Transfer")}
                 </Button>}
 
                 {visibleCheckBox && route.params && route.params.useid && <Button
@@ -314,7 +327,7 @@ const SearchContact = ({ navigation, route }) => {
                     mode="contained"
                     onPress={handleAddContactsToGroups}
                 >
-                    Thêm vào nhóm
+                    {t("Screen_SearchContact_Button_AddToGroup")}
                 </Button>}
                 <ModalActivate visible={visible} onPressVisable={() => setVisible(false)} onPressSubmit={handleReactivate} />
                 <ModalTransfer visible={visibleTransfer} onPressVisable={() => setVisibleTransfer(false)} onPressSubmit={handleTransfer} />
