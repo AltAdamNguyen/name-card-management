@@ -17,73 +17,60 @@ import i18next from "../../language/i18n";
 import AuthContext from "../../store/AuthContext";
 import { useTranslation } from "react-i18next";
 import { Searchbar, Appbar, Provider, Button } from "react-native-paper";
-import { FetchApi } from "../../service/api/FetchAPI";
 import { UserAPI, ContentType, Method } from "../../constants/ListAPI";
 import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
+import { FetchApi } from "../../service/api/FetchAPI";
 
-const ForgotPassword = ({ navigation }) => {
-  const [user, setUser] = useState({
-    email: "",
-  });
-  const [isLoading, setIsLoading] = useState(false);
+const ResetPasswordCode = ({ navigation, route }) => {
+  const [code, setCode] = useState("");
   const { height } = useWindowDimensions();
   const { t, i18n } = useTranslation();
+  const { email } = route.params;
+  const [isLoading, setIsLoading] = useState(false)
 
-  const onClearEmailPressed = () => {
-    setUser({
-      ...user,
-      email: "",
-    });
+  const onClearCodePressed = () => {
+    setCode("");
   };
 
   const handleChange = (name) => {
     return (text) => {
-      setUser({
-        ...user,
-        [name]: text,
-      });
+      setCode(text);
     };
   };
 
   const onForgotPasswordPressed = () => {
-    setIsLoading(true);
     FetchApi(
-      UserAPI.ForgetPasswordEmail,
+      UserAPI.ForgetPasswordCode,
       Method.POST,
       ContentType.JSON,
       {
-        email: user.email,
+        email: email,
+        code: code,
       },
-      ForgotPasswordAPICallback
+      InputPasswordCodeAPICallback
     );
   };
 
-  const ForgotPasswordAPICallback = (data) => {
+  const InputPasswordCodeAPICallback = (data) => {
     if (data.message == "Internet Error") {
-      Alert.alert("","Internet Error")
+      Alert.alert('',"Internet Error")
     }
-    else if (data.message == 'User not found') {
-      Alert.alert("","User not found")
-    }
-    else if (data.message == 'Email is invalid') {
-      Alert.alert("",'Email is invalid')
-    }
-    else if (data.message == 'Request must contain email') {
-      Alert.alert("","Request must contain email")
+    else if (data.message == 'User not found or code is incorrect') {
+      Alert.alert('',"User not found or code is incorrect")
     }
     else {
-      navigation.navigate("ResetPasswordCode", {
-        email: user.email,
+      navigation.navigate("ResetPassword", {
+        email: email,
+        code: code,
       });
     }
-    setIsLoading(false);
+    setIsLoading(false)
   };
 
   return (
     <Provider>
       <SafeAreaView style={styles.root}>
         {/* <Appbar.Header
-          style = {{ }}
           statusBarHeight={1}
           theme={{ colors: { primary: "transparent" } }}
         >
@@ -97,25 +84,25 @@ const ForgotPassword = ({ navigation }) => {
           />
           <View style={styles.text}>
             <Text style={styles.text_PRIMARY}>
-              {t("Screen_ForgotPassword_Label_ResetPassword")}
+              {t("Screen_ResetPasswordCode_Label_ResetPassword")}
             </Text>
           </View>
         </View>
         <CustomInputs
-          value={user.email}
-          setValue={handleChange("email")}
+          value={code}
+          setValue={handleChange("code")}
           icon={"close-circle-outline"}
-          label={"Email"}
-          onpress={onClearEmailPressed}
+          label={t("Screen_ResetPasswordCode_PlaceHolder")}
+          onpress={onClearCodePressed}
         />
         <CustomButtons
           text={t("Screen_ForgotPassword_Button_ResetPassword")}
           onPress={onForgotPasswordPressed}
         />
       </SafeAreaView>
-      <LoadingDialog onVisible={isLoading} />
+      <LoadingDialog onVisible = {isLoading}/>
     </Provider>
   );
 };
 
-export default ForgotPassword;
+export default ResetPasswordCode;

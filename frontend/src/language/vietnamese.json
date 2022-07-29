@@ -8,7 +8,18 @@
         "Screen_Login_Text_Error_U0002": "Tài khoản đã bị vô hiệu hóa",
         "Screen_Login_Text_Error_U0003": "Email hoặc mật khẩu không đúng",
 
-        "Screen_ForgotPassword_Button_ResetPassword": "Đặt lại mật khẩu",
+        "Screen_ForgotPassword_Button_ResetPassword": "Gửi mã",
+        "Screen_ForgotPassword_Label_ResetPassword": "Nhập Email của bạn để nhận mã ",
+
+        "Screen_ResetPasswordCode_Label_ResetPassword": "Hệ thống vừa gửi bạn mật mã 6 số tới email vừa nhập, vui lòng nhập mã để thay đổi mật khẩu",
+        "Screen_ResetPasswordCode_PlaceHolder": "Nhập mã",
+
+        "Screen_ResetPassword_Label_CreateNewPassword": "Tạo mật khẩu mới",
+        "Screen_ResetPassword_PlaceHolder_NewPassword": "Nhập mật khẩu mới",
+        "Screen_ResetPassword_PlaceHolder_CreateNewPassword": "Nhập lại mật khẩu mới",
+        "Screen_ResetPassword_Button_label": "Đặt lại mật khẩu",
+
+        "Screen_Login_Button_ForgotPassword": "Quên mật khẩu",
 
         "Navigation_Bottom_Home": "Trang chủ",
         "Navigation_Bottom_Group": "Nhóm",

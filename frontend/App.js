@@ -21,7 +21,7 @@ const App = () => {
         
       </AuthProvider>
     </SafeAreaView>
-   // <ChangePassword />
+  //  <ChangePassword />
   );
 };
 

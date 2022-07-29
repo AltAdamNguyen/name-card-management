@@ -94,6 +94,8 @@ const GroupContact = ({ navigation }) => {
   }, [isFocus]);
 
   const getGroupContact = (data) => {
+    setLisGroupContact([])
+    setListGroupContactTotal([])
     if (data.data.length > 0) {
       setLisGroupContact(data.data);
       setListGroupContactTotal(data.data);

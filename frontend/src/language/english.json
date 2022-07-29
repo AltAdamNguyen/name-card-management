@@ -7,8 +7,18 @@
         "Screen_Login_Text_Error_Empty": "Email or password cannot be empty",
         "Screen_Login_Text_Error_U0002": "Account has been disabled",
         "Screen_Login_Text_Error_U0003": "Email or password is incorrect",
-        
-        "Screen_ForgotPassword_Button_ResetPassword": "Reset Password",
+        "Screen_Login_Button_ForgotPassword": "Forgot Password",
+
+        "Screen_ForgotPassword_Button_ResetPassword": "Send Code",
+        "Screen_ForgotPassword_Label_ResetPassword": "Enter your email to reset password",
+
+        "Screen_ResetPasswordCode_Label_ResetPassword": "We just send you a 6 digits code into your email, enter the code and reset your password",
+        "Screen_ResetPasswordCode_PlaceHolder": "Enter Code",
+
+        "Screen_ResetPassword_Label_CreateNewPassword": "Crete your new password",
+        "Screen_ResetPassword_PlaceHolder_NewPassword": "Enter New Password",
+        "Screen_ResetPassword_PlaceHolder_CreateNewPassword": "Re-Enter New Password",
+        "Screen_ResetPassword_Button_label": "Crete new password",
 
         "Navigation_Bottom_Home": "Home",
         "Navigation_Bottom_Group": "Group",
