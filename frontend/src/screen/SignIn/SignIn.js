@@ -21,10 +21,10 @@ const options = [
 const SignIn = ({ navigation }) => {
   const { t, i18n } = useTranslation();
   const [user, setUser] = useState({
-    // email: "",
-    // password: "",
-    email: "anhnche141236@gmail.com",
-    password: "Trung123@",
+    email: "",
+    password: "",
+    // email: "anhnche141236@gmail.com",
+    // password: "Trung123@",
     // email: "conganhnguyen33@gmail.com",
     // password: "Trung123@"
     // email: "person2@gmail.com",
@@ -67,13 +67,10 @@ const SignIn = ({ navigation }) => {
       return;
     }
     data.message === "U0001" &&
-      authCtx.onLogin(data.data.access_token, data.data.refresh_token) &&
-      setErrorLoginText({ errorText: "U0001", errorKey: "U0001" });
+      authCtx.onLogin(data.data.access_token, data.data.refresh_token)
     data.message === "U0003" &&
-
       Alert.alert(t("Screen_Login_Text_Error_U0003"))
     data.message === "U0002" &&
-
       Alert.alert(errorLoginText.errorText)
 
   };
@@ -152,7 +149,7 @@ const SignIn = ({ navigation }) => {
           }}
         />
         <View style={styles.title}>
-          <Text>{t("Screen_Login_Text_Signature")}</Text>
+          <Text style={styles.title_label}>{t("Screen_Login_Text_Signature")}</Text>
         </View>
       </View>
     </Provider>

@@ -11,7 +11,6 @@ const styles = StyleSheet.create({
     error_text:{
         width:'85%',
         textAlign: 'right',
-        // alignItems:'center',
     },  
     root: {
         alignItems: 'center',
@@ -32,6 +31,9 @@ const styles = StyleSheet.create({
     title: {
         position: 'absolute',
         bottom: '2%',
+    },
+    title_label: {
+        fontSize: 12
     },
     SwitchSelector: {
         fontSize: 13

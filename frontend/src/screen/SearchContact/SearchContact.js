@@ -309,7 +309,7 @@ const SearchContact = ({ navigation, route }) => {
                     keyExtractor={(item) => item.id}
                     showsVerticalScrollIndicator={false}
                     onEndReached={handleLoadMore}
-                    onEndReachedThreshold={Platform.OS === 'android' ? 0.1 : 0.5}
+                    onEndReachedThreshold={Platform.OS === 'android' ? 0.3 : 0.5}
                     ListEmptyComponent={EmptyList}
                     ListFooterComponent={FooterList}
                 />

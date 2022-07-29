@@ -3,7 +3,7 @@
         "Screen_Login_Placeholder_Username": "Email",
         "Screen_Login_Placeholder_Password": "Password",
         "Screen_Login_Button_Login": "Login",
-        "Screen_Login_Text_Signature": "@2022 Developed by FIS",
+        "Screen_Login_Text_Signature": "@2022 Developed by NCM Team",
         "Screen_Login_Text_Error_Empty": "Email or password cannot be empty",
         "Screen_Login_Text_Error_U0002": "Account has been disabled",
         "Screen_Login_Text_Error_U0003": "Email or password is incorrect",
@@ -101,9 +101,14 @@
         "ModalGroupContactDetail_Label_DeleteContact": "Delete contact",
         "ModalGroupContactDetail_Label_DeleteGroup": "Delete group",
 
-        "ModdalActive_Title": "Re-activate Name Card",
-        "ModdalActive_Label_Cancel": "Cancel",
-        "ModdalActive_Label_Confirm": "Confirm",
+        "ModalActive_Title": "Re-activate Name Card",
+        "ModalActive_Label_Cancel": "Cancel",
+        "ModalActive_Label_Confirm": "Confirm",
+
+        "Alert_BackPress_Title": "Hold on!",
+        "Alert_BackPress_Message": "Are you sure you want to exit?",
+        "Alert_BackPress_Button_Cancel": "Cancel",
+        "Alert_BackPress_Button_Exit": "Exit",
 
         "ModalTransfer_Title": "Transfer to",
         "ModalTransfer_Message_Transfer": "Switching a contact owner will cause you to lose access to that contact",

@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from "react";
+import {BackHandler, Alert} from "react-native";
 import * as SecureStore from 'expo-secure-store';
 import jwt_decode from 'jwt-decode';
+import { useTranslation } from "react-i18next";
 
 const AuthContext = React.createContext({
     locale: 'vn',
@@ -14,6 +16,7 @@ const AuthContext = React.createContext({
 });
 
 export const AuthProvider = ({ children }) => {
+    const { t, i18n } = useTranslation()
     const [isLogin, setIsLogin] = useState(false);
     const [locale, setLocale] = useState('vn')
     const [role, setrole] = useState(0)
@@ -36,9 +39,27 @@ export const AuthProvider = ({ children }) => {
             setUserId(0);
         }
     }
+    const handleBackPress = async () => {       
+        BackHandler.exitApp();
+        handleLogout();
+      }
+
+    const backAction = () => {
+        Alert.alert(t("Alert_BackPress_Title"),t("Alert_BackPress_Message"), [
+          {
+            text: t("Alert_BackPress_Button_Cancel"),
+            onPress: () => null,
+          },
+          { text: t("Alert_BackPress_Button_Exit"), 
+          onPress: handleBackPress }
+        ]);
+        return true;
+      };
 
     useEffect(() => {
         getToken();
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+        return () => backHandler.remove();
     }, [])
 
     const handleLogin = async(accessToken, refreshToken) => {
