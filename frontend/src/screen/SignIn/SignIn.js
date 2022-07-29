@@ -1,4 +1,4 @@
-import { View, Text, Alert } from "react-native";
+import { View, Text, Alert, TouchableWithoutFeedback, Keyboard } from "react-native";
 import React, { useState, useContext } from "react";
 import AuthContext from "../../store/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -93,65 +93,67 @@ const SignIn = ({ navigation }) => {
 
   return (
     <Provider>
-      <View style={styles.root}>
-        <LoadingDialog onVisible={isLoading} />
-        <View>
-          <CustemHeaders
-            text_PRIMARY="Name Card Management"
-            Logo={Logo_Login}
-          />
-        </View>
-        <View style={styles.input}>
-          <CustomInputs
-            value={user.email}
-            setValue={handleChange("email")}
-            icon={"close-circle-outline"}
-            label={t("Screen_Login_Placeholder_Username")}
-            onpress={onClearUsernamePressed}
-          />
-          <CustomInputs
-            value={user.password}
-            setValue={handleChange("password")}
-            label={t("Screen_Login_Placeholder_Password")}
-            secureTextEntry={isSecureEntry}
-            icon={isSecureEntry ? "eye" : "eye-off"}
-            onpress={onVisibilityPasswordPressed}
-          />
-        </View>
-        
-        <CustomButtons
-          text={t("Screen_Login_Button_ForgotPassword")}
-          onPress={onForgotPasswordPressed}
-          type="TERTIARY"
-        />
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <View style={styles.root}>
+          <LoadingDialog onVisible={isLoading} />
+          <View>
+            <CustemHeaders
+              text_PRIMARY="Name Card Management"
+              Logo={Logo_Login}
+            />
+          </View>
+          <View style={styles.input}>
+            <CustomInputs
+              value={user.email}
+              setValue={handleChange("email")}
+              icon={"close-circle-outline"}
+              label={t("Screen_Login_Placeholder_Username")}
+              onpress={onClearUsernamePressed}
+            />
+            <CustomInputs
+              value={user.password}
+              setValue={handleChange("password")}
+              label={t("Screen_Login_Placeholder_Password")}
+              secureTextEntry={isSecureEntry}
+              icon={isSecureEntry ? "eye" : "eye-off"}
+              onpress={onVisibilityPasswordPressed}
+            />
+          </View>
 
-        <View style={styles.button_login}>
           <CustomButtons
-            text={t("Screen_Login_Button_Login")}
-            onPress={onSignInPressed}
+            text={t("Screen_Login_Button_ForgotPassword")}
+            onPress={onForgotPasswordPressed}
+            type="TERTIARY"
           />
+
+          <View style={styles.button_login}>
+            <CustomButtons
+              text={t("Screen_Login_Button_Login")}
+              onPress={onSignInPressed}
+            />
+          </View>
+          <SwitchSelector
+            style={styles.language}
+            options={options}
+            initial={authCtx.locale === "vn" ? 0 : 1}
+            hasPadding
+            buttonColor="#2F80ED"
+            disableValueChangeOnPress={true}
+            value={1}
+            onPress={(language) => {
+              i18n.changeLanguage(language);
+              authCtx.language(language);
+              setErrorLoginText({
+                errorText: t(errorLoginText.errorKey),
+                errorKey: errorLoginText.errorKey,
+              });
+            }}
+          />
+          <View style={styles.title}>
+            <Text style={styles.title_label}>{t("Screen_Login_Text_Signature")}</Text>
+          </View>
         </View>
-        <SwitchSelector
-          style={styles.language}
-          options={options}
-          initial={authCtx.locale === "vn" ? 0 : 1}
-          hasPadding
-          buttonColor="#2F80ED"
-          disableValueChangeOnPress={true}
-          value={1}
-          onPress={(language) => {
-            i18n.changeLanguage(language);
-            authCtx.language(language);
-            setErrorLoginText({
-              errorText: t(errorLoginText.errorKey),
-              errorKey: errorLoginText.errorKey,
-            });
-          }}
-        />
-        <View style={styles.title}>
-          <Text style={styles.title_label}>{t("Screen_Login_Text_Signature")}</Text>
-        </View>
-      </View>
+      </TouchableWithoutFeedback>
     </Provider>
   );
 };
