@@ -26,7 +26,12 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
         public ResponseMessageResult GetListHome(string sortBy = "create_date", int page = 1, string flag = "")
         {
-            int pageSize = 10;
+            if (sortBy == null || flag == null)
+            {
+                return Common.ResponseMessage.BadRequest("C0001");
+            }
+
+            const int pageSize = 10;
             if (page < 1) page = 1;
             int userId = ((JwtToken)Request.Properties["payload"]).Uid;
 
@@ -62,9 +67,7 @@ namespace NCMSystem.Controllers
                     query = query.OrderByDescending(x => x.create_date);
                 }
 
-                List<contact> contact;
-
-                contact = query.Skip((page - 1) * pageSize)
+                var contact = query.Skip((page - 1) * pageSize)
                     .Take(pageSize).ToList();
 
                 if (contact.Count != 0)
@@ -94,6 +97,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -145,6 +149,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -161,7 +166,7 @@ namespace NCMSystem.Controllers
         [HttpGet]
         [Route("api/contacts/transfer-list")]
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
-        public ResponseMessageResult GetListTransferContact(string sortBy = "create_date", int page = 1)
+        public ResponseMessageResult GetListTransferContact(int page = 1)
         {
             int pageSize = 10;
             if (page < 1) page = 1;
@@ -196,6 +201,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -308,8 +314,7 @@ namespace NCMSystem.Controllers
 
             try
             {
-                IQueryable<contact> query;
-                query = db.contacts.Where(c => c.owner_id == userId && c.createdBy == userId && c.isActive == true);
+                var query = db.contacts.Where(c => c.owner_id == userId && c.createdBy == userId && c.isActive == true);
                 if (!mem)
                 {
                     query = db.contacts.Where(c => c.createdBy == userId && c.isActive == true);
@@ -341,7 +346,7 @@ namespace NCMSystem.Controllers
 
         [HttpGet]
         [Route("api/contacts/search-list-transfer")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager})]
         public ResponseMessageResult GetSearchListTransfer(string value = "")
         {
             int userId = ((JwtToken)Request.Properties["payload"]).Uid;
@@ -411,7 +416,7 @@ namespace NCMSystem.Controllers
                 draft = query;
                 foreach (var c in draft)
                 {
-                    if (RemoveSign4VietnameseString(c.name)
+                    if (RemoveSign4VietnameseString(c.company)
                         .Contains(RemoveSign4VietnameseString(value.Trim())))
                     {
                         var rq = db.requests.FirstOrDefault(r => r.new_contact_id == c.id);
@@ -532,7 +537,7 @@ namespace NCMSystem.Controllers
             "ÝỲỴỶỸ"
         };
 
-        private static string RemoveSign4VietnameseString(string str)
+        public static string RemoveSign4VietnameseString(string str)
         {
             for (int i = 1; i < VietnameseSigns.Length; i++)
             {
@@ -545,7 +550,7 @@ namespace NCMSystem.Controllers
 
         [HttpGet]
         [Route("api/contacts/search/de-active")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
         public ResponseMessageResult GetSearchDa(string value = "")
         {
             int userId = ((JwtToken)Request.Properties["payload"]).Uid;

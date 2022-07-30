@@ -14,7 +14,7 @@ namespace TestNCMSystem
     public class UserControllerTest
     {
         [Test]
-        public void UserController_Login_MissingEmailAndPassword()
+        public void Test_Login_MissingEmailAndPassword_ReturnStatusCodeBadRequest()
         {
             //arrange
             var controller = new UserController();
@@ -31,7 +31,7 @@ namespace TestNCMSystem
         }
 
         [Test]
-        public void UserController_Login_MissingEmail()
+        public void Test_Login_MissingEmail_ReturnStatusCodeBadRequest()
         {
             //arrange
             var controller = new UserController();
@@ -49,7 +49,7 @@ namespace TestNCMSystem
         }
 
         [Test]
-        public void UserController_Login_MissingPassword()
+        public void Test_Login_MissingPassword_ReturnStatusCodeBadRequest()
         {
             //arrange
             var controller = new UserController();
@@ -67,7 +67,7 @@ namespace TestNCMSystem
         }
 
         [Test]
-        public void UserController_Login_UserNotFound()
+        public void Test_Login_UserNotFound_ReturnStatusCodeBadRequest()
         {
             //arrange
             var controller = new UserController();
@@ -86,7 +86,7 @@ namespace TestNCMSystem
         }
 
         [Test]
-        public void UserController_Login_Success()
+        public void Test_Login_Success_ReturnStatusCodeOK()
         {
             //arrange
             var controller = new UserController();
@@ -108,7 +108,7 @@ namespace TestNCMSystem
         }
 
         [Test]
-        public void UserController_RefreshToken_MissingRefreshToken()
+        public void Test_RefreshToken_MissingRefreshToken_ReturnStatusCodeBadRequest()
         {
             //arrange
             var controller = new UserController();
@@ -125,7 +125,7 @@ namespace TestNCMSystem
         }
 
         [Test]
-        public void UserController_RefreshToken_Success()
+        public void Test_RefreshToken_Success_ReturnStatusCodeOK()
         {
             //arrange
             var controller = new UserController();
