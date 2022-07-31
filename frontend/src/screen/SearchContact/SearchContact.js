@@ -208,18 +208,14 @@ const SearchContact = ({ navigation, route }) => {
     }
 
     const debounceLoadMore = useCallback(debounce((nextPage) =>{
-        console.log("load more 1")
         LoadMoreApi(nextPage)      
     } , 200), [])
     const handleLoadMore = (e) => {
-        console.log("load more")
         debounceLoadMore(page);
         setPage(page + 1);
     }
 
     const LoadMoreApi = (nextPage) => {
-        console.log("load more api")
-        console.log(nextPage)
         if (route.params && route.params.transfer) {
             FetchApi(`${ContactAPI.ListTransferContact}?&page=${nextPage}`, Method.GET, ContentType.JSON, undefined, getContactLoadMore)
         }
@@ -229,10 +225,8 @@ const SearchContact = ({ navigation, route }) => {
     }
 
     const getContactLoadMore = (data) => {
-        console.log("getContactLoadMore")
         authCtx.checkToken()
         if (data) {
-            console.log(data)
             if (data.data) {
                 if (data.data.length > 0) {
                     setDataMore(data.data)
