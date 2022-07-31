@@ -11,10 +11,16 @@
 
         "Screen_ForgotPassword_Button_ResetPassword": "Send Code",
         "Screen_ForgotPassword_Label_ResetPassword": "Enter your email to reset password",
+        "Screen_ForgotPassword_Alert_UserNotFound": "User not found",
+        "Screen_ForgotPassword_Alert_EmailInvalid": "Email is invalid",
+        "Screen_ForgotPassword_Alert_RequestMustContainEmail": "Request must contain email",
+        "Screen_ForgotPassword_Alert_EmailEmpty": "Email cannot be empty",
 
         "Screen_ResetPasswordCode_Label_ResetPassword": "We just send you a 6 digits code into your email, enter the code and reset your password",
         "Screen_ResetPasswordCode_PlaceHolder": "Enter Code",
 
+        "Screen_ResetPassword_Alert_PasswordAndRePasswordMatch": "Password and Re-enter Password must be the same",
+        "Screen_ResetPassword_Alert_PasswordFormat": "New password must be at least 8 characters, contain at least one lowercase letter, one uppercase letter, one number and one special character",
         "Screen_ResetPassword_Label_CreateNewPassword": "Crete your new password",
         "Screen_ResetPassword_PlaceHolder_NewPassword": "Enter New Password",
         "Screen_ResetPassword_PlaceHolder_CreateNewPassword": "Re-Enter New Password",
@@ -228,6 +234,8 @@
         "Screen_Scan_Alert_Erorr_Message_Camera": "Camera is not licensed.\nPlease change in settings",
         "Screen_Scan_Alert_Button_Cancel": "Cancel",
         "Screen_Scan_Alert_Button_Ok": "Ok",
-        "Screen_Scan_Alert_Permission": "Requesting permissions camera"
+        "Screen_Scan_Alert_Permission": "Requesting permissions camera",
+
+        "Loading_InternetError": "Internet Error, Please try again later"
     }
 }

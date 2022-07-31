@@ -6,6 +6,8 @@ import {
   useWindowDimensions,
   Text,
   SafeAreaView,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import CustomInputs from "../../components/CustomInputs";
@@ -29,10 +31,10 @@ const ResetPassword = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const onResetPassword = () => {
-    setIsLoading(true)
+    setIsLoading(true);
     if (newPassword !== newPasswordReEnter) {
-      Alert.alert("", "Password nhap lai va Password moi khong giong nhau");
-      setIsLoading(false)
+      Alert.alert("", t("Screen_ResetPassword_Alert_PasswordAndRePasswordMatch"));
+      setIsLoading(false);
     } else {
       FetchApi(
         UserAPI.SubmitPasswordForgot,
@@ -50,19 +52,19 @@ const ResetPassword = ({ navigation, route }) => {
 
   const InputPasswordCodeAPICallback = (data) => {
     if (data.message == "Internet Error") {
-      Alert.alert("", "Internet Error");
+      Alert.alert("", t("Loading_InternetError"));
     } else if (
       data.message ==
       "New password must be at least 8 characters, contain at least one lowercase letter, one uppercase letter, one number and one special character"
     ) {
       Alert.alert(
         "",
-        "New password must be at least 8 characters, contain at least one lowercase letter, one uppercase letter, one number and one special character"
+        t("Screen_ResetPassword_Alert_PasswordFormat")
       );
     } else {
       navigation.navigate("SignIn");
     }
-    setIsLoading(false)
+    setIsLoading(false);
   };
 
   const { t, i18n } = useTranslation();
@@ -86,45 +88,53 @@ const ResetPassword = ({ navigation, route }) => {
 
   return (
     <Provider>
-      <SafeAreaView style={styles.root}>
-        {/* <Appbar.Header
-        statusBarHeight={1}
-        theme={{ colors: { primary: "transparent" } }}
+      <TouchableWithoutFeedback
+        onPress={() => {
+          Keyboard.dismiss();
+        }}
       >
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-      </Appbar.Header> */}
-        <View style={styles.headline}>
-          <Image
-            source={Logo_ForgotPassword}
-            style={[styles.logo, { height: height * 0.3 }]}
-            resizeMode="contain"
-          />
-          <View style={styles.text}>
-            <Text style={styles.text_PRIMARY}>
-              {t("Screen_ResetPassword_Label_CreateNewPassword")}
-            </Text>
+        <SafeAreaView style={styles.root}>
+          <Appbar.Header
+            statusBarHeight={1}
+            theme={{ colors: { primary: "transparent" } }}
+          >
+            <Appbar.BackAction onPress={() => navigation.goBack()} />
+          </Appbar.Header>
+          <View style={styles.headline}>
+            <Image
+              source={Logo_ForgotPassword}
+              style={[styles.logo, { height: height * 0.3 }]}
+              resizeMode="contain"
+            />
+            <View style={styles.text}>
+              <Text style={styles.text_PRIMARY}>
+                {t("Screen_ResetPassword_Label_CreateNewPassword")}
+              </Text>
+            </View>
           </View>
-        </View>
-        <CustomInputs
-          value={newPassword}
-          setValue={(text) => handleChange(text)}
-          icon={"close-circle-outline"}
-          label={t("Screen_ResetPassword_PlaceHolder_NewPassword")}
-          onpress={onClearCodePressed}
-        />
-        <CustomInputs
-          value={newPasswordReEnter}
-          setValue={(text) => handleChangeReEnter(text)}
-          icon={"close-circle-outline"}
-          label={t("Screen_ResetPassword_PlaceHolder_CreateNewPassword")}
-          onpress={onClearCodePressedReEnter}
-        />
-        <CustomButtons
-          text={t("Screen_ResetPassword_Button_label")}
-          onPress={onResetPassword}
-        />
-      </SafeAreaView>
-      <LoadingDialog onVisible = {isLoading}/>
+          <View style={styles.section}>
+            <CustomInputs
+              value={newPassword}
+              setValue={(text) => handleChange(text)}
+              icon={"close-circle-outline"}
+              label={t("Screen_ResetPassword_PlaceHolder_NewPassword")}
+              onpress={onClearCodePressed}
+            />
+            <CustomInputs
+              value={newPasswordReEnter}
+              setValue={(text) => handleChangeReEnter(text)}
+              icon={"close-circle-outline"}
+              label={t("Screen_ResetPassword_PlaceHolder_CreateNewPassword")}
+              onpress={onClearCodePressedReEnter}
+            />
+            <CustomButtons
+              text={t("Screen_ResetPassword_Button_label")}
+              onPress={onResetPassword}
+            />
+          </View>
+        </SafeAreaView>
+      </TouchableWithoutFeedback>
+      <LoadingDialog onVisible={isLoading} />
     </Provider>
   );
 };

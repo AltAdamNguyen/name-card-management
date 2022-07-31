@@ -6,6 +6,8 @@ import {
   useWindowDimensions,
   Text,
   SafeAreaView,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import CustomInputs from "../../components/CustomInputs";
@@ -39,6 +41,7 @@ const ResetPasswordCode = ({ navigation, route }) => {
   };
 
   const onForgotPasswordPressed = () => {
+    setIsLoading(true)
     FetchApi(
       UserAPI.ForgetPasswordCode,
       Method.POST,
@@ -49,6 +52,7 @@ const ResetPasswordCode = ({ navigation, route }) => {
       },
       InputPasswordCodeAPICallback
     );
+    
   };
 
   const InputPasswordCodeAPICallback = (data) => {
@@ -69,13 +73,16 @@ const ResetPasswordCode = ({ navigation, route }) => {
 
   return (
     <Provider>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+
+   
       <SafeAreaView style={styles.root}>
-        {/* <Appbar.Header
+        <Appbar.Header
           statusBarHeight={1}
           theme={{ colors: { primary: "transparent" } }}
         >
           <Appbar.BackAction onPress={() => navigation.goBack()} />
-        </Appbar.Header> */}
+        </Appbar.Header>
         <View style={styles.headline}>
           <Image
             source={Logo_ForgotPassword}
@@ -88,6 +95,7 @@ const ResetPasswordCode = ({ navigation, route }) => {
             </Text>
           </View>
         </View>
+        <View style={styles.section}>
         <CustomInputs
           value={code}
           setValue={handleChange("code")}
@@ -99,7 +107,10 @@ const ResetPasswordCode = ({ navigation, route }) => {
           text={t("Screen_ForgotPassword_Button_ResetPassword")}
           onPress={onForgotPasswordPressed}
         />
+        </View>
+       
       </SafeAreaView>
+      </TouchableWithoutFeedback>
       <LoadingDialog onVisible = {isLoading}/>
     </Provider>
   );

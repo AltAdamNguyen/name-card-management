@@ -6,6 +6,8 @@ import {
   useWindowDimensions,
   Text,
   SafeAreaView,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import CustomInputs from "../../components/CustomInputs";
@@ -59,19 +61,17 @@ const ForgotPassword = ({ navigation }) => {
   };
 
   const ForgotPasswordAPICallback = (data) => {
-    if (data.message == "Internet Error") {
-      Alert.alert("","Internet Error")
-    }
-    else if (data.message == 'User not found') {
-      Alert.alert("","User not found")
-    }
-    else if (data.message == 'Email is invalid') {
-      Alert.alert("",'Email is invalid')
-    }
-    else if (data.message == 'Request must contain email') {
-      Alert.alert("","Request must contain email")
-    }
-    else {
+    if (user.email.trim() == "") {
+      Alert.alert("", t("Screen_ForgotPassword_Alert_EmailEmpty"));
+    } else if (data.message == "Internet Error") {
+      Alert.alert("", t("Loading_InternetError"));
+    } else if (data.message == "User not found") {
+      Alert.alert("", t("Screen_ForgotPassword_Alert_UserNotFound"));
+    } else if (data.message == "Email is invalid") {
+      Alert.alert("", t("Screen_ForgotPassword_Alert_EmailInvalid"));
+    } else if (data.message == "Request must contain email") {
+      Alert.alert("", t("Screen_ForgotPassword_Alert_RequestMustContainEmail"));
+    } else {
       navigation.navigate("ResetPasswordCode", {
         email: user.email,
       });
@@ -81,38 +81,43 @@ const ForgotPassword = ({ navigation }) => {
 
   return (
     <Provider>
-      <SafeAreaView style={styles.root}>
-        {/* <Appbar.Header
-          style = {{ }}
-          statusBarHeight={1}
-          theme={{ colors: { primary: "transparent" } }}
-        >
-          <Appbar.BackAction onPress={() => navigation.goBack()} />
-        </Appbar.Header> */}
-        <View style={styles.headline}>
-          <Image
-            source={Logo_ForgotPassword}
-            style={[styles.logo, { height: height * 0.3 }]}
-            resizeMode="contain"
-          />
-          <View style={styles.text}>
-            <Text style={styles.text_PRIMARY}>
-              {t("Screen_ForgotPassword_Label_ResetPassword")}
-            </Text>
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <SafeAreaView style={styles.root}>
+          <Appbar.Header
+            style={{}}
+            statusBarHeight={1}
+            theme={{ colors: { primary: "transparent" } }}
+          >
+            <Appbar.BackAction onPress={() => navigation.goBack()} />
+          </Appbar.Header>
+          <View style={styles.headline}>
+            <Image
+              source={Logo_ForgotPassword}
+              style={[styles.logo]}
+              resizeMode="contain"
+            />
+            <View style={styles.text}>
+              <Text style={styles.text_PRIMARY}>
+                {t("Screen_ForgotPassword_Label_ResetPassword")}
+              </Text>
+            </View>
           </View>
-        </View>
-        <CustomInputs
-          value={user.email}
-          setValue={handleChange("email")}
-          icon={"close-circle-outline"}
-          label={"Email"}
-          onpress={onClearEmailPressed}
-        />
-        <CustomButtons
-          text={t("Screen_ForgotPassword_Button_ResetPassword")}
-          onPress={onForgotPasswordPressed}
-        />
-      </SafeAreaView>
+          <View style={styles.section}>
+            <CustomInputs
+              value={user.email}
+              setValue={handleChange("email")}
+              icon={"close-circle-outline"}
+              label={"Email"}
+              onpress={onClearEmailPressed}
+            />
+            <CustomButtons
+              text={t("Screen_ForgotPassword_Button_ResetPassword")}
+              onPress={onForgotPasswordPressed}
+            />
+          </View>
+          
+        </SafeAreaView>
+      </TouchableWithoutFeedback>
       <LoadingDialog onVisible={isLoading} />
     </Provider>
   );
