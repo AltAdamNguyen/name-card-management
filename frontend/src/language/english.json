@@ -11,10 +11,16 @@
 
         "Screen_ForgotPassword_Button_ResetPassword": "Send Code",
         "Screen_ForgotPassword_Label_ResetPassword": "Enter your email to reset password",
+        "Screen_ForgotPassword_Alert_UserNotFound": "User not found",
+        "Screen_ForgotPassword_Alert_EmailInvalid": "Email is invalid",
+        "Screen_ForgotPassword_Alert_RequestMustContainEmail": "Request must contain email",
+        "Screen_ForgotPassword_Alert_EmailEmpty": "Email cannot be empty",
 
         "Screen_ResetPasswordCode_Label_ResetPassword": "We just send you a 6 digits code into your email, enter the code and reset your password",
         "Screen_ResetPasswordCode_PlaceHolder": "Enter Code",
 
+        "Screen_ResetPassword_Alert_PasswordAndRePasswordMatch": "Password and Re-enter Password must be the same",
+        "Screen_ResetPassword_Alert_PasswordFormat": "New password must be at least 8 characters, contain at least one lowercase letter, one uppercase letter, one number and one special character",
         "Screen_ResetPassword_Label_CreateNewPassword": "Crete your new password",
         "Screen_ResetPassword_PlaceHolder_NewPassword": "Enter New Password",
         "Screen_ResetPassword_PlaceHolder_CreateNewPassword": "Re-Enter New Password",
@@ -40,6 +46,7 @@
 
         "Screen_GroupContact_Placeholder_Search": "Search for group",
         "Screen_GroupContact_Text_Container_Label_Title":"My group of contacts",
+        "Screen_GroupContact_Text_Container_Label_NoGroupFound": "No Group Found",
 
         "Screen_Home_ModalHome_Text_Label_Sort": "Sort",
         "Screen_Home_ModalHome_Text_Label_Manage": "Manage",
@@ -196,6 +203,17 @@
         "Screen_DeleteContactFromGroup_ConfirmDialog_RightButtonTitle": "Delete",
 
         "Screen_GroupContactDetail_ListContact_NoContactFound":"No Contact Found",
+        "Screen_GroupContactDetail_PlaceHolder_SearchContact":"Tìm liên hệ",
+        "Screen_GroupContactDetail_ConfirmDialog_Title": "Are you sure you want to delete this group?",
+        "Screen_GroupContactDetail_ConfirmDialog_LeftButtonTitle": "Cancel",
+        "Screen_GroupContactDetail_ConfirmDialog_RightButtonTitle": "Delete",
+
+
+        "Screen_GroupContactDetail_InputDialog_Title": "Change group name",
+        "Screen_GroupContactDetail_InputDialog_Label": "Group name",
+        "Screen_GroupContactDetail_InputDialog_LeftButtonTitle": "Cancel",
+        "Screen_GroupContactDetail_InputDialog_RightButtonTitle": "Change",
+        "Screen_GroupContactDetail_InputDialog_Alert": "Group name cannot be empty",
 
         "Screen_AddContactToManyGroup_Appbar_Content_Title_AddToGroup": "Add To Groups",
         "Screen_AddContactToManyGroup_Title_MyGroups": "My groups",
@@ -228,6 +246,8 @@
         "Screen_Scan_Alert_Erorr_Message_Camera": "Camera is not licensed.\nPlease change in settings",
         "Screen_Scan_Alert_Button_Cancel": "Cancel",
         "Screen_Scan_Alert_Button_Ok": "Ok",
-        "Screen_Scan_Alert_Permission": "Requesting permissions camera"
+        "Screen_Scan_Alert_Permission": "Requesting permissions camera",
+
+        "Loading_InternetError": "Internet Error, Please try again later"
     }
 }

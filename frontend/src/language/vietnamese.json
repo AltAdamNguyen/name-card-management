@@ -10,10 +10,16 @@
 
         "Screen_ForgotPassword_Button_ResetPassword": "Gửi mã",
         "Screen_ForgotPassword_Label_ResetPassword": "Nhập Email của bạn để nhận mã ",
+        "Screen_ForgotPassword_Alert_UserNotFound": "Không tìm thấy người dùng",
+        "Screen_ForgotPassword_Alert_EmailInvalid": "Email không hợp lê",
+        "Screen_ForgotPassword_Alert_RequestMustContainEmail": "Yêu cầu phải nhập Email",
+        "Screen_ForgotPassword_Alert_EmailEmpty": "Email không được để trống",
 
         "Screen_ResetPasswordCode_Label_ResetPassword": "Hệ thống vừa gửi bạn mật mã 6 số tới email vừa nhập, vui lòng nhập mã để thay đổi mật khẩu",
         "Screen_ResetPasswordCode_PlaceHolder": "Nhập mã",
 
+        "Screen_ResetPassword_Alert_PasswordAndRePasswordMatch": "Mật khẩu mới và nhập lại mật khẩu mới không giống nhau",
+        "Screen_ResetPassword_Alert_PasswordFormat": "Mật khẩu mới phải có tối thiểu 8 kí tự, có ít nhất một chữ in thường, một chữ in hoa, một số và một kí tự đặc biệt",
         "Screen_ResetPassword_Label_CreateNewPassword": "Tạo mật khẩu mới",
         "Screen_ResetPassword_PlaceHolder_NewPassword": "Nhập mật khẩu mới",
         "Screen_ResetPassword_PlaceHolder_CreateNewPassword": "Nhập lại mật khẩu mới",
@@ -41,6 +47,7 @@
 
         "Screen_GroupContact_Placeholder_Search": "Tìm kiếm nhóm",
         "Screen_GroupContact_Text_Container_Label_Title":"Nhóm danh thiếp của tôi",
+        "Screen_GroupContact_Text_Container_Label_NoGroupFound": "Không có nhóm",
 
         "Screen_Home_ModalHome_Text_Label_Sort": "Sắp xếp",
         "Screen_Home_ModalHome_Text_Label_Manage": "Quản lí",
@@ -101,7 +108,7 @@
         "ModalGroupContactDetail_Label_ChangeGroupName": "Đổi tên",
         "ModalGroupContactDetail_Label_DeleteContact": "Xóa danh thiếp",
         "ModalGroupContactDetail_Label_DeleteGroup": "Xóa nhóm",
-
+        
         "ModalActive_Title": "Khôi phục lại liên hệ",
         "ModalActive_Label_Cancel": "Hủy",
         "ModalActive_Label_Confirm": "Xác nhận",
@@ -196,7 +203,17 @@
         "Screen_DeleteContactFromGroup_ConfirmDialog_LeftButtonTitle": "Hủy",
         "Screen_DeleteContactFromGroup_ConfirmDialog_RightButtonTitle": "Xóa",
         
-        "Screen_GroupContactDetail_ListContact_NoContactFound":"Không có liên hệ",
+        "Screen_GroupContactDetail_ListContact_NoContactFound":"Không có liên hệ",  
+        "Screen_GroupContactDetail_PlaceHolder_SearchContact":"Tìm liên hệ",
+        "Screen_GroupContactDetail_ConfirmDialog_Title": "Bạn có chắc chắn muốn xóa nhóm này không?",
+        "Screen_GroupContactDetail_ConfirmDialog_LeftButtonTitle": "Hủy",
+        "Screen_GroupContactDetail_ConfirmDialog_RightButtonTitle": "Xóa",
+
+        "Screen_GroupContactDetail_InputDialog_Title": "Đổi tên nhóm",
+        "Screen_GroupContactDetail_InputDialog_Label": "Tên nhóm",
+        "Screen_GroupContactDetail_InputDialog_LeftButtonTitle": "Hủy",
+        "Screen_GroupContactDetail_InputDialog_RightButtonTitle": "Đổi",
+        "Screen_GroupContactDetail_InputDialog_Alert": "Tên nhóm không được để trống",
 
         "Screen_AddContactToManyGroup_Appbar_Content_Title_AddToGroup": "Thêm vào nhóm",
         "Screen_AddContactToManyGroup_Title_MyGroups": "Nhóm của tôi",
@@ -229,7 +246,9 @@
         "Screen_Scan_Alert_Erorr_Message_Camera": "Máy ảnh chưa được cấp phép.\nVui lòng thay đổi ở trong cài đặt",
         "Screen_Scan_Alert_Button_Cancel": "Hủy",
         "Screen_Scan_Alert_Button_Ok": "Đồng ý",
-        "Screen_Scan_Alert_Permission": "Yêu cầu quyền đối với máy ảnh"
+        "Screen_Scan_Alert_Permission": "Yêu cầu quyền đối với máy ảnh",
+
+        "Loading_InternetError": "Lôi kết nối, vui lòng thử lại sau"
 
     } 
 }
