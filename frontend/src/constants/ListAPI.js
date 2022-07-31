@@ -38,6 +38,7 @@ export const ContactAPI = {
     ListTransferContact: "/api/contacts/transfer-list",
     SearchContactTransfer: "/api/contacts/search-list-transfer",
     TransferContact: "/api/contacts/transfer",
+    DeactiveContact: "/api/contacts/de-active",
 }
 
 export const GroupContactAPI = {

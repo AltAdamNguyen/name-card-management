@@ -95,11 +95,11 @@ const ViewContact = ({ navigation, route }) => {
     }
 
     const handleDeactivate = (values) => {
-        console.log(values)
         FetchApi(`${ContactAPI.DeactiveContact}/${route.params.idContact}`, Method.PATCH, ContentType.JSON, { reason_da: values.reason }, getMessage)
     }
 
     const getMessage = (data) => {
+        console.log(data)
         authCtx.checkToken()
         if(data){
             navigation.navigate("Bottom", { screen: "HomeScreen" })
@@ -110,7 +110,6 @@ const ViewContact = ({ navigation, route }) => {
         FetchApi(`${ContactAPI.RequestTransferContact}/${contact.id}/${contact.idDuplicate}`,Method.GET, ContentType.JSON, undefined, getMessage)
     }
 
-    console.log(status)
 
     return (
         <SafeAreaView style={styles.container}>

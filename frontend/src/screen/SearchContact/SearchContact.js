@@ -28,7 +28,7 @@ const SearchContact = ({ navigation, route }) => {
     const textInputRef = useRef();
     const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
     const [loading, setLoading] = useState(false);
-    const [loadMore, setLoadMore] = useState(false);
+    const [dataMore, setDataMore] = useState(false);
     const [contactId, setContactId] = useState();
     const authCtx = useContext(AuthContext)
     const { t, i18n } = useTranslation()
@@ -49,6 +49,18 @@ const SearchContact = ({ navigation, route }) => {
             setVisibleCheckBox(true)
         }
     }, []);
+
+    useEffect(() => {
+        if(dataMore){
+            var idContact = new Set(listFilter.map(d => d.id));
+            dataMore.forEach(item => {
+                if(!idContact.has(item.id)){
+                    listFilter.push(item)
+                }
+            })
+            // setListFilter(...listFilter, ...dataMore.filter(item => !idContact.has(item.id)));
+        }
+    }, [dataMore])
 
     const SearchApi = (value) => {
         route.params && route.params.useid && FetchApi(`${ContactAPI.SearchContact}?userId=${route.params.useid}`, Method.GET, ContentType.JSON, undefined, getContact)
@@ -137,7 +149,7 @@ const SearchContact = ({ navigation, route }) => {
         authCtx.checkToken()
         if (data) {
             if (data.message === "C0018") {
-                Alert.alert(t("Screen_SearchContact_Alert_Error"),t("Screen_SearchContact_Alert_EmailNotFound"))
+                Alert.alert(t("Screen_SearchContact_Alert_Error"), t("Screen_SearchContact_Alert_EmailNotFound"))
             }
             if (data.message === "Success") {
                 setVisibleTransfer(false);
@@ -146,7 +158,7 @@ const SearchContact = ({ navigation, route }) => {
             }
         }
         if (data.message === "C0018") {
-            Alert.alert(t("Screen_SearchContact_Alert_Error"),t("Screen_SearchContact_Alert_EmailNotFound"))
+            Alert.alert(t("Screen_SearchContact_Alert_Error"), t("Screen_SearchContact_Alert_EmailNotFound"))
         }
         if (data.message === "Success") {
             setVisibleTransfer(false);
@@ -163,10 +175,6 @@ const SearchContact = ({ navigation, route }) => {
             screen: "AddContactToManyGroup",
             params: { id: [...selectedContactIds], userId: route.params.useid }
         });
-    }
-
-    const addContactToManyGroupAPICallBack = (data) => {
-        navigation.goBack()
     }
 
     const CardContact = ({ item }) => {
@@ -199,23 +207,35 @@ const SearchContact = ({ navigation, route }) => {
         )
     }
 
+    const debounceLoadMore = useCallback(debounce((nextPage) =>{
+        console.log("load more 1")
+        LoadMoreApi(nextPage)      
+    } , 200), [])
     const handleLoadMore = (e) => {
-        if(route.params && route.params.transfer){
-            FetchApi(`${ContactAPI.ListTransferContact}?&page=${page}`, Method.GET, ContentType.JSON, undefined, getContactLoadMore)
+        console.log("load more")
+        debounceLoadMore(page);
+        setPage(page + 1);
+    }
+
+    const LoadMoreApi = (nextPage) => {
+        console.log("load more api")
+        console.log(nextPage)
+        if (route.params && route.params.transfer) {
+            FetchApi(`${ContactAPI.ListTransferContact}?&page=${nextPage}`, Method.GET, ContentType.JSON, undefined, getContactLoadMore)
         }
-        if(route.params && route.params.useid){
-            FetchApi(`${TeamAPI.ViewContactMember}/${route.params.useid}/contacts?page=${page}`, Method.GET, ContentType.JSON, undefined, getContactLoadMore)
+        if (route.params && route.params.useid) {
+            FetchApi(`${TeamAPI.ViewContactMember}/${route.params.useid}/contacts?page=${nextPage}`, Method.GET, ContentType.JSON, undefined, getContactLoadMore)
         }
-        
     }
 
     const getContactLoadMore = (data) => {
+        console.log("getContactLoadMore")
         authCtx.checkToken()
         if (data) {
+            console.log(data)
             if (data.data) {
                 if (data.data.length > 0) {
-                    setListFilter([...listFilter, ...data.data]);
-                    setPage(page + 1);
+                    setDataMore(data.data)
                 }
             }
         }
@@ -309,9 +329,9 @@ const SearchContact = ({ navigation, route }) => {
                     keyExtractor={(item) => item.id}
                     showsVerticalScrollIndicator={false}
                     onEndReached={handleLoadMore}
-                    onEndReachedThreshold={Platform.OS === 'android' ? 0.3 : 0.5}
+                    onEndReachedThreshold={Platform.OS === 'android' ? 0.1 : 0.5}
                     ListEmptyComponent={EmptyList}
-                    ListFooterComponent={FooterList}
+                // ListFooterComponent={FooterList}
                 />
 
                 {visibleCheckBox && route.params && route.params.transfer && <Button
