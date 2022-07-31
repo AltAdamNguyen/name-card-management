@@ -142,7 +142,7 @@ const GroupContact = ({ navigation }) => {
         <View style={styles.container_listGroup}>
           {listGroupContact.length == 0 && (
             <View style={styles.listContainer_view}>
-              <Text style={styles.listContainer_label}>Không có nhóm</Text>
+              <Text style={styles.listContainer_label}>{t("Screen_GroupContact_Text_Container_Label_NoGroupFound")}</Text>
             </View>
           )}
           <ScrollView>
@@ -172,14 +172,6 @@ const GroupContact = ({ navigation }) => {
         </View>
         <FAB style={styles.floatButton} icon="plus" size={24} color="#fff" onPress={() => setModalAddContactVisible(true)} />
       </SafeAreaView>
-      {/* <ModalAddGroupContact
-        label={t("ModalAddGroupContact_Placeholder_GroupName")}
-        confirmLabel={t("ModalAddGroupContact_Label_Confirm")}
-        onVisible={modalAddContactVisible}
-        onDismiss={() => setModalAddContactVisible(false)}
-        onPressCancel={() => setModalAddContactVisible(false)}
-        onPressConfirm={onAddNewGroupContactPressed}
-      /> */}
       <ModalAddGroup visible={modalAddContactVisible}  onPressConfirm={onAddNewGroupContactPressed} onPressVisable={() => setModalAddContactVisible(!modalAddContactVisible)}/>
       <Loading onVisible={isLoading ? true : false} />
     </Provider>

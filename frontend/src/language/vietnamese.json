@@ -47,6 +47,7 @@
 
         "Screen_GroupContact_Placeholder_Search": "Tìm kiếm nhóm",
         "Screen_GroupContact_Text_Container_Label_Title":"Nhóm danh thiếp của tôi",
+        "Screen_GroupContact_Text_Container_Label_NoGroupFound": "Không có nhóm",
 
         "Screen_Home_ModalHome_Text_Label_Sort": "Sắp xếp",
         "Screen_Home_ModalHome_Text_Label_Manage": "Quản lí",
@@ -107,7 +108,7 @@
         "ModalGroupContactDetail_Label_ChangeGroupName": "Đổi tên",
         "ModalGroupContactDetail_Label_DeleteContact": "Xóa danh thiếp",
         "ModalGroupContactDetail_Label_DeleteGroup": "Xóa nhóm",
-
+        
         "ModalActive_Title": "Khôi phục lại liên hệ",
         "ModalActive_Label_Cancel": "Hủy",
         "ModalActive_Label_Confirm": "Xác nhận",
@@ -202,7 +203,17 @@
         "Screen_DeleteContactFromGroup_ConfirmDialog_LeftButtonTitle": "Hủy",
         "Screen_DeleteContactFromGroup_ConfirmDialog_RightButtonTitle": "Xóa",
         
-        "Screen_GroupContactDetail_ListContact_NoContactFound":"Không có liên hệ",
+        "Screen_GroupContactDetail_ListContact_NoContactFound":"Không có liên hệ",  
+        "Screen_GroupContactDetail_PlaceHolder_SearchContact":"Tìm liên hệ",
+        "Screen_GroupContactDetail_ConfirmDialog_Title": "Bạn có chắc chắn muốn xóa nhóm này không?",
+        "Screen_GroupContactDetail_ConfirmDialog_LeftButtonTitle": "Hủy",
+        "Screen_GroupContactDetail_ConfirmDialog_RightButtonTitle": "Xóa",
+
+        "Screen_GroupContactDetail_InputDialog_Title": "Đổi tên nhóm",
+        "Screen_GroupContactDetail_InputDialog_Label": "Tên nhóm",
+        "Screen_GroupContactDetail_InputDialog_LeftButtonTitle": "Hủy",
+        "Screen_GroupContactDetail_InputDialog_RightButtonTitle": "Đổi",
+        "Screen_GroupContactDetail_InputDialog_Alert": "Tên nhóm không được để trống",
 
         "Screen_AddContactToManyGroup_Appbar_Content_Title_AddToGroup": "Thêm vào nhóm",
         "Screen_AddContactToManyGroup_Title_MyGroups": "Nhóm của tôi",
