@@ -37,7 +37,7 @@ const ModalActivate = ({ visible, onPressVisable, onPressSubmit }) => {
                                 style={{ borderRadius: 10, width: '40%' }}
                                 onPress={onPressSubmit}
                             >
-                                {t("ModalActive_Label_Cancel")}
+                                {t("ModalActive_Label_Confirm")}
                             </Button>
                         </View>
                     </Card>
