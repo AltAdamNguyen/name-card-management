@@ -17,6 +17,7 @@
 
         "Screen_ResetPasswordCode_Label_ResetPassword": "Hệ thống vừa gửi bạn mật mã 6 số tới email vừa nhập, vui lòng nhập mã để thay đổi mật khẩu",
         "Screen_ResetPasswordCode_PlaceHolder": "Nhập mã",
+        "Screen_ResetPasswordCode_Alert_IncorrectCode": "Không tìm thấy người dùng hoặc mã nhập sai",
 
         "Screen_ResetPassword_Alert_PasswordAndRePasswordMatch": "Mật khẩu mới và nhập lại mật khẩu mới không giống nhau",
         "Screen_ResetPassword_Alert_PasswordFormat": "Mật khẩu mới phải có tối thiểu 8 kí tự, có ít nhất một chữ in thường, một chữ in hoa, một số và một kí tự đặc biệt",
@@ -248,7 +249,25 @@
         "Screen_Scan_Alert_Button_Ok": "Đồng ý",
         "Screen_Scan_Alert_Permission": "Yêu cầu quyền đối với máy ảnh",
 
-        "Loading_InternetError": "Lôi kết nối, vui lòng thử lại sau"
+        "Loading_InternetError": "Lỗi kết nối, vui lòng thử lại sau",
 
+        "ConfirmDialog_Title": "Thông báo",
+
+        "Screen_ChangePassword_Label": "Đổi mật khẩu",
+        "Screen_ChangePassword_Input_Title_CurrentPassword": "Mật khẩu hiện tại",
+        "Screen_ChangePassword_Input_PlaceHolder_CurrentPassword": "Mật khẩu hiện tại",
+        "Screen_ChangePassword_Input_Title_NewPassword": "Mật khẩu mới",
+        "Screen_ChangePassword_Input_PlaceHolder_NewPassword": "Mật khẩu mới",
+        "Screen_ChangePassword_Input_Title_ReEnterNewPassword": "Nhập lại mật khẩu mới",
+        "Screen_ChangePassword_Input_PlaceHolder_ReEnterNewPassword": "Nhập lại mật khẩu mới",
+        "Screen_ChangePassword_Button_Label": "Đặt lại mật khẩu",
+        "Screen_ChangePassword_ConfirmDialog_Label": "Bạn có chắc chắn muốn đổi mật khẩu không?",
+        "Screen_ChangePassword_ConfirmDialog_LeftButtonTitle": "Hủy",
+        "Screen_ChangePassword_ConfirmDialog_RightButtonTitle": "Đổi",
+        "Screen_ChangePassword_Alert_U0005": "Mật khẩu mới cần phải khác với mật khẩu hiện tại",
+        "Screen_ChangePassword_Alert_U0007": "Mật khẩu hiện tại không đúng",
+        "Screen_ChangePassword_Alert_U0006": "Mật khẩu mới phải có tối thiểu 8 kí tự, có ít nhất một chữ in thường, một chữ in hoa, một số và một kí tự đặc biệt",
+        "Screen_ChangePassword_Alert_PasswordAndRePasswordMatch": "Mật khẩu mới và nhập lại mật khẩu mới không giống nhau",
+        "Screen_ChangePassword_Alert_Warning": "Cảnh báo"
     } 
 }

@@ -30,6 +30,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: "10%",
     alignItems: "center",
+    // width: '90%',
+    paddingHorizontal: '7%'
   },
   headline: {
     width: "100%",
