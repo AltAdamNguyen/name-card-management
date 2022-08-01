@@ -18,7 +18,8 @@
 
         "Screen_ResetPasswordCode_Label_ResetPassword": "We just send you a 6 digits code into your email, enter the code and reset your password",
         "Screen_ResetPasswordCode_PlaceHolder": "Enter Code",
-
+        "Screen_ResetPasswordCode_Alert_IncorrectCode": "User not found or code is incorrect",
+        
         "Screen_ResetPassword_Alert_PasswordAndRePasswordMatch": "Password and Re-enter Password must be the same",
         "Screen_ResetPassword_Alert_PasswordFormat": "New password must be at least 8 characters, contain at least one lowercase letter, one uppercase letter, one number and one special character",
         "Screen_ResetPassword_Label_CreateNewPassword": "Crete your new password",
@@ -248,6 +249,26 @@
         "Screen_Scan_Alert_Button_Ok": "Ok",
         "Screen_Scan_Alert_Permission": "Requesting permissions camera",
 
-        "Loading_InternetError": "Internet Error, Please try again later"
+        "Loading_InternetError": "Internet Error, Please try again later",
+
+        "ConfirmDialog_Title": "Notification",
+
+        "Screen_ChangePassword_Label": "Change Password",
+        "Screen_ChangePassword_Input_Title_CurrentPassword": "Current Password",
+        "Screen_ChangePassword_Input_PlaceHolder_CurrentPassword": "Current password",
+        "Screen_ChangePassword_Input_Title_NewPassword": "New Password",
+        "Screen_ChangePassword_Input_PlaceHolder_NewPassword": "New password",
+        "Screen_ChangePassword_Input_Title_ReEnterNewPassword": "Re-enter new password",
+        "Screen_ChangePassword_Input_PlaceHolder_ReEnterNewPassword": "Re-enter new password",
+        "Screen_ChangePassword_Button_Label": "Change",
+        "Screen_ChangePassword_ConfirmDialog_Label": "Are you sure you want to change the password?",
+        "Screen_ChangePassword_ConfirmDialog_LeftButtonTitle": "Cancel",
+        "Screen_ChangePassword_ConfirmDialog_RightButtonTitle": "Change",
+        "Screen_ChangePassword_Alert_U0005": "New password must be different from old password",
+        "Screen_ChangePassword_Alert_U0007": "Current password is incorrect",
+        "Screen_ChangePassword_Alert_U0006": "New password must be at least 8 characters, contain at least 1 uppercase letter, 1 number and 1 speacial character",
+        "Screen_ChangePassword_Alert_PasswordAndRePasswordMatch": "Password and Re-enter Password must be the same",
+        "Screen_ChangePassword_Alert_Warning": "Warning"
+
     }
 }

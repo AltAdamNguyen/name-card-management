@@ -57,10 +57,10 @@ const ResetPasswordCode = ({ navigation, route }) => {
 
   const InputPasswordCodeAPICallback = (data) => {
     if (data.message == "Internet Error") {
-      Alert.alert('',"Internet Error")
+      Alert.alert('',t("Loading_InternetError"))
     }
     else if (data.message == 'User not found or code is incorrect') {
-      Alert.alert('',"User not found or code is incorrect")
+      Alert.alert('',t("Screen_ResetPasswordCode_Alert_IncorrectCode"))
     }
     else {
       navigation.navigate("ResetPassword", {

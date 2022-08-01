@@ -6,6 +6,8 @@ import {
   useWindowDimensions,
   Text,
   Alert,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import CustomInputs from "../../components/CustomInputs";
@@ -19,13 +21,24 @@ import ConfirmDialogg from "../../components/customDialog/dialog/confirmDialog/C
 import { FetchApi } from "../../service/api/FetchAPI";
 import { UserAPI, ContentType, Method } from "../../constants/ListAPI";
 import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
+import { t } from "i18next";
 
 const ChangePassword = ({ navigation }) => {
-  const onVisibilityPasswordPressed = () => {
-    setIsSecureEntry((prev) => !prev);
+  const onVisibilityCurrentPasswordPressed = () => {
+    setCurretPasswordIsSecureEntry((prev) => !prev);
+  };
+
+  const onVisibilityNewPasswordPressed = () => {
+    setNewPasswordIsSecureEntry((prev) => !prev);
+  };
+
+  const onVisibilityReEnterPasswordPressed = () => {
+    setReEnterNewPasswordIsSecureEntry((prev) => !prev);
   };
   const { height } = useWindowDimensions();
-  const [isSecureEntry, setIsSecureEntry] = useState(true);
+  const [curretPasswordIsSecureEntry, setCurretPasswordIsSecureEntry] = useState(true);
+  const [newPasswordIsSecureEntry, setNewPasswordIsSecureEntry] = useState(true);
+  const [reEnterNewPasswordIsSecureEntry, setReEnterNewPasswordIsSecureEntry] = useState(true);
   const [
     dialogChangePasswordConfirmVisible,
     setDialogChangePasswordConfirmVisible,
@@ -51,8 +64,8 @@ const ChangePassword = ({ navigation }) => {
   const handleOnPressResetPassword = () => {
     if (newPassword !== reEnterNewPassword) {
       Alert.alert(
-        "",
-        "Password mới và password nhập lại không giống nhau, hãy nhập lại"
+        t("Screen_ChangePassword_Alert_Warning"),
+        t("Screen_ChangePassword_Alert_PasswordAndRePasswordMatch")
       );
       setIsLoading(false);
     } else {
@@ -73,13 +86,13 @@ const ChangePassword = ({ navigation }) => {
   const changePasswordAPICallBack = (data) => {
     setIsLoading(false);
     if (data.message == "U0005") {
-      Alert.alert("", "New password must be different from old password");
+      Alert.alert(t("Screen_ChangePassword_Alert_Warning"), t("Screen_ChangePassword_Alert_U0005"));
     } else if (data.message == "U0007") {
-      Alert.alert("", "Old password is incorrect");
+      Alert.alert(t("Screen_ChangePassword_Alert_Warning"), t("Screen_ChangePassword_Alert_U0007"));
     } else if (data.message == "U0006") {
       Alert.alert(
-        "",
-        "New password must be at least 8 characters, contain at least 1 uppercase letter, 1 number and 1 speacial character"
+        t("Screen_ChangePassword_Alert_Warning"),
+        t("Screen_ChangePassword_Alert_U0006")
       );
     } else if (data.message == "Change password success") {
       navigation.goBack();
@@ -88,6 +101,7 @@ const ChangePassword = ({ navigation }) => {
 
   return (
     <Provider>
+      <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
       <SafeAreaView style={styles.container}>
         <Appbar.Header
           statusBarHeight={1}
@@ -95,41 +109,35 @@ const ChangePassword = ({ navigation }) => {
         >
           <Appbar.BackAction onPress={() => navigation.goBack()} />
         </Appbar.Header>
-        <View style={styles.headline}>
-          <Image
-            source={Logo_ForgotPassword}
-            style={[styles.logo, { height: height * 0.3 }]}
-            resizeMode="contain"
-          />
-          <View style={styles.text}>
-            <Text style={styles.text_PRIMARY}>Đổi mật khẩu</Text>
-          </View>
-        </View>
+
         <View style={styles.section}>
+          <View style={styles.text}>
+            <Text style={styles.text_PRIMARY}>{t("Screen_ChangePassword_Label")}</Text>
+          </View>
           <CustomInputs
             value={currentPassword}
             setValue={(text) => handleChangeCurrentPassword(text)}
-            label={"Mật khẩu hiện tại"}
-            secureTextEntry={isSecureEntry}
-            icon={isSecureEntry ? "eye" : "eye-off"}
-            onpress={onVisibilityPasswordPressed}
+            label={t("Screen_ChangePassword_Input_Title_CurrentPassword")}
+            secureTextEntry={curretPasswordIsSecureEntry}
+            icon={curretPasswordIsSecureEntry ? "eye" : "eye-off"}
+            onpress={onVisibilityCurrentPasswordPressed}
           />
 
           <CustomInputs
             value={newPassword}
             setValue={(text) => handleChangeNewPassword(text)}
-            label={"Mật khẩu mới"}
-            secureTextEntry={isSecureEntry}
-            icon={isSecureEntry ? "eye" : "eye-off"}
-            onpress={onVisibilityPasswordPressed}
+            label={t("Screen_ChangePassword_Input_Title_NewPassword")}
+            secureTextEntry={newPasswordIsSecureEntry}
+            icon={newPasswordIsSecureEntry ? "eye" : "eye-off"}
+            onpress={onVisibilityNewPasswordPressed}
           />
           <CustomInputs
             value={reEnterNewPassword}
             setValue={(text) => handleReEnterNewPassword(text)}
-            label={"Nhập lại mật khẩu mới"}
-            secureTextEntry={isSecureEntry}
-            icon={isSecureEntry ? "eye" : "eye-off"}
-            onpress={onVisibilityPasswordPressed}
+            label={t("Screen_ChangePassword_Input_Title_ReEnterNewPassword")}
+            secureTextEntry={reEnterNewPasswordIsSecureEntry}
+            icon={reEnterNewPasswordIsSecureEntry ? "eye" : "eye-off"}
+            onpress={onVisibilityReEnterPasswordPressed}
           />
           <View style={styles.bottomButtonContainer}>
             <Button
@@ -139,15 +147,15 @@ const ChangePassword = ({ navigation }) => {
                 setDialogChangePasswordConfirmVisible(true);
               }}
             >
-              Đặt lại mật khẩu
+             {t("Screen_ChangePassword_Button_Label")}
             </Button>
           </View>
         </View>
         <ConfirmDialogg
           visible={dialogChangePasswordConfirmVisible}
-          title={"Bạn có chắc chắn muốn thay đổi mật khẩu không?"}
-          leftButtonTitle={"Hủy"}
-          rightButtonTitle={"Có"}
+          title={t("Screen_ChangePassword_ConfirmDialog_Label")}
+          leftButtonTitle={t("Screen_ChangePassword_ConfirmDialog_LeftButtonTitle")}
+          rightButtonTitle={t("Screen_ChangePassword_ConfirmDialog_RightButtonTitle")}
           onPressVisable={() => {
             setDialogChangePasswordConfirmVisible(false);
           }}
@@ -156,8 +164,9 @@ const ChangePassword = ({ navigation }) => {
             handleOnPressResetPassword();
           }}
         />
-        <LoadingDialog onVisible ={isLoading}/>
+        <LoadingDialog onVisible={isLoading} />
       </SafeAreaView>
+      </TouchableWithoutFeedback>
     </Provider>
   );
 };
