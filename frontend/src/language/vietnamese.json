@@ -231,8 +231,11 @@
         "Screen_AddContactToManyGroup_ConfirmDialog_LeftButtonTitle": "Hủy",
         "Screen_AddContactToManyGroup_ConfirmDialog_RightButtonTitle": "Thêm",
 
+        "Screen_SearchContact_Input_Placeholder": "Tìm kiếm liên hệ",
         "Screen_SearchContact_Text_NoContactFound": "Không có liên hệ",
+        "Screen_SearchContact_Contact_Text_Reason": "Lý do",
         "Screen_SearchContact_Button_AddGroup": "Thêm nhóm",
+        "Screen_SearchContact_Button_Cancel": "Hủy",
         "Screen_SearchContact_Button_SelectAll": "Chọn tất cả",
         "Screen_SearchContact_Button_Selected": "Đã chọn",
         "Screen_SearchContact_Button_Transfer": "Chuyển",

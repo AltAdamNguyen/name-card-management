@@ -5,6 +5,8 @@ import { Card, RadioButton, List } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { FormatDate } from '../../validate/FormatDate';
 import styles from '../../screen/Home/styles';
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 const listFlag = {
     F0001: {
         name: 'very-important',
@@ -66,7 +68,7 @@ const listRequest = {
 }
 // create a component
 const Contact = ({ item, route, handleViewContact, checkListGroup, handleReActivateButton, listGroup = [], visibleCheckBox }) => {
-
+    const { t, i18n } =  useTranslation()
     return (
         <Card mode='elevated' style={styles.card} elevation={2} onPress={() => visibleCheckBox ? checkListGroup(item.id, !listGroup.includes(item.id)) : handleViewContact(item)}>
             <View>
@@ -117,7 +119,7 @@ const Contact = ({ item, route, handleViewContact, checkListGroup, handleReActiv
                 </View>
                 {route.params && route.params.deactive &&
                     <List.Accordion
-                        title="Lý do"
+                        title={t("Screen_SearchContact_Contact_Text_Reason")}
                         titleStyle={{ fontSize: 14 }}
                         theme={{ colors: { primary: '#1890FF' } }}
                         right={(props) => <Icon {...props} />}

@@ -249,7 +249,7 @@ const SearchContact = ({ navigation, route }) => {
                             uppercase={false}
                             color="#1980FF"
                         >
-                            {t("Screen_SearchContact_Button_AddGroup")}
+                            {visibleCheckBox?t("Screen_SearchContact_Button_Cancel"):t("Screen_SearchContact_Button_AddGroup")}
                         </Button>
                     </View>
                 }
@@ -259,18 +259,18 @@ const SearchContact = ({ navigation, route }) => {
                             <IconButton icon="arrow-left" size={26} onPress={() => navigation.goBack()} />
                             <Text style={styles.header_title_left_label}>{t("Screen_SearchContact_Button_Selected")} ({listGroup.length})</Text>
                         </View>
-                        <Button
+                        {/* <Button
                             onPress={handleSelectAll}
                             uppercase={false}
                             color="#1980FF"
                         >
                             {t("Screen_SearchContact_Button_SelectAll")}
-                        </Button>
+                        </Button> */}
                     </View>
                 }
                 <View style={styles.sectionStyle}>
                     <Searchbar
-                        placeholder="Tìm kiếm danh thiếp"
+                        placeholder={t("Screen_SearchContact_Input_Placeholder")}
                         icon={!route.params || route.params && route.params.deactive ? "arrow-left" : "magnify"}
                         onIconPress={handleGoBack}
                         theme={{
@@ -330,16 +330,20 @@ const SearchContact = ({ navigation, route }) => {
 
                 {visibleCheckBox && route.params && route.params.transfer && <Button
                     style={styles.floatButton_team}
+                    color="#1980FF"
                     mode="contained"
                     onPress={() => setVisibleTransfer(true)}
+                    disabled={listGroup.length === 0}
                 >
                     {t("Screen_SearchContact_Button_Transfer")}
                 </Button>}
 
                 {visibleCheckBox && route.params && route.params.useid && <Button
                     style={styles.floatButton_team}
+                    color="#1980FF"
                     mode="contained"
                     onPress={handleAddContactsToGroups}
+                    disabled={listGroup.length === 0}
                 >
                     {t("Screen_SearchContact_Button_AddToGroup")}
                 </Button>}
