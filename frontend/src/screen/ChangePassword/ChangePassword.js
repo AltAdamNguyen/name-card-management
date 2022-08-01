@@ -8,6 +8,7 @@ import {
   Alert,
   TouchableWithoutFeedback,
   Keyboard,
+  KeyboardAvoidingView,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import CustomInputs from "../../components/CustomInputs";
@@ -36,9 +37,12 @@ const ChangePassword = ({ navigation }) => {
     setReEnterNewPasswordIsSecureEntry((prev) => !prev);
   };
   const { height } = useWindowDimensions();
-  const [curretPasswordIsSecureEntry, setCurretPasswordIsSecureEntry] = useState(true);
-  const [newPasswordIsSecureEntry, setNewPasswordIsSecureEntry] = useState(true);
-  const [reEnterNewPasswordIsSecureEntry, setReEnterNewPasswordIsSecureEntry] = useState(true);
+  const [curretPasswordIsSecureEntry, setCurretPasswordIsSecureEntry] =
+    useState(true);
+  const [newPasswordIsSecureEntry, setNewPasswordIsSecureEntry] =
+    useState(true);
+  const [reEnterNewPasswordIsSecureEntry, setReEnterNewPasswordIsSecureEntry] =
+    useState(true);
   const [
     dialogChangePasswordConfirmVisible,
     setDialogChangePasswordConfirmVisible,
@@ -86,9 +90,15 @@ const ChangePassword = ({ navigation }) => {
   const changePasswordAPICallBack = (data) => {
     setIsLoading(false);
     if (data.message == "U0005") {
-      Alert.alert(t("Screen_ChangePassword_Alert_Warning"), t("Screen_ChangePassword_Alert_U0005"));
+      Alert.alert(
+        t("Screen_ChangePassword_Alert_Warning"),
+        t("Screen_ChangePassword_Alert_U0005")
+      );
     } else if (data.message == "U0007") {
-      Alert.alert(t("Screen_ChangePassword_Alert_Warning"), t("Screen_ChangePassword_Alert_U0007"));
+      Alert.alert(
+        t("Screen_ChangePassword_Alert_Warning"),
+        t("Screen_ChangePassword_Alert_U0007")
+      );
     } else if (data.message == "U0006") {
       Alert.alert(
         t("Screen_ChangePassword_Alert_Warning"),
@@ -101,71 +111,91 @@ const ChangePassword = ({ navigation }) => {
 
   return (
     <Provider>
-      <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
-      <SafeAreaView style={styles.container}>
-        <Appbar.Header
-          statusBarHeight={1}
-          theme={{ colors: { primary: "transparent" } }}
-        >
-          <Appbar.BackAction onPress={() => navigation.goBack()} />
-        </Appbar.Header>
+      <TouchableWithoutFeedback
+        onPress={() => {
+          Keyboard.dismiss();
+        }}
+      >
+        <SafeAreaView style={styles.container}>
+          <Appbar.Header
+            statusBarHeight={1}
+            theme={{ colors: { primary: "transparent" } }}
+          >
+            <Appbar.BackAction onPress={() => navigation.goBack()} />
+          </Appbar.Header>
 
-        <View style={styles.section}>
-          <View style={styles.text}>
-            <Text style={styles.text_PRIMARY}>{t("Screen_ChangePassword_Label")}</Text>
-          </View>
-          <CustomInputs
-            value={currentPassword}
-            setValue={(text) => handleChangeCurrentPassword(text)}
-            label={t("Screen_ChangePassword_Input_Title_CurrentPassword")}
-            secureTextEntry={curretPasswordIsSecureEntry}
-            icon={curretPasswordIsSecureEntry ? "eye" : "eye-off"}
-            onpress={onVisibilityCurrentPasswordPressed}
+          <Image
+            source={Logo_ForgotPassword}
+            style={[styles.logo, { height: height * 0.2 }]}
+            resizeMode="contain"
           />
+          <View style={styles.section}>
+            <View style={styles.text}>
+              <Text style={styles.text_PRIMARY}>
+                {t("Screen_ChangePassword_Label")}
+              </Text>
+            </View>
+           
+              <CustomInputs
+                value={currentPassword}
+                setValue={(text) => handleChangeCurrentPassword(text)}
+                label={t("Screen_ChangePassword_Input_Title_CurrentPassword")}
+                secureTextEntry={curretPasswordIsSecureEntry}
+                icon={curretPasswordIsSecureEntry ? "eye" : "eye-off"}
+                onpress={onVisibilityCurrentPasswordPressed}
+              />
 
-          <CustomInputs
-            value={newPassword}
-            setValue={(text) => handleChangeNewPassword(text)}
-            label={t("Screen_ChangePassword_Input_Title_NewPassword")}
-            secureTextEntry={newPasswordIsSecureEntry}
-            icon={newPasswordIsSecureEntry ? "eye" : "eye-off"}
-            onpress={onVisibilityNewPasswordPressed}
-          />
-          <CustomInputs
-            value={reEnterNewPassword}
-            setValue={(text) => handleReEnterNewPassword(text)}
-            label={t("Screen_ChangePassword_Input_Title_ReEnterNewPassword")}
-            secureTextEntry={reEnterNewPasswordIsSecureEntry}
-            icon={reEnterNewPasswordIsSecureEntry ? "eye" : "eye-off"}
-            onpress={onVisibilityReEnterPasswordPressed}
-          />
-          <View style={styles.bottomButtonContainer}>
-            <Button
-              style={styles.bottomButtonEnable}
-              labelStyle={{ color: "white" }}
-              onPress={() => {
-                setDialogChangePasswordConfirmVisible(true);
-              }}
-            >
-             {t("Screen_ChangePassword_Button_Label")}
-            </Button>
+              <CustomInputs
+                value={newPassword}
+                setValue={(text) => handleChangeNewPassword(text)}
+                label={t("Screen_ChangePassword_Input_Title_NewPassword")}
+                secureTextEntry={newPasswordIsSecureEntry}
+                icon={newPasswordIsSecureEntry ? "eye" : "eye-off"}
+                onpress={onVisibilityNewPasswordPressed}
+              />
+              <CustomInputs
+                value={reEnterNewPassword}
+                setValue={(text) => handleReEnterNewPassword(text)}
+                label={t(
+                  "Screen_ChangePassword_Input_Title_ReEnterNewPassword"
+                )}
+                secureTextEntry={reEnterNewPasswordIsSecureEntry}
+                icon={reEnterNewPasswordIsSecureEntry ? "eye" : "eye-off"}
+                onpress={onVisibilityReEnterPasswordPressed}
+              />
+            
+            <View style={styles.bottomButtonContainer}>
+              <Button
+                style={styles.bottomButtonEnable}
+                labelStyle={{ color: "white" }}
+                onPress={() => {
+                  setDialogChangePasswordConfirmVisible(true);
+                }}
+              >
+                {t("Screen_ChangePassword_Button_Label")}
+              </Button>
+            </View>
           </View>
-        </View>
-        <ConfirmDialogg
-          visible={dialogChangePasswordConfirmVisible}
-          title={t("Screen_ChangePassword_ConfirmDialog_Label")}
-          leftButtonTitle={t("Screen_ChangePassword_ConfirmDialog_LeftButtonTitle")}
-          rightButtonTitle={t("Screen_ChangePassword_ConfirmDialog_RightButtonTitle")}
-          onPressVisable={() => {
-            setDialogChangePasswordConfirmVisible(false);
-          }}
-          onPressConfirm={() => {
-            setIsLoading(true);
-            handleOnPressResetPassword();
-          }}
-        />
-        <LoadingDialog onVisible={isLoading} />
-      </SafeAreaView>
+
+          <ConfirmDialogg
+            visible={dialogChangePasswordConfirmVisible}
+            title={t("Screen_ChangePassword_ConfirmDialog_Label")}
+            leftButtonTitle={t(
+              "Screen_ChangePassword_ConfirmDialog_LeftButtonTitle"
+            )}
+            rightButtonTitle={t(
+              "Screen_ChangePassword_ConfirmDialog_RightButtonTitle"
+            )}
+            onPressVisable={() => {
+              setDialogChangePasswordConfirmVisible(false);
+            }}
+            onPressConfirm={() => {
+              setIsLoading(true);
+              handleOnPressResetPassword();
+            }}
+          />
+          <LoadingDialog onVisible={isLoading} />
+        </SafeAreaView>
       </TouchableWithoutFeedback>
     </Provider>
   );
