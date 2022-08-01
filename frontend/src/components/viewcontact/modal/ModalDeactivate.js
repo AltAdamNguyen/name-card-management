@@ -5,14 +5,10 @@ import { TextInput, Button, Card } from 'react-native-paper';
 import styles from '../../../screen/ViewContact/styles';
 import { Formik } from 'formik';
 import StatusSchema from '../../../validate/ValidateFormStatus';
-import { useContext } from 'react';
-import i18next from "../../../language/i18n";
-import AuthContext from "../../../store/AuthContext";
 import { useTranslation } from "react-i18next";
 // create a component
 const ModalDeactivate = ({ visible, onPressVisable, reason, onPressSubmit }) => {
     const { t, i18n } = useTranslation();
-    const authCtx = useContext(AuthContext)
     return (
         <Modal
             animationType="fade"

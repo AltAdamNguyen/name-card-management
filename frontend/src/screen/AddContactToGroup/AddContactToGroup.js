@@ -1,17 +1,14 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   SafeAreaView,
   Image,
-  TouchableOpacity,
   ScrollView,
   Pressable,
 } from "react-native";
 import styles from "./styles";
-import i18next from "../../language/i18n";
 import { useTranslation } from "react-i18next";
-import AuthContext from "../../store/AuthContext";
 import {
   Searchbar,
   Appbar,
@@ -24,14 +21,12 @@ import CustomCheckedBox from "../../components/groupcontact/checkBoxCustom/Custo
 import { FetchApi } from "../../service/api/FetchAPI";
 import { GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
 import Loading from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
-import { t } from "i18next";
 import ConfirmDialog from "../../components/customDialog/dialog/confirmDialog/ConfirmDialog";
 const AddContactToGroup = ({ navigation, route }) => {
   const [listContact, setListContact] = useState([]);
   const [listContactTotal, setListContactTotal] = useState([]);
   const [listSearch, setListSearch] = useState([]);
-  const authCtx = useContext(AuthContext);
-
+  const { t, i18n } = useTranslation();
   const [choosenItems, setChoosenItems] = useState(0);
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

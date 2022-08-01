@@ -1,20 +1,14 @@
 //import liraries
 import React from 'react';
-import { View, Text, Modal, TouchableWithoutFeedback, Platform } from 'react-native';
+import { View, Text, Modal, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { TextInput, Button, Card } from 'react-native-paper';
-import { Picker } from '@react-native-picker/picker';
 import styles from '../../components/groupcontact/styles';
 import { Formik } from 'formik';
-import StatusSchema from '../../validate/ValidateFormStatus';
-import { useContext ,useState} from 'react';
-import i18next from "../../language/i18n";
-import AuthContext from "../../store/AuthContext";
 import { useTranslation } from "react-i18next";
+import AddGroupSchema from '../../validate/ValidateFormAddGroup';
 // create a component
-const ModalAddGroup = ({ visible, onPressVisable, value, onPressSubmit, onPressConfirm }) => {
+const ModalAddGroup = ({ visible, onPressVisable, value, onPressSubmit }) => {
     const { t, i18n } = useTranslation();
-    const authCtx = useContext(AuthContext)
-    const [inputVal, setInputVal] = useState("");
     return (
         <Modal
             animationType="fade"
@@ -27,11 +21,11 @@ const ModalAddGroup = ({ visible, onPressVisable, value, onPressSubmit, onPressC
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <TouchableWithoutFeedback>
                     <Card elevation={3} style={styles.info_status_modalView}>
-                        <Text style={{ fontSize: 20, fontWeight: 'bold', margin: 10 }}>Thêm nhóm</Text>
+                        <Text style={{ fontSize: 20, fontWeight: 'bold', margin: 10 }}>{t("ModalAddGroup_Title")}</Text>
                         <Formik
                             initialValues={value}
                             onSubmit={onPressSubmit}
-                            validationSchema={StatusSchema}
+                            validationSchema={AddGroupSchema}
                         >
                             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => {
                                 return (
@@ -39,32 +33,33 @@ const ModalAddGroup = ({ visible, onPressVisable, value, onPressSubmit, onPressC
 
                                         <TextInput
                                             mode="outlined"
-                                            label="Thêm nhóm"
-                                            placeholder="Nhập tên nhóm"
-                                            value={inputVal}
-                                            onChangeText={text => setInputVal(text)}
+                                            label={t("ModalAddGroup_Input_Title_GroupName")}
+                                            placeholder={t("ModalAddGroup_Input_Placeholder_GroupName")}
+                                            value={values.group_name}
+                                            onChangeText={handleChange('group_name')}
+                                            onBlur={handleBlur('group_name')}
                                             style={{ width: '100%', marginBottom: 15 }}
                                             theme={{ roundness: 10, colors: { primary: '#1890FF', error: '#B22D1D' } }}
                                         />
-                                        {errors['reason'] && touched['reason'] ? (
-                                            <Text style={{ color: '#B22D1D', fontSize: 12, }}>{errors['reason']}</Text>
+                                        {errors['group_name'] && touched['group_name'] ? (
+                                            <Text style={{ color: '#B22D1D', fontSize: 12, }}>{errors['group_name']}</Text>
                                         ) : null}
                                         <View style={styles.info_status_modalItem_button}>
                                             <Button
                                                 mode='contained'
                                                 color="#F3F3F3"
                                                 style={{ borderRadius: 10, width: '40%' }}
-                                                onPress={() => {onPressVisable();  setInputVal("")}}
+                                                onPress={onPressVisable}
                                             >
-                                                {t("ModalStatus_Button_Cancel")}
+                                                {t("ModalAddGroup_Button_Cancel")}
                                             </Button>
                                             <Button
                                                 mode='contained'
                                                 color="#1890FF"
                                                 style={{ borderRadius: 10, width: '40%' }}
-                                                onPress={() => {onPressConfirm(inputVal); setInputVal(""); handleSubmit} }
+                                                onPress={handleSubmit}
                                             >
-                                                {t("ModalStatus_Button_Complete")}
+                                                {t("ModalAddGroup_Button_Confirm")}
                                             </Button>
                                         </View>
 

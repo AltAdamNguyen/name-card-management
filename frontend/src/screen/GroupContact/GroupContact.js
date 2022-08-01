@@ -40,22 +40,20 @@ const GroupContact = ({ navigation }) => {
   const [listGroupContactTotal, setListGroupContactTotal] = useState([]);
   const authCtx = useContext(AuthContext);
   const { t, i18n } = useTranslation();
+  const inputGroupName = {
+    group_name: "",
+  }
   const isFocus = useIsFocused();
   const [modalAddContactVisible, setModalAddContactVisible] = useState(false);
-  const onAddNewGroupContactPressed = (groupName) => {
-    if(groupName.trim() == ""){
-      // alert("Group name cannot be empty")
-    }else{
+  const onAddNewGroupContactPressed = (value) => {
       setModalAddContactVisible(false);
       FetchApi(
         GroupContactAPI.AddGroupContact,
         Method.POST,
         ContentType.JSON,
-        { group_name: groupName },
+        value,
         addGroupContact
-      );
-    }
-   
+      );  
   };
 
   useEffect(() => {
@@ -172,7 +170,7 @@ const GroupContact = ({ navigation }) => {
         </View>
         <FAB style={styles.floatButton} icon="plus" size={24} color="#fff" onPress={() => setModalAddContactVisible(true)} />
       </SafeAreaView>
-      <ModalAddGroup visible={modalAddContactVisible}  onPressConfirm={onAddNewGroupContactPressed} onPressVisable={() => setModalAddContactVisible(!modalAddContactVisible)}/>
+      <ModalAddGroup visible={modalAddContactVisible} value={inputGroupName} onPressSubmit={onAddNewGroupContactPressed} onPressVisable={() => setModalAddContactVisible(!modalAddContactVisible)}/>
       <Loading onVisible={isLoading ? true : false} />
     </Provider>
   );

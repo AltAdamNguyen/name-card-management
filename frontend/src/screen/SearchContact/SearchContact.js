@@ -257,7 +257,7 @@ const SearchContact = ({ navigation, route }) => {
                     <View style={styles.header_title}>
                         <View style={styles.header_title_left}>
                             <IconButton icon="arrow-left" size={26} onPress={() => navigation.goBack()} />
-                            <Text style={styles.header_title_left_label}>Đã chọn ({listGroup.length})</Text>
+                            <Text style={styles.header_title_left_label}>{t("Screen_SearchContact_Button_Selected")} ({listGroup.length})</Text>
                         </View>
                         <Button
                             onPress={handleSelectAll}
@@ -291,7 +291,7 @@ const SearchContact = ({ navigation, route }) => {
                             uppercase={false}
                             color="#1980FF"
                         >
-                            {t("Screen_SearchContact_Text_SelectAll")}
+                            {t("Screen_SearchContact_Button_SelectAll")}
                         </Button>
                     </View>
                 }

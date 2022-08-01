@@ -25,6 +25,9 @@ export const AuthProvider = ({ children }) => {
     const getToken = async () => {
         const refresh_token = await SecureStore.getItemAsync('refresh_token');
         const access_token = await SecureStore.getItemAsync('access_token');
+        const localeDefault = await SecureStore.getItemAsync('locale');
+        i18n.changeLanguage(localeDefault);
+        setLocale(localeDefault)
         if(refresh_token && access_token){
             const decoded = jwt_decode(access_token);
             if(decoded.role !== 4) {
@@ -81,8 +84,9 @@ export const AuthProvider = ({ children }) => {
         await SecureStore.deleteItemAsync('refresh_token')
     }
 
-    const handleLocale = (language) => {      
-        setLocale(language)   
+    const handleLocale = async(language) => {      
+        setLocale(language)
+        await SecureStore.setItemAsync('locale',language)   
     }
     
     return (
