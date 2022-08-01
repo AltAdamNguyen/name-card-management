@@ -68,7 +68,7 @@ const listRequest = {
 const Contact = ({ item, route, handleViewContact, checkListGroup, handleReActivateButton, listGroup = [], visibleCheckBox }) => {
 
     return (
-        <Card mode='elevated' style={styles.card} elevation={2} onPress={() => handleViewContact(item)}>
+        <Card mode='elevated' style={styles.card} elevation={2} onPress={() => visibleCheckBox ? checkListGroup(item.id, !listGroup.includes(item.id)) : handleViewContact(item)}>
             <View>
                 <View style={styles.item}>
                     {visibleCheckBox &&
