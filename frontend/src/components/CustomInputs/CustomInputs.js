@@ -1,4 +1,4 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet } from "react-native";
 import React from "react";
 import { TextInput } from "react-native-paper";
 const CustomInputs = ({
@@ -8,6 +8,7 @@ const CustomInputs = ({
   label,
   icon,
   onpress,
+  type
 }) => {
   return (
       <TextInput
@@ -19,6 +20,7 @@ const CustomInputs = ({
           style={styles.input}
           theme={{ roundness: 10, colors: { primary: '#1890FF', error: '#B22D1D' } }}
           right={<TextInput.Icon name={icon} onPress={onpress} />}
+          keyboardType={type}
         />
   );
 };

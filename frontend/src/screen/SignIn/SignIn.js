@@ -109,6 +109,7 @@ const SignIn = ({ navigation }) => {
               icon={"close-circle-outline"}
               label={t("Screen_Login_Placeholder_Username")}
               onpress={onClearUsernamePressed}
+              type={"email-address"}
             />
             <CustomInputs
               value={user.password}
