@@ -15,7 +15,7 @@
         "Screen_ForgotPassword_Alert_RequestMustContainEmail": "Yêu cầu phải nhập Email",
         "Screen_ForgotPassword_Alert_EmailEmpty": "Email không được để trống",
 
-        "Screen_ResetPasswordCode_Label_ResetPassword": "Hệ thống vừa gửi bạn mật mã 6 số tới email vừa nhập, vui lòng nhập mã để thay đổi mật khẩu",
+        "Screen_ResetPasswordCode_Label_ResetPassword": "Hãy nhập mã hệ thống vừa gửi vào email của bạn để đặt lại mật khẩu",
         "Screen_ResetPasswordCode_PlaceHolder": "Nhập mã",
         "Screen_ResetPasswordCode_Alert_IncorrectCode": "Không tìm thấy người dùng hoặc mã nhập sai",
 

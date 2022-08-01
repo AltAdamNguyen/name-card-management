@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
     alignItems: "center",
-    paddingBottom: "30%"
+    paddingBottom: "55%"
   },
 
   // Bottom Button Region
@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     maxWidth: 300,
     alignItems: "center",
     paddingHorizontal: "50%",
-    marginBottom: 25
+    
   },
 
   text_PRIMARY: {
@@ -56,7 +56,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: "#2F80ED",
     textAlign: "center",
-    marginBottom: "10%"
+    marginBottom: "2%",
+    
   },
 });
 

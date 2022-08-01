@@ -16,7 +16,7 @@
         "Screen_ForgotPassword_Alert_RequestMustContainEmail": "Request must contain email",
         "Screen_ForgotPassword_Alert_EmailEmpty": "Email cannot be empty",
 
-        "Screen_ResetPasswordCode_Label_ResetPassword": "We just send you a 6 digits code into your email, enter the code and reset your password",
+        "Screen_ResetPasswordCode_Label_ResetPassword": "Please enter the code we just sent to your email",
         "Screen_ResetPasswordCode_PlaceHolder": "Enter Code",
         "Screen_ResetPasswordCode_Alert_IncorrectCode": "User not found or code is incorrect",
         
