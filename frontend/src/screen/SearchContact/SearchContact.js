@@ -354,6 +354,7 @@ const SearchContact = ({ navigation, route }) => {
                         mode="contained"
                         onPress={() => setVisibleTransfer(true)}
                         disabled={listGroup.length === 0}
+                        uppercase={false}
                     >
                         {t("Screen_SearchContact_Button_Transfer")}
                     </Button>}
@@ -364,6 +365,7 @@ const SearchContact = ({ navigation, route }) => {
                         mode="contained"
                         onPress={handleAddContactsToGroups}
                         disabled={listGroup.length === 0}
+                        uppercase={false}
                     >
                         {t("Screen_SearchContact_Button_AddToGroup")}
                     </Button>}

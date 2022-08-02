@@ -144,7 +144,7 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
                     <Appbar.Header statusBarHeight={1} theme={{ colors: { primary: "transparent" } }}>
                         <Appbar.BackAction onPress={() => navigation.goBack()} />
                         <Appbar.Content title={t("Screen_DeleteContactFromGroup_Appbar_Content_Title_Selected") + choosenItems} />
-                      
+
                     </Appbar.Header>
                     <View style={styles.header}>
                         <Pressable style={styles.sectionStyle} >
@@ -217,21 +217,27 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
                         </View>
                     </View>
                     <View style={styles.bottomButtonContainer}>
-                        <Button style={choosenItems == 0 ? styles.bottomButtonDisable : styles.bottomButtonEnable} labelStyle={{ color: 'white' }} disabled={choosenItems == 0 ? true : false} onPress={() => { setConfirmDialogVisible(true) }}>
+                        <Button
+                            style={choosenItems == 0 ? styles.bottomButtonDisable : styles.bottomButtonEnable}
+                            labelStyle={{ color: 'white' }}
+                            disabled={choosenItems == 0 ? true : false}
+                            onPress={() => { setConfirmDialogVisible(true) }}
+                            uppercase={false}
+                        >
                             {t("Screen_DeleteContactFromGroup_Button_DeleteContact")}
                         </Button>
                     </View>
-                        <ConfirmDialog
-                            visible={confirmDialogVisible}
-                            title={t("Screen_DeleteContactFromGroup_ConfirmDialog_Label")}
-                            leftButtonTitle={t("Screen_DeleteContactFromGroup_ConfirmDialog_LeftButtonTitle")}
-                            rightButtonTitle={t("Screen_DeleteContactFromGroup_ConfirmDialog_RightButtonTitle")}
-                            onPressVisable={() => {setConfirmDialogVisible(false)}}
-                            onPressConfirm={deleteContactFromGroup}
-          />    
+                    <ConfirmDialog
+                        visible={confirmDialogVisible}
+                        title={t("Screen_DeleteContactFromGroup_ConfirmDialog_Label")}
+                        leftButtonTitle={t("Screen_DeleteContactFromGroup_ConfirmDialog_LeftButtonTitle")}
+                        rightButtonTitle={t("Screen_DeleteContactFromGroup_ConfirmDialog_RightButtonTitle")}
+                        onPressVisable={() => { setConfirmDialogVisible(false) }}
+                        onPressConfirm={deleteContactFromGroup}
+                    />
                 </SafeAreaView>
             </Portal>
-            <Loading onVisible={isLoading ? true : false }/>
+            <Loading onVisible={isLoading ? true : false} />
         </Provider>
     );
 }

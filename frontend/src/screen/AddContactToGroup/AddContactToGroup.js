@@ -282,6 +282,7 @@ const AddContactToGroup = ({ navigation, route }) => {
               onPress={() => {
                 setConfirmDialogVisible(true);
               }}
+              uppercase={false}
             >
               {t("Screen_AddContactToGroup_Button_AddContact")}
             </Button>

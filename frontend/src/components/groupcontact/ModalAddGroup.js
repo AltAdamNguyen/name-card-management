@@ -50,6 +50,7 @@ const ModalAddGroup = ({ visible, onPressVisable, value, onPressSubmit }) => {
                                                 color="#F3F3F3"
                                                 style={{ borderRadius: 10, width: '40%' }}
                                                 onPress={onPressVisable}
+                                                uppercase={false}
                                             >
                                                 {t("ModalAddGroup_Button_Cancel")}
                                             </Button>
@@ -58,6 +59,7 @@ const ModalAddGroup = ({ visible, onPressVisable, value, onPressSubmit }) => {
                                                 color="#1890FF"
                                                 style={{ borderRadius: 10, width: '40%' }}
                                                 onPress={handleSubmit}
+                                                uppercase={false}
                                             >
                                                 {t("ModalAddGroup_Button_Confirm")}
                                             </Button>

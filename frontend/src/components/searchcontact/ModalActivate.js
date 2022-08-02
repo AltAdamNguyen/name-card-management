@@ -28,6 +28,7 @@ const ModalActivate = ({ visible, onPressVisable, onPressSubmit }) => {
                                 color="#F3F3F3"
                                 style={{ borderRadius: 10, width: '40%' }}
                                 onPress={onPressVisable}
+                                uppercase={false}
                             >
                                 {t("ModalActive_Label_Cancel")}
                             </Button>
@@ -36,6 +37,7 @@ const ModalActivate = ({ visible, onPressVisable, onPressSubmit }) => {
                                 color="#1890FF"
                                 style={{ borderRadius: 10, width: '40%' }}
                                 onPress={onPressSubmit}
+                                uppercase={false}
                             >
                                 {t("ModalActive_Label_Confirm")}
                             </Button>

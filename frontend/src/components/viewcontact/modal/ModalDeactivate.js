@@ -49,6 +49,7 @@ const ModalDeactivate = ({ visible, onPressVisable, reason, onPressSubmit }) => 
                                                 color="#F3F3F3"
                                                 style={{ borderRadius: 10, width: '40%' }}
                                                 onPress={onPressVisable}
+                                                uppercase={false}
                                             >
                                                 {t("ModalStatus_Button_Cancel")}
                                             </Button>
@@ -57,6 +58,7 @@ const ModalDeactivate = ({ visible, onPressVisable, reason, onPressSubmit }) => 
                                                 color="#1890FF"
                                                 style={{ borderRadius: 10, width: '40%' }}
                                                 onPress={handleSubmit}
+                                                uppercase={false}
                                             >
                                                 {t("ModalStatus_Button_Complete")}
                                             </Button>
