@@ -74,6 +74,18 @@ const AddContactToGroup = ({ navigation, route }) => {
     let index = newState.findIndex((el) => el.contact.contact_id === id);
     newState[index] = { ...newState[index], isChecked: check };
     setListContactTotal(newState);
+    if (listSearch.length == 0) {
+      let newState = [...listContact];
+      let index = newState.findIndex((el) => el.contact.contact_id === id);
+      newState[index] = { ...newState[index], isChecked: check };
+      setListContact(newState)
+    } 
+    else {
+      let newState = [...listSearch];
+      let index = newState.findIndex((el) => el.contact.contact_id === id);
+      newState[index] = { ...newState[index], isChecked: check };
+      setListSearch(newState)
+    }
   };
 
   const addContactToGroup = () => {
@@ -180,7 +192,8 @@ const AddContactToGroup = ({ navigation, route }) => {
               {listSearch.length != 0 &&
                 listSearch.map((item, index) => {
                   return (
-                    <View style={styles.item} key={index}>
+                    <TouchableOpacity onPress={() => {checkBoxOnClickCallBack(item.contact.contact_id, !item.isChecked)}}>
+                      <View style={styles.item} key={index}>
                       <CustomCheckedBox
                         id={item.contact.contact_id}
                         onClick={checkBoxOnClickCallBack}
@@ -221,13 +234,15 @@ const AddContactToGroup = ({ navigation, route }) => {
                         </View>
                       </View>
                     </View>
+                    </TouchableOpacity>
                   );
                 })}
               <ScrollView>
                 {listContact.length != 0 &&
                   listContact.map((item, index) => {
                     return (
-                      <View style={styles.item} key={index}>
+                      <TouchableOpacity onPress={() => checkBoxOnClickCallBack(item.contact.contact_id, !item.isChecked)}>
+                          <View style={styles.item} key={index}>
                         <CustomCheckedBox
                           id={item.contact.contact_id}
                           onClick={checkBoxOnClickCallBack}
@@ -271,6 +286,7 @@ const AddContactToGroup = ({ navigation, route }) => {
                           </View>
                         </View>
                       </View>
+                      </TouchableOpacity>
                     );
                   })}
               </ScrollView>

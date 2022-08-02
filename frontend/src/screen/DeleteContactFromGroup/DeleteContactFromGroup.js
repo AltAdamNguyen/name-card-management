@@ -27,6 +27,7 @@ import { GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
 import Loading from "../../components/customDialog/dialog/loadingDialog/LoadingDialog"
 import { useIsFocused } from "@react-navigation/native";
 import { t } from "i18next";
+import { TouchableOpacity } from "react-native";
 
 const DeleteContactFromGroup = ({ navigation, route }) => {
     const [listContact, setListContact] = useState([]);
@@ -67,6 +68,7 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
             })
             setListContact(initListContact)
             setListContactTotal(initListContact)
+            setListSearch([])
         }
         setIsLoading(false)
     }
@@ -87,6 +89,18 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
         let index = newState.findIndex(el => el.contact.contact_id === id)
         newState[index] = { ...newState[index], isChecked: check }
         setListContactTotal(newState)
+        if (listSearch.length == 0) {
+            let newState = [...listContact]
+            let index = newState.findIndex(el => el.contact.contact_id === id)
+            newState[index] = { ...newState[index], isChecked: check }
+            setListContact(newState)
+        }
+        else {
+            let newState = [...listSearch]
+            let index = newState.findIndex(el => el.contact.contact_id === id)
+            newState[index] = { ...newState[index], isChecked: check }
+            setListSearch(newState)
+        }
     }
 
     const deleteContactFromGroup = () => {
@@ -170,16 +184,17 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
                             )}
                             {listSearch.length != 0 && listSearch.map((item, index) => {
                                 return (
-                                    <View style={styles.item} key={index}>
-                                        <CustomCheckedBox id={item.contact.contact_id} onClick={checkBoxOnClickCallBack} isChecked={item.isChecked} />
-                                        <View style={styles.image}>
-                                            <Image style={styles.image} source={{ uri: item.contact.contact_imgurl }} />
-                                        </View>
-                                        <View style={styles.txtContact}>
-                                            <View style={[styles.title, { flexDirection: 'row', justifyContent: 'space-between' }]}>
-                                                <Text style={styles.nameContact}>{item.contact.contact_name}</Text>
+                                    <TouchableOpacity onPress={() => checkBoxOnClickCallBack(item.contact.contact_id, !item.isChecked)}>
+                                        <View style={styles.item} key={index}>
+                                            <CustomCheckedBox id={item.contact.contact_id} onClick={checkBoxOnClickCallBack} isChecked={item.isChecked} />
+                                            <View style={styles.image}>
+                                                <Image style={styles.image} source={{ uri: item.contact.contact_imgurl }} />
                                             </View>
-                                            <Text style={styles.titleContact}>{item.contact.contact_jobtitle}</Text>
+                                            <View style={styles.txtContact}>
+                                                <View style={[styles.title, { flexDirection: 'row', justifyContent: 'space-between' }]}>
+                                                    <Text style={styles.nameContact}>{item.contact.contact_name}</Text>
+                                            </View>
+                                                <Text style={styles.titleContact}>{item.contact.contact_jobtitle}</Text>
                                             <View style={styles.title}>
                                                 <Text numberOfLines={1} style={styles.companyContact}>{item.contact.contact_company}</Text>
                                                 <View style={{ alignItems: 'flex-end' }}>
@@ -188,11 +203,13 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
                                             </View>
                                         </View>
                                     </View>
+                                    </TouchableOpacity>
                                 )
                             })}
                             <ScrollView>
                                 {listContact.length != 0 && listContact.map((item, index) => {
                                     return (
+                                    <TouchableOpacity onPress = {() => checkBoxOnClickCallBack(item.contact.contact_id, !item.isChecked)}>
                                         <View style={styles.item} key={index}>
                                             <CustomCheckedBox id={item.contact.contact_id} onClick={checkBoxOnClickCallBack} isChecked={item.isChecked} />
                                             <View style={styles.image}>
@@ -211,6 +228,7 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
                                                 </View>
                                             </View>
                                         </View>
+                                    </TouchableOpacity>
                                     )
                                 })}
                             </ScrollView>
