@@ -1,6 +1,6 @@
 //import liraries
 import React, { useState, useEffect, useCallback, useRef, useContext } from 'react';
-import { View, Text, SafeAreaView, Alert, FlatList } from 'react-native';
+import { View, Text, SafeAreaView, Alert, FlatList, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 import { Searchbar, Card, IconButton, Button, ActivityIndicator } from 'react-native-paper'
 import debounce from 'lodash.debounce';
@@ -50,40 +50,60 @@ const SearchContact = ({ navigation, route }) => {
         }
     }, []);
 
-    useEffect(() => {
-        if(dataMore){
-            var idContact = new Set(listFilter.map(d => d.id));
-            dataMore.forEach(item => {
-                if(!idContact.has(item.id)){
-                    listFilter.push(item)
-                }
-            })
-            // setListFilter(...listFilter, ...dataMore.filter(item => !idContact.has(item.id)));
-        }
-    }, [dataMore])
-
-    const SearchApi = (value) => {
-        route.params && route.params.useid && FetchApi(`${ContactAPI.SearchContact}?userId=${route.params.useid}`, Method.GET, ContentType.JSON, undefined, getContact)
-        !route.params && FetchApi(`${ContactAPI.SearchContact}?value=${value}`, Method.GET, ContentType.JSON, undefined, getContact)
-        route.params && route.params.transfer && FetchApi(`${ContactAPI.SearchContactTransfer}?value=${value}`, Method.GET, ContentType.JSON, undefined, getContact)
-    }
-
     const getContact = (data) => {
         authCtx.checkToken()
+        console.log(data)
         if (data) {
-            setLoading(false);
-            route.params && setListContact(data.data)
+            setListContact(data.data)
             setListFilter(data.data)
         }
 
     }
-    const debounceSearch = useCallback(debounce((nextValue) => SearchApi(nextValue), 200), [])
+
+    useEffect(() => {
+        if (dataMore) {
+            var idContact = new Set(listFilter.map(d => d.id));
+            dataMore.forEach(item => {
+                if (!idContact.has(item.id)) {
+                    listFilter.push(item)
+                }
+            })
+        }
+    }, [dataMore])
+
+    useEffect(() => {
+        const searchTimeOut = setTimeout(() => {
+            if (text) {
+                setLoading(true);
+                SearchApi(text)
+            } else {
+                console.log("text null")
+                console.log(listContact)
+                setListFilter(listContact)
+            }
+        }, 500);
+
+        return () => {
+            clearTimeout(searchTimeOut);
+        }
+    }, [text])
+
+    const SearchApi = (value) => {
+        route.params && route.params.useid && FetchApi(`${ContactAPI.SearchContact}?value=${value}&userId=${route.params.useid}`, Method.GET, ContentType.JSON, undefined, getContactSearch)
+        !route.params && FetchApi(`${ContactAPI.SearchContact}?value=${value}`, Method.GET, ContentType.JSON, undefined, getContactSearch)
+        route.params && route.params.transfer && FetchApi(`${ContactAPI.SearchContactTransfer}?value=${value}`, Method.GET, ContentType.JSON, undefined, getContactSearch)
+    }
+
+    const getContactSearch = (data) => {
+        authCtx.checkToken()
+        if (data) {
+            setLoading(false);
+            setListFilter(data.data)
+        }
+    }
+
     const handleSearch = (value) => {
-        value && setListFilter(listContact)
-        setLoading(true);
         setText(value);
-        debounceSearch(value);
-        setListFilter([]);
     }
 
     const handleViewContact = (item) => {
@@ -207,9 +227,9 @@ const SearchContact = ({ navigation, route }) => {
         )
     }
 
-    const debounceLoadMore = useCallback(debounce((nextPage) =>{
-        LoadMoreApi(nextPage)      
-    } , 200), [])
+    const debounceLoadMore = useCallback(debounce((nextPage) => {
+        LoadMoreApi(nextPage)
+    }, 200), [])
     const handleLoadMore = (e) => {
         debounceLoadMore(page);
         setPage(page + 1);
@@ -236,121 +256,123 @@ const SearchContact = ({ navigation, route }) => {
     }
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.header}>
-                {route.params && Boolean(route.params.useid) &&
-                    <View style={styles.header_title}>
-                        <View style={styles.header_title_left}>
-                            <IconButton icon="arrow-left" size={26} onPress={() => navigation.goBack()} />
-                            <Text style={styles.header_title_left_label}>{route.params.name}</Text>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <SafeAreaView style={styles.container}>
+                <View style={styles.header}>
+                    {route.params && Boolean(route.params.useid) &&
+                        <View style={styles.header_title}>
+                            <View style={styles.header_title_left}>
+                                <IconButton icon="arrow-left" size={26} onPress={() => navigation.goBack()} />
+                                <Text style={styles.header_title_left_label}>{route.params.name}</Text>
+                            </View>
+                            <Button
+                                onPress={() => setVisibleCheckBox(!visibleCheckBox)}
+                                uppercase={false}
+                                color="#1980FF"
+                            >
+                                {visibleCheckBox ? t("Screen_SearchContact_Button_Cancel") : t("Screen_SearchContact_Button_AddGroup")}
+                            </Button>
                         </View>
-                        <Button
-                            onPress={() => setVisibleCheckBox(!visibleCheckBox)}
-                            uppercase={false}
-                            color="#1980FF"
-                        >
-                            {visibleCheckBox?t("Screen_SearchContact_Button_Cancel"):t("Screen_SearchContact_Button_AddGroup")}
-                        </Button>
-                    </View>
-                }
-                {route.params && route.params.transfer &&
-                    <View style={styles.header_title}>
-                        <View style={styles.header_title_left}>
-                            <IconButton icon="arrow-left" size={26} onPress={() => navigation.goBack()} />
-                            <Text style={styles.header_title_left_label}>{t("Screen_SearchContact_Button_Selected")} ({listGroup.length})</Text>
-                        </View>
-                        {/* <Button
+                    }
+                    {route.params && route.params.transfer &&
+                        <View style={styles.header_title}>
+                            <View style={styles.header_title_left}>
+                                <IconButton icon="arrow-left" size={26} onPress={() => navigation.goBack()} />
+                                <Text style={styles.header_title_left_label}>{t("Screen_SearchContact_Button_Selected")} ({listGroup.length})</Text>
+                            </View>
+                            {/* <Button
                             onPress={handleSelectAll}
                             uppercase={false}
                             color="#1980FF"
                         >
                             {t("Screen_SearchContact_Button_SelectAll")}
                         </Button> */}
-                    </View>
-                }
-                <View style={styles.sectionStyle}>
-                    <Searchbar
-                        placeholder={t("Screen_SearchContact_Input_Placeholder")}
-                        icon={!route.params || route.params && route.params.deactive ? "arrow-left" : "magnify"}
-                        onIconPress={handleGoBack}
-                        theme={{
-                            roundness: 10,
-                            colors: { primary: '#1890FF' }
-                        }}
-                        value={text}
-                        onChangeText={handleSearch}
-                        clearIcon="close-circle"
-                        ref={textInputRef}
-                    />
-                </View>
-                {visibleCheckBox && route.params && Boolean(route.params.useid) &&
-                    <View style={styles.header_title}>
-                        <Text>{t("Screen_SearchContact_Button_Selected")} ({listGroup.length})</Text>
-                        <Button
-                            onPress={handleSelectAll}
-                            uppercase={false}
-                            color="#1980FF"
-                        >
-                            {t("Screen_SearchContact_Button_SelectAll")}
-                        </Button>
-                    </View>
-                }
-            </View>
-            <View style={styles.listContainer}>
-                {loading &&
-                    <Card mode='elevated' style={styles.card} elevation={2}>
-                        <View style={styles.item}>
-                            <View style={styles.imgContact}>
-                                <ShimmerPlaceholder visible={!loading} shimmerStyle={styles.image} />
-                            </View>
-                            <View style={styles.txtContact}>
-                                <View style={{ marginBottom: 5 }}>
-                                    <ShimmerPlaceholder visible={!loading} shimmerStyle={{ flexDirection: 'row', borderRadius: 5 }} />
-                                </View>
-                                <ShimmerPlaceholder visible={!loading} shimmerStyle={{ flexDirection: 'row', borderRadius: 5 }} />
-                                <View style={[styles.title, { marginTop: 5 }]}>
-                                    <ShimmerPlaceholder visible={!loading} shimmerStyle={{ flexDirection: 'row', borderRadius: 5 }} />
-                                </View>
-                            </View>
                         </View>
-                    </Card>
-                }
-                <FlatList
-                    style={{ width: '100%', }}
-                    contentContainerStyle={{ flexGrow: 1, justifyContent: listFilter.length === 0 ? 'center' : 'flex-start' }}
-                    data={listFilter}
-                    renderItem={CardContact}
-                    keyExtractor={(item) => item.id}
-                    showsVerticalScrollIndicator={false}
-                    onEndReached={handleLoadMore}
-                    onEndReachedThreshold={Platform.OS === 'android' ? 0.1 : 0.5}
-                    ListEmptyComponent={EmptyList}
-                // ListFooterComponent={FooterList}
-                />
+                    }
+                    <View style={styles.sectionStyle}>
+                        <Searchbar
+                            placeholder={t("Screen_SearchContact_Input_Placeholder")}
+                            icon={!route.params || route.params && route.params.deactive ? "arrow-left" : "magnify"}
+                            onIconPress={() => !route.params || route.params && route.params.deactive ? handleGoBack() : null}
+                            theme={{
+                                roundness: 10,
+                                colors: { primary: '#1890FF' }
+                            }}
+                            value={text}
+                            onChangeText={handleSearch}
+                            clearIcon="close-circle"
+                            ref={textInputRef}
+                        />
+                    </View>
+                    {visibleCheckBox && route.params && Boolean(route.params.useid) &&
+                        <View style={styles.header_title}>
+                            <Text>{t("Screen_SearchContact_Button_Selected")} ({listGroup.length})</Text>
+                            <Button
+                                onPress={handleSelectAll}
+                                uppercase={false}
+                                color="#1980FF"
+                            >
+                                {t("Screen_SearchContact_Button_SelectAll")}
+                            </Button>
+                        </View>
+                    }
+                </View>
+                <View style={styles.listContainer}>
+                    {loading &&
+                        <Card mode='elevated' style={styles.card} elevation={2}>
+                            <View style={styles.item}>
+                                <View style={styles.imgContact}>
+                                    <ShimmerPlaceholder visible={!loading} shimmerStyle={styles.image} />
+                                </View>
+                                <View style={styles.txtContact}>
+                                    <View style={{ marginBottom: 5 }}>
+                                        <ShimmerPlaceholder visible={!loading} shimmerStyle={{ flexDirection: 'row', borderRadius: 5 }} />
+                                    </View>
+                                    <ShimmerPlaceholder visible={!loading} shimmerStyle={{ flexDirection: 'row', borderRadius: 5 }} />
+                                    <View style={[styles.title, { marginTop: 5 }]}>
+                                        <ShimmerPlaceholder visible={!loading} shimmerStyle={{ flexDirection: 'row', borderRadius: 5 }} />
+                                    </View>
+                                </View>
+                            </View>
+                        </Card>
+                    }
+                    <FlatList
+                        style={{ width: '100%', }}
+                        contentContainerStyle={{ flexGrow: 1, justifyContent: listFilter.length === 0 ? 'center' : 'flex-start' }}
+                        data={listFilter}
+                        renderItem={CardContact}
+                        keyExtractor={(item) => item.id}
+                        showsVerticalScrollIndicator={false}
+                        onEndReached={handleLoadMore}
+                        onEndReachedThreshold={Platform.OS === 'android' ? 0.1 : 0.5}
+                        ListEmptyComponent={EmptyList}
+                    // ListFooterComponent={FooterList}
+                    />
 
-                {visibleCheckBox && route.params && route.params.transfer && <Button
-                    style={styles.floatButton_team}
-                    color="#1980FF"
-                    mode="contained"
-                    onPress={() => setVisibleTransfer(true)}
-                    disabled={listGroup.length === 0}
-                >
-                    {t("Screen_SearchContact_Button_Transfer")}
-                </Button>}
+                    {visibleCheckBox && route.params && route.params.transfer && <Button
+                        style={styles.floatButton_team}
+                        color="#1980FF"
+                        mode="contained"
+                        onPress={() => setVisibleTransfer(true)}
+                        disabled={listGroup.length === 0}
+                    >
+                        {t("Screen_SearchContact_Button_Transfer")}
+                    </Button>}
 
-                {visibleCheckBox && route.params && route.params.useid && <Button
-                    style={styles.floatButton_team}
-                    color="#1980FF"
-                    mode="contained"
-                    onPress={handleAddContactsToGroups}
-                    disabled={listGroup.length === 0}
-                >
-                    {t("Screen_SearchContact_Button_AddToGroup")}
-                </Button>}
-                <ModalActivate visible={visible} onPressVisable={() => setVisible(false)} onPressSubmit={handleReactivate} />
-                <ModalTransfer visible={visibleTransfer} onPressVisable={() => setVisibleTransfer(false)} onPressSubmit={handleTransfer} />
-            </View>
-        </SafeAreaView>
+                    {visibleCheckBox && route.params && route.params.useid && <Button
+                        style={styles.floatButton_team}
+                        color="#1980FF"
+                        mode="contained"
+                        onPress={handleAddContactsToGroups}
+                        disabled={listGroup.length === 0}
+                    >
+                        {t("Screen_SearchContact_Button_AddToGroup")}
+                    </Button>}
+                    <ModalActivate visible={visible} onPressVisable={() => setVisible(false)} onPressSubmit={handleReactivate} />
+                    <ModalTransfer visible={visibleTransfer} onPressVisable={() => setVisibleTransfer(false)} onPressSubmit={handleTransfer} />
+                </View>
+            </SafeAreaView>
+        </TouchableWithoutFeedback>
     );
 };
 
