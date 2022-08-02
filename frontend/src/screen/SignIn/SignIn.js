@@ -2,7 +2,6 @@ import { View, Text, Alert, TouchableWithoutFeedback, Keyboard } from "react-nat
 import React, { useState, useContext } from "react";
 import AuthContext from "../../store/AuthContext";
 import { useTranslation } from "react-i18next";
-import i18next from "../../language/i18n";
 import styles from "./styles";
 import CustomInputs from "../../components/CustomInputs";
 import CustomButtons from "../../components/CustomButtons";
@@ -23,12 +22,6 @@ const SignIn = ({ navigation }) => {
   const [user, setUser] = useState({
     email: "",
     password: "",
-    // email: "anhnche141236@gmail.com",
-    // password: "Trung123@",
-    // email: "conganhnguyen33@gmail.com",
-    // password: "Trung123@"
-    // email: "person2@gmail.com",
-    // password: "Trung123@",
   });
   const [errorLoginText, setErrorLoginText] = useState({
     errorText: "",
@@ -106,7 +99,7 @@ const SignIn = ({ navigation }) => {
             <CustomInputs
               value={user.email}
               setValue={handleChange("email")}
-              icon={"close-circle-outline"}
+              icon={"close-circle"}
               label={t("Screen_Login_Placeholder_Username")}
               onpress={onClearUsernamePressed}
               type={"email-address"}

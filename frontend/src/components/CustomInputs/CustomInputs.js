@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 import React from "react";
 import { TextInput } from "react-native-paper";
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const CustomInputs = ({
   value,
   setValue,
@@ -19,7 +20,7 @@ const CustomInputs = ({
           secureTextEntry={secureTextEntry}
           style={styles.input}
           theme={{ roundness: 10, colors: { primary: '#1890FF', error: '#B22D1D' } }}
-          right={<TextInput.Icon name={icon} onPress={onpress} />}
+          right={<TextInput.Icon name={icon} onPress={onpress} size={20} color='#828282'/>}
           keyboardType={type}
         />
   );

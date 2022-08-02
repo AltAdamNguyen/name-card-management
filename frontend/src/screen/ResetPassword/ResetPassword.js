@@ -116,14 +116,14 @@ const ResetPassword = ({ navigation, route }) => {
             <CustomInputs
               value={newPassword}
               setValue={(text) => handleChange(text)}
-              icon={"close-circle-outline"}
+              icon={"close-circle"}
               label={t("Screen_ResetPassword_PlaceHolder_NewPassword")}
               onpress={onClearCodePressed}
             />
             <CustomInputs
               value={newPasswordReEnter}
               setValue={(text) => handleChangeReEnter(text)}
-              icon={"close-circle-outline"}
+              icon={"close-circle"}
               label={t("Screen_ResetPassword_PlaceHolder_CreateNewPassword")}
               onpress={onClearCodePressedReEnter}
             />
