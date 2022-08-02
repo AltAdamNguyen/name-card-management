@@ -70,7 +70,6 @@ const Home = ({ route, navigation }) => {
     }, []);
 
     const getContact = (data) => {
-        console.log(data)
         authCtx.checkToken()
         if(data){
             setLoading(false);

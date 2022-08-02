@@ -52,7 +52,6 @@ const SearchContact = ({ navigation, route }) => {
 
     const getContact = (data) => {
         authCtx.checkToken()
-        console.log(data)
         if (data) {
             setListContact(data.data)
             setListFilter(data.data)
@@ -77,8 +76,6 @@ const SearchContact = ({ navigation, route }) => {
                 setLoading(true);
                 SearchApi(text)
             } else {
-                console.log("text null")
-                console.log(listContact)
                 setListFilter(listContact)
             }
         }, 500);

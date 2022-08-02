@@ -92,7 +92,6 @@ const AddContactToGroup = ({ navigation, route }) => {
   };
 
   const addContactsToGroupCallBack = (data) => {
-    console.log(data);
     setConfirmDialogVisible(false);
     navigation.goBack()
   };
