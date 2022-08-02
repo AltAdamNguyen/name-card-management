@@ -53,7 +53,6 @@ const SkeletonAddContact = ({ route, navigation }) => {
     }, [])
 
     const getData = (data) => {
-        console.log(data)
         if (data.message === "Scan fail") {
             Alert.alert('Thông báo', 'Quét thất bại. Vui lòng chụp lại', [{ text: 'OK', onPress: () => navigation.goBack() }])
         }
@@ -63,7 +62,6 @@ const SkeletonAddContact = ({ route, navigation }) => {
         }
     }
 
-    console.log("contact", contact)
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <AddContact contact={contact} loading={visible} navigation={navigation} />

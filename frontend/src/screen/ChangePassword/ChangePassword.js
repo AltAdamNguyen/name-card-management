@@ -171,6 +171,7 @@ const ChangePassword = ({ navigation }) => {
                 onPress={() => {
                   setDialogChangePasswordConfirmVisible(true);
                 }}
+                uppercase={false}
               >
                 {t("Screen_ChangePassword_Button_Label")}
               </Button>

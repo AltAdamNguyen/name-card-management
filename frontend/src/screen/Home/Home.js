@@ -195,7 +195,7 @@ const Home = ({ route, navigation }) => {
                                 <Icon name={listRequest[item.status_request].icon} size={24} color={listRequest[item.status_request].color} />
                             }
                         </View>
-                        {!Boolean(item.status_request) || item.owner_id === item.createdBy &&
+                        {!Boolean(item.status_request) && item.owner_id === item.createdBy &&
                             <Text style={styles.titleContact}>{item.job_title}</Text>
                         }
                         <View style={styles.title}>

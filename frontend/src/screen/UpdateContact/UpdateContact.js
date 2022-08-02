@@ -188,7 +188,6 @@ const UpdateContact = ({ route, navigation }) => {
                                                                 dense={true}
                                                                 style={styles.formInput_item_input}
                                                                 onChangeText={handleChange(item.name)}
-                                                                onFocus={(e) => console.log(e.target)}
                                                                 onBlur={handleBlur(item.name)}
                                                                 error={errors[item.name] && touched[item.name]}
                                                                 theme={{

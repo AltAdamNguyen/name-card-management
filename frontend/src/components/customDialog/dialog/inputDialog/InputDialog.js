@@ -55,6 +55,7 @@ const InputDialog = ({ visible, onPressVisable, value, setValue, onPressSubmit, 
                                                 color="#F3F3F3"
                                                 style={{ borderRadius: 10, width: '40%' }}
                                                 onPress={() => {onPressVisable()}}
+                                                uppercase={false}
                                             >
                                               {leftButtonTitle}
                                             </Button>
@@ -63,6 +64,7 @@ const InputDialog = ({ visible, onPressVisable, value, setValue, onPressSubmit, 
                                                 color="#1890FF"
                                                 style={{ borderRadius: 10, width: '40%' }}
                                                 onPress={() => {onPressConfirm(inputVal); handleSubmit} }
+                                                uppercase={false}
                                             >
                                                 {rightButtonTitle}
                                             </Button>

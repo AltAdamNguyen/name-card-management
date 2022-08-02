@@ -106,7 +106,7 @@ const ForgotPassword = ({ navigation }) => {
             <CustomInputs
               value={user.email}
               setValue={handleChange("email")}
-              icon={"close-circle-outline"}
+              icon={"close-circle"}
               label={"Email"}
               onpress={onClearEmailPressed}
             />

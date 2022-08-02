@@ -1,5 +1,5 @@
 //import liraries
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,9 +9,7 @@ import {
   Pressable,
 } from "react-native";
 import styles from "./styles";
-import i18next from "../../language/i18n";
 import { useTranslation } from "react-i18next";
-import AuthContext from "../../store/AuthContext";
 import Loading from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
 import { Searchbar, Provider, Button } from "react-native-paper";
 import ModalAddGroup from "../../components/groupcontact/ModalAddGroup";
@@ -23,27 +21,27 @@ import ConfirmDialog from "../../components/customDialog/dialog/confirmDialog/Co
 import CustomCheckedBox from "../../components/groupcontact/checkBoxCustom/CustomCheckedBox";
 
 const AddContactToManyGroup = ({ route, navigation }) => {
-  const [checked, setChecked] = React.useState(false);
   const isFocus = useIsFocused();
-  const authCtx = useContext(AuthContext);
   const { t, i18n } = useTranslation();
   const [listGroupContact, setLisGroupContact] = useState([]);
   const [listGroupContactTotal, setListGroupContactTotal] = useState([]);
   const [listGroupSearch, setListGroupSearch] = useState([]);
-
+  const inputGroupName = {
+    group_name: "",
+  }
   const [choosenItems, setChoosenItems] = useState(0);
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [modalAddContactVisible, setModalAddContactVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  const onAddNewGroupContactPressed = (groupName) => {
+  const onAddNewGroupContactPressed = (value) => {
     setIsLoading(true);
     setModalAddContactVisible(false);
     FetchApi(
       GroupContactAPI.AddGroupContact,
       Method.POST,
       ContentType.JSON,
-      { group_name: groupName },
+      value,
       addGroupContact
     );
   };
@@ -190,10 +188,7 @@ const AddContactToManyGroup = ({ route, navigation }) => {
         >
           <Appbar.BackAction onPress={() => navigation.goBack()} />
           <Appbar.Content
-            // title={t(
-            //   "Screen_AddContactToManyGroup_Appbar_Content_Title_AddToGroup"
-            // )}
-            title={"Haffi"}
+            title={t("Screen_AddContactToManyGroup_Appbar_Content_Title_AddToGroup")}
           />
           <TouchableOpacity></TouchableOpacity>
         </Appbar.Header>
@@ -295,8 +290,9 @@ const AddContactToManyGroup = ({ route, navigation }) => {
             onPress={() => {
               setConfirmDialogVisible(true);
             }}
+            uppercase={false}
           >
-            Thêm
+            {t("Screen_AddContactToManyGroup_Button_AddContact")}
           </Button>
         </View>
       </SafeAreaView>

@@ -16,6 +16,7 @@ import TextInputItem from "../../components/addcontact/TextInputItem";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import AuthContext from "../../store/AuthContext";
 import { DuplicateInfoModel, DuplicateModel, FormInput } from "../../components/addcontact/ContextAddContact";
+import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
 import { useTranslation } from "react-i18next";
 
 
@@ -56,7 +57,7 @@ const AddContact = ({ contact, loading, navigation }) => {
 
   const [duplicate, setDuplicate] = useState(false);
   const [contactId, setContactId] = useState();
-
+  const [loadingDialog, setLoadingDialog] = useState(false);
   const [duplicateOther, setDuplicateOther] = useState(false);
   const [duplicateInfo, setDuplicateInfo] = useState({
     id_duplicate: "",
@@ -73,10 +74,12 @@ const AddContact = ({ contact, loading, navigation }) => {
   };
 
   const handleSubmit = (values) => {
+    setLoadingDialog(true);
     FetchApi(ContactAPI.AddContact, Method.POST, ContentType.JSON, values, getMessage);
   };
 
   const getMessage = (data) => {
+    setLoadingDialog(false);
     authCtx.checkToken()
     if(data){
       if (data.message === "D0001") {
@@ -121,6 +124,7 @@ const AddContact = ({ contact, loading, navigation }) => {
 
   return (
     <Provider style={styles.container}>
+      <LoadingDialog visible={loadingDialog} />
       <ModalContact visible={duplicate} onPress={handleDuplicate} onPressVisable={() => setDuplicate(false)} context={DuplicateModel()} onCancel={() => setDuplicate(false)} />
       <ModalContact visible={duplicateOther} onPress={handleDuplicateOther} onPressVisable={() => setDuplicateOther(false)} context={DuplicateInfoModel(duplicateInfo.owner)} onCancel={handleOnCancel} />
       <View style={{ alignItems: "center" }}>

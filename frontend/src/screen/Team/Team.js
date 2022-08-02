@@ -3,7 +3,6 @@ import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { View, SafeAreaView, ScrollView, Text, Alert } from 'react-native';
 import styles from './styles';
 import { Searchbar, FAB, Provider, Button } from 'react-native-paper';
-import debounce from 'lodash.debounce';
 import Tree from '../../components/team/Tree';
 import { useIsFocused } from '@react-navigation/native';
 import { FetchApi } from '../../service/api/FetchAPI';
@@ -34,6 +33,20 @@ const Team = ({ navigation }) => {
     useEffect(() => {
         FetchApi(TeamAPI.GetTeam, Method.GET, ContentType.JSON, undefined, getTeam)
     }, [isFocused]);
+
+    useEffect(() => {
+        const searchTimeOut = setTimeout(() => {
+            if (text) {
+                SearchApi(text)
+            } else {
+                setSearchTeam(team)
+            }
+        }, 500);
+
+        return () => {
+            clearTimeout(searchTimeOut);
+        }
+    }, [text])
 
     const getTeam = (data) => {
         authCtx.checkToken()
@@ -66,17 +79,8 @@ const Team = ({ navigation }) => {
         }
     }
 
-    const debounceSearch = useCallback(debounce((nextValue) => SearchApi(nextValue), 500), [])
-
     const handleSearch = (value) => {
-        if (value === "") {
-            console.log(team)
-            setSearchTeam(team)
-        }
-        if (value !== "") {
-            debounceSearch(value);
-        }
-        setText(value);
+        setText(value);  
     }
 
     const handleExport = () => {
