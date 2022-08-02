@@ -51,9 +51,9 @@
 
         "Screen_Home_ModalHome_Text_Label_Sort": "Sort",
         "Screen_Home_ModalHome_Text_Label_Manage": "Manage",
-        "Screen_Home_ModalHome_Text_Label_AddNameCard": "Add name card",
+        "Screen_Home_ModalHome_Text_Label_AddNameCard": "Create contact",
         "Screen_Home_ModalHome_Text_Label_Export": "Export",
-        "Screen_Home_ModalHome_Text_Label_TransferNamecard": "Transfer name card",
+        "Screen_Home_ModalHome_Text_Label_TransferNamecard": "Transfer contact",
         "Screen_Home_ModalHome_Text_Label_DeactivateList": "Deactivate list",
         "Screen_Home_ModalHome_Button_ListSort_Date": "Date",
         "Screen_Home_ModalHome_Button_ListSort_Name": "Name",
@@ -109,9 +109,15 @@
         "ModalGroupContactDetail_Label_DeleteContact": "Delete contact",
         "ModalGroupContactDetail_Label_DeleteGroup": "Delete group",
 
-        "ModalActive_Title": "Re-activate Name Card",
+        "ModalActive_Title": "Reactivate contact",
         "ModalActive_Label_Cancel": "Cancel",
         "ModalActive_Label_Confirm": "Confirm",
+
+        "ModalDeactivate_Title": "Deactivate contact",
+        "ModalDeactivate_Input_Title": "Reason",
+        "ModalDeactivate_Input_Placeholder": "Enter reason",
+        "ModalDeactivate_Label_Cancel": "Cancel",
+        "ModalDeactivate_Label_Confirm": "Confirm",
 
         "Alert_BackPress_Title": "Hold on!",
         "Alert_BackPress_Message": "Are you sure you want to exit?",

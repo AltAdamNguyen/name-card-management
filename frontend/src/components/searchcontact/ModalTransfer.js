@@ -54,7 +54,7 @@ const ModalTransfer = ({ visible, onPressVisable, onPressSubmit }) => {
                                                 onPress={onPressVisable}
                                                 uppercase={false}
                                             >
-                                                {t("ModalStatus_Button_Cancel")}
+                                                {t("ModalTransfer_Button_Cancel")}
                                             </Button>
                                             <Button
                                                 mode='contained'
@@ -63,7 +63,7 @@ const ModalTransfer = ({ visible, onPressVisable, onPressSubmit }) => {
                                                 onPress={handleSubmit}
                                                 uppercase={false}
                                             >
-                                                {t("ModalStatus_Button_Complete")}
+                                                {t("ModalTransfer_Button_Confirm")}
                                             </Button>
                                         </View>
                                     </View>

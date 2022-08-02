@@ -127,6 +127,12 @@
         "ModalAddGroup_Button_Cancel": "Hủy",
         "ModalAddGroup_Button_Confirm": "Thêm",
 
+        "ModalDeactivate_Title": "Vô hiệu hóa liên hệ",
+        "ModalDeactivate_Input_Title": "Lý do",
+        "ModalDeactivate_Input_Placeholder": "Nhập lý do",
+        "ModalDeactivate_Label_Cancel": "Hủy",
+        "ModalDeactivate_Label_Confirm": "Xác nhận",
+
         "Alert_BackPress_Title": "Thông báo",
         "Alert_BackPress_Message": "Bạn có muốn thoát khỏi ứng dụng?",
         "Alert_BackPress_Button_Cancel": "Hủy",
