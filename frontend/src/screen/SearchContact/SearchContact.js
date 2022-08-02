@@ -52,7 +52,6 @@ const SearchContact = ({ navigation, route }) => {
 
     const getContact = (data) => {
         authCtx.checkToken()
-        console.log(data)
         if (data) {
             setListContact(data.data)
             setListFilter(data.data)
@@ -72,19 +71,19 @@ const SearchContact = ({ navigation, route }) => {
     }, [dataMore])
 
     useEffect(() => {
-        const searchTimeOut = setTimeout(() => {
-            if (text) {
-                setLoading(true);
-                SearchApi(text)
-            } else {
-                console.log("text null")
-                console.log(listContact)
-                setListFilter(listContact)
+        if(listContact.length){
+            const searchTimeOut = setTimeout(() => {
+                if (text) {
+                    setLoading(true);
+                    SearchApi(text)
+                } else {
+                    setListFilter(listContact)
+                }
+            }, 500);
+    
+            return () => {
+                clearTimeout(searchTimeOut);
             }
-        }, 500);
-
-        return () => {
-            clearTimeout(searchTimeOut);
         }
     }, [text])
 
@@ -97,7 +96,7 @@ const SearchContact = ({ navigation, route }) => {
     const getContactSearch = (data) => {
         authCtx.checkToken()
         if (data) {
-            setLoading(false);
+            setLoading(false)
             setListFilter(data.data)
         }
     }
