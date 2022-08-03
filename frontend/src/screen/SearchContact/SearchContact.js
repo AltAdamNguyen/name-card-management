@@ -337,7 +337,7 @@ const SearchContact = ({ navigation, route }) => {
                     }
                     <FlatList
                         style={{ width: '100%', }}
-                        contentContainerStyle={{ flexGrow: 1, justifyContent: listFilter.length === 0 ? 'center' : 'flex-start' }}
+                        contentContainerStyle={{ flexGrow: 1, justifyContent: listFilter && listFilter.length === 0 ? 'center' : 'flex-start' }}
                         data={listFilter}
                         renderItem={CardContact}
                         keyExtractor={(item) => item.id}
