@@ -1,0 +1,48 @@
+.main {
+    margin-bottom: 30px;
+}
+
+.control {
+    display     : flex;
+    height      : 100%;
+    align-items : center;
+    padding-left: 20px;
+    column-gap  : 20px;
+}
+
+.modalUploadFile {
+    margin: 20px;
+    height: 200px;
+
+    display        : flex;
+    flex-direction : column;
+    justify-content: center;
+    align-items    : center;
+
+    color: rgb(133, 133, 133);
+}
+
+.warningHeader {
+    display        : flex;
+    justify-content: center;
+    align-items    : center;
+}
+
+.warningHeader>p {
+    margin   : 0 0 0 10px;
+    font-size: 20px;
+}
+
+.loadingDiv {
+    display        : flex;
+    justify-content: center;
+    align-items    : center;
+
+    flex-direction: column;
+
+    height: 500px;
+
+    color     : #8d8d8d;
+    font-style: italic;
+    font-size : 12px;
+}
