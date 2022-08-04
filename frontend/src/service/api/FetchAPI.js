@@ -12,14 +12,14 @@ export const FetchApiAuth = (url, method, contentType, param, callback) => {
             body: JSON.stringify(param),
         })
         .then((response) => {
-            console.log(response)
             return response.json()
         })
         .then((data) => {
             callback(data)
         })
         .catch((error) => {
-            console.log(error + "Hai")
+            console.log(error)
+            callback({message : "Internet Error"})
         })
 }
 
@@ -36,7 +36,6 @@ const RefeshToken = async (refresh_token) => {
         }
     )
     if (!response.ok) {
-        console.log('error')
         await SecureStore.deleteItemAsync('access_token')
         await SecureStore.deleteItemAsync('refresh_token')
         return null
@@ -95,7 +94,6 @@ export const FetchApi = async (url, method, contentType, param, callback) => {
             }
         })
         .catch((error) => {
-            console.log(error)
             callback({message : "Internet Error"})
         })
 }

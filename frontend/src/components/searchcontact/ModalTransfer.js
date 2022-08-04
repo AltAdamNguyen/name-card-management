@@ -52,16 +52,18 @@ const ModalTransfer = ({ visible, onPressVisable, onPressSubmit }) => {
                                                 color="#F3F3F3"
                                                 style={{ borderRadius: 10, width: '40%' }}
                                                 onPress={onPressVisable}
+                                                uppercase={false}
                                             >
-                                                {t("ModalStatus_Button_Cancel")}
+                                                {t("ModalTransfer_Button_Cancel")}
                                             </Button>
                                             <Button
                                                 mode='contained'
                                                 color="#1890FF"
                                                 style={{ borderRadius: 10, width: '40%' }}
                                                 onPress={handleSubmit}
+                                                uppercase={false}
                                             >
-                                                {t("ModalStatus_Button_Complete")}
+                                                {t("ModalTransfer_Button_Confirm")}
                                             </Button>
                                         </View>
                                     </View>

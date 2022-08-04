@@ -44,7 +44,6 @@ const ViewContact = ({ navigation, route }) => {
     const authCtx = useContext(AuthContext)
 
     const onSubmitStatus = (values) => {
-        console.log(values)
         setStatus(values)
         FetchApi(`${ContactAPI.SetStatus}/${route.params.idContact}`, Method.PATCH, ContentType.JSON, values, getFlag)
         setModalStatusVisible(!modalStatusVisible)
@@ -99,7 +98,6 @@ const ViewContact = ({ navigation, route }) => {
     }
 
     const getMessage = (data) => {
-        console.log(data)
         authCtx.checkToken()
         if(data){
             navigation.navigate("Bottom", { screen: "HomeScreen" })

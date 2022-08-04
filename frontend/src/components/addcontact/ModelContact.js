@@ -9,8 +9,8 @@ const ModalContact = ({ visible, context, onPress, onPressVisable, onCancel }) =
                     <Paragraph>{context.message}</Paragraph>
                 </Dialog.Content>
                 <Dialog.Actions>
-                    <Button color='#1890FF' onPress={onCancel}>{context.cancel}</Button>
-                    <Button color='#1890FF'  onPress={onPress}>{context.submit}</Button>
+                    <Button color='#1890FF' onPress={onCancel} uppercase={false}>{context.cancel}</Button>
+                    <Button color='#1890FF'  onPress={onPress} uppercase={false}>{context.submit}</Button>
                 </Dialog.Actions>
             </Dialog>
         </Portal>

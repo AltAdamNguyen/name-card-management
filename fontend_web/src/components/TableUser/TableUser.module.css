@@ -1,0 +1,76 @@
+.main {
+    width       : 100%;
+    margin-right: 20px;
+}
+
+.headerLayout {
+    display        : flex;
+    justify-content: space-between;
+    align-items    : center;
+}
+
+.iconSearch {
+    margin-top: 5px;
+}
+
+.buttonSearch {
+    outline         : none;
+    border          : none;
+    background-color: transparent;
+    cursor          : pointer;
+}
+
+.selectInfor {
+    margin    : 20px 0;
+    list-style: none;
+}
+
+.selectInfor li {
+    margin-top: 10px;
+}
+
+.active {
+    background-color: rgb(198, 255, 193);
+    color           : rgb(0, 151, 13);
+    padding         : 4px 10px;
+    border-radius   : 15px;
+    margin-left     : 10px;
+}
+
+.activeTable {
+    background-color: rgb(198, 255, 193);
+    color           : rgb(0, 151, 13);
+    width           : fit-content;
+    padding         : 4px 10px;
+    border-radius   : 15px;
+}
+
+.deactive {
+    background-color: rgb(255, 193, 193);
+    color           : rgb(151, 0, 0);
+    padding         : 4px 10px;
+    border-radius   : 15px;
+    margin-left     : 10px;
+}
+
+.deactiveTable {
+    background-color: rgb(255, 193, 193);
+    color           : rgb(151, 0, 0);
+    width           : fit-content;
+    padding         : 4px 10px;
+    border-radius   : 15px;
+}
+
+.iconBtn {
+    cursor: pointer;
+}
+
+.contentSearch {
+    height: 500px;
+
+    display        : flex;
+    justify-content: center;
+    align-items    : center;
+
+    flex-direction: column;
+}

@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from "react";
-import {BackHandler, Alert} from "react-native";
+import React, {useEffect, useState, useRef} from "react";
+import {BackHandler, Alert, AppState} from "react-native";
 import * as SecureStore from 'expo-secure-store';
 import jwt_decode from 'jwt-decode';
 import { useTranslation } from "react-i18next";
@@ -21,10 +21,15 @@ export const AuthProvider = ({ children }) => {
     const [locale, setLocale] = useState('vn')
     const [role, setrole] = useState(0)
     const [userId, setUserId] = useState(0)
+    const appState = useRef(AppState.currentState);
+    const [appStateVisible, setAppStateVisible] = useState(appState.current);
 
     const getToken = async () => {
         const refresh_token = await SecureStore.getItemAsync('refresh_token');
         const access_token = await SecureStore.getItemAsync('access_token');
+        const localeDefault = await SecureStore.getItemAsync('locale');
+        i18n.changeLanguage(localeDefault);
+        setLocale(localeDefault)
         if(refresh_token && access_token){
             const decoded = jwt_decode(access_token);
             if(decoded.role !== 4) {
@@ -39,28 +44,6 @@ export const AuthProvider = ({ children }) => {
             setUserId(0);
         }
     }
-    const handleBackPress = async () => {       
-        BackHandler.exitApp();
-        handleLogout();
-      }
-
-    const backAction = () => {
-        Alert.alert(t("Alert_BackPress_Title"),t("Alert_BackPress_Message"), [
-          {
-            text: t("Alert_BackPress_Button_Cancel"),
-            onPress: () => null,
-          },
-          { text: t("Alert_BackPress_Button_Exit"), 
-          onPress: handleBackPress }
-        ]);
-        return true;
-      };
-
-    useEffect(() => {
-        getToken();
-        const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
-        return () => backHandler.remove();
-    }, [])
 
     const handleLogin = async(accessToken, refreshToken) => {
         let decoded = jwt_decode(accessToken);
@@ -81,8 +64,9 @@ export const AuthProvider = ({ children }) => {
         await SecureStore.deleteItemAsync('refresh_token')
     }
 
-    const handleLocale = (language) => {      
-        setLocale(language)   
+    const handleLocale = async(language) => {      
+        setLocale(language)
+        await SecureStore.setItemAsync('locale',language)   
     }
     
     return (

@@ -7,9 +7,9 @@ import AuthContext from '../store/AuthContext';
 const Route = () => {
   const authCtx = useContext(AuthContext);
 
-  useEffect(() => {
-    authCtx.checkToken();
-  }, []);
+  // useEffect(() => {
+  //   authCtx.checkToken();
+  // }, []);
   
   return (
     <NavigationContainer>

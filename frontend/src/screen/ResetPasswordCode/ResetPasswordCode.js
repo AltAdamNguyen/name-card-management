@@ -99,7 +99,7 @@ const ResetPasswordCode = ({ navigation, route }) => {
         <CustomInputs
           value={code}
           setValue={handleChange("code")}
-          icon={"close-circle-outline"}
+          icon={"close-circle"}
           label={t("Screen_ResetPasswordCode_PlaceHolder")}
           onpress={onClearCodePressed}
         />

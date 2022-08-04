@@ -64,6 +64,7 @@ const ModalStatus = ({ listStatus, visible, onPressVisable, status, onPressSubmi
                                                 color="#F3F3F3"
                                                 style={{ borderRadius: 10, width: '40%' }}
                                                 onPress={onPressVisable}
+                                                uppercase={false}
                                             >
                                                 {t("ModalStatus_Button_Cancel")}
                                             </Button>
@@ -72,6 +73,7 @@ const ModalStatus = ({ listStatus, visible, onPressVisable, status, onPressSubmi
                                                 color="#1890FF"
                                                 style={{ borderRadius: 10, width: '40%' }}
                                                 onPress={handleSubmit}
+                                                uppercase={false}
                                             >
                                                 {t("ModalStatus_Button_Complete")}
                                             </Button>

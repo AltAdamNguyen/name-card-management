@@ -38,6 +38,7 @@ const ConfirmDialogg = ({ visible, onPressVisable, value, setValue, onPressSubmi
                                                 color="#F3F3F3"
                                                 style={{ borderRadius: 10, width: '40%' }}
                                                 onPress={() => {onPressVisable()}}
+                                                uppercase={false}
                                             >
                                               {leftButtonTitle}
                                             </Button>
@@ -46,6 +47,7 @@ const ConfirmDialogg = ({ visible, onPressVisable, value, setValue, onPressSubmi
                                                 color="#1890FF"
                                                 style={{ borderRadius: 10, width: '40%' }}
                                                 onPress={() => {onPressConfirm()} }
+                                                uppercase={false}
                                             >
                                                 {rightButtonTitle}
                                             </Button>
