@@ -44,7 +44,7 @@ const GroupContact = ({ navigation }) => {
   const [modalAddContactVisible, setModalAddContactVisible] = useState(false);
   const onAddNewGroupContactPressed = (groupName) => {
     if(groupName.trim() == ""){
-      // alert("Group name cannot be empty")
+      alert(t("Screen_GroupContact_Alert_GroupNameEmpty"),"")
     }else{
       setModalAddContactVisible(false);
       FetchApi(

@@ -48,6 +48,7 @@
         "Screen_GroupContact_Placeholder_Search": "Search for group",
         "Screen_GroupContact_Text_Container_Label_Title":"My group of contacts",
         "Screen_GroupContact_Text_Container_Label_NoGroupFound": "No Group Found",
+        "Screen_GroupContact_Alert_GroupNameEmpty": "Group name cannot be empty",
 
         "Screen_Home_ModalHome_Text_Label_Sort": "Sort",
         "Screen_Home_ModalHome_Text_Label_Manage": "Manage",

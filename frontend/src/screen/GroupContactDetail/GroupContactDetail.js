@@ -145,6 +145,11 @@ const GroupContactDetail = ({ navigation, route }) => {
             .includes(contactSearch.toLowerCase())
         ) {
           listSearchContactInGroup.push(listContactTotal[i]);
+        } else if (
+          listContactTotal[i].contact_phone != null &&
+          listContactTotal[i].contact_phone.toLowerCase().includes(contactSearch.toLowerCase())
+        ){
+          listSearchContactInGroup.push(listContactTotal[i]);
         }
       }
       setListContact([]);
@@ -389,7 +394,7 @@ const GroupContactDetail = ({ navigation, route }) => {
           setDialogChangGroupNameVisible(false);
         }}
         onPressConfirm={() => {
-          if (groupName == "") {
+          if (groupName.trim() == "") {
             alert(t("Screen_GroupContactDetail_InputDialog_Alert"));
           } else {
             setDialogChangGroupNameVisible(false);
