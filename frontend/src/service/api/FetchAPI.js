@@ -18,7 +18,8 @@ export const FetchApiAuth = (url, method, contentType, param, callback) => {
             callback(data)
         })
         .catch((error) => {
-            console.log(error + "Hai")
+            console.log(error)
+            callback({message : "Internet Error"})
         })
 }
 

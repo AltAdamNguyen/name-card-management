@@ -11,16 +11,12 @@ import {
 import styles from "./styles";
 import { useTranslation } from "react-i18next";
 import Loading from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
-import {
-  Searchbar,
-  Provider,
-  Button,
-} from "react-native-paper";
+import { Searchbar, Provider, Button } from "react-native-paper";
 import ModalAddGroup from "../../components/groupcontact/ModalAddGroup";
 import { FetchApi } from "../../service/api/FetchAPI";
 import { GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
 import { useIsFocused } from "@react-navigation/native";
-import {  Appbar } from "react-native-paper";
+import { Appbar } from "react-native-paper";
 import ConfirmDialog from "../../components/customDialog/dialog/confirmDialog/ConfirmDialog";
 import CustomCheckedBox from "../../components/groupcontact/checkBoxCustom/CustomCheckedBox";
 
@@ -143,6 +139,17 @@ const AddContactToManyGroup = ({ route, navigation }) => {
     let index = newState.findIndex((el) => el.group.group_id === id);
     newState[index] = { ...newState[index], isChecked: check };
     setListGroupContactTotal(newState);
+    if (listGroupSearch.length == 0) {
+      let newState = [...listGroupContact];
+      let index = newState.findIndex((el) => el.group.group_id === id);
+      newState[index] = { ...newState[index], isChecked: check };
+      setLisGroupContact(newState);
+    } else {
+      let newState = [...listGroupSearch];
+      let index = newState.findIndex((el) => el.group.group_id === id);
+      newState[index] = { ...newState[index], isChecked: check };
+      setListGroupSearch(newState);
+    }
   };
 
   const addContactToManyGroupAPICallBack = (data) => {
@@ -166,9 +173,7 @@ const AddContactToManyGroup = ({ route, navigation }) => {
       {
         user_id: route.params.userId,
         contact_ids: route.params.id,
-        group_ids: [
-          ...selectedGroupIds
-        ]
+        group_ids: [...selectedGroupIds],
       },
       addContactToManyGroupAPICallBack
     );
@@ -225,7 +230,14 @@ const AddContactToManyGroup = ({ route, navigation }) => {
             {listGroupSearch.length != 0 &&
               listGroupSearch.map((item, index) => {
                 return (
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      checkBoxOnClickCallBack(
+                        item.group.group_id,
+                        !item.isChecked
+                      );
+                    }}
+                  >
                     <View style={styles.container_listGroup_item} key={index}>
                       <CustomCheckedBox
                         id={item.group.group_id}
@@ -242,7 +254,14 @@ const AddContactToManyGroup = ({ route, navigation }) => {
             {listGroupContact.length != 0 &&
               listGroupContact.map((item, index) => {
                 return (
-                  <TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      checkBoxOnClickCallBack(
+                        item.group.group_id,
+                        !item.isChecked
+                      );
+                    }}
+                  >
                     <View style={styles.container_listGroup_item} key={index}>
                       <CustomCheckedBox
                         id={item.group.group_id}
@@ -277,15 +296,27 @@ const AddContactToManyGroup = ({ route, navigation }) => {
           </Button>
         </View>
       </SafeAreaView>
-      <ModalAddGroup visible={modalAddContactVisible} value={inputGroupName}  onPressSubmit={onAddNewGroupContactPressed} onPressVisable={() => setModalAddContactVisible(!modalAddContactVisible)}/>
-       <ConfirmDialog
-            visible={confirmDialogVisible}
-            title={t("Screen_AddContactToManyGroup_ConfirmDialog_Label")}
-            leftButtonTitle={t( "Screen_AddContactToManyGroup_ConfirmDialog_LeftButtonTitle")}
-            rightButtonTitle={t("Screen_AddContactToManyGroup_ConfirmDialog_RightButtonTitle")}
-            onPressVisable={() => {setConfirmDialogVisible(false)}}
-            onPressConfirm={AddContactToManyGroup}
-          />
+      <ModalAddGroup
+        visible={modalAddContactVisible}
+        onPressConfirm={onAddNewGroupContactPressed}
+        onPressVisable={() =>
+          setModalAddContactVisible(!modalAddContactVisible)
+        }
+      />
+      <ConfirmDialog
+        visible={confirmDialogVisible}
+        title={t("Screen_AddContactToManyGroup_ConfirmDialog_Label")}
+        leftButtonTitle={t(
+          "Screen_AddContactToManyGroup_ConfirmDialog_LeftButtonTitle"
+        )}
+        rightButtonTitle={t(
+          "Screen_AddContactToManyGroup_ConfirmDialog_RightButtonTitle"
+        )}
+        onPressVisable={() => {
+          setConfirmDialogVisible(false);
+        }}
+        onPressConfirm={AddContactToManyGroup}
+      />
     </Provider>
   );
 };

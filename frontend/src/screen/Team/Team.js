@@ -92,9 +92,9 @@ const Team = ({ navigation }) => {
     }
 
     const exportSuccess = (data) => {
+        setLoading(false)
         authCtx.checkToken()
-        if (data) {
-            setLoading(false)
+        if (data) {    
             Alert.alert(t("Screen_Team_Alet_Export_Success"), t("Screen_Team_Alet_Export_Success_Message"), [{ text: 'OK' }])
         }
     }
