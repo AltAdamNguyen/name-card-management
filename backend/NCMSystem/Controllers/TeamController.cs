@@ -27,7 +27,7 @@ namespace NCMSystem.Controllers
         {
             int userId = ((JwtToken)Request.Properties["payload"]).Uid;
 
-            List<TeamResponse> listMember = null;
+            List<TeamResponse> listMember;
             try
             {
                 var mem = db.Database.SqlQuery<MemberTeam>("exec user_recurse @SuperBoss_id = " + userId).ToList();
@@ -37,6 +37,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -114,6 +115,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -155,6 +157,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()

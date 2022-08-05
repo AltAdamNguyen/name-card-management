@@ -77,7 +77,7 @@ namespace TestNCMSystem
             //act
             var cc = controller.Login(new UserRequest()
             {
-                Email = "nmtung.stuy@gmail.com",
+                Email = "study@nmtung.dev",
                 Password = "Tung8864464@"
             });
 
@@ -96,13 +96,13 @@ namespace TestNCMSystem
             //act
             var cc = controller.Login(new UserRequest()
             {
-                Email = "nmtung.study@gmail.com",
-                Password = "Tung88644264@"
+                Email = "study@nmtung.dev",
+                Password = "Trung123@"
             });
 
             JObject json = Parse(cc.Response.Content.ReadAsStringAsync().Result);
             //assert
-            Assert.AreEqual(cc.Response.StatusCode, HttpStatusCode.OK);
+            Assert.AreEqual(HttpStatusCode.OK, cc.Response.StatusCode);
             Assert.NotNull(json["data"]?["access_token"]);
             Assert.NotNull(json["data"]?["refresh_token"]);
         }

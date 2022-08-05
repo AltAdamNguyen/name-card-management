@@ -44,10 +44,21 @@ namespace NCMSystem.Controllers
                 });
             }
 
-            var user = db.users.FirstOrDefault(x => x.email == email & x.password == password);
-
+            var user = db.users.FirstOrDefault(x => x.email == email);
             // check user exist
-            if (user == null)
+            if (user == null )
+            {
+                return new ResponseMessageResult(new HttpResponseMessage()
+                {
+                    StatusCode = System.Net.HttpStatusCode.BadRequest,
+                    Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                    {
+                        Message = "U0003",
+                    }), Encoding.UTF8, "application/json")
+                });
+            }
+            
+            if (!BCrypt.Net.BCrypt.Verify(password, user.password))
             {
                 return new ResponseMessageResult(new HttpResponseMessage()
                 {
@@ -123,7 +134,7 @@ namespace NCMSystem.Controllers
                     StatusCode = System.Net.HttpStatusCode.BadRequest,
                     Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                     {
-                        Message = "Request must contain refresh token",
+                        Message = "U0010",
                     }), Encoding.UTF8, "application/json")
                 });
             }
@@ -157,7 +168,7 @@ namespace NCMSystem.Controllers
                     StatusCode = System.Net.HttpStatusCode.BadRequest,
                     Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                     {
-                        Message = "Your refresh token is invalid or has expired",
+                        Message = "U0009",
                     }), Encoding.UTF8, "application/json")
                 });
             }
@@ -195,7 +206,7 @@ namespace NCMSystem.Controllers
             // check null new password
             if (string.IsNullOrWhiteSpace(newPassword) || string.IsNullOrWhiteSpace(oldPassword))
             {
-                return Common.ResponseMessage.BadRequest("Request must contain new_password and old_password");
+                return Common.ResponseMessage.BadRequest("U0004");
             }
 
             newPassword = newPassword.Trim();
@@ -225,7 +236,7 @@ namespace NCMSystem.Controllers
                 return Common.ResponseMessage.BadRequest("U0006");
             }
 
-            selectUser.password = newPassword;
+            selectUser.password = BCrypt.Net.BCrypt.HashPassword(newPassword);
             db.tokens.RemoveRange(db.tokens.Where(e => e.user_id == userId));
 
             // init date create-expire for token and refresh token
@@ -276,7 +287,7 @@ namespace NCMSystem.Controllers
 
             // check null email
             if (string.IsNullOrWhiteSpace(email))
-                return Common.ResponseMessage.BadRequest("Request must contain email");
+                return Common.ResponseMessage.BadRequest("U0004");
 
             email = email.Trim();
 
@@ -284,12 +295,12 @@ namespace NCMSystem.Controllers
             var isValidate = Validator.Validator.CheckEmailCorrect(email);
 
             if (!isValidate)
-                return Common.ResponseMessage.BadRequest("Email is invalid");
+                return Common.ResponseMessage.BadRequest("U0004");
 
             var selectUser = db.users.FirstOrDefault(e => e.email == email);
 
             if (selectUser == null)
-                return Common.ResponseMessage.NotFound("User not found");
+                return Common.ResponseMessage.NotFound("C0018");
 
             // random number length 6
             var randomNumber = new Random().Next(100000, 999999).ToString();
@@ -326,7 +337,7 @@ namespace NCMSystem.Controllers
 
             // check null code
             if (string.IsNullOrWhiteSpace(code) || string.IsNullOrWhiteSpace(email))
-                return Common.ResponseMessage.BadRequest("Request must contain code and email");
+                return Common.ResponseMessage.BadRequest("U0004");
 
             code = code.Trim();
             email = email.Trim();
@@ -334,10 +345,10 @@ namespace NCMSystem.Controllers
             // get user by email
             var selectUser = db.users.FirstOrDefault(e => e.email == email && e.code_resetPw == code);
             if (selectUser == null)
-                return Common.ResponseMessage.NotFound("User not found or code is incorrect");
+                return Common.ResponseMessage.NotFound("U0011");
 
             if (selectUser.exp_code < DateTime.Now)
-                return Common.ResponseMessage.BadRequest("Code is expired");
+                return Common.ResponseMessage.BadRequest("U0008");
 
             return new ResponseMessageResult(new HttpResponseMessage()
             {
@@ -363,7 +374,7 @@ namespace NCMSystem.Controllers
             // check null code or email or password
             if (string.IsNullOrWhiteSpace(code) || string.IsNullOrWhiteSpace(email) ||
                 string.IsNullOrWhiteSpace(password))
-                return Common.ResponseMessage.BadRequest("Request must contain code, email and password");
+                return Common.ResponseMessage.BadRequest("U0004");
 
             code = code.Trim();
             email = email.Trim();
@@ -372,17 +383,17 @@ namespace NCMSystem.Controllers
             // get user by email
             var selectUser = db.users.FirstOrDefault(e => e.email == email && e.code_resetPw == code);
             if (selectUser == null)
-                return Common.ResponseMessage.NotFound("User not found or code is incorrect");
+                return Common.ResponseMessage.NotFound("U0011");
 
             if (selectUser.exp_code < DateTime.Now)
-                return Common.ResponseMessage.BadRequest("Code is expired");
+                return Common.ResponseMessage.BadRequest("U0008");
 
             // check password regex
             if (!Regex.IsMatch(password, @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}$"))
                 return Common.ResponseMessage.BadRequest(
-                    "New password must be at least 8 characters, contain at least one lowercase letter, one uppercase letter, one number and one special character");
+                    "U0006");
 
-            selectUser.password = password;
+            selectUser.password = BCrypt.Net.BCrypt.HashPassword(password);
             selectUser.code_resetPw = null;
             selectUser.exp_code = null;
 

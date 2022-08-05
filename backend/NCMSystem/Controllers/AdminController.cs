@@ -7,6 +7,7 @@ using System.Text;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Results;
+using ClosedXML.Excel;
 using ExcelDataReader;
 using NCMSystem.Filter;
 using NCMSystem.Models;
@@ -117,7 +118,6 @@ namespace NCMSystem.Controllers
                     return Common.ResponseMessage.BadRequest("A0001");
                 }
 
-
                 long timeStart = DateTime.Now.Ticks;
                 string fileName = AppDomain.CurrentDomain.BaseDirectory + "Files\\staff_" + timeStart + ".xlsx";
                 temp.SaveAs(fileName);
@@ -130,8 +130,6 @@ namespace NCMSystem.Controllers
                     return Common.ResponseMessage.BadRequest("A0002");
                 }
 
-                var boss = db.users.FirstOrDefault(x => x.role_id == 3 && x.isActive == true);
-
                 reader.Read();
                 reader.Read();
 
@@ -140,10 +138,11 @@ namespace NCMSystem.Controllers
                     if (reader.GetValue(1) == null)
                         break;
 
-                    string name = "";
-                    string email = "";
+                    var name = "";
+                    var email = "";
+                    var emailMana = "";
                     int role = 0;
-                    for (int column = 1; column < 4; column++)
+                    for (int column = 1; column < 5; column++)
                     {
                         switch (column)
                         {
@@ -163,15 +162,13 @@ namespace NCMSystem.Controllers
                                         role = 2;
                                         break;
                                     case "Sale Director":
-                                        if (boss != null)
-                                        {
-                                            return Common.ResponseMessage.BadRequest("A0002");
-                                        }
-
                                         role = 3;
                                         break;
                                 }
 
+                                break;
+                            case 4:
+                                emailMana = reader.GetString(column);
                                 break;
                         }
                     }
@@ -181,6 +178,7 @@ namespace NCMSystem.Controllers
                         name = name,
                         email = email,
                         role_id = role,
+                        manager = emailMana,
                         status = 1
                     });
                 }
@@ -380,12 +378,14 @@ namespace NCMSystem.Controllers
                 var ct = db.contacts.Where(x => x.owner_id == user.id && x.createdBy == user.id);
                 foreach (var u in ct)
                 {
+                    var isNew = DateTime.Now.Subtract(u.create_date).Hours < 1;
                     listCt.Add(new ContactOfDaUserResponse
                     {
                         Id = u.id,
                         Name = u.name,
                         Company = u.company,
-                        IsActive = u.isActive
+                        IsActive = u.isActive,
+                        IsNew = isNew
                     });
                 }
             }
@@ -406,7 +406,7 @@ namespace NCMSystem.Controllers
                 }), Encoding.UTF8, "application/json")
             });
         }
-        
+
         [HttpGet]
         [Route("api/admin/contacts/list-user-da/{id}")]
         public ResponseMessageResult GetListContactDaUser(int id)
@@ -530,6 +530,63 @@ namespace NCMSystem.Controllers
                 {
                     Message = "Success",
                     Data = list
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpDelete]
+        [Route("api/admin/user-imported/{id}")]
+        public ResponseMessageResult DeleteUserImport(int id)
+        {
+            try
+            {
+                var user = db.import_user.FirstOrDefault(x => x.id == id);
+                if (user == null)
+                    return Common.ResponseMessage.BadRequest("C0018");
+
+                db.import_user.Remove(user);
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpDelete]
+        [Route("api/admin/user-imported")]
+        public ResponseMessageResult DeleteAllUserImport()
+        {
+            try
+            {
+                var user = db.import_user.ToList();
+                db.import_user.RemoveRange(user);
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
                 }), Encoding.UTF8, "application/json")
             });
         }
@@ -793,7 +850,7 @@ namespace NCMSystem.Controllers
 
                 foreach (var ct in tranCt.ContactIds)
                 {
-                    var ctId = int.Parse(ct);
+                    var ctId = ct;
                     var contact = db.contacts.FirstOrDefault(c => c.id == ctId);
                     if (contact != null)
                     {
@@ -890,15 +947,19 @@ namespace NCMSystem.Controllers
                     selectUserByEmailManagerRq.role_id == 1)
                     return Common.ResponseMessage.BadRequest("A0010");
 
+                var password = PasswordGenerator.Generate();
+                var passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
                 db.users.Add(new user()
                 {
                     name = selectUserImported.name,
-                    password = PasswordGenerator.Generate(),
+                    password = passwordHash,
                     email = selectUserImported.email,
                     role_id = selectUserImported.role_id ?? 1,
                     isActive = true,
                     manager_id = selectUserManager?.id
                 });
+
+                SendGridConfig.SendPassword(selectUserImported.email, password);
 
                 selectUserImported.status = 2;
                 db.SaveChanges();
@@ -990,15 +1051,19 @@ namespace NCMSystem.Controllers
                     });
                 }
 
+                var password = PasswordGenerator.Generate();
+                var passwordHash = BCrypt.Net.BCrypt.HashPassword(password);
                 db.users.Add(new user()
                 {
                     name = request.Name,
-                    password = PasswordGenerator.Generate(),
+                    password = passwordHash,
                     email = request.Email,
                     role_id = request.RoleId,
                     isActive = true,
                     manager_id = selectUserByEmailManager?.id
                 });
+
+                SendGridConfig.SendPassword(request.Email, password);
 
                 db.SaveChanges();
             }
@@ -1121,6 +1186,93 @@ namespace NCMSystem.Controllers
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
                     Message = "Success",
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpPost]
+        [Route("api/admin/user/export")]
+        public ResponseMessageResult ExportUser()
+        {
+            var dateCreated = DateTime.Now;
+            try
+            {
+                var listUser = new List<user>();
+                var wbook = new XLWorkbook();
+                var boss = db.users.FirstOrDefault(x => x.role_id == 3);
+                if (boss != null)
+                {
+                    listUser.Add(boss);
+                }
+
+                var manager = db.users.Where(x => x.role_id == 2).ToList();
+                if (manager.Count > 0)
+                {
+                    listUser.AddRange(manager);
+                }
+
+                var staff = db.users.Where(x => x.role_id == 1).ToList();
+                if (staff.Count > 0)
+                {
+                    listUser.AddRange(staff);
+                }
+
+                var fileName = AppDomain.CurrentDomain.BaseDirectory + "Files\\ExportUsers_" +
+                               dateCreated.ToString("M-d-yyyy") + ".xlsx";
+                var ws = wbook.Worksheets.Add("Users");
+
+                string[] headers =
+                {
+                    "Name", "Email", "Status", "Job Title", "Manager"
+                };
+                var row = 1;
+                var col = 1;
+                foreach (var header in headers)
+                {
+                    ws.Cell(row, col).Value = header;
+                    ws.Cell(row, col).Style.Fill.BackgroundColor = XLColor.BabyBlue;
+                    ws.Column(col).Width = 20;
+                    col++;
+                }
+
+                row++;
+                col = 1;
+
+                foreach (var c in listUser)
+                {
+                    ws.Cell(row, col).Value = c.name;
+                    col++;
+                    ws.Cell(row, col).Value = c.email;
+                    col++;
+                    ws.Cell(row, col).Value = c.isActive != null ? "Active" : "Inactive";
+                    col++;
+                    ws.Cell(row, col).Value = c.role.name;
+                    col++;
+                    ws.Cell(row, col).Value = db.users.FirstOrDefault(x => x.id == c.manager_id)?.name;
+                    row++;
+                    col = 1;
+                }
+
+                ws.Columns().AdjustToContents();
+                wbook.SaveAs(fileName);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = new
+                    {
+                        link = $"https://{Request.RequestUri.Host}/Files/ExportUsers_{dateCreated:M-d-yyyy}.xlsx"
+                    }
                 }), Encoding.UTF8, "application/json")
             });
         }

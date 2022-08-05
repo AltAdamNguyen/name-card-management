@@ -2,6 +2,6 @@
 {
     public class ScanNCRequest
     {
-        public string image { get; set; }
+        public string Image { get; set; }
     }
 }

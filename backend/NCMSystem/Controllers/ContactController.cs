@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -285,6 +286,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -331,6 +333,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -346,7 +349,7 @@ namespace NCMSystem.Controllers
 
         [HttpGet]
         [Route("api/contacts/search-list-transfer")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager})]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager })]
         public ResponseMessageResult GetSearchListTransfer(string value = "")
         {
             int userId = ((JwtToken)Request.Properties["payload"]).Uid;
@@ -368,6 +371,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -661,6 +665,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -698,7 +703,7 @@ namespace NCMSystem.Controllers
             string website = request.Website;
             string fax = request.Fax;
 
-            var newCt = new contact();
+            contact newCt;
             try
             {
                 if (Validator.Validator.CheckName(name) == false ||
@@ -822,6 +827,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -843,83 +849,93 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.SaleDirector })]
         public ResponseMessageResult ExportContact([FromBody] ExportRequest eRq)
         {
-            var wbook = new XLWorkbook();
-            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
-            var user = db.users.FirstOrDefault(u => u.id == userId);
-            if (user == null)
+            try
             {
-                return Common.ResponseMessage.NotFound("C0018");
-            }
-
-            DateTime dateCreated = DateTime.Now;
-            if (eRq.ArrayId == null || eRq.ArrayId.Length == 0)
-            {
-                return Common.ResponseMessage.BadRequest("C0018");
-            }
-
-            string fileName = AppDomain.CurrentDomain.BaseDirectory + "Files\\ExportContact_" +
-                              dateCreated.ToString("M-d-yyyy") + ".xlsx";
-            var ws = wbook.Worksheets.Add("Contacts");
-
-            string[] headers =
-            {
-                "Name", "Email", "Company", "Job Title", "Phone", "Address", "Website", "Fax", "Note", "Create Date",
-                "Created By"
-            };
-            int row = 1;
-            int col = 1;
-            foreach (var header in headers)
-            {
-                ws.Cell(row, col).Value = header;
-                ws.Cell(row, col).Style.Fill.BackgroundColor = XLColor.BabyBlue;
-                ws.Column(col).Width = 20;
-                col++;
-            }
-
-            row++;
-            col = 1;
-
-            foreach (var id in eRq.ArrayId)
-            {
-                List<contact> contact = db.contacts.Where(c => c.createdBy == id).ToList();
-                if (contact.Count > 0)
+                var wbook = new XLWorkbook();
+                int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+                var user = db.users.FirstOrDefault(u => u.id == userId);
+                if (user == null)
                 {
-                    foreach (var c in contact)
-                    {
-                        ws.Cell(row, col).Value = c.name;
-                        col++;
-                        ws.Cell(row, col).Value = c.email;
-                        col++;
-                        ws.Cell(row, col).Value = c.company;
-                        col++;
-                        ws.Cell(row, col).Value = c.job_title;
-                        col++;
-                        ws.Cell(row, col).SetValue(Convert.ToString(c.phone));
-                        col++;
-                        ws.Cell(row, col).Value = c.address;
-                        col++;
-                        ws.Cell(row, col).Value = c.website;
-                        col++;
-                        ws.Cell(row, col).SetValue(Convert.ToString(c.fax));
-                        col++;
-                        ws.Cell(row, col).Value = c.note;
-                        col++;
-                        ws.Cell(row, col).Value = c.create_date;
-                        col++;
-                        ws.Cell(row, col).Value = c.user.name;
-                        row++;
-                        col = 1;
-                    }
+                    return Common.ResponseMessage.NotFound("C0018");
+                }
+
+                DateTime dateCreated = DateTime.Now;
+                if (eRq.ArrayId == null || eRq.ArrayId.Length == 0)
+                {
+                    return Common.ResponseMessage.BadRequest("C0018");
+                }
+
+                string fileName = AppDomain.CurrentDomain.BaseDirectory + "Files\\ExportContact_" +
+                                  dateCreated.ToString("M-d-yyyy") + ".xlsx";
+                var ws = wbook.Worksheets.Add("Contacts");
+
+                string[] headers =
+                {
+                    "Name", "Email", "Company", "Job Title", "Phone", "Address", "Website", "Fax", "Note",
+                    "Create Date",
+                    "Created By"
+                };
+                int row = 1;
+                int col = 1;
+                foreach (var header in headers)
+                {
+                    ws.Cell(row, col).Value = header;
+                    ws.Cell(row, col).Style.Fill.BackgroundColor = XLColor.BabyBlue;
+                    ws.Column(col).Width = 20;
+                    col++;
                 }
 
                 row++;
                 col = 1;
-            }
 
-            ws.Columns().AdjustToContents();
-            wbook.SaveAs(fileName);
-            SendGridConfig.SendExportFile(user.email,
-                $"https://{Request.RequestUri.Host}/Files/ExportContact_{dateCreated:M-d-yyyy}.xlsx");
+                foreach (var id in eRq.ArrayId)
+                {
+                    List<contact> contact = db.contacts.Where(c => c.createdBy == id && c.owner_id == id).ToList();
+                    if (contact.Count > 0)
+                    {
+                        foreach (var c in contact)
+                        {
+                            ws.Cell(row, col).Value = c.name;
+                            col++;
+                            ws.Cell(row, col).Value = c.email;
+                            col++;
+                            ws.Cell(row, col).Value = c.company;
+                            col++;
+                            ws.Cell(row, col).Value = c.job_title;
+                            col++;
+                            ws.Cell(row, col).SetValue(Convert.ToString(c.phone));
+                            col++;
+                            ws.Cell(row, col).Value = c.address;
+                            col++;
+                            ws.Cell(row, col).Value = c.website;
+                            col++;
+                            ws.Cell(row, col).SetValue(Convert.ToString(c.fax));
+                            col++;
+                            ws.Cell(row, col).Value = c.note;
+                            col++;
+                            ws.Cell(row, col).Value = c.create_date;
+                            col++;
+                            ws.Cell(row, col).Value = c.user.name;
+                            row++;
+                            col = 1;
+                        }
+                    }
+
+                    row++;
+                    col = 1;
+                }
+
+                ws.Columns().AdjustToContents();
+                wbook.SaveAs(fileName);
+                SendGridConfig.SendExportFile(user.email,
+                    $"https://{Request.RequestUri.Host}/Files/ExportContact_{dateCreated:M-d-yyyy}.xlsx");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
+            }
 
             return new ResponseMessageResult(new HttpResponseMessage()
             {
@@ -933,31 +949,40 @@ namespace NCMSystem.Controllers
 
         [HttpPatch]
         [Route("api/contacts/transfer")]
-        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin, NcmRole.Staff, NcmRole.Manager })]
+        [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Admin, NcmRole.Staff})]
         public ResponseMessageResult TransferOwnContact([FromBody] TransferContact tranCt)
         {
-            string email = tranCt.TransferTo ?? "";
-
-            var user = db.users.FirstOrDefault(u => u.email == email);
-            if (user == null)
+            try
             {
-                return Common.ResponseMessage.BadRequest("C0018");
-            }
+                string email = tranCt.TransferTo ?? "";
 
-            foreach (var ct in tranCt.ContactIds)
-            {
-                var ctId = int.Parse(ct);
-                var contact = db.contacts.FirstOrDefault(c => c.id == ctId);
-                if (contact != null)
+                var user = db.users.FirstOrDefault(u => u.email == email);
+                if (user == null)
                 {
-                    contact.groups.Clear();
-                    contact.status_id = "S0002";
-                    contact.flag_id = null;
-                    contact.owner_id = user.id;
-                    contact.createdBy = user.id;
-                    contact.create_date = DateTime.Now;
-                    db.SaveChanges();
+                    return Common.ResponseMessage.BadRequest("C0018");
                 }
+
+                foreach (var ct in tranCt.ContactIds)
+                {
+                    var ctId = ct;
+                    var contact = db.contacts.FirstOrDefault(c => c.id == ctId);
+                    if (contact != null)
+                    {
+                        contact.groups.Clear();
+                        contact.status_id = "S0002";
+                        contact.flag_id = null;
+                        contact.owner_id = user.id;
+                        contact.createdBy = user.id;
+                        contact.create_date = DateTime.Now;
+                        db.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -981,7 +1006,7 @@ namespace NCMSystem.Controllers
             if (id < 0) id = 0;
             if (idDuplicate < 0) idDuplicate = 0;
 
-            var rq = new request();
+            request rq;
             try
             {
                 var newCt = db.contacts.FirstOrDefault(c => c.id == idDuplicate);
@@ -1060,6 +1085,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -1082,9 +1108,9 @@ namespace NCMSystem.Controllers
         public ResponseMessageResult RequestInfo(int id, string code)
         {
             request rq;
-            var requester = new user();
-            var receiver = new user();
-            var contact = new contact();
+            user requester;
+            user receiver;
+            contact contact;
             try
             {
                 rq = db.requests.FirstOrDefault(c => c.id == id && c.code == code);
@@ -1115,6 +1141,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -1125,16 +1152,16 @@ namespace NCMSystem.Controllers
                     Message = "Success",
                     Data = new
                     {
-                        requester = requester?.name,
-                        receiver = receiver?.name,
+                        requester = requester.name,
+                        receiver = receiver.name,
                         contact = new
                         {
-                            nameCt = contact?.name,
-                            emailCt = contact?.email,
-                            phoneCt = contact?.phone,
-                            jobCt = contact?.job_title,
-                            companyCt = contact?.company,
-                            addressCt = contact?.address,
+                            nameCt = contact.name,
+                            emailCt = contact.email,
+                            phoneCt = contact.phone,
+                            jobCt = contact.job_title,
+                            companyCt = contact.company,
+                            addressCt = contact.address,
                         }
                     }
                 }), Encoding.UTF8, "application/json")
@@ -1198,6 +1225,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -1234,6 +1262,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -1281,6 +1310,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -1321,6 +1351,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -1355,6 +1386,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -1393,12 +1425,11 @@ namespace NCMSystem.Controllers
                 }
 
                 var rqChange = db.requests.Where(c => c.old_contact_id == rq.old_contact_id);
-                if (rqChange.Count() > 0)
+                if (rqChange.Any())
                 {
-                    contact ct;
                     foreach (var r in rqChange)
                     {
-                        ct = db.contacts.FirstOrDefault(c => c.id == r.new_contact_id);
+                        var ct = db.contacts.FirstOrDefault(c => c.id == r.new_contact_id);
                         if (ct != null) ct.owner_id = rq.requester;
                         r.old_contact_id = rq.new_contact_id;
                     }
@@ -1418,6 +1449,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -1450,6 +1482,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -1458,6 +1491,61 @@ namespace NCMSystem.Controllers
                 Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                 {
                     Message = "R0004",
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpDelete]
+        [Route("api/contacts/image/delete")]
+        public ResponseMessageResult DeleteImageNotUse()
+        {
+            string fileName = "";
+            List<string> listImageFile;
+            try
+            {
+                //split name of image get from db
+                var listImage = db.contacts.Select(c => c.image_url).ToList();
+                var listNameImage = new List<string>();
+                foreach (var item in listImage)
+                {
+                    if (item != null)
+                    {
+                        var name = item.Split('/').Last();
+                        listNameImage.Add(name);
+                    }
+                }
+
+                fileName = AppDomain.CurrentDomain.BaseDirectory + "Images";
+
+                listImageFile = Directory.GetFiles(fileName).ToList();
+
+                foreach (var item in listImageFile)
+                {
+                    var name = item.Split('\\').Last();
+                    if (!listNameImage.Contains(name) && name != "noImage.jpg" && name != "admin.png")
+                    {
+                        File.Delete(item);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "C0001");
+                Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
+            }
+
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                    Data = new
+                    {
+                        file = fileName,
+                        list = listImageFile
+                    }
                 }), Encoding.UTF8, "application/json")
             });
         }

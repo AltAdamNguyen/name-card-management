@@ -30,12 +30,12 @@ namespace NCMSystem.Controllers
             ScanResponse response = new ScanResponse();
             try
             {
-                string[] imageArray = image.image.Split(',');
-                byte[] bytes = Convert.FromBase64String(imageArray[1]);
+                var imageArray = image.Image.Split(',');
+                var bytes = Convert.FromBase64String(imageArray[1]);
 
                 Image img;
-                long timeStart = DateTime.Now.Ticks;
-                string fileName = AppDomain.CurrentDomain.BaseDirectory + "Images\\nameCard_" + timeStart + ".jpg";
+                var timeStart = DateTime.Now.Ticks;
+                var fileName = AppDomain.CurrentDomain.BaseDirectory + "Images\\nameCard_" + timeStart + ".jpg";
 
                 using (MemoryStream ms = new MemoryStream(bytes))
                 {
@@ -72,8 +72,9 @@ namespace NCMSystem.Controllers
             }
             catch (Exception ex)
             {
-                Log.Error(ex, "C00001");
+                Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -93,10 +94,8 @@ namespace NCMSystem.Controllers
             {
                 return false;
             }
-            else
-            {
-                return true;
-            }
+
+            return true;
         }
 
         public string SplitNumber(string str)

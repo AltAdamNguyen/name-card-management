@@ -31,6 +31,14 @@ namespace NCMSystem
 
             SendEmail(email, content, subject);
         }
+        
+        public static async void SendPassword(string email, string pass)
+        {
+            string subject = "NCMSystem account security password";
+            string content = $"<!DOCTYPE html><html><head> <meta charset='utf-8'> <meta http-equiv='X-UA-Compatible' content='IE=edge'> <meta name='viewport' content='width=device-width, initial-scale=1'></head><body> <table border='0' cellpadding='0'> <tbody> <tr> <td> <p style='font-weight: bold; color: rgb(131, 128, 128); font-size: 23px;'> NCM account </p></td></tr><tr> <td> <p> Please use the following password for the NCM account <u> <a href='mailto:{email}' target='_blank'> {email} </a> </u> . </p></td></tr><tr> <td> <p> Password: <strong>{pass}</strong> </p></td></tr><tr> <td> <p> You should change your password after receiving this password to increase the security of your account. </p></td></tr><tr> <td> <p> Thanks, </p></td></tr><tr> <td> <p> The NCM team </p></td></tr></tbody> </table></body></html>";
+
+            SendEmail(email, content, subject);
+        }
 
         public static async void SendRequestTransferContact(string email, contact contact, user user, request rq)
         {
