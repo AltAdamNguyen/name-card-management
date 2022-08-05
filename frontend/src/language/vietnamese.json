@@ -49,6 +49,7 @@
         "Screen_GroupContact_Placeholder_Search": "Tìm kiếm nhóm",
         "Screen_GroupContact_Text_Container_Label_Title":"Nhóm danh thiếp của tôi",
         "Screen_GroupContact_Text_Container_Label_NoGroupFound": "Không có nhóm",
+        "Screen_GroupContact_Alert_GroupNameEmpty": "Tên nhóm không được để trống",
 
         "Screen_Home_ModalHome_Text_Label_Sort": "Sắp xếp",
         "Screen_Home_ModalHome_Text_Label_Manage": "Quản lí",

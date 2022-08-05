@@ -45,7 +45,10 @@ const GroupContact = ({ navigation }) => {
   }
   const isFocus = useIsFocused();
   const [modalAddContactVisible, setModalAddContactVisible] = useState(false);
-  const onAddNewGroupContactPressed = (value) => {
+  const onAddNewGroupContactPressed = (groupName) => {
+    if(groupName.trim() == ""){
+      alert(t("Screen_GroupContact_Alert_GroupNameEmpty"),"")
+    }else{
       setModalAddContactVisible(false);
       FetchApi(
         GroupContactAPI.AddGroupContact,
@@ -54,7 +57,7 @@ const GroupContact = ({ navigation }) => {
         value,
         addGroupContact
       );  
-  };
+  };}
 
   useEffect(() => {
     FetchApi(

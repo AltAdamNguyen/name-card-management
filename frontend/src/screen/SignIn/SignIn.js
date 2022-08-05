@@ -22,12 +22,12 @@ const SignIn = ({ navigation }) => {
   const [user, setUser] = useState({
     // email: "",
     // password: "",
-    // email: "anhnche141236@gmail.com",
-    // password: "Trung123@",
+    email: "anhnche141236@gmail.com",
+    password: "Trung123@",
     // email: "conganhnguyen33@gmail.com",
     // password: "Trung123@"
-    email: "person2@gmail.com",
-    password: "Trung123@",
+    // email: "person2@gmail.com",
+    // password: "Trung123@",
   });
   const [errorLoginText, setErrorLoginText] = useState({
     errorText: "",
