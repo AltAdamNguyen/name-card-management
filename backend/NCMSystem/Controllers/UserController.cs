@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
@@ -43,10 +44,21 @@ namespace NCMSystem.Controllers
                 });
             }
 
-            var user = db.users.FirstOrDefault(x => x.email == email && x.password == password);
-
+            var user = db.users.FirstOrDefault(x => x.email == email);
             // check user exist
-            if (user == null)
+            if (user == null )
+            {
+                return new ResponseMessageResult(new HttpResponseMessage()
+                {
+                    StatusCode = System.Net.HttpStatusCode.BadRequest,
+                    Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                    {
+                        Message = "U0003",
+                    }), Encoding.UTF8, "application/json")
+                });
+            }
+            
+            if (!BCrypt.Net.BCrypt.Verify(password, user.password))
             {
                 return new ResponseMessageResult(new HttpResponseMessage()
                 {
@@ -122,39 +134,51 @@ namespace NCMSystem.Controllers
                     StatusCode = System.Net.HttpStatusCode.BadRequest,
                     Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                     {
-                        Message = "Request must contain refresh token",
+                        Message = "U0010",
                     }), Encoding.UTF8, "application/json")
                 });
             }
 
             var selectToken = db.tokens.FirstOrDefault(e => e.refresh_token == refreshToken);
+
+            // check token exist
+            if (selectToken == null)
+            {
+                return new ResponseMessageResult(new HttpResponseMessage()
+                {
+                    StatusCode = System.Net.HttpStatusCode.BadRequest,
+                    Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                    {
+                        Message = "U0005",
+                    }), Encoding.UTF8, "application/json")
+                });
+            }
+
             var selectUser = db.users.FirstOrDefault(e => e.id == selectToken.user_id);
 
             // check refresh token exist
-            if (selectToken == null || selectToken.expired_date < DateTime.Now)
+            if (selectToken.expired_date < DateTime.Now)
             {
-                if (selectToken != null)
-                {
-                    // delete refresh token
-                    db.tokens.Remove(selectToken);
-                    db.SaveChanges();
-                }
+                // delete refresh token
+                db.tokens.Remove(selectToken);
+                db.SaveChanges();
 
                 return new ResponseMessageResult(new HttpResponseMessage()
                 {
                     StatusCode = System.Net.HttpStatusCode.BadRequest,
                     Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
                     {
-                        Message = "Your refresh token is invalid or has expired",
+                        Message = "U0009",
                     }), Encoding.UTF8, "application/json")
                 });
             }
-            
+
             // init date create-expire for token
             DateTimeOffset dateCreateToken = DateTimeOffset.Now;
             DateTimeOffset dateExpireToken = dateCreateToken.AddMinutes(30);
-            
-            var token = GenerateToken(selectToken.user_id, dateCreateToken.ToUnixTimeSeconds(), dateExpireToken.ToUnixTimeSeconds(), selectUser.role_id);
+
+            var token = GenerateToken(selectToken.user_id, dateCreateToken.ToUnixTimeSeconds(),
+                dateExpireToken.ToUnixTimeSeconds(), selectUser.role_id);
 
             // return success response
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -182,34 +206,37 @@ namespace NCMSystem.Controllers
             // check null new password
             if (string.IsNullOrWhiteSpace(newPassword) || string.IsNullOrWhiteSpace(oldPassword))
             {
-                return Common.ResponseMessage.BadRequest("Request must contain new_password and old_password");
+                return Common.ResponseMessage.BadRequest("U0004");
             }
 
             newPassword = newPassword.Trim();
             oldPassword = oldPassword.Trim();
 
+            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+            var selectUser = db.users.FirstOrDefault(e => e.id == userId);
+            if (selectUser == null)
+            {
+                return Common.ResponseMessage.BadRequest("C0018");
+            }
+
+            if (!selectUser.password.Equals(oldPassword))
+            {
+                return Common.ResponseMessage.BadRequest("U0007");
+            }
+
             // check match new password and old password
             if (newPassword == oldPassword)
             {
-                return Common.ResponseMessage.BadRequest("New password must be different from old password");
+                return Common.ResponseMessage.BadRequest("U0005");
             }
 
             // check new password regex
             if (!Regex.IsMatch(newPassword, @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}$"))
             {
-                return Common.ResponseMessage.BadRequest(
-                    "New password must be at least 8 characters, contain at least one lowercase letter, one uppercase letter, one number and one special character");
+                return Common.ResponseMessage.BadRequest("U0006");
             }
 
-            int userId = ((JwtToken)Request.Properties["payload"]).Uid;
-            var selectUser = db.users.FirstOrDefault(e => e.id == userId);
-
-            if (!selectUser.password.Equals(oldPassword))
-            {
-                return Common.ResponseMessage.BadRequest("Old password is incorrect");
-            }
-
-            selectUser.password = newPassword;
+            selectUser.password = BCrypt.Net.BCrypt.HashPassword(newPassword);
             db.tokens.RemoveRange(db.tokens.Where(e => e.user_id == userId));
 
             // init date create-expire for token and refresh token
@@ -260,20 +287,20 @@ namespace NCMSystem.Controllers
 
             // check null email
             if (string.IsNullOrWhiteSpace(email))
-                return Common.ResponseMessage.BadRequest("Request must contain email");
+                return Common.ResponseMessage.BadRequest("U0004");
 
             email = email.Trim();
 
             // check email regex
-            var isValidate = Validator.Validator.CheckEmail(email);
+            var isValidate = Validator.Validator.CheckEmailCorrect(email);
 
             if (!isValidate)
-                return Common.ResponseMessage.BadRequest("Email is invalid");
+                return Common.ResponseMessage.BadRequest("U0004");
 
             var selectUser = db.users.FirstOrDefault(e => e.email == email);
 
             if (selectUser == null)
-                return Common.ResponseMessage.NotFound("User not found");
+                return Common.ResponseMessage.NotFound("C0018");
 
             // random number length 6
             var randomNumber = new Random().Next(100000, 999999).ToString();
@@ -310,7 +337,7 @@ namespace NCMSystem.Controllers
 
             // check null code
             if (string.IsNullOrWhiteSpace(code) || string.IsNullOrWhiteSpace(email))
-                return Common.ResponseMessage.BadRequest("Request must contain code and email");
+                return Common.ResponseMessage.BadRequest("U0004");
 
             code = code.Trim();
             email = email.Trim();
@@ -318,10 +345,10 @@ namespace NCMSystem.Controllers
             // get user by email
             var selectUser = db.users.FirstOrDefault(e => e.email == email && e.code_resetPw == code);
             if (selectUser == null)
-                return Common.ResponseMessage.NotFound("User not found or code is incorrect");
+                return Common.ResponseMessage.NotFound("U0011");
 
             if (selectUser.exp_code < DateTime.Now)
-                return Common.ResponseMessage.BadRequest("Code is expired");
+                return Common.ResponseMessage.BadRequest("U0008");
 
             return new ResponseMessageResult(new HttpResponseMessage()
             {
@@ -347,7 +374,7 @@ namespace NCMSystem.Controllers
             // check null code or email or password
             if (string.IsNullOrWhiteSpace(code) || string.IsNullOrWhiteSpace(email) ||
                 string.IsNullOrWhiteSpace(password))
-                return Common.ResponseMessage.BadRequest("Request must contain code, email and password");
+                return Common.ResponseMessage.BadRequest("U0004");
 
             code = code.Trim();
             email = email.Trim();
@@ -356,17 +383,17 @@ namespace NCMSystem.Controllers
             // get user by email
             var selectUser = db.users.FirstOrDefault(e => e.email == email && e.code_resetPw == code);
             if (selectUser == null)
-                return Common.ResponseMessage.NotFound("User not found or code is incorrect");
+                return Common.ResponseMessage.NotFound("U0011");
 
             if (selectUser.exp_code < DateTime.Now)
-                return Common.ResponseMessage.BadRequest("Code is expired");
+                return Common.ResponseMessage.BadRequest("U0008");
 
             // check password regex
             if (!Regex.IsMatch(password, @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}$"))
                 return Common.ResponseMessage.BadRequest(
-                    "New password must be at least 8 characters, contain at least one lowercase letter, one uppercase letter, one number and one special character");
+                    "U0006");
 
-            selectUser.password = password;
+            selectUser.password = BCrypt.Net.BCrypt.HashPassword(password);
             selectUser.code_resetPw = null;
             selectUser.exp_code = null;
 
@@ -411,7 +438,8 @@ namespace NCMSystem.Controllers
         private string GenerateToken(int userId, long createTime, long expireTime, int userRole)
         {
             Jwk keyToken =
-                new Jwk(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET_KEY_TOKEN") ?? string.Empty));
+                new Jwk(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET_KEY_TOKEN") ??
+                                                string.Empty));
 
             // init date create-expire for token and refresh token
 
@@ -429,7 +457,8 @@ namespace NCMSystem.Controllers
         private string GenerateRefreshToken(int userId, long createTime, long expireTime)
         {
             Jwk keyRefreshToken =
-                new Jwk(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET_KEY_REFRESH_TOKEN") ?? string.Empty));
+                new Jwk(Encoding.ASCII.GetBytes(Environment.GetEnvironmentVariable("JWT_SECRET_KEY_REFRESH_TOKEN") ??
+                                                string.Empty));
 
             // init date create-expire for token and refresh token
             DateTimeOffset dateCreateToken = DateTimeOffset.Now;

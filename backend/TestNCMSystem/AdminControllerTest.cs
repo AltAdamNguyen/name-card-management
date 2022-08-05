@@ -1,31 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using NCMSystem.Controllers;
-using NUnit.Framework;
 using NCMSystem.Models;
 using NCMSystem.Filter;
-using NCMSystem.Models.CallAPI.Group_Contact;
+using NCMSystem.Models.CallAPI.Admin;
 using Newtonsoft.Json.Linq;
+using NUnit.Framework;
 using static Newtonsoft.Json.Linq.JObject;
 
 namespace TestNCMSystem
 {
     [TestFixture]
-    public class GroupContactControllerTest
+    public class AdminControllerTest
     {
         private static readonly NCMSystemEntities db =
             new NCMSystemEntities(Environment.GetEnvironmentVariable("NCMSystemEntities"));
 
-        public class TestGetListGroupContact
+        public class TestGetListMember
         {
-            [Test]
-            public void Test_Success_ReturnListGroup()
+            [TestCase(-1)]
+            [TestCase(7)]
+            public void Test_IdNotExist_Success_ReturnListMembers(int id)
             {
                 // init information of user
-                const int userId = 2;
+                const int userId = 4;
                 var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
                 var payload = new JwtToken()
                 {
@@ -39,10 +39,9 @@ namespace TestNCMSystem
                 request.Properties.Add("payload", payload);
                 request.Properties.Add("role", role);
 
-                var controller = new GroupContactController();
+                var controller = new AdminController();
                 controller.Request = request;
-
-                var res = controller.GetHomeListGroupContact();
+                var res = controller.GetListMember(id);
 
                 JObject json = Parse(res.Response.Content.ReadAsStringAsync().Result);
                 Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
@@ -50,13 +49,13 @@ namespace TestNCMSystem
             }
         }
 
-        public class TestGetGroupContactDetail
+        public class TestGetListEmailManager
         {
             [Test]
-            public void Test_IdNotExist_ReturnStatusCodeBadRequest()
+            public void Test_Success_ReturnListEmail()
             {
                 // init information of user
-                const int userId = 2;
+                const int userId = 4;
                 var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
                 var payload = new JwtToken()
                 {
@@ -70,37 +69,9 @@ namespace TestNCMSystem
                 request.Properties.Add("payload", payload);
                 request.Properties.Add("role", role);
 
-                var controller = new GroupContactController();
+                var controller = new AdminController();
                 controller.Request = request;
-
-                var res = controller.GetGroupContactDetail(-99);
-
-                Parse(res.Response.Content.ReadAsStringAsync().Result);
-                Assert.AreEqual(HttpStatusCode.BadRequest, res.Response.StatusCode);
-            }
-
-            [Test]
-            public void Test_Success_ReturnGroup()
-            {
-                // init information of user
-                const int userId = 2;
-                var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
-                var payload = new JwtToken()
-                {
-                    Uid = userId,
-                    Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
-                    Exp = DateTimeOffset.Now.AddMinutes(5).ToUnixTimeSeconds(),
-                };
-
-                // add property to request
-                var request = new HttpRequestMessage();
-                request.Properties.Add("payload", payload);
-                request.Properties.Add("role", role);
-
-                var controller = new GroupContactController();
-                controller.Request = request;
-
-                var res = controller.GetHomeListGroupContact();
+                var res = controller.GetListEmailManager();
 
                 JObject json = Parse(res.Response.Content.ReadAsStringAsync().Result);
                 Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
@@ -108,40 +79,13 @@ namespace TestNCMSystem
             }
         }
 
-        public class TestSearchGroup
+        public class TestGetListEmailActiveUser
         {
             [Test]
-            public void Test_NullValueSearch_ReturnStatusCodeOk()
+            public void Test_Success_ReturnListEmail()
             {
                 // init information of user
-                const int userId = 2;
-                var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
-                var payload = new JwtToken
-                {
-                    Uid = userId,
-                    Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
-                    Exp = DateTimeOffset.Now.AddMinutes(5).ToUnixTimeSeconds(),
-                };
-
-                // add property to request
-                var request = new HttpRequestMessage();
-                request.Properties.Add("payload", payload);
-                request.Properties.Add("role", role);
-
-                var controller = new GroupContactController();
-                controller.Request = request;
-
-                var res = controller.SearchGroupContact(null);
-
-                Parse(res.Response.Content.ReadAsStringAsync().Result);
-                Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
-            }
-
-            [Test]
-            public void Test_Success_ReturnListSearch()
-            {
-                // init information of user
-                const int userId = 2;
+                const int userId = 4;
                 var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
                 var payload = new JwtToken()
                 {
@@ -155,78 +99,23 @@ namespace TestNCMSystem
                 request.Properties.Add("payload", payload);
                 request.Properties.Add("role", role);
 
-                var controller = new GroupContactController();
+                var controller = new AdminController();
                 controller.Request = request;
-
-                var res = controller.SearchGroupContact("alo");
-
-                Parse(res.Response.Content.ReadAsStringAsync().Result);
-                Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
-            }
-        }
-
-        public class TestSearchContactInGroup
-        {
-            [Test]
-            public void Test_IdGroupNotExist_ReturnStatusCodeBadRequest()
-            {
-                // init information of user
-                const int userId = 2;
-                var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
-                var payload = new JwtToken
-                {
-                    Uid = userId,
-                    Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
-                    Exp = DateTimeOffset.Now.AddMinutes(5).ToUnixTimeSeconds(),
-                };
-
-                // add property to request
-                var request = new HttpRequestMessage();
-                request.Properties.Add("payload", payload);
-                request.Properties.Add("role", role);
-
-                var controller = new GroupContactController();
-                controller.Request = request;
-
-                var res = controller.SearchContactInGroupContact(-99, "hehe");
-
-                Parse(res.Response.Content.ReadAsStringAsync().Result);
-                Assert.AreEqual(HttpStatusCode.BadRequest, res.Response.StatusCode);
-            }
-
-            [Test]
-            public void Test_NullValueSearch_ReturnListSearch()
-            {
-                // init information of user
-                const int userId = 2;
-                var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
-                var payload = new JwtToken
-                {
-                    Uid = userId,
-                    Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
-                    Exp = DateTimeOffset.Now.AddMinutes(5).ToUnixTimeSeconds(),
-                };
-
-                // add property to request
-                var request = new HttpRequestMessage();
-                request.Properties.Add("payload", payload);
-                request.Properties.Add("role", role);
-
-                var controller = new GroupContactController();
-                controller.Request = request;
-
-                var res = controller.SearchContactInGroupContact(95, null);
+                var res = controller.GetListEmailActiveUser();
 
                 JObject json = Parse(res.Response.Content.ReadAsStringAsync().Result);
                 Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
                 Assert.IsTrue(json.ContainsKey("data"));
             }
+        }
 
+        public class TestGetParentOfUser
+        {
             [Test]
-            public void Test_Success_ReturnStatusCodeOk()
+            public void Test_IdNotExist_ReturnListParent()
             {
                 // init information of user
-                const int userId = 2;
+                const int userId = 4;
                 var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
                 var payload = new JwtToken()
                 {
@@ -240,77 +129,19 @@ namespace TestNCMSystem
                 request.Properties.Add("payload", payload);
                 request.Properties.Add("role", role);
 
-                var controller = new GroupContactController();
+                var controller = new AdminController();
                 controller.Request = request;
-
-                var res = controller.SearchContactInGroupContact(95, "alo");
-
-                Parse(res.Response.Content.ReadAsStringAsync().Result);
-                Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
-            }
-        }
-
-        public class TestGetContactsAvailableForAGroup
-        {
-            [Test]
-            public void Test_IdGroupNotExist_ReturnStatusCodeBadRequest()
-            {
-                // init information of user
-                const int userId = 2;
-                var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
-                var payload = new JwtToken
-                {
-                    Uid = userId,
-                    Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
-                    Exp = DateTimeOffset.Now.AddMinutes(5).ToUnixTimeSeconds(),
-                };
-
-                // add property to request
-                var request = new HttpRequestMessage();
-                request.Properties.Add("payload", payload);
-                request.Properties.Add("role", role);
-
-                var controller = new GroupContactController();
-                controller.Request = request;
-
-                var res = controller.GetContactsAvailableForAGroup("dsa", -11);
+                var res = controller.GetParentOfUser(-1);
 
                 Parse(res.Response.Content.ReadAsStringAsync().Result);
                 Assert.AreEqual(HttpStatusCode.BadRequest, res.Response.StatusCode);
             }
-
+            
             [Test]
-            public void Test_NullValueType_ReturnStatusCodeBadRequest()
+            public void Test_Success_ReturnListParent()
             {
                 // init information of user
-                const int userId = 2;
-                var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
-                var payload = new JwtToken
-                {
-                    Uid = userId,
-                    Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
-                    Exp = DateTimeOffset.Now.AddMinutes(5).ToUnixTimeSeconds(),
-                };
-
-                // add property to request
-                var request = new HttpRequestMessage();
-                request.Properties.Add("payload", payload);
-                request.Properties.Add("role", role);
-
-                var controller = new GroupContactController();
-                controller.Request = request;
-
-                var res = controller.GetContactsAvailableForAGroup(null, 95);
-
-                Parse(res.Response.Content.ReadAsStringAsync().Result);
-                Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
-            }
-
-            [Test]
-            public void Test_Success_ReturnStatusCodeOk()
-            {
-                // init information of user
-                const int userId = 2;
+                const int userId = 4;
                 var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
                 var payload = new JwtToken()
                 {
@@ -324,90 +155,23 @@ namespace TestNCMSystem
                 request.Properties.Add("payload", payload);
                 request.Properties.Add("role", role);
 
-                var controller = new GroupContactController();
+                var controller = new AdminController();
                 controller.Request = request;
+                var res = controller.GetParentOfUser(167);
 
-                var res = controller.GetContactsAvailableForAGroup("95", 95);
-
-                Parse(res.Response.Content.ReadAsStringAsync().Result);
+                JObject json = Parse(res.Response.Content.ReadAsStringAsync().Result);
                 Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
+                Assert.IsTrue(json.ContainsKey("data"));
             }
         }
 
-        public class TestGetGroupsAvailableForContacts
+        public class TestGetListDaUser
         {
             [Test]
-            public void Test_NullListContactId_ReturnStatusCodeOk()
-            {
-                AvailableGroupToContactRequest gr = new AvailableGroupToContactRequest();
-
-                // init information of user
-                const int userId = 2;
-                var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
-                var payload = new JwtToken
-                {
-                    Uid = userId,
-                    Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
-                    Exp = DateTimeOffset.Now.AddMinutes(5).ToUnixTimeSeconds(),
-                };
-
-                // add property to request
-                var request = new HttpRequestMessage();
-                request.Properties.Add("payload", payload);
-                request.Properties.Add("role", role);
-
-                var controller = new GroupContactController();
-                controller.Request = request;
-
-                var res = controller.GetGroupsAvailableForContacts(gr);
-
-                Parse(res.Response.Content.ReadAsStringAsync().Result);
-                Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
-            }
-
-            [Test]
-            public void Test_NullValueType_ReturnStatusCodeBadRequest()
-            {
-                AvailableGroupToContactRequest gr = new AvailableGroupToContactRequest
-                {
-                    listContactIds = new List<ContactIdsRequest>()
-                    {
-                        new ContactIdsRequest()
-                        {
-                            ContactId = 5,
-                        }
-                    }
-                };
-
-                // init information of user
-                const int userId = 2;
-                var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
-                var payload = new JwtToken
-                {
-                    Uid = userId,
-                    Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
-                    Exp = DateTimeOffset.Now.AddMinutes(5).ToUnixTimeSeconds(),
-                };
-
-                // add property to request
-                var request = new HttpRequestMessage();
-                request.Properties.Add("payload", payload);
-                request.Properties.Add("role", role);
-
-                var controller = new GroupContactController();
-                controller.Request = request;
-
-                var res = controller.GetGroupsAvailableForContacts(gr);
-
-                Parse(res.Response.Content.ReadAsStringAsync().Result);
-                Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
-            }
-
-            [Test]
-            public void Test_Success_ReturnStatusCodeOk()
+            public void Test_Success_ReturnListDaUser()
             {
                 // init information of user
-                const int userId = 2;
+                const int userId = 4;
                 var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
                 var payload = new JwtToken()
                 {
@@ -421,25 +185,25 @@ namespace TestNCMSystem
                 request.Properties.Add("payload", payload);
                 request.Properties.Add("role", role);
 
-                var controller = new GroupContactController();
+                var controller = new AdminController();
                 controller.Request = request;
+                var res = controller.GetListDaUser();
 
-                var res = controller.GetContactsAvailableForAGroup("95", 95);
-
-                Parse(res.Response.Content.ReadAsStringAsync().Result);
+                JObject json = Parse(res.Response.Content.ReadAsStringAsync().Result);
                 Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
+                Assert.IsTrue(json.ContainsKey("data"));
             }
         }
 
-        public class TestCreateGroup
+        public class TestGetListContactUser
         {
             [Test]
-            public void Test_EmptyRequest_ReturnStatusCodeBadRequest()
+            public void Test_IdNotExist_ReturnStatusCodeBad()
             {
                 // init information of user
-                const int userId = 2;
+                const int userId = 4;
                 var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
-                var payload = new JwtToken
+                var payload = new JwtToken()
                 {
                     Uid = userId,
                     Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
@@ -451,23 +215,19 @@ namespace TestNCMSystem
                 request.Properties.Add("payload", payload);
                 request.Properties.Add("role", role);
 
-                var controller = new GroupContactController();
+                var controller = new AdminController();
                 controller.Request = request;
-
-                var res = controller.AddGroup(new GroupNameRequest
-                {
-                    GroupName = ""
-                });
+                var res = controller.GetListContactUser(-1);
 
                 Parse(res.Response.Content.ReadAsStringAsync().Result);
                 Assert.AreEqual(HttpStatusCode.BadRequest, res.Response.StatusCode);
             }
-
+            
             [Test]
-            public void Test_Success_ReturnStatusCodeOk()
+            public void Test_Success_ReturnListContact()
             {
                 // init information of user
-                const int userId = 2;
+                const int userId = 4;
                 var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
                 var payload = new JwtToken()
                 {
@@ -481,26 +241,23 @@ namespace TestNCMSystem
                 request.Properties.Add("payload", payload);
                 request.Properties.Add("role", role);
 
-                var controller = new GroupContactController();
+                var controller = new AdminController();
                 controller.Request = request;
+                var res = controller.GetListContactUser(2);
 
-                var res = controller.AddGroup(new GroupNameRequest
-                {
-                    GroupName = "Test"
-                });
-
-                Parse(res.Response.Content.ReadAsStringAsync().Result);
+                JObject json = Parse(res.Response.Content.ReadAsStringAsync().Result);
                 Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
+                Assert.IsTrue(json.ContainsKey("data"));
             }
         }
-
-        public class TestAddContactsToGroups
+        
+        public class TestGetListContactDaUser
         {
             [Test]
-            public void Test_Success_ReturnStatusCodeOk()
+            public void Test_IdNotExist_ReturnStatusCodeBad()
             {
                 // init information of user
-                const int userId = 2;
+                const int userId = 4;
                 var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
                 var payload = new JwtToken()
                 {
@@ -514,28 +271,19 @@ namespace TestNCMSystem
                 request.Properties.Add("payload", payload);
                 request.Properties.Add("role", role);
 
-                var controller = new GroupContactController();
+                var controller = new AdminController();
                 controller.Request = request;
-
-                var res = controller.AddContactsToGroups(new ContactToGroupRequest
-                {
-                    UserId = "2",
-                    ContactIds = new List<ContactIdsRequest>() { new ContactIdsRequest() { ContactId = 3 } },
-                    GroupIds = new List<GroupIdsRequest>() { new GroupIdsRequest() { GroupId = 100 } }
-                });
+                var res = controller.GetListContactDaUser(-1);
 
                 Parse(res.Response.Content.ReadAsStringAsync().Result);
-                Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
+                Assert.AreEqual(HttpStatusCode.BadRequest, res.Response.StatusCode);
             }
-        }
-
-        public class TestDeleteContactFromGroup
-        {
+            
             [Test]
-            public void Test_Success_ReturnStatusCodeOk()
+            public void Test_Success_ReturnListDaContact()
             {
                 // init information of user
-                const int userId = 2;
+                const int userId = 4;
                 var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
                 var payload = new JwtToken()
                 {
@@ -549,29 +297,25 @@ namespace TestNCMSystem
                 request.Properties.Add("payload", payload);
                 request.Properties.Add("role", role);
 
-                var controller = new GroupContactController();
+                var controller = new AdminController();
                 controller.Request = request;
+                var res = controller.GetListContactDaUser(102);
 
-                var res = controller.DeleteContactFromGroup(new DeleteContactFromGroupRequest
-                {
-                    GroupId = 100,
-                    ContactIds = new List<DeleteContactIdFromGroupRequest>() { new DeleteContactIdFromGroupRequest() { ContactId = 3 } },
-                });
-
-                Parse(res.Response.Content.ReadAsStringAsync().Result);
+                JObject json = Parse(res.Response.Content.ReadAsStringAsync().Result);
                 Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
+                Assert.IsTrue(json.ContainsKey("data"));
             }
         }
 
-        public class TestDeleteGroupContact
+        public class TestGetUserInformation
         {
             [Test]
-            public void Test_IdGroupNotExist_ReturnStatusCodeBadRequest()
+            public void Test_IdNotExist_ReturnStatusCodeBad()
             {
                 // init information of user
-                const int userId = 2;
+                const int userId = 4;
                 var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
-                var payload = new JwtToken
+                var payload = new JwtToken()
                 {
                     Uid = userId,
                     Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
@@ -583,10 +327,95 @@ namespace TestNCMSystem
                 request.Properties.Add("payload", payload);
                 request.Properties.Add("role", role);
 
-                var controller = new GroupContactController();
+                var controller = new AdminController();
                 controller.Request = request;
+                var res = controller.GetUserInformation(-1);
 
-                var res = controller.DeleteGroupContact(-11);
+                Parse(res.Response.Content.ReadAsStringAsync().Result);
+                Assert.AreEqual(HttpStatusCode.BadRequest, res.Response.StatusCode);
+            }
+            
+            [Test]
+            public void Test_Success_ReturnUser()
+            {
+                // init information of user
+                const int userId = 4;
+                var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
+                var payload = new JwtToken()
+                {
+                    Uid = userId,
+                    Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
+                    Exp = DateTimeOffset.Now.AddMinutes(5).ToUnixTimeSeconds(),
+                };
+
+                // add property to request
+                var request = new HttpRequestMessage();
+                request.Properties.Add("payload", payload);
+                request.Properties.Add("role", role);
+
+                var controller = new AdminController();
+                controller.Request = request;
+                var res = controller.GetUserInformation(2);
+
+                JObject json = Parse(res.Response.Content.ReadAsStringAsync().Result);
+                Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
+                Assert.IsTrue(json.ContainsKey("data"));
+            }
+        }
+
+        public class TestGetListUser
+        {
+            [Test]
+            public void Test_Success_ReturnListUser()
+            {
+                // init information of user
+                const int userId = 4;
+                var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
+                var payload = new JwtToken()
+                {
+                    Uid = userId,
+                    Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
+                    Exp = DateTimeOffset.Now.AddMinutes(5).ToUnixTimeSeconds(),
+                };
+
+                // add property to request
+                var request = new HttpRequestMessage();
+                request.Properties.Add("payload", payload);
+                request.Properties.Add("role", role);
+
+                var controller = new AdminController();
+                controller.Request = request;
+                var res = controller.GetListUser();
+
+                JObject json = Parse(res.Response.Content.ReadAsStringAsync().Result);
+                Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
+                Assert.IsTrue(json.ContainsKey("data"));
+            }
+        }
+
+        public class TestDeleteUserImport
+        {
+            [Test]
+            public void Test_IdNotExist_ReturnStatusCodeBad()
+            {
+                // init information of user
+                const int userId = 4;
+                var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
+                var payload = new JwtToken()
+                {
+                    Uid = userId,
+                    Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
+                    Exp = DateTimeOffset.Now.AddMinutes(5).ToUnixTimeSeconds(),
+                };
+
+                // add property to request
+                var request = new HttpRequestMessage();
+                request.Properties.Add("payload", payload);
+                request.Properties.Add("role", role);
+
+                var controller = new AdminController();
+                controller.Request = request;
+                var res = controller.DeleteUserImport(-1);
 
                 Parse(res.Response.Content.ReadAsStringAsync().Result);
                 Assert.AreEqual(HttpStatusCode.BadRequest, res.Response.StatusCode);
@@ -596,7 +425,7 @@ namespace TestNCMSystem
             public void Test_Success_ReturnStatusCodeOk()
             {
                 // init information of user
-                const int userId = 2;
+                const int userId = 4;
                 var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
                 var payload = new JwtToken()
                 {
@@ -610,26 +439,24 @@ namespace TestNCMSystem
                 request.Properties.Add("payload", payload);
                 request.Properties.Add("role", role);
 
-                var controller = new GroupContactController();
+                var controller = new AdminController();
                 controller.Request = request;
+                var res = controller.DeleteUserImport(355);
 
-                var res = controller.DeleteGroupContact(100);
-                    
                 Parse(res.Response.Content.ReadAsStringAsync().Result);
                 Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
             }
         }
-
-        public class TestPatchGroupName
+        
+        public class TestGetListUserImported
         {
-            [TestCase(-95, "Test")]
-            [TestCase(95, "")]
-            public void Test_IdGroupNotExist_EmptyGroupName_ReturnStatusCodeBadRequest(int id,string test)
+            [Test]
+            public void Test_Success_ReturnListUserImported()
             {
                 // init information of user
-                const int userId = 2;
+                const int userId = 4;
                 var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
-                var payload = new JwtToken
+                var payload = new JwtToken()
                 {
                     Uid = userId,
                     Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
@@ -641,13 +468,126 @@ namespace TestNCMSystem
                 request.Properties.Add("payload", payload);
                 request.Properties.Add("role", role);
 
-                var controller = new GroupContactController();
+                var controller = new AdminController();
                 controller.Request = request;
+                var res = controller.GetListUserImported();
 
-                var res = controller.PatchGroupName(id,new RenameGroupContact
+                JObject json = Parse(res.Response.Content.ReadAsStringAsync().Result);
+                Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
+                Assert.IsTrue(json.ContainsKey("data"));
+            }
+        }
+        
+        public class TestGetUserImportedDetail
+        {
+            [Test]
+            public void Test_IdNotExist_ReturnStatusCodeBad()
+            {
+                // init information of user
+                const int userId = 4;
+                var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
+                var payload = new JwtToken()
                 {
-                    GroupName = test
-                });
+                    Uid = userId,
+                    Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
+                    Exp = DateTimeOffset.Now.AddMinutes(5).ToUnixTimeSeconds(),
+                };
+
+                // add property to request
+                var request = new HttpRequestMessage();
+                request.Properties.Add("payload", payload);
+                request.Properties.Add("role", role);
+
+                var controller = new AdminController();
+                controller.Request = request;
+                var res = controller.GetUserImportedDetail(-1);
+
+                Parse(res.Response.Content.ReadAsStringAsync().Result);
+                Assert.AreEqual(HttpStatusCode.BadRequest, res.Response.StatusCode);
+            }
+            
+            [Test]
+            public void Test_Success_ReturnUser()
+            {
+                // init information of user
+                const int userId = 4;
+                var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
+                var payload = new JwtToken()
+                {
+                    Uid = userId,
+                    Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
+                    Exp = DateTimeOffset.Now.AddMinutes(5).ToUnixTimeSeconds(),
+                };
+
+                // add property to request
+                var request = new HttpRequestMessage();
+                request.Properties.Add("payload", payload);
+                request.Properties.Add("role", role);
+
+                var controller = new AdminController();
+                controller.Request = request;
+                var res = controller.DeleteUserImport(346);
+
+                JObject json = Parse(res.Response.Content.ReadAsStringAsync().Result);
+                Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
+                Assert.IsTrue(json.ContainsKey("data"));
+            }
+        }
+
+        public class TestGetSearch
+        {
+            [TestCase(null)]
+            [TestCase("")]
+            public void Test_Success_ReturnListSearch(string value)
+            {
+                // init information of user
+                const int userId = 4;
+                var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
+                var payload = new JwtToken()
+                {
+                    Uid = userId,
+                    Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
+                    Exp = DateTimeOffset.Now.AddMinutes(5).ToUnixTimeSeconds(),
+                };
+
+                // add property to request
+                var request = new HttpRequestMessage();
+                request.Properties.Add("payload", payload);
+                request.Properties.Add("role", role);
+
+                var controller = new AdminController();
+                controller.Request = request;
+                var res = controller.GetSearch(value);
+
+                JObject json = Parse(res.Response.Content.ReadAsStringAsync().Result);
+                Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
+                Assert.IsTrue(json.ContainsKey("data"));
+            }
+        }
+
+        public class TestAddUser
+        {
+            [Test]
+            public void Test_IdNotExist_ReturnStatusCodeBad()
+            {
+                // init information of user
+                const int userId = 4;
+                var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
+                var payload = new JwtToken()
+                {
+                    Uid = userId,
+                    Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
+                    Exp = DateTimeOffset.Now.AddMinutes(5).ToUnixTimeSeconds(),
+                };
+
+                // add property to request
+                var request = new HttpRequestMessage();
+                request.Properties.Add("payload", payload);
+                request.Properties.Add("role", role);
+
+                var controller = new AdminController();
+                controller.Request = request;
+                var res = controller.AddUser(-1);
 
                 Parse(res.Response.Content.ReadAsStringAsync().Result);
                 Assert.AreEqual(HttpStatusCode.BadRequest, res.Response.StatusCode);
@@ -657,7 +597,7 @@ namespace TestNCMSystem
             public void Test_Success_ReturnStatusCodeOk()
             {
                 // init information of user
-                const int userId = 2;
+                const int userId = 4;
                 var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
                 var payload = new JwtToken()
                 {
@@ -671,14 +611,170 @@ namespace TestNCMSystem
                 request.Properties.Add("payload", payload);
                 request.Properties.Add("role", role);
 
-                var controller = new GroupContactController();
+                var controller = new AdminController();
                 controller.Request = request;
+                var res = controller.AddUser(354);
 
-                var res = controller.PatchGroupName(95,new RenameGroupContact
+                Parse(res.Response.Content.ReadAsStringAsync().Result);
+                Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
+            }
+        }
+
+        public class TestAddUserManual
+        {
+            [Test]
+            public void Test_NullRequest_ReturnStatusCodeBad()
+            {
+                ChangeUserImportedRequest user = new ChangeUserImportedRequest();
+                // init information of user
+                const int userId = 4;
+                var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
+                var payload = new JwtToken()
                 {
-                    GroupName = "Hoang Oke"
-                });
-                    
+                    Uid = userId,
+                    Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
+                    Exp = DateTimeOffset.Now.AddMinutes(5).ToUnixTimeSeconds(),
+                };
+
+                // add property to request
+                var request = new HttpRequestMessage();
+                request.Properties.Add("payload", payload);
+                request.Properties.Add("role", role);
+
+                var controller = new AdminController();
+                controller.Request = request;
+                var res = controller.AddUserManual(user);
+                
+                Parse(res.Response.Content.ReadAsStringAsync().Result);
+                Assert.AreEqual(HttpStatusCode.BadRequest, res.Response.StatusCode);
+            }
+            
+            [Test]
+            public void Test_Success_ReturnStatusCode()
+            {
+                ChangeUserImportedRequest user = new ChangeUserImportedRequest
+                {
+                    Name = "test",
+                    Email = "Test@gmail.com",
+                    RoleId = 1,
+                    Manager = "study@nmtung.dev"
+                };
+                // init information of user
+                const int userId = 4;
+                var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
+                var payload = new JwtToken()
+                {
+                    Uid = userId,
+                    Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
+                    Exp = DateTimeOffset.Now.AddMinutes(5).ToUnixTimeSeconds(),
+                };
+
+                // add property to request
+                var request = new HttpRequestMessage();
+                request.Properties.Add("payload", payload);
+                request.Properties.Add("role", role);
+
+                var controller = new AdminController();
+                controller.Request = request;
+                var res = controller.AddUserManual(user);
+                
+                Parse(res.Response.Content.ReadAsStringAsync().Result);
+                Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
+            }
+        }
+
+        public class TestUpdateUser
+        {
+            [Test]
+            public void Test_NullRequest_ReturnStatusCodeBad()
+            {
+                UserInformationResponse user = new UserInformationResponse();
+                // init information of user
+                const int userId = 4;
+                var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
+                var payload = new JwtToken()
+                {
+                    Uid = userId,
+                    Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
+                    Exp = DateTimeOffset.Now.AddMinutes(5).ToUnixTimeSeconds(),
+                };
+
+                // add property to request
+                var request = new HttpRequestMessage();
+                request.Properties.Add("payload", payload);
+                request.Properties.Add("role", role);
+
+                var controller = new AdminController();
+                controller.Request = request;
+                var res = controller.UpdateUser(user,2);
+                
+                Parse(res.Response.Content.ReadAsStringAsync().Result);
+                Assert.AreEqual(HttpStatusCode.BadRequest, res.Response.StatusCode);
+            }
+            
+            [Test]
+            public void Test_IdUserNotExist_ReturnStatusCodeBad()
+            {
+                UserInformationResponse user = new UserInformationResponse
+                {
+                    Name = "Nguyễn Công An",
+                    Email = "anhnche141236@gmail.com",
+                    RoleId = 1,
+                    IsActive = true,
+                };
+                // init information of user
+                const int userId = 4;
+                var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
+                var payload = new JwtToken()
+                {
+                    Uid = userId,
+                    Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
+                    Exp = DateTimeOffset.Now.AddMinutes(5).ToUnixTimeSeconds(),
+                };
+
+                // add property to request
+                var request = new HttpRequestMessage();
+                request.Properties.Add("payload", payload);
+                request.Properties.Add("role", role);
+
+                var controller = new AdminController();
+                controller.Request = request;
+                var res = controller.UpdateUser(user,-2);
+                
+                Parse(res.Response.Content.ReadAsStringAsync().Result);
+                Assert.AreEqual(HttpStatusCode.BadRequest, res.Response.StatusCode);
+            }
+            
+            [Test]
+            public void Test_Success_ReturnStatusCodeOk()
+            {
+                UserInformationResponse user = new UserInformationResponse
+                {
+                    Name = "Nguyễn Công An",
+                    Email = "anhnche141236@gmail.com",
+                    RoleId = 1,
+                    IsActive = true,
+                    EmailManager = "conganhnguyen33@gmail.com"
+                };
+                // init information of user
+                const int userId = 4;
+                var role = db.users.FirstOrDefault(x => x.id == userId)?.role_id;
+                var payload = new JwtToken()
+                {
+                    Uid = userId,
+                    Iat = DateTimeOffset.Now.ToUnixTimeSeconds(),
+                    Exp = DateTimeOffset.Now.AddMinutes(5).ToUnixTimeSeconds(),
+                };
+
+                // add property to request
+                var request = new HttpRequestMessage();
+                request.Properties.Add("payload", payload);
+                request.Properties.Add("role", role);
+
+                var controller = new AdminController();
+                controller.Request = request;
+                var res = controller.UpdateUser(user,2);
+                
                 Parse(res.Response.Content.ReadAsStringAsync().Result);
                 Assert.AreEqual(HttpStatusCode.OK, res.Response.StatusCode);
             }
