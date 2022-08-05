@@ -264,6 +264,12 @@
         "Screen_Scan_Alert_Button_Cancel": "Hủy",
         "Screen_Scan_Alert_Button_Ok": "Đồng ý",
         "Screen_Scan_Alert_Permission": "Yêu cầu quyền đối với máy ảnh",
+        "Screeen_Scan_Alert_QR_Error_Title": "Lỗi",
+        "Screeen_Scan_Alert_QR_Error_Message": "Không thể đọc được mã QR",
+        "Screeen_Scan_Alert_QR_Error_Button_Ok": "Đồng ý",
+        "Screen_Scan_Alert_Scan_Error_Title": "Lỗi",
+        "Screen_Scan_Alert_Scan_Error_Message": "Quét thất bại. Vui lòng chụp lại",
+        "Screen_Scan_Alert_Scan_Error_Button_Ok": "Đồng ý",
 
         "Loading_InternetError": "Lỗi kết nối, vui lòng thử lại sau",
 

@@ -264,6 +264,12 @@
         "Screen_Scan_Alert_Button_Cancel": "Cancel",
         "Screen_Scan_Alert_Button_Ok": "Ok",
         "Screen_Scan_Alert_Permission": "Requesting permissions camera",
+        "Screeen_Scan_Alert_QR_Error_Title": "Error",
+        "Screeen_Scan_Alert_QR_Error_Message": "QR code is not valid",
+        "Screeen_Scan_Alert_QR_Error_Button_Ok": "Ok",
+        "Screen_Scan_Alert_Scan_Error_Title": "Error",
+        "Screen_Scan_Alert_Scan_Error_Message": "Scan failed. Please take a photo again.",
+        "Screen_Scan_Alert_Scan_Error_Button_Ok": "Ok",
 
         "Loading_InternetError": "Internet Error, Please try again later",
 

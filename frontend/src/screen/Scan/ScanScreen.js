@@ -81,7 +81,7 @@ const ScanScreen = ({ navigation }) => {
   const handleScanQr = ({ data }) => {
     let card = parseCard(data)
     if (isEmpty(card)) {
-      Alert.alert('Thông báo', 'Mã QR không hợp lệ', [{ text: 'Quét lại' }])
+      Alert.alert(t("Screeen_Scan_Alert_QR_Error_Title"), t("Screeen_Scan_Alert_QR_Error_Message"), [{ text: t("Screeen_Scan_Alert_QR_Error_Button_Ok") }])
       setScanQr(true)
     } else {
       let contact = {
