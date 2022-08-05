@@ -3,13 +3,13 @@ import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { View, SafeAreaView, ScrollView, Text, Alert } from 'react-native';
 import styles from './styles';
 import { Searchbar, FAB, Provider, Button } from 'react-native-paper';
-import debounce from 'lodash.debounce';
 import Tree from '../../components/team/Tree';
 import { useIsFocused } from '@react-navigation/native';
 import { FetchApi } from '../../service/api/FetchAPI';
 import { ContentType, Method, TeamAPI } from '../../constants/ListAPI';
 import AuthContext from '../../store/AuthContext';
 import LoadingDialog from '../../components/customDialog/dialog/loadingDialog/LoadingDialog';
+import { useTranslation } from 'react-i18next';
 
 // create a component
 const Team = ({ navigation }) => {
@@ -20,7 +20,7 @@ const Team = ({ navigation }) => {
     const [listExport, setListExport] = useState([]);
     const isFocused = useIsFocused()
     const authCtx = useContext(AuthContext);
-
+    const { t, i18n } = useTranslation()
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -34,9 +34,26 @@ const Team = ({ navigation }) => {
         FetchApi(TeamAPI.GetTeam, Method.GET, ContentType.JSON, undefined, getTeam)
     }, [isFocused]);
 
+    useEffect(() => {
+        const searchTimeOut = setTimeout(() => {
+            if (text) {
+                SearchApi(text)
+            } else {
+                setSearchTeam(team)
+            }
+        }, 500);
+
+        return () => {
+            clearTimeout(searchTimeOut);
+        }
+    }, [text])
+
     const getTeam = (data) => {
-        setTeam(data.data);
-        setSearchTeam(data.data)
+        authCtx.checkToken()
+        if (data) {
+            setTeam(data.data);
+            setSearchTeam(data.data)
+        }
         setLoading(false)
     }
 
@@ -56,40 +73,39 @@ const Team = ({ navigation }) => {
     }
 
     const getMember = (data) => {
-        setSearchTeam(data.data)
+        authCtx.checkToken()
+        if (data) {
+            setSearchTeam(data.data)
+        }
     }
 
-    const debounceSearch = useCallback(debounce((nextValue) => SearchApi(nextValue), 500), [])
-
     const handleSearch = (value) => {
-        if (value === "") {
-            setSearchTeam(team)
-        }
-        setText(value);
-        debounceSearch(value);
+        setText(value);  
     }
 
     const handleExport = () => {
-        listExport.length === 0 && Alert.alert('Thông báo', 'Vui lòng chọn nhân viên', [{ text: 'OK' }])
+        listExport.length === 0 && Alert.alert(t("Screen_Team_Alet_Export_Warning"), t("Screen_Team_Alet_Export_Warning_Message"), [{ text: 'OK' }])
         if (listExport.length > 0) {
             setLoading(true)
             FetchApi(TeamAPI.Export, Method.POST, ContentType.JSON, { array_id: listExport }, exportSuccess)
-        } 
+        }
     }
 
     const exportSuccess = (data) => {
-        console.log(data)
         setLoading(false)
-        Alert.alert('Thông báo', 'Xuất file thành công\nVui lòng check email của bạn', [{ text: 'OK' }])
+        authCtx.checkToken()
+        if (data) {    
+            Alert.alert(t("Screen_Team_Alet_Export_Success"), t("Screen_Team_Alet_Export_Success_Message"), [{ text: 'OK' }])
+        }
     }
 
     return (
         <Provider>
             <SafeAreaView style={styles.container}>
                 <View style={styles.header}>
-                    {authCtx.role !== 1 &&<View style={styles.sectionStyle}>
+                    {authCtx.role !== 1 && <View style={styles.sectionStyle}>
                         <Searchbar
-                            placeholder="Tìm kiếm nhân viên"
+                            placeholder={t("Screen_Team_Input_Placeholder")}
                             theme={{
                                 roundness: 10,
                                 colors: { primary: '#1890FF' }
@@ -101,19 +117,19 @@ const Team = ({ navigation }) => {
                         />
                     </View>}
                     {checked && <View style={styles.header_label}>
-                        <Text style={styles.header_label_button}>Đã chọn ({listExport.length})</Text>
-                        <Button uppercase={false} color="#1980FF" onPress={handleExport}>Export</Button>
+                        <Text style={styles.header_label_button}>{t("Screen_Team_Text_Selected")} ({listExport.length})</Text>
+                        <Button uppercase={false} color="#1980FF" onPress={handleExport}>{t("Screen_Team_Button_Eport")}</Button>
                     </View>}
                 </View>
                 <View style={styles.body}>
                     {authCtx.role !== 1 && searchTeam && searchTeam.length === 0 && !loading &&
                         <View style={styles.container}>
-                            <Text style={styles.label}>Không có thành viên</Text>
+                            <Text style={styles.label}>{t("Screen_Team_List_NoTeam")}</Text>
                         </View>
                     }
                     {authCtx.role === 1 &&
                         <View style={styles.container}>
-                            <Text style={styles.label}>Không khả dụng</Text>
+                            <Text style={styles.label}>{t("Screen_Team_Text_Unavailable")}</Text>
                         </View>
                     }
                     {loading &&
@@ -123,7 +139,14 @@ const Team = ({ navigation }) => {
                         < ScrollView >
                             {searchTeam && searchTeam.map((item, index) => {
                                 return (
-                                    <Tree item={item} navigation={navigation} key={index} checked={checked} checklistExport={checklistExport} listExport={listExport} handleChecked={handleChecked} />
+                                    <Tree
+                                        item={item}
+                                        navigation={navigation}
+                                        key={index} checked={checked}
+                                        checklistExport={checklistExport}
+                                        listExport={listExport}
+                                        handleChecked={handleChecked}
+                                    />
                                 )
                             })}
                         </ScrollView>

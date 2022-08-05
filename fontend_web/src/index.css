@@ -1,13 +1,88 @@
 body {
-  margin: 0 !important;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  margin     : 0;
+  font-size  : 14px;
+  font-weight: 400;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
+    sans-serif !important;
+  -webkit-font-smoothing : antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif !important;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+
+
+@import '~antd/dist/antd.css';
+
+.ant-select .ant-select-selector {
+  padding-top   : 4px !important;
+  padding-bottom: 4px !important;
+  height        : 40px !important;
+
+  border-radius   : 0.75rem !important;
+  background-color: #f1f3f5 !important;
+  color           : #11181c !important;
+  border          : none !important;
+}
+
+.ant-select-focused .ant-select-selector,
+.ant-select-selector:focus,
+.ant-select-selector:active,
+.ant-select-open .ant-select-selector {
+  box-shadow: none !important;
+}
+
+.ant-select-status-error .ant-select-selector {
+  background-color: #fdd8e5 !important;
+  color           : #f31260 !important;
+}
+
+.ant-select-status-warning .ant-select-selector {
+  background-color: #f9cb80 !important;
+  color           : #f5a524 !important;
+}
+
+.ant-alert {
+  border-radius: 0.75rem !important;
+  border       : none !important;
+  margin-bottom: 5px !important;
+  margin-right : 20px !important;
+}
+
+.ant-alert:last-child {
+  margin-bottom: 20px !important;
+}
+
+.ant-alert-success {
+  background-color: #dafbe8 !important;
+}
+
+.ant-alert-warning {
+  background-color: #f9cb80 !important;
+}
+
+.ant-alert-error {
+  background-color: #fdd8e5 !important;
+}
+
+.ant-select-selection-item {
+  line-height: 32px !important;
+}
+
+.ant-select-single .ant-select-selector .ant-select-selection-placeholder {
+  line-height: 33px !important;
+}
+
+.ant-select-selection-search-input {
+  height: 40px !important;
 }

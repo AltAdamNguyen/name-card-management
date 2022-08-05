@@ -36,7 +36,7 @@ const Setting = ({ navigation }) => {
         <Text style={styles.title}>{t("Screen_Setting_Button_Title")}</Text>
         <TouchableOpacity
           style={[styles.button, styles.mb20]}
-          onPress={onChangePasswordPressed}
+          onPress={() => onChangePasswordPressed()}
         >
           <Text style={styles.label}>
             {t("Screen_Setting_Button_ChangePassword")}

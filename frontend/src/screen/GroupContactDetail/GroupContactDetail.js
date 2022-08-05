@@ -145,6 +145,11 @@ const GroupContactDetail = ({ navigation, route }) => {
             .includes(contactSearch.toLowerCase())
         ) {
           listSearchContactInGroup.push(listContactTotal[i]);
+        } else if (
+          listContactTotal[i].contact_phone != null &&
+          listContactTotal[i].contact_phone.toLowerCase().includes(contactSearch.toLowerCase())
+        ){
+          listSearchContactInGroup.push(listContactTotal[i]);
         }
       }
       setListContact([]);
@@ -168,7 +173,7 @@ const GroupContactDetail = ({ navigation, route }) => {
         <View style={styles.header}>
           <Pressable style={styles.sectionStyle}>
             <Searchbar
-              placeholder="Find contacts"
+              placeholder={t("Screen_GroupContactDetail_PlaceHolder_SearchContact")}
               theme={{
                 roundness: 10,
                 colors: { primary: "#1890FF" },
@@ -365,9 +370,9 @@ const GroupContactDetail = ({ navigation, route }) => {
       </View>
       <ConfirmDialogg
         visible={dialogDeleteGroupConfirmVisible}
-        title={"Bạn có chắc chắn muốn xóa nhóm này không?"}
-        leftButtonTitle={"Hủy"}
-        rightButtonTitle={"Xóa"}
+        title={t("Screen_GroupContactDetail_ConfirmDialog_Title")}
+        leftButtonTitle={t("Screen_GroupContactDetail_ConfirmDialog_LeftButtonTitle")}
+        rightButtonTitle={t("Screen_GroupContactDetail_ConfirmDialog_RightButtonTitle")}
         onPressVisable={() => {
           setDialogDeleteGroupConfirmVisible(false);
         }}
@@ -378,10 +383,10 @@ const GroupContactDetail = ({ navigation, route }) => {
       />
       <InputDialog
         visible={dialogChangeGroupNameVisible}
-        title="Đổi tên nhóm"
-        label="Tên nhóm"
-        leftButtonTitle="Hủy"
-        rightButtonTitle="Đổi"
+        title={t("Screen_GroupContactDetail_InputDialog_Title")}
+        label={t("Screen_GroupContactDetail_InputDialog_Label")}
+        leftButtonTitle={t("Screen_GroupContactDetail_InputDialog_LeftButtonTitle")}
+        rightButtonTitle={t("Screen_GroupContactDetail_InputDialog_RightButtonTitle")}
         value={groupName}
         setValue={(name) => handleChange(name)}
         onPressVisable={() => {
@@ -389,8 +394,8 @@ const GroupContactDetail = ({ navigation, route }) => {
           setDialogChangGroupNameVisible(false);
         }}
         onPressConfirm={() => {
-          if (groupName == "") {
-            alert("group name cannot be empty");
+          if (groupName.trim() == "") {
+            alert(t("Screen_GroupContactDetail_InputDialog_Alert"));
           } else {
             setDialogChangGroupNameVisible(false);
             onDataReturn({

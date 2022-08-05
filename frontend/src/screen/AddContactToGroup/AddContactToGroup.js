@@ -1,17 +1,14 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   SafeAreaView,
   Image,
-  TouchableOpacity,
   ScrollView,
   Pressable,
 } from "react-native";
 import styles from "./styles";
-import i18next from "../../language/i18n";
 import { useTranslation } from "react-i18next";
-import AuthContext from "../../store/AuthContext";
 import {
   Searchbar,
   Appbar,
@@ -24,14 +21,12 @@ import CustomCheckedBox from "../../components/groupcontact/checkBoxCustom/Custo
 import { FetchApi } from "../../service/api/FetchAPI";
 import { GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
 import Loading from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
-import { t } from "i18next";
 import ConfirmDialog from "../../components/customDialog/dialog/confirmDialog/ConfirmDialog";
 const AddContactToGroup = ({ navigation, route }) => {
   const [listContact, setListContact] = useState([]);
   const [listContactTotal, setListContactTotal] = useState([]);
   const [listSearch, setListSearch] = useState([]);
-  const authCtx = useContext(AuthContext);
-
+  const { t, i18n } = useTranslation();
   const [choosenItems, setChoosenItems] = useState(0);
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -74,6 +69,18 @@ const AddContactToGroup = ({ navigation, route }) => {
     let index = newState.findIndex((el) => el.contact.contact_id === id);
     newState[index] = { ...newState[index], isChecked: check };
     setListContactTotal(newState);
+    if (listSearch.length == 0) {
+      let newState = [...listContact];
+      let index = newState.findIndex((el) => el.contact.contact_id === id);
+      newState[index] = { ...newState[index], isChecked: check };
+      setListContact(newState)
+    } 
+    else {
+      let newState = [...listSearch];
+      let index = newState.findIndex((el) => el.contact.contact_id === id);
+      newState[index] = { ...newState[index], isChecked: check };
+      setListSearch(newState)
+    }
   };
 
   const addContactToGroup = () => {
@@ -97,7 +104,6 @@ const AddContactToGroup = ({ navigation, route }) => {
   };
 
   const addContactsToGroupCallBack = (data) => {
-    console.log(data);
     setConfirmDialogVisible(false);
     navigation.goBack()
   };
@@ -180,7 +186,8 @@ const AddContactToGroup = ({ navigation, route }) => {
               {listSearch.length != 0 &&
                 listSearch.map((item, index) => {
                   return (
-                    <View style={styles.item} key={index}>
+                    <TouchableOpacity onPress={() => {checkBoxOnClickCallBack(item.contact.contact_id, !item.isChecked)}}>
+                      <View style={styles.item} key={index}>
                       <CustomCheckedBox
                         id={item.contact.contact_id}
                         onClick={checkBoxOnClickCallBack}
@@ -221,13 +228,15 @@ const AddContactToGroup = ({ navigation, route }) => {
                         </View>
                       </View>
                     </View>
+                    </TouchableOpacity>
                   );
                 })}
               <ScrollView>
                 {listContact.length != 0 &&
                   listContact.map((item, index) => {
                     return (
-                      <View style={styles.item} key={index}>
+                      <TouchableOpacity onPress={() => checkBoxOnClickCallBack(item.contact.contact_id, !item.isChecked)}>
+                          <View style={styles.item} key={index}>
                         <CustomCheckedBox
                           id={item.contact.contact_id}
                           onClick={checkBoxOnClickCallBack}
@@ -271,6 +280,7 @@ const AddContactToGroup = ({ navigation, route }) => {
                           </View>
                         </View>
                       </View>
+                      </TouchableOpacity>
                     );
                   })}
               </ScrollView>
@@ -288,6 +298,7 @@ const AddContactToGroup = ({ navigation, route }) => {
               onPress={() => {
                 setConfirmDialogVisible(true);
               }}
+              uppercase={false}
             >
               {t("Screen_AddContactToGroup_Button_AddContact")}
             </Button>

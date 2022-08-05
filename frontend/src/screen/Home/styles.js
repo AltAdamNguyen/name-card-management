@@ -223,7 +223,6 @@ const styles = StyleSheet.create({
     floatButton_team: {
         marginBottom: 20, 
         width: '100%', 
-        backgroundColor: '#1890FF'
     }
 
 

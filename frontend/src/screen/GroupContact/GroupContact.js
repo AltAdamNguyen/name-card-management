@@ -40,23 +40,24 @@ const GroupContact = ({ navigation }) => {
   const [listGroupContactTotal, setListGroupContactTotal] = useState([]);
   const authCtx = useContext(AuthContext);
   const { t, i18n } = useTranslation();
+  const inputGroupName = {
+    group_name: "",
+  }
   const isFocus = useIsFocused();
   const [modalAddContactVisible, setModalAddContactVisible] = useState(false);
   const onAddNewGroupContactPressed = (groupName) => {
     if(groupName.trim() == ""){
-      // alert("Group name cannot be empty")
+      alert(t("Screen_GroupContact_Alert_GroupNameEmpty"),"")
     }else{
       setModalAddContactVisible(false);
       FetchApi(
         GroupContactAPI.AddGroupContact,
         Method.POST,
         ContentType.JSON,
-        { group_name: groupName },
+        value,
         addGroupContact
-      );
-    }
-   
-  };
+      );  
+  };}
 
   useEffect(() => {
     FetchApi(
@@ -94,6 +95,8 @@ const GroupContact = ({ navigation }) => {
   }, [isFocus]);
 
   const getGroupContact = (data) => {
+    setLisGroupContact([])
+    setListGroupContactTotal([])
     if (data.data.length > 0) {
       setLisGroupContact(data.data);
       setListGroupContactTotal(data.data);
@@ -140,7 +143,7 @@ const GroupContact = ({ navigation }) => {
         <View style={styles.container_listGroup}>
           {listGroupContact.length == 0 && (
             <View style={styles.listContainer_view}>
-              <Text style={styles.listContainer_label}>Không có nhóm</Text>
+              <Text style={styles.listContainer_label}>{t("Screen_GroupContact_Text_Container_Label_NoGroupFound")}</Text>
             </View>
           )}
           <ScrollView>
@@ -170,15 +173,7 @@ const GroupContact = ({ navigation }) => {
         </View>
         <FAB style={styles.floatButton} icon="plus" size={24} color="#fff" onPress={() => setModalAddContactVisible(true)} />
       </SafeAreaView>
-      {/* <ModalAddGroupContact
-        label={t("ModalAddGroupContact_Placeholder_GroupName")}
-        confirmLabel={t("ModalAddGroupContact_Label_Confirm")}
-        onVisible={modalAddContactVisible}
-        onDismiss={() => setModalAddContactVisible(false)}
-        onPressCancel={() => setModalAddContactVisible(false)}
-        onPressConfirm={onAddNewGroupContactPressed}
-      /> */}
-      <ModalAddGroup visible={modalAddContactVisible}  onPressConfirm={onAddNewGroupContactPressed} onPressVisable={() => setModalAddContactVisible(!modalAddContactVisible)}/>
+      <ModalAddGroup visible={modalAddContactVisible} value={inputGroupName} onPressSubmit={onAddNewGroupContactPressed} onPressVisable={() => setModalAddContactVisible(!modalAddContactVisible)}/>
       <Loading onVisible={isLoading ? true : false} />
     </Provider>
   );

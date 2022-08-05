@@ -27,7 +27,7 @@ const ConfirmDialogg = ({ visible, onPressVisable, value, setValue, onPressSubmi
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <TouchableWithoutFeedback>
                     <Card elevation={3} style={styles.info_status_modalView}>
-                        <Text style={{ fontSize: 20, textAlign: 'center' }}>Thông báo</Text>
+                        <Text style={{ fontSize: 20, textAlign: 'center' }}>{t("ConfirmDialog_Title")}</Text>
                         <Text style={{ fontSize: 16, margin: 10 }}>{title}</Text>
                        
                                     <View style={{ width: '100%' }}>
@@ -38,6 +38,7 @@ const ConfirmDialogg = ({ visible, onPressVisable, value, setValue, onPressSubmi
                                                 color="#F3F3F3"
                                                 style={{ borderRadius: 10, width: '40%' }}
                                                 onPress={() => {onPressVisable()}}
+                                                uppercase={false}
                                             >
                                               {leftButtonTitle}
                                             </Button>
@@ -46,6 +47,7 @@ const ConfirmDialogg = ({ visible, onPressVisable, value, setValue, onPressSubmi
                                                 color="#1890FF"
                                                 style={{ borderRadius: 10, width: '40%' }}
                                                 onPress={() => {onPressConfirm()} }
+                                                uppercase={false}
                                             >
                                                 {rightButtonTitle}
                                             </Button>

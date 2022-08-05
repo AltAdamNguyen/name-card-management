@@ -20,14 +20,11 @@ import { FormatDate } from '../../validate/FormatDate';
 import SnackbarComponent from '../../components/viewcontact/Snackbar';
 
 import styles from './styles';
-
-// create a component
-
-
+import { ListFlag, ListStatus } from '../../components/viewcontact/ContextViewContact';
 
 const ViewContact = ({ navigation, route }) => {
-    console.log(route)
-
+    const listFlag = ListFlag()
+    const listStatus = ListStatus()
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
     const [modalVisible, setModalVisible] = useState(false);
@@ -46,67 +43,6 @@ const ViewContact = ({ navigation, route }) => {
     const { t, i18n } = useTranslation();
     const authCtx = useContext(AuthContext)
 
-    const listFlag = {
-        F0001: {
-            name: 'very-important',
-            title: t("Screen_ViewContact_Button_Flag_VeryImportant"),
-            color: '#EB5757',
-            background: 'rgba(235, 87, 87, 0.2)',
-            value: 'F0001',
-        },
-        F0002: {
-            name: 'important',
-            title: t("Screen_ViewContact_Button_Flag_Important"),
-            color: '#F2994A',
-            background: 'rgba(242, 153, 74, 0.2)',
-            value: 'F0002',
-        },
-        F0003: {
-            name: 'not-important',
-            title: t("Screen_ViewContact_Button_Flag_NotImportant"),
-            color: '#F2C94C',
-            background: 'rgba(242, 201, 76, 0.2)',
-            value: 'F0003',
-        },
-        F0004: {
-            name: 'dont-care',
-            title: t("Screen_ViewContact_Button_Flag_DoNotCare"),
-            color: '#2D9CDB',
-            background: 'rgba(45, 156, 219, 0.2)',
-            value: 'F0004',
-        },
-        none: {
-            name: 'none',
-            title: t("Screen_ViewContact_Button_Flag_DeleteSelection"),
-            color: '#000000',
-            background: 'transparent',
-            value: 'null',
-        }
-    }
-
-    const listStatus = {
-        S0001: {
-            name: 'failed',
-            color: '#EB5757',
-            title: t("Screen_ViewContact_Button_Status_Failed"),
-            icon: 'close-circle',
-            value: 'S0001',
-        },
-        S0002: {
-            name: 'ongoing',
-            color: '#F2994A',
-            title: t("Screen_ViewContact_Button_Status_OnGoing"),
-            icon: 'clock',
-            value: 'S0002',
-        },
-        S0003: {
-            name: 'success',
-            color: '#00C853',
-            title: t("Screen_ViewContact_Button_Status_Completed"),
-            icon: 'check-circle',
-            value: 'S0003',
-        }
-    }
     const onSubmitStatus = (values) => {
         setStatus(values)
         FetchApi(`${ContactAPI.SetStatus}/${route.params.idContact}`, Method.PATCH, ContentType.JSON, values, getFlag)
@@ -121,7 +57,7 @@ const ViewContact = ({ navigation, route }) => {
     }
 
     const getFlag = (data) => {
-        console.log(data)
+        authCtx.checkToken()
     }
     useEffect(() => {
         setLoading(true)
@@ -145,9 +81,12 @@ const ViewContact = ({ navigation, route }) => {
     }, [contact])
 
     const getContact = (data) => {
-        console.log(data)
-        setContact(data.data)
-        setLoading(false)
+        authCtx.checkToken()
+        if(data){
+            setContact(data.data)
+            setLoading(false)
+        }
+
     }
 
     const handlePressUpdateContact = () => {
@@ -155,18 +94,20 @@ const ViewContact = ({ navigation, route }) => {
     }
 
     const handleDeactivate = (values) => {
-        console.log(values)
         FetchApi(`${ContactAPI.DeactiveContact}/${route.params.idContact}`, Method.PATCH, ContentType.JSON, { reason_da: values.reason }, getMessage)
     }
 
     const getMessage = (data) => {
-        console.log(data)
-        navigation.navigate("Bottom", { screen: "HomeScreen" })
+        authCtx.checkToken()
+        if(data){
+            navigation.navigate("Bottom", { screen: "HomeScreen" })
+        }
     }
 
     const handleRequest = () => {
         FetchApi(`${ContactAPI.RequestTransferContact}/${contact.id}/${contact.idDuplicate}`,Method.GET, ContentType.JSON, undefined, getMessage)
     }
+
 
     return (
         <SafeAreaView style={styles.container}>
@@ -195,8 +136,8 @@ const ViewContact = ({ navigation, route }) => {
                         <View style={styles.info}>
                             <View style={styles.info_title}>
                                 <Text style={styles.info_title_name}>{contact.name}</Text>
-                                {Boolean(contact.job_title) && <Text style={styles.info_title_job}><Text style={styles.info_title_job_name}>Chức vụ </Text>{contact.job_title}</Text>}
-                                <Text style={styles.info_title_job}><Text style={styles.info_title_job_name}>Công ty </Text>{contact.company}</Text>
+                                {Boolean(contact.job_title) && <Text style={styles.info_title_job}><Text style={styles.info_title_job_name}>{t("Screen_ViewContact_Text_Label_JobTitle")} </Text>{contact.job_title}</Text>}
+                                <Text style={styles.info_title_job}><Text style={styles.info_title_job_name}>{t("Screen_ViewContact_Text_Label_Company")} </Text>{contact.company}</Text>
                             </View>
                             {!Boolean(contact.owner) && <View style={styles.info_component}>
                                 {Boolean(contact.phone) &&
@@ -211,7 +152,7 @@ const ViewContact = ({ navigation, route }) => {
                                     >
                                         <View style={[styles.info_contact_des, styles.info_contact_border]}>
                                             <View style={styles.info_contact_des_item}>
-                                                <Text style={styles.info_component_des_title}>Di động</Text>
+                                                <Text style={styles.info_component_des_title}>{t("Screen_ViewContact_Text_Label_Phone")}</Text>
                                                 <Text style={styles.info_contact_des_label}>{contact.phone}</Text>
                                             </View>
                                             <IconButton icon="cellphone" size={16} color="#828282" />
@@ -255,7 +196,7 @@ const ViewContact = ({ navigation, route }) => {
                                     </TouchableRipple>
                                 }
                             </View>}
-                            {Boolean(contact.address) || Boolean(contact.website) && !Boolean(contact.owner) && <View style={styles.info_component}>
+                            {!Boolean(contact.owner) && (Boolean(contact.address) || Boolean(contact.website)) && <View style={styles.info_component}>
                                 {Boolean(contact.address) && <TouchableRipple
                                     borderless={true}
                                     style={[styles.info_component_button, styles.btl20, styles.btr20]}
@@ -298,7 +239,7 @@ const ViewContact = ({ navigation, route }) => {
                                 >
                                     <View style={styles.info_contact_des}>
                                         <View>
-                                            <Text style={styles.info_component_des_title}>Ghi chú</Text>
+                                            <Text style={styles.info_component_des_title}>{t("Screen_ViewContact_Text_Label_Note")}</Text>
                                             <Text style={styles.info_contact_des_label}>{contact.note}</Text>
                                         </View>
                                     </View>
@@ -313,8 +254,8 @@ const ViewContact = ({ navigation, route }) => {
                                 >
                                     <View style={[styles.info_contact_des, styles.info_contact_border]}>
                                         <View style={styles.info_contact_des_item}>
-                                            <Text style={styles.info_component_des_title}>Phân loại</Text>
-                                            <Text style={[styles.info_contact_des_label, { color: flag === undefined ? '#000000' : flag.color }]}>{flag === undefined ? t("Screen_ViewContact_Text_Classify") : flag.name == 'none' ? t("Screen_ViewContact_Text_Classify") : flag.title}</Text>
+                                            <Text style={styles.info_component_des_title}>{t("Screen_ViewContact_Text_Classify")}</Text>
+                                            <Text style={[styles.info_contact_des_label, { color: flag === undefined ? '#000000' : flag.color }]}>{flag === undefined ? t("Screen_ViewContact_Text_NoClassify") : flag.name == 'none' ? t("Screen_ViewContact_Text_NoClassify") : flag.title}</Text>
                                         </View>
                                         <IconButton icon="bookmark" color={flag === undefined ? '#828282' : flag.color} size={16} />
                                     </View>
@@ -328,7 +269,7 @@ const ViewContact = ({ navigation, route }) => {
                                     <View style={styles.info_contact_des}>
                                         <View style={styles.info_contact_des_item}>
                                             <Text style={styles.info_component_des_title}>{t("Screen_ViewContact_Text_Label_Status")}</Text>
-                                            <Text style={[styles.info_contact_des_label, { color: listStatus[status.status].color }]}>{status.reason_status ? status.reason_status : t("Screen_ViewContact_Text_Label_NoStatusReason")}</Text>
+                                            <Text style={[styles.info_contact_des_label, { color: listStatus[status.status].color }]}>{status.reason ? status.reason : t("Screen_ViewContact_Text_Label_NoStatusReason")}</Text>
                                         </View>
                                         <IconButton icon={listStatus[status.status].icon} color={listStatus[status.status].color} size={16} />
                                     </View>
@@ -372,7 +313,7 @@ const ViewContact = ({ navigation, route }) => {
                                     >
                                         <View style={styles.info_contact_des}>
                                             <View style={styles.info_contact_des_item}>
-                                                <Text style={styles.info_component_des_title}>Người sở hữu</Text>
+                                                <Text style={styles.info_component_des_title}>{t("Screen_ViewContact_Text_Label_Owner")}</Text>
                                                 <Text style={styles.info_contact_des_label}>{contact.owner}</Text>
                                             </View>
                                             <IconButton icon="account" size={16} color="#828282" />
@@ -386,7 +327,7 @@ const ViewContact = ({ navigation, route }) => {
                 }
                 {status && <ModalStatus listStatus={Object.values(listStatus)} visible={modalStatusVisible} status={status} onPressSubmit={onSubmitStatus} onPressVisable={() => setModalStatusVisible(!modalStatusVisible)} />}
                 <ModalFlag listItem={Object.values(listFlag)} visible={modalVisible} onPress={handlePressButtonFlag} onPressVisable={() => setModalVisible(false)} />
-                <SnackbarComponent visible={snackVisible} onPressVisible={() => setSnackVisible(false)} message={'Đã sao chép'} />
+                <SnackbarComponent visible={snackVisible} onPressVisible={() => setSnackVisible(false)} message={t("Screen_ViewContact_Text_Copy")} />
                 <ModalDeactivate visible={modalDeactivateVisible} reason={deactive} onPressVisable={() => setModalDeactivateVisible(false)} onPressSubmit={handleDeactivate} />
             </View>
             {route.params && route.params.showFooter && 
@@ -399,28 +340,26 @@ const ViewContact = ({ navigation, route }) => {
                         });
                     }}>
                         <Icon name="account-multiple-plus-outline" size={24} color="#828282" />
-                        <Text style={styles.footer_button_label}>Thêm nhóm</Text>
+                        <Text style={styles.footer_button_label}>{t("Screen_ViewContact_BottomSheet_Text_AddToGroup")}</Text>
                     </Pressable>}
                     {route.params && !route.params.useid && contact && !Boolean(contact.owner) &&
                         <Pressable style={styles.footer_button} onPress={handlePressUpdateContact}>
                             <Icon name="account-edit-outline" size={24} color="#828282" />
-                            <Text style={styles.footer_button_label}>Sửa</Text>
+                            <Text style={styles.footer_button_label}>{t("Screen_ViewContact_BottomSheet_Text_UpdateInformation")}</Text>
                         </Pressable>}
                     {route.params && !route.params.useid && contact && !Boolean(contact.owner) &&
                         <Pressable style={styles.footer_button} onPress={() => setModalDeactivateVisible(true)}>
                             <Icon name="account-minus-outline" size={24} color="#828282" />
-                            <Text style={styles.footer_button_label}>Vô hiệu hoá</Text>
+                            <Text style={styles.footer_button_label}>{t("Screen_ViewContact_BottomSheet_Text_DeactivateNameCard")}</Text>
                         </Pressable>}
                     {route.params && route.params.request !== "R0002" && contact && contact.owner_id !== contact.createBy &&
                         <Pressable style={styles.footer_button} onPress={handleRequest}>
                             <Icon name="account-question-outline" size={24} color="#828282" />
-                            <Text style={styles.footer_button_label}>Gửi yêu cầu</Text>
+                            <Text style={styles.footer_button_label}>{t("Screen_ViewContact_BottomSheet_Text_Request")}</Text>
                         </Pressable>}
                 </View>}
         </SafeAreaView>
     );
 };
 
-
-//make this component available to the app
 export default ViewContact;
