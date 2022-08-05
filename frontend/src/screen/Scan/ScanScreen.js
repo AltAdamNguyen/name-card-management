@@ -18,6 +18,7 @@ const ScanScreen = ({ navigation }) => {
   const [hasCameraPermission, setHasCameraPermission] = useState();
   const [flashMode, setFlashMode] = useState(FlashMode.off);
   const [scanQr, setScanQr] = useState(false);
+  const [stopScan, setStopScan] = useState(false);
   const { width } = useWindowDimensions();
   const height = Math.round((width * 4) / 3)
 
@@ -70,7 +71,7 @@ const ScanScreen = ({ navigation }) => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
-      quality: 1,
+      quality: 0.8,
       base64: true,
     });
     if (!result.cancelled) {
@@ -78,10 +79,17 @@ const ScanScreen = ({ navigation }) => {
     }
   };
 
-  const handleScanQr = ({ data }) => {
+  const handleScanQr = ( data ) => {
     let card = parseCard(data)
     if (isEmpty(card)) {
-      Alert.alert(t("Screeen_Scan_Alert_QR_Error_Title"), t("Screeen_Scan_Alert_QR_Error_Message"), [{ text: t("Screeen_Scan_Alert_QR_Error_Button_Ok") }])
+      setStopScan(true)
+      Alert.alert(
+        t("Screeen_Scan_Alert_QR_Error_Title"),
+        t("Screeen_Scan_Alert_QR_Error_Message"), 
+      [{ text: t("Screeen_Scan_Alert_QR_Error_Button_Ok"),
+        onPress: () => {setStopScan(false)}
+    }]
+      )
       setScanQr(true)
     } else {
       let contact = {
@@ -101,6 +109,8 @@ const ScanScreen = ({ navigation }) => {
     }
   }
 
+  console.log(stopScan)
+
   return (
     <SafeAreaView style={styles.container}>
         <View style={styles.header}>
@@ -118,7 +128,7 @@ const ScanScreen = ({ navigation }) => {
           (scanQr ?
             <BarCodeScanner
               style={[styles.preview_camera, { height: height }]}
-              onBarCodeScanned={handleScanQr}
+              onBarCodeScanned={({data}) =>{ stopScan ? null: handleScanQr(data)}}
             >
               <View style={styles.preview_overlay}>
                 <Image style={styles.preview_iconOverlay} source={iconPath.icQr} />

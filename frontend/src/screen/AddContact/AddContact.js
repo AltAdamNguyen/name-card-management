@@ -40,7 +40,7 @@ const AddContact = ({ contact, loading, navigation }) => {
     img_url: "",
   });
   useEffect(() => {
-    if (contact && formRef.current) {
+    if (contact && contact.data && formRef.current) {
       formRef.current.setValues({
         name: contact.data.name,
         job_title: contact.data.job_title,
@@ -152,7 +152,7 @@ const AddContact = ({ contact, loading, navigation }) => {
                         style={{ width: "100%" }}
                         shimmerStyle={styles.shimmer_formInput}
                       >
-                        {contact &&
+                        {contact && contact.data &&
                           <TextInputItem
                             item={item}
                             handleChange={handleChange}
