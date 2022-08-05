@@ -20,6 +20,7 @@ namespace NCMSystem.Controllers
     {
         //QUAN TRONG
         private NCMSystemEntities db = new NCMSystemEntities(Environment.GetEnvironmentVariable("NCMSystemEntities"));
+        private LogException _log = new LogException();
 
         //GET
         [HttpGet]
@@ -36,11 +37,13 @@ namespace NCMSystem.Controllers
                 //find groups according to the logged in user
                 List<group> listGroup = db.groups.Where(g => g.user_id == userId).ToList();
 
-                foreach (group g in listGroup)
+                foreach (var g in listGroup)
                 {
-                    HomeGroupContact hgc = new HomeGroupContact();
-                    hgc.GroupName = g.name;
-                    hgc.GroupId = g.id;
+                    HomeGroupContact hgc = new HomeGroupContact
+                    {
+                        GroupName = g.name,
+                        GroupId = g.id
+                    };
                     listHomeGroupContact.Add(hgc);
                 }
             }
@@ -48,6 +51,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -77,15 +81,7 @@ namespace NCMSystem.Controllers
 
                 if (group == null)
                 {
-                    return new ResponseMessageResult(new HttpResponseMessage()
-                    {
-                        StatusCode = System.Net.HttpStatusCode.OK,
-                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
-                        {
-                            Message = "G0001",
-                            Data = ""
-                        }), Encoding.UTF8, "application/json")
-                    });
+                    return Common.ResponseMessage.BadRequest("G0001");
                 }
 
                 List<contact> contacts = group.contacts.ToList();
@@ -105,6 +101,7 @@ namespace NCMSystem.Controllers
                         cig.ImgUrl = c.image_url;
                         cig.JobTitle = c.job_title;
                         cig.ContactCompany = c.company;
+                        cig.ContactPhone = c.phone;
                         cig.ContactCreatedAt = c.create_date;
                         listCtInGroup.Add(cig);
                     }
@@ -139,12 +136,16 @@ namespace NCMSystem.Controllers
             try
             {
                 int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+                if (group_name == null)
+                {
+                    group_name = "";
+                }
 
                 //find groups according to the logged in user
                 List<group> listGroup = db.groups.Where(g => g.user_id == userId).ToList();
 
                 //search for matched group contacts by names
-                foreach (group group in listGroup)
+                foreach (var group in listGroup)
                 {
                     if (group.name.ToLower().Contains(group_name.ToLower()))
                     {
@@ -159,6 +160,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -182,21 +184,17 @@ namespace NCMSystem.Controllers
             try
             {
                 int userId = ((JwtToken)Request.Properties["payload"]).Uid;
+                if (valueToSearch == null)
+                {
+                    valueToSearch = "";
+                }
 
                 //get group from database with its id accordingly by the logged in user
                 var group = db.groups.FirstOrDefault(g => g.id == group_id && g.user_id == userId);
 
                 if (group == null)
                 {
-                    return new ResponseMessageResult(new HttpResponseMessage()
-                    {
-                        StatusCode = System.Net.HttpStatusCode.OK,
-                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
-                        {
-                            Message = "G0001",
-                            Data = ""
-                        }), Encoding.UTF8, "application/json")
-                    });
+                    return Common.ResponseMessage.BadRequest("G0001");
                 }
 
                 List<contact> contacts = group.contacts.ToList();
@@ -235,8 +233,9 @@ namespace NCMSystem.Controllers
                             cCompany = c.company;
                         }
 
-                        if (cName.ToLower().Contains(valueToSearch.ToLower()) || cJobTitle.ToLower().Contains(valueToSearch.ToLower()) ||
-                        cCompany.ToLower().Contains(valueToSearch.ToLower()))
+                        if (cName.ToLower().Contains(valueToSearch.ToLower()) ||
+                            cJobTitle.ToLower().Contains(valueToSearch.ToLower()) ||
+                            cCompany.ToLower().Contains(valueToSearch.ToLower()))
                         {
                             listFoundContactsInGroup.Add(new ContactInGroup()
                             {
@@ -255,6 +254,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -275,6 +275,9 @@ namespace NCMSystem.Controllers
         {
             List<AvailableContactToGroup> availableContacts = new List<AvailableContactToGroup>();
 
+            if (group_id < 0) group_id = 0;
+            if (type == null) type = "";
+
             try
             {
                 int userId = ((JwtToken)Request.Properties["payload"]).Uid;
@@ -283,15 +286,7 @@ namespace NCMSystem.Controllers
 
                 if (selectedGroup == null)
                 {
-                    return new ResponseMessageResult(new HttpResponseMessage()
-                    {
-                        StatusCode = System.Net.HttpStatusCode.OK,
-                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
-                        {
-                            Message = "G0001",
-                            Data = ""
-                        }), Encoding.UTF8, "application/json")
-                    });
+                    return Common.ResponseMessage.BadRequest("G0001");
                 }
 
                 user u = db.users.Where(u1 => u1.id == userId).FirstOrDefault();
@@ -307,7 +302,8 @@ namespace NCMSystem.Controllers
                     if (u.role_id == 2)
                     {
                         List<MemberTeamGroupContact> listMember = null;
-                        var mem = db.Database.SqlQuery<MemberTeamGroupContact>("exec user_recurse @SuperBoss_id = " + userId).ToList();
+                        var mem = db.Database
+                            .SqlQuery<MemberTeamGroupContact>("exec user_recurse @SuperBoss_id = " + userId).ToList();
                         if (mem != null)
                         {
                             listMember = mem;
@@ -323,7 +319,8 @@ namespace NCMSystem.Controllers
                             {
                                 foreach (int id in listMemberIds)
                                 {
-                                    List<contact> listContactInMember = db.contacts.Where(c => c.owner_id == id).ToList();
+                                    List<contact> listContactInMember =
+                                        db.contacts.Where(c => c.owner_id == id).ToList();
                                     listContactTeam.AddRange(listContactInMember);
                                 }
                             }
@@ -351,6 +348,7 @@ namespace NCMSystem.Controllers
                         }
                     }
                 }
+
                 if (type.Trim().Equals("personal"))
                 {
                     //get list of contacts that the user has
@@ -375,12 +373,13 @@ namespace NCMSystem.Controllers
                             }
                         }
                     }
-                }  
+                }
             }
             catch (Exception ex)
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -407,6 +406,10 @@ namespace NCMSystem.Controllers
             {
                 int userId = ((JwtToken)Request.Properties["payload"]).Uid;
                 user u = db.users.Where(u1 => u1.id == userId).FirstOrDefault();
+                if (u == null)
+                {
+                    return Common.ResponseMessage.BadRequest("C0018");
+                }
 
                 List<ContactIdsRequest> selectedContactIds = request.listContactIds;
 
@@ -428,7 +431,8 @@ namespace NCMSystem.Controllers
                 if (u.role_id == 2)
                 {
                     List<MemberTeamGroupContact> listMember = null;
-                    var mem = db.Database.SqlQuery<MemberTeamGroupContact>("exec user_recurse @SuperBoss_id = " + userId).ToList();
+                    var mem = db.Database
+                        .SqlQuery<MemberTeamGroupContact>("exec user_recurse @SuperBoss_id = " + userId).ToList();
                     if (mem != null)
                     {
                         listMember = mem;
@@ -530,6 +534,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -548,6 +553,11 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult AddGroup([FromBody] GroupNameRequest request)
         {
+            if (request.GroupName.Equals(""))
+            {
+                return Common.ResponseMessage.BadRequest("G0005");
+            }
+
             string groupName = request.GroupName.Trim();
 
             try
@@ -598,6 +608,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -633,7 +644,8 @@ namespace NCMSystem.Controllers
                     foreach (ContactIdsRequest cir in listContactIdRequest)
                     {
                         int contactId = cir.ContactId;
-                        var contact = db.contacts.Where(c => c.owner_id == userIdLogin && c.id == contactId).FirstOrDefault();
+                        var contact = db.contacts.Where(c => c.owner_id == userIdLogin && c.id == contactId)
+                            .FirstOrDefault();
 
                         if (contact == null)
                         {
@@ -648,7 +660,8 @@ namespace NCMSystem.Controllers
                             foreach (GroupIdsRequest gir in listGroupIdRequest)
                             {
                                 int groupId = gir.GroupId;
-                                var group = db.groups.Where(g => g.user_id == userIdLogin && g.id == groupId).FirstOrDefault();
+                                var group = db.groups.Where(g => g.user_id == userIdLogin && g.id == groupId)
+                                    .FirstOrDefault();
 
                                 if (group == null)
                                 {
@@ -673,7 +686,8 @@ namespace NCMSystem.Controllers
 
                     bool isMember = false;
 
-                    var mem = db.Database.SqlQuery<MemberTeamGroupContact>("exec user_recurse @SuperBoss_id = " + userIdLogin).ToList();
+                    var mem = db.Database
+                        .SqlQuery<MemberTeamGroupContact>("exec user_recurse @SuperBoss_id = " + userIdLogin).ToList();
 
                     if (mem != null)
                     {
@@ -692,7 +706,8 @@ namespace NCMSystem.Controllers
                         foreach (ContactIdsRequest cir in listContactIdRequest)
                         {
                             int contactId = cir.ContactId;
-                            var contact = db.contacts.Where(c => c.owner_id == memberId && c.id == contactId).FirstOrDefault();
+                            var contact = db.contacts.Where(c => c.owner_id == memberId && c.id == contactId)
+                                .FirstOrDefault();
 
                             if (contact == null)
                             {
@@ -706,7 +721,8 @@ namespace NCMSystem.Controllers
                             foreach (GroupIdsRequest gir in listGroupIdRequest)
                             {
                                 int groupId = gir.GroupId;
-                                var group = db.groups.Where(g => g.user_id == userIdLogin && g.id == groupId).FirstOrDefault();
+                                var group = db.groups.Where(g => g.user_id == userIdLogin && g.id == groupId)
+                                    .FirstOrDefault();
 
                                 if (group == null)
                                 {
@@ -757,6 +773,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -770,7 +787,6 @@ namespace NCMSystem.Controllers
             });
         }
 
-
         //DELETE
         [HttpDelete]
         [Route("api/groups/delete-contactfromgroup/")]
@@ -782,7 +798,8 @@ namespace NCMSystem.Controllers
                 int userId = ((JwtToken)Request.Properties["payload"]).Uid;
 
                 //get selected contact and group that contains the selected contact
-                group selectedGroup = db.groups.Where(g => g.id == request.GroupId && g.user_id == userId).FirstOrDefault();
+                group selectedGroup = db.groups.Where(g => g.id == request.GroupId && g.user_id == userId)
+                    .FirstOrDefault();
 
                 if (selectedGroup == null)
                 {
@@ -796,6 +813,7 @@ namespace NCMSystem.Controllers
                         }), Encoding.UTF8, "application/json")
                     });
                 }
+
                 //get contacts from the selected group contact
                 List<contact> contacts = selectedGroup.contacts.ToList();
 
@@ -840,6 +858,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -867,15 +886,7 @@ namespace NCMSystem.Controllers
 
                 if (selectedGroup == null)
                 {
-                    return new ResponseMessageResult(new HttpResponseMessage()
-                    {
-                        StatusCode = System.Net.HttpStatusCode.OK,
-                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
-                        {
-                            Message = "G0009",
-                            Data = ""
-                        }), Encoding.UTF8, "application/json")
-                    });
+                    return Common.ResponseMessage.BadRequest("G0009");
                 }
 
                 selectedGroup.contacts.Clear();
@@ -888,6 +899,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -907,6 +919,11 @@ namespace NCMSystem.Controllers
         [JwtAuthorizeFilter(NcmRoles = new[] { NcmRole.Staff, NcmRole.Manager, NcmRole.SaleDirector })]
         public ResponseMessageResult PatchGroupName(int id, [FromBody] RenameGroupContact request)
         {
+            if (request.GroupName.Trim() == "")
+            {
+                return Common.ResponseMessage.BadRequest("G0005");
+            }
+
             string newGroupName = request.GroupName.Trim();
 
             try
@@ -917,15 +934,7 @@ namespace NCMSystem.Controllers
 
                 if (group == null)
                 {
-                    return new ResponseMessageResult(new HttpResponseMessage()
-                    {
-                        StatusCode = System.Net.HttpStatusCode.OK,
-                        Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
-                        {
-                            Message = "G0009",
-                            Data = ""
-                        }), Encoding.UTF8, "application/json")
-                    });
+                    return Common.ResponseMessage.BadRequest("G0009");
                 }
 
                 List<group> list = db.groups.Where(g => g.user_id == userId).ToList();

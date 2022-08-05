@@ -14,7 +14,7 @@ namespace TestNCMSystem
     public class UserControllerTest
     {
         [Test]
-        public void UserController_Login_MissingEmailAndPassword()
+        public void Test_Login_MissingEmailAndPassword_ReturnStatusCodeBadRequest()
         {
             //arrange
             var controller = new UserController();
@@ -31,7 +31,7 @@ namespace TestNCMSystem
         }
 
         [Test]
-        public void UserController_Login_MissingEmail()
+        public void Test_Login_MissingEmail_ReturnStatusCodeBadRequest()
         {
             //arrange
             var controller = new UserController();
@@ -49,7 +49,7 @@ namespace TestNCMSystem
         }
 
         [Test]
-        public void UserController_Login_MissingPassword()
+        public void Test_Login_MissingPassword_ReturnStatusCodeBadRequest()
         {
             //arrange
             var controller = new UserController();
@@ -67,7 +67,7 @@ namespace TestNCMSystem
         }
 
         [Test]
-        public void UserController_Login_UserNotFound()
+        public void Test_Login_UserNotFound_ReturnStatusCodeBadRequest()
         {
             //arrange
             var controller = new UserController();
@@ -77,7 +77,7 @@ namespace TestNCMSystem
             //act
             var cc = controller.Login(new UserRequest()
             {
-                Email = "nmtung.stuy@gmail.com",
+                Email = "study@nmtung.dev",
                 Password = "Tung8864464@"
             });
 
@@ -86,7 +86,7 @@ namespace TestNCMSystem
         }
 
         [Test]
-        public void UserController_Login_Success()
+        public void Test_Login_Success_ReturnStatusCodeOK()
         {
             //arrange
             var controller = new UserController();
@@ -96,19 +96,19 @@ namespace TestNCMSystem
             //act
             var cc = controller.Login(new UserRequest()
             {
-                Email = "nmtung.study@gmail.com",
-                Password = "Tung88644264@"
+                Email = "study@nmtung.dev",
+                Password = "Trung123@"
             });
 
             JObject json = Parse(cc.Response.Content.ReadAsStringAsync().Result);
             //assert
-            Assert.AreEqual(cc.Response.StatusCode, HttpStatusCode.OK);
+            Assert.AreEqual(HttpStatusCode.OK, cc.Response.StatusCode);
             Assert.NotNull(json["data"]?["access_token"]);
             Assert.NotNull(json["data"]?["refresh_token"]);
         }
 
         [Test]
-        public void UserController_RefreshToken_MissingRefreshToken()
+        public void Test_RefreshToken_MissingRefreshToken_ReturnStatusCodeBadRequest()
         {
             //arrange
             var controller = new UserController();
@@ -125,7 +125,7 @@ namespace TestNCMSystem
         }
 
         [Test]
-        public void UserController_RefreshToken_Success()
+        public void Test_RefreshToken_Success_ReturnStatusCodeOK()
         {
             //arrange
             var controller = new UserController();
