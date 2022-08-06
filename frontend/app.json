@@ -18,7 +18,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.ncm.namecardmanagement"
     },
     "android": {
       "package": "com.ncm.namecardmanagement",
