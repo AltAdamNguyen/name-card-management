@@ -43,10 +43,11 @@ const GroupContact = ({ navigation }) => {
   const inputGroupName = {
     group_name: "",
   }
+  
   const isFocus = useIsFocused();
   const [modalAddContactVisible, setModalAddContactVisible] = useState(false);
   const onAddNewGroupContactPressed = (groupName) => {
-    if(groupName.trim() == ""){
+    if(groupName == ""){
       alert(t("Screen_GroupContact_Alert_GroupNameEmpty"),"")
     }else{
       setModalAddContactVisible(false);

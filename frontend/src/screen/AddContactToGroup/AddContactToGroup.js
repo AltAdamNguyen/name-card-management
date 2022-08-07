@@ -6,6 +6,7 @@ import {
   Image,
   ScrollView,
   Pressable,
+  TouchableOpacity
 } from "react-native";
 import styles from "./styles";
 import { useTranslation } from "react-i18next";
