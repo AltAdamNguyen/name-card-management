@@ -1,14 +1,13 @@
 //import liraries
 import React from 'react';
-import { View, Text, Modal, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, Modal, TouchableWithoutFeedback} from 'react-native';
 import { TextInput, Button, Card } from 'react-native-paper';
 import styles from '../../components/groupcontact/styles';
 import { Formik } from 'formik';
-import { useTranslation } from "react-i18next";
 import AddGroupSchema from '../../validate/ValidateFormAddGroup';
+import { t } from "i18next";
 // create a component
-const ModalAddGroup = ({ visible, onPressVisable, value, onPressSubmit }) => {
-    const { t, i18n } = useTranslation();
+const ModalAddGroup = ({ visible, onPressVisable, value, onPressSubmit, title, label, placeholder, cancel, submit }) => {
     return (
         <Modal
             animationType="fade"
@@ -21,20 +20,20 @@ const ModalAddGroup = ({ visible, onPressVisable, value, onPressSubmit }) => {
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                 <TouchableWithoutFeedback>
                     <Card elevation={3} style={styles.info_status_modalView}>
-                        <Text style={{ fontSize: 20, fontWeight: 'bold', margin: 10 }}>{t("ModalAddGroup_Title")}</Text>
+                        <Text style={{ fontSize: 20, fontWeight: 'bold', margin: 10 }}>{title}</Text>
                         <Formik
                             initialValues={value}
                             onSubmit={onPressSubmit}
                             validationSchema={AddGroupSchema}
                         >
                             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => {
+                                console.log(errors)
                                 return (
                                     <View style={{ width: '100%' }}>
-
                                         <TextInput
                                             mode="outlined"
-                                            label={t("ModalAddGroup_Input_Title_GroupName")}
-                                            placeholder={t("ModalAddGroup_Input_Placeholder_GroupName")}
+                                            label={label}
+                                            placeholder={placeholder}
                                             value={values.group_name}
                                             onChangeText={handleChange('group_name')}
                                             onBlur={handleBlur('group_name')}
@@ -42,7 +41,7 @@ const ModalAddGroup = ({ visible, onPressVisable, value, onPressSubmit }) => {
                                             theme={{ roundness: 10, colors: { primary: '#1890FF', error: '#B22D1D' } }}
                                         />
                                         {errors['group_name'] && touched['group_name'] ? (
-                                            <Text style={{ color: '#B22D1D', fontSize: 12, }}>{errors['group_name']}</Text>
+                                            <Text style={{ color: '#B22D1D', fontSize: 12, }}>{t(errors['group_name'])}</Text>
                                         ) : null}
                                         <View style={styles.info_status_modalItem_button}>
                                             <Button
@@ -52,7 +51,7 @@ const ModalAddGroup = ({ visible, onPressVisable, value, onPressSubmit }) => {
                                                 onPress={onPressVisable}
                                                 uppercase={false}
                                             >
-                                                {t("ModalAddGroup_Button_Cancel")}
+                                                {cancel}
                                             </Button>
                                             <Button
                                                 mode='contained'
@@ -61,7 +60,7 @@ const ModalAddGroup = ({ visible, onPressVisable, value, onPressSubmit }) => {
                                                 onPress={handleSubmit}
                                                 uppercase={false}
                                             >
-                                                {t("ModalAddGroup_Button_Confirm")}
+                                                {submit}
                                             </Button>
                                         </View>
 

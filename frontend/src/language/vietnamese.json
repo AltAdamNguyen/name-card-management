@@ -291,6 +291,19 @@
         "Screen_ChangePassword_Alert_U0007": "Mật khẩu hiện tại không đúng",
         "Screen_ChangePassword_Alert_U0006": "Mật khẩu mới phải có tối thiểu 8 kí tự, có ít nhất một chữ in thường, một chữ in hoa, một số và một kí tự đặc biệt",
         "Screen_ChangePassword_Alert_PasswordAndRePasswordMatch": "Mật khẩu mới và nhập lại mật khẩu mới không giống nhau",
-        "Screen_ChangePassword_Alert_Warning": "Cảnh báo"
+        "Screen_ChangePassword_Alert_Warning": "Cảnh báo",
+
+        "Validate_Form_AddContact_Name": "Nhập tên",
+        "Validate_Form_AddContact_Company": "Nhập công ty",
+        "Validate_Form_AddContact_Phone": "Nhập số điện thoại",
+        "Validate_Form_AddContact_Email": "Nhập email",
+        "Validate_Form_AddContact_Email_Invalid": "Email không hợp lệ",
+        "Validate_Form_AddContact_Phone_Invalid": "Số điện thoại không hợp lệ",
+        "Validate_Form_AddContact_Fax_Invalid": "Số fax không hợp lệ",
+
+        "Validate_Form_AddGroup_NameGroup": "Nhập tên nhóm",
+
+        "Validate_Form_Status_Reason": "Nhập lý do"
+
     } 
 }

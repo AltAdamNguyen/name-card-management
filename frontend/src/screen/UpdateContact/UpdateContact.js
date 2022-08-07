@@ -199,7 +199,7 @@ const UpdateContact = ({ route, navigation }) => {
                                                             />
                                                             {errors[item.name] && touched[item.name] ? (
                                                                 <View style={styles.formInput_item_error}>
-                                                                    <Text style={styles.formInput_item_error_label}>{errors[item.name]}</Text>
+                                                                    <Text style={styles.formInput_item_error_label}>{t(errors[item.name])}</Text>
                                                                 </View>
                                                             ) : null}
                                                         </View>

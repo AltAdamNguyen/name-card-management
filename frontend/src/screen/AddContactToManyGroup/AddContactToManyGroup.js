@@ -1,5 +1,5 @@
 //import liraries
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -19,10 +19,12 @@ import { useIsFocused } from "@react-navigation/native";
 import { Appbar } from "react-native-paper";
 import ConfirmDialog from "../../components/customDialog/dialog/confirmDialog/ConfirmDialog";
 import CustomCheckedBox from "../../components/groupcontact/checkBoxCustom/CustomCheckedBox";
+import AuthContext from "../../store/AuthContext";
 
 const AddContactToManyGroup = ({ route, navigation }) => {
   const isFocus = useIsFocused();
   const { t, i18n } = useTranslation();
+  const authCtx = useContext(AuthContext);
   const [listGroupContact, setLisGroupContact] = useState([]);
   const [listGroupContactTotal, setListGroupContactTotal] = useState([]);
   const [listGroupSearch, setListGroupSearch] = useState([]);
@@ -47,7 +49,8 @@ const AddContactToManyGroup = ({ route, navigation }) => {
   };
 
   const addGroupContact = (data) => {
-    if (data.message == "Success") {
+    authCtx.checkToken()
+    if (data && data.message == "Success") {
       FetchApi(
         GroupContactAPI.ViewGroupContact,
         Method.GET,
@@ -55,10 +58,10 @@ const AddContactToManyGroup = ({ route, navigation }) => {
         undefined,
         getGroupContact
       );
-    } else {
     }
     setIsLoading(false);
   };
+
   const searchGroupHandle = (groupName) => {
     let listSearchGroup = [];
     if (groupName !== "") {
@@ -231,6 +234,7 @@ const AddContactToManyGroup = ({ route, navigation }) => {
               listGroupSearch.map((item, index) => {
                 return (
                   <TouchableOpacity
+                    key={index}
                     onPress={() => {
                       checkBoxOnClickCallBack(
                         item.group.group_id,
@@ -238,7 +242,7 @@ const AddContactToManyGroup = ({ route, navigation }) => {
                       );
                     }}
                   >
-                    <View style={styles.container_listGroup_item} key={index}>
+                    <View style={styles.container_listGroup_item}>
                       <CustomCheckedBox
                         id={item.group.group_id}
                         onClick={checkBoxOnClickCallBack}
@@ -255,6 +259,7 @@ const AddContactToManyGroup = ({ route, navigation }) => {
               listGroupContact.map((item, index) => {
                 return (
                   <TouchableOpacity
+                    key={index}
                     onPress={() => {
                       checkBoxOnClickCallBack(
                         item.group.group_id,
@@ -262,7 +267,7 @@ const AddContactToManyGroup = ({ route, navigation }) => {
                       );
                     }}
                   >
-                    <View style={styles.container_listGroup_item} key={index}>
+                    <View style={styles.container_listGroup_item}>
                       <CustomCheckedBox
                         id={item.group.group_id}
                         onClick={checkBoxOnClickCallBack}
@@ -298,23 +303,21 @@ const AddContactToManyGroup = ({ route, navigation }) => {
       </SafeAreaView>
       <ModalAddGroup
         visible={modalAddContactVisible}
-        onPressConfirm={onAddNewGroupContactPressed}
-        onPressVisable={() =>
-          setModalAddContactVisible(!modalAddContactVisible)
-        }
+        value={inputGroupName}
+        onPressSubmit={onAddNewGroupContactPressed}
+        onPressVisable={() => setModalAddContactVisible(!modalAddContactVisible)}
+        title={t("ModalAddGroup_Title")}
+        label={t("ModalAddGroup_Input_Title_GroupName")}
+        placeholder={t("ModalAddGroup_Input_Placeholder_GroupName")}
+        cancel={t("ModalAddGroup_Button_Cancel")}
+        submit={t("ModalAddGroup_Button_Confirm")}
       />
       <ConfirmDialog
         visible={confirmDialogVisible}
         title={t("Screen_AddContactToManyGroup_ConfirmDialog_Label")}
-        leftButtonTitle={t(
-          "Screen_AddContactToManyGroup_ConfirmDialog_LeftButtonTitle"
-        )}
-        rightButtonTitle={t(
-          "Screen_AddContactToManyGroup_ConfirmDialog_RightButtonTitle"
-        )}
-        onPressVisable={() => {
-          setConfirmDialogVisible(false);
-        }}
+        leftButtonTitle={t("Screen_AddContactToManyGroup_ConfirmDialog_LeftButtonTitle")}
+        rightButtonTitle={t("Screen_AddContactToManyGroup_ConfirmDialog_RightButtonTitle")}
+        onPressVisable={() => setConfirmDialogVisible(false)}
         onPressConfirm={AddContactToManyGroup}
       />
     </Provider>

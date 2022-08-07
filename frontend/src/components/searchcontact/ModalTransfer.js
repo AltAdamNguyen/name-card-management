@@ -3,14 +3,11 @@ import React from 'react';
 import { View, Text, Modal, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import { Button, Card, TextInput } from 'react-native-paper';
 import styles from '../../screen/ViewContact/styles';
-import { useContext } from 'react';
-import AuthContext from '../../store/AuthContext';
-import { useTranslation } from "react-i18next";
 import { Formik } from 'formik';
 import TransferSchema from '../../validate/ValidateFormTransfer';
+import { t } from "i18next";
 // create a component
 const ModalTransfer = ({ visible, onPressVisable, onPressSubmit }) => {
-    const { t, i18n } = useTranslation();
     return (
         <Modal
             animationType="fade"
@@ -44,7 +41,7 @@ const ModalTransfer = ({ visible, onPressVisable, onPressSubmit }) => {
                                             theme={{ roundness: 10, colors: { primary: '#1890FF', error: '#B22D1D' } }}
                                         />
                                         {errors['email'] && touched['email'] ? (
-                                            <Text style={{ color: '#B22D1D', fontSize: 12, }}>{errors['email']}</Text>
+                                            <Text style={{ color: '#B22D1D', fontSize: 12, }}>{t(errors['email'])}</Text>
                                         ) : null}
                                         <View style={styles.info_status_modalItem_button}>
                                             <Button
@@ -69,7 +66,6 @@ const ModalTransfer = ({ visible, onPressVisable, onPressSubmit }) => {
                                     </View>
                                 )
                             }}
-
                         </Formik>
                     </Card>
                 </TouchableWithoutFeedback>

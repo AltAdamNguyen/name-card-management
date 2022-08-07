@@ -5,10 +5,9 @@ import { TextInput, Button, Card } from 'react-native-paper';
 import styles from '../../../screen/ViewContact/styles';
 import { Formik } from 'formik';
 import StatusSchema from '../../../validate/ValidateFormStatus';
-import { useTranslation } from "react-i18next";
+import { t } from "i18next";
 // create a component
 const ModalDeactivate = ({ visible, onPressVisable, reason, onPressSubmit }) => {
-    const { t, i18n } = useTranslation();
     return (
         <Modal
             animationType="fade"
@@ -41,7 +40,7 @@ const ModalDeactivate = ({ visible, onPressVisable, reason, onPressSubmit }) => 
                                             theme={{ roundness: 10, colors: { primary: '#1890FF', error: '#B22D1D' } }}
                                         />
                                         {errors['reason'] && touched['reason'] ? (
-                                            <Text style={{ color: '#B22D1D', fontSize: 12, }}>{errors['reason']}</Text>
+                                            <Text style={{ color: '#B22D1D', fontSize: 12, }}>{t(errors['reason'])}</Text>
                                         ) : null}
                                         <View style={styles.info_status_modalItem_button}>
                                             <Button

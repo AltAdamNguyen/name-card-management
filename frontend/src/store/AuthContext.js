@@ -1,5 +1,4 @@
-import React, {useEffect, useState, useRef} from "react";
-import {BackHandler, Alert, AppState} from "react-native";
+import React, {useEffect, useState} from "react";
 import * as SecureStore from 'expo-secure-store';
 import jwt_decode from 'jwt-decode';
 import { useTranslation } from "react-i18next";
@@ -21,15 +20,10 @@ export const AuthProvider = ({ children }) => {
     const [locale, setLocale] = useState('vn')
     const [role, setrole] = useState(0)
     const [userId, setUserId] = useState(0)
-    const appState = useRef(AppState.currentState);
-    const [appStateVisible, setAppStateVisible] = useState(appState.current);
 
     const getToken = async () => {
         const refresh_token = await SecureStore.getItemAsync('refresh_token');
-        const access_token = await SecureStore.getItemAsync('access_token');
-        const localeDefault = await SecureStore.getItemAsync('locale');
-        i18n.changeLanguage(localeDefault);
-        setLocale(localeDefault)
+        const access_token = await SecureStore.getItemAsync('access_token');       
         if(refresh_token && access_token){
             const decoded = jwt_decode(access_token);
             if(decoded.role !== 4) {
@@ -44,6 +38,18 @@ export const AuthProvider = ({ children }) => {
             setUserId(0);
         }
     }
+
+    const checkLocale = async () => {
+        const localeDefault = await SecureStore.getItemAsync('locale');
+        if(localeDefault){
+            i18n.changeLanguage(localeDefault);
+            setLocale(localeDefault)
+        }
+    }
+
+    useEffect(() => {
+        checkLocale();
+    } ,[])
 
     const handleLogin = async(accessToken, refreshToken) => {
         let decoded = jwt_decode(accessToken);
