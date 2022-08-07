@@ -86,12 +86,18 @@ export const FetchApi = async (url, method, contentType, param, callback) => {
                         console.log(err)
                     })
             }
-            if (response.status === 200) {
+            if (response.ok) {
+                return response.json()
+                    .then((data) => {
+                        callback(data)
+                    })
+            }else {
                 return response.json()
                     .then((data) => {
                         callback(data)
                     })
             }
+            
         })
         .catch((error) => {
             callback({message : "Internet Error"})
