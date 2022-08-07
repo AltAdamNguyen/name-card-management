@@ -291,7 +291,19 @@
         "Screen_ChangePassword_Alert_U0007": "Current password is incorrect",
         "Screen_ChangePassword_Alert_U0006": "New password must be at least 8 characters, contain at least 1 uppercase letter, 1 number and 1 speacial character",
         "Screen_ChangePassword_Alert_PasswordAndRePasswordMatch": "Password and Re-enter Password must be the same",
-        "Screen_ChangePassword_Alert_Warning": "Warning"
+        "Screen_ChangePassword_Alert_Warning": "Warning",
+
+        "Validate_Form_AddContact_Name": "Name is required",
+        "Validate_Form_AddContact_Company": "Company is required",
+        "Validate_Form_AddContact_Phone": "Phone is required",
+        "Validate_Form_AddContact_Email": "Email is required",
+        "Validate_Form_AddContact_Email_Invalid": "Email is invalid",
+        "Validate_Form_AddContact_Phone_Invalid": "Phone is invalid",
+        "Validate_Form_AddContact_Fax_Invalid": "Fax is invalid",
+
+        "Validate_Form_AddGroup_NameGroup": "Group name is required",
+
+        "Validate_Form_Status_Reason": "Reason is required"
 
     }
 }

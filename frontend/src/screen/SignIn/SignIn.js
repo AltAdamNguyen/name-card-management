@@ -1,5 +1,5 @@
 import { View, Text, Alert, TouchableWithoutFeedback, Keyboard } from "react-native";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import AuthContext from "../../store/AuthContext";
 import { useTranslation } from "react-i18next";
 import styles from "./styles";
@@ -20,10 +20,10 @@ const options = [
 const SignIn = ({ navigation }) => {
   const { t, i18n } = useTranslation();
   const [user, setUser] = useState({
-    // email: "",
-    // password: "",
-    email: "anhnche141236@gmail.com",
-    password: "Trung123@",
+    email: "",
+    password: "",
+    // email: "anhnche141236@gmail.com",
+    // password: "Trung123@",
     // email: "conganhnguyen33@gmail.com",
     // password: "Trung123@"
     // email: "person2@gmail.com",
@@ -35,6 +35,7 @@ const SignIn = ({ navigation }) => {
   });
 
   const [isSecureEntry, setIsSecureEntry] = useState(true);
+  const [localeDefault, setLocaleDefault] = useState(0);
   const [isLoading, setLoading] = useState(false);
   const authCtx = useContext(AuthContext);
 
@@ -44,6 +45,10 @@ const SignIn = ({ navigation }) => {
   const onForgotPasswordPressed = () => {
     navigation.navigate("ForgotPassword");
   };
+
+  useEffect(() => {
+    setLocaleDefault(i18n.language === "en" ? 1 : 0);
+  } ,[i18n.language])
 
   const onSignInPressed = () => {
     setLoading(true);
@@ -135,11 +140,11 @@ const SignIn = ({ navigation }) => {
           <SwitchSelector
             style={styles.language}
             options={options}
-            initial={authCtx.locale === "vn" ? 0 : 1}
+            initial={localeDefault}
+            value={localeDefault}
             hasPadding
             buttonColor="#2F80ED"
             disableValueChangeOnPress={true}
-            value={1}
             onPress={(language) => {
               i18n.changeLanguage(language);
               authCtx.language(language);

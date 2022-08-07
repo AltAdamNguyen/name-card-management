@@ -31,7 +31,6 @@ const ModalStatus = ({ listStatus, visible, onPressVisable, status, onPressSubmi
                             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => {
                                 return (
                                     <View style={{ width: '100%' }}>
-
                                         <Picker
                                             selectedValue={values.status}
                                             onValueChange={handleChange('status')}
@@ -43,8 +42,6 @@ const ModalStatus = ({ listStatus, visible, onPressVisable, status, onPressSubmi
                                                 )
                                             })}
                                         </Picker>
-
-
                                         <TextInput
                                             mode="outlined"
                                             label={t("ModalStatus_Label_Reason")}
@@ -56,7 +53,7 @@ const ModalStatus = ({ listStatus, visible, onPressVisable, status, onPressSubmi
                                             theme={{ roundness: 10, colors: { primary: '#1890FF', error: '#B22D1D' } }}
                                         />
                                         {errors['reason'] && touched['reason'] ? (
-                                            <Text style={{ color: '#B22D1D', fontSize: 12, }}>{errors['reason']}</Text>
+                                            <Text style={{ color: '#B22D1D', fontSize: 12, }}>{t(errors['reason'])}</Text>
                                         ) : null}
                                         <View style={styles.info_status_modalItem_button}>
                                             <Button

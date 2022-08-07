@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState,  useEffect } from "react";
 import {
     View,
     Text,
@@ -8,9 +8,6 @@ import {
     Pressable,
 } from "react-native";
 import styles from "./styles";
-import i18next from "../../language/i18n";
-import { useTranslation } from "react-i18next";
-import AuthContext from "../../store/AuthContext";
 import {
     Searchbar,
     Appbar,
@@ -20,7 +17,6 @@ import {
 } from "react-native-paper";
 import { FormatDate } from '../../validate/FormatDate';
 import CustomCheckedBox from "../../components/groupcontact/checkBoxCustom/CustomCheckedBox";
-
 import ConfirmDialog from "../../components/customDialog/dialog/confirmDialog/ConfirmDialog";
 import { FetchApi } from "../../service/api/FetchAPI";
 import { GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
@@ -184,8 +180,8 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
                             )}
                             {listSearch.length != 0 && listSearch.map((item, index) => {
                                 return (
-                                    <TouchableOpacity onPress={() => checkBoxOnClickCallBack(item.contact.contact_id, !item.isChecked)}>
-                                        <View style={styles.item} key={index}>
+                                    <TouchableOpacity key={index} onPress={() => checkBoxOnClickCallBack(item.contact.contact_id, !item.isChecked)}>
+                                        <View style={styles.item}>
                                             <CustomCheckedBox id={item.contact.contact_id} onClick={checkBoxOnClickCallBack} isChecked={item.isChecked} />
                                             <View style={styles.image}>
                                                 <Image style={styles.image} source={{ uri: item.contact.contact_imgurl }} />
@@ -209,8 +205,8 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
                             <ScrollView>
                                 {listContact.length != 0 && listContact.map((item, index) => {
                                     return (
-                                    <TouchableOpacity onPress = {() => checkBoxOnClickCallBack(item.contact.contact_id, !item.isChecked)}>
-                                        <View style={styles.item} key={index}>
+                                    <TouchableOpacity key={index} onPress = {() => checkBoxOnClickCallBack(item.contact.contact_id, !item.isChecked)}>
+                                        <View style={styles.item}>
                                             <CustomCheckedBox id={item.contact.contact_id} onClick={checkBoxOnClickCallBack} isChecked={item.isChecked} />
                                             <View style={styles.image}>
                                                 <Image style={styles.image} source={{ uri: item.contact.contact_imgurl }} />
@@ -250,7 +246,7 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
                         title={t("Screen_DeleteContactFromGroup_ConfirmDialog_Label")}
                         leftButtonTitle={t("Screen_DeleteContactFromGroup_ConfirmDialog_LeftButtonTitle")}
                         rightButtonTitle={t("Screen_DeleteContactFromGroup_ConfirmDialog_RightButtonTitle")}
-                        onPressVisable={() => { setConfirmDialogVisible(false) }}
+                        onPressVisable={() => setConfirmDialogVisible(false)}
                         onPressConfirm={deleteContactFromGroup}
                     />
                 </SafeAreaView>
