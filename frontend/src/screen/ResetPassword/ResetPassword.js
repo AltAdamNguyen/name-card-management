@@ -53,14 +53,13 @@ const ResetPassword = ({ navigation, route }) => {
   const InputPasswordCodeAPICallback = (data) => {
     if (data.message == "Internet Error") {
       Alert.alert("", t("Loading_InternetError"));
-    } else if (
-      data.message ==
-      "New password must be at least 8 characters, contain at least one lowercase letter, one uppercase letter, one number and one special character"
-    ) {
+    } else if ( data.message == "U0006" ) {
       Alert.alert(
         "",
         t("Screen_ResetPassword_Alert_PasswordFormat")
       );
+    } else if (data.message == "U0008") {
+      // TODO
     } else {
       navigation.navigate("SignIn");
     }

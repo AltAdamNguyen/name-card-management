@@ -23,6 +23,7 @@ import { FetchApi } from "../../service/api/FetchAPI";
 import { GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
 import Loading from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
 import ConfirmDialog from "../../components/customDialog/dialog/confirmDialog/ConfirmDialog";
+
 const AddContactToGroup = ({ navigation, route }) => {
   const [listContact, setListContact] = useState([]);
   const [listContactTotal, setListContactTotal] = useState([]);

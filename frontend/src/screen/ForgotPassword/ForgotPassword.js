@@ -65,11 +65,9 @@ const ForgotPassword = ({ navigation }) => {
       Alert.alert("", t("Screen_ForgotPassword_Alert_EmailEmpty"));
     } else if (data.message == "Internet Error") {
       Alert.alert("", t("Loading_InternetError"));
-    } else if (data.message == "User not found") {
+    } else if (data.message == "C0018") {
       Alert.alert("", t("Screen_ForgotPassword_Alert_UserNotFound"));
-    } else if (data.message == "Email is invalid") {
-      Alert.alert("", t("Screen_ForgotPassword_Alert_EmailInvalid"));
-    } else if (data.message == "Request must contain email") {
+    } else if (data.message == "U0004") {
       Alert.alert("", t("Screen_ForgotPassword_Alert_RequestMustContainEmail"));
     } else {
       navigation.navigate("ResetPasswordCode", {

@@ -59,8 +59,11 @@ const ResetPasswordCode = ({ navigation, route }) => {
     if (data.message == "Internet Error") {
       Alert.alert('',t("Loading_InternetError"))
     }
-    else if (data.message == 'User not found or code is incorrect') {
+    else if (data.message == 'U0011') {
       Alert.alert('',t("Screen_ResetPasswordCode_Alert_IncorrectCode"))
+    }
+    else if (data.message == 'U0008') {
+      // TODO
     }
     else {
       navigation.navigate("ResetPassword", {
