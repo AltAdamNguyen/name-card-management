@@ -40,6 +40,10 @@ const RefeshToken = async (refresh_token) => {
         await SecureStore.deleteItemAsync('refresh_token')
         return null
     }
+    if(response.ok) {
+        let data = await response.json()
+        await SecureStore.setItemAsync('access_token', data.access_token)
+    }
     let data = await response.json()
     return data
 }
@@ -86,12 +90,18 @@ export const FetchApi = async (url, method, contentType, param, callback) => {
                         console.log(err)
                     })
             }
-            if (response.status === 200) {
+            if (response.ok) {
+                return response.json()
+                    .then((data) => {
+                        callback(data)
+                    })
+            }else {
                 return response.json()
                     .then((data) => {
                         callback(data)
                     })
             }
+            
         })
         .catch((error) => {
             callback({message : "Internet Error"})
