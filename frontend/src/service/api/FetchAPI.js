@@ -40,6 +40,10 @@ const RefeshToken = async (refresh_token) => {
         await SecureStore.deleteItemAsync('refresh_token')
         return null
     }
+    if(response.ok) {
+        let data = await response.json()
+        await SecureStore.setItemAsync('access_token', data.access_token)
+    }
     let data = await response.json()
     return data
 }
