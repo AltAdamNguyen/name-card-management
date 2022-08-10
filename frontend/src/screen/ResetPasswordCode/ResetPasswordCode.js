@@ -52,69 +52,69 @@ const ResetPasswordCode = ({ navigation, route }) => {
       },
       InputPasswordCodeAPICallback
     );
-    
+
   };
 
-  const InputPasswordCodeAPICallback = (data) => {
-    if (data.message == "Internet Error") {
-      Alert.alert('',t("Loading_InternetError"))
+  const InputPasswordCodeAPICallback = (status, data) => {
+    if (data) {
+      if (data.message == 'U0011') {
+        Alert.alert('', t("Screen_ResetPasswordCode_Alert_IncorrectCode"))
+      }
+      else if (data.message == 'U0008') {
+        // TODO
+      }
+      else {
+        navigation.navigate("ResetPassword", {
+          email: email,
+          code: code,
+        });
+      }
     }
-    else if (data.message == 'U0011') {
-      Alert.alert('',t("Screen_ResetPasswordCode_Alert_IncorrectCode"))
-    }
-    else if (data.message == 'U0008') {
-      // TODO
-    }
-    else {
-      navigation.navigate("ResetPassword", {
-        email: email,
-        code: code,
-      });
+    else if (!status) {
+      Alert.alert("", t("Something_Wrong"))
     }
     setIsLoading(false)
   };
 
   return (
     <Provider>
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-
-   
-      <SafeAreaView style={styles.root}>
-        <Appbar.Header
-          statusBarHeight={1}
-          theme={{ colors: { primary: "transparent" } }}
-        >
-          <Appbar.BackAction onPress={() => navigation.goBack()} />
-        </Appbar.Header>
-        <View style={styles.headline}>
-          <Image
-            source={Logo_ForgotPassword}
-            style={[styles.logo, { height: height * 0.3 }]}
-            resizeMode="contain"
-          />
-          <View style={styles.text}>
-            <Text style={styles.text_PRIMARY}>
-              {t("Screen_ResetPasswordCode_Label_ResetPassword")}
-            </Text>
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+        <SafeAreaView style={styles.root}>
+          <Appbar.Header
+            statusBarHeight={1}
+            theme={{ colors: { primary: "transparent" } }}
+          >
+            <Appbar.BackAction onPress={() => navigation.goBack()} />
+          </Appbar.Header>
+          <View style={styles.headline}>
+            <Image
+              source={Logo_ForgotPassword}
+              style={[styles.logo, { height: height * 0.3 }]}
+              resizeMode="contain"
+            />
+            <View style={styles.text}>
+              <Text style={styles.text_PRIMARY}>
+                {t("Screen_ResetPasswordCode_Label_ResetPassword")}
+              </Text>
+            </View>
           </View>
-        </View>
-        <View style={styles.section}>
-        <CustomInputs
-          value={code}
-          setValue={handleChange("code")}
-          icon={"close-circle"}
-          label={t("Screen_ResetPasswordCode_PlaceHolder")}
-          onpress={onClearCodePressed}
-        />
-        <CustomButtons
-          text={t("Screen_ForgotPassword_Button_ResetPassword")}
-          onPress={onForgotPasswordPressed}
-        />
-        </View>
-       
-      </SafeAreaView>
+          <View style={styles.section}>
+            <CustomInputs
+              value={code}
+              setValue={handleChange("code")}
+              icon={"close-circle"}
+              label={t("Screen_ResetPasswordCode_PlaceHolder")}
+              onpress={onClearCodePressed}
+              type={"numeric"}
+            />
+            <CustomButtons
+              text={t("Screen_ForgotPassword_Button_ResetPassword")}
+              onPress={onForgotPasswordPressed}
+            />
+          </View>
+        </SafeAreaView>
       </TouchableWithoutFeedback>
-      <LoadingDialog onVisible = {isLoading}/>
+      <LoadingDialog onVisible={isLoading} />
     </Provider>
   );
 };

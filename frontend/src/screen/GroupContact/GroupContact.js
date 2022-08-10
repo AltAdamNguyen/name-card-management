@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Pressable,
+  Alert
 } from "react-native";
 import styles from "./styles";
 import { useTranslation } from "react-i18next";
@@ -46,9 +47,9 @@ const GroupContact = ({ navigation }) => {
     )
   }
 
-  const addGroupContact = (data) => {
+  const addGroupContact = (status, data) => {
     authCtx.checkToken()
-    if (data && data.message == "Success") {
+    if (status && data && data.message == "Success") {
       FetchApi(
         GroupContactAPI.ViewGroupContact,
         Method.GET,
@@ -56,6 +57,9 @@ const GroupContact = ({ navigation }) => {
         undefined,
         getGroupContact
       )
+    }
+    if(!status){
+      Alert.alert("", t("Something_Wrong"))
     }
   }
 
@@ -79,17 +83,18 @@ const GroupContact = ({ navigation }) => {
     )
   }, [isFocus])
 
-  const getGroupContact = (data) => {
+  const getGroupContact = (status, data) => {
     authCtx.checkToken()
     if(data){
       if (data.data.length > 0) {
         setLisGroupContact(data.data);
-        setListGroupContactTotal(data.data);
-        setLoading(false);
-      } else {
-        setLoading(false);
+        setListGroupContactTotal(data.data);       
       }
     }
+    if(!status){
+      Alert.alert("", t("Something_Wrong"))
+    }
+    setLoading(false);
   }
 
   const searchGroupHandle = (groupName) => {

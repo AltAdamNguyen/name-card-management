@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Pressable,
+  Alert
 } from "react-native";
 import styles from "./styles";
 import { useTranslation } from "react-i18next";
@@ -26,9 +27,9 @@ const GroupContactDetail = ({ navigation, route }) => {
   const [listContactTotal, setListContactTotal] = useState([]);
   const [listContactSearch, setListContactSearch] = useState([]);
   const { t, i18n } = useTranslation();
-  const inputGroupName = {
+  const [inputGroupName, setInpuitGroupName] = useState ({
     group_name: route.params.name,
-  }
+  })
   const [groupName, setGroupName] = useState(route.params.name);
   const authCtx = useContext(AuthContext);
   const isFocus = useIsFocused();
@@ -47,10 +48,6 @@ const GroupContactDetail = ({ navigation, route }) => {
     );
   }, []);
 
-  // const handleChange = (name) => {
-  //   setGroupName(name);
-  // };
-
   useEffect(() => {
     setIsLoading(true);
     FetchApi(
@@ -63,47 +60,28 @@ const GroupContactDetail = ({ navigation, route }) => {
   }, [isFocus]);
 
   // API call back
-  const getGroupContactDetail = (data) => {
+  const getGroupContactDetail = (status, data) => {
     //Get Detail
-    if (data.message === "Success" && data.data.contacts.length > 0) {
-      let initListContact = [];
-      data.data.contacts.map((item, index) => {
-        initListContact.push(item);
-      });
-      setListContact(initListContact);
-      setListContactTotal(initListContact);
-    } else {
-      setListContact([]);
-      setListContactTotal([]);
+    authCtx.checkToken()
+    if(status && data){
+      if (data.message === "Success" && data.data.contacts.length > 0) {
+        let initListContact = [];
+        data.data.contacts.map((item, index) => {
+          initListContact.push(item);
+        });
+        setListContact(initListContact);
+        setListContactTotal(initListContact);
+      } else {
+        setListContact([]);
+        setListContactTotal([]);
+      }
+    }
+    if(!status){
+      Alert.alert("", t("Something_Wrong"))
     }
     setListContactSearch([]);
     setIsLoading(false);
   };
-
-
-  // end API call back
-
-  // const onDataReturn = (data) => {
-  //   if (data.function === "delete") {
-  //     FetchApi(
-  //       `${GroupContactAPI.DeleteGroupContact}/${route.params.id}`,
-  //       Method.DELETE,
-  //       ContentType.JSON,
-  //       undefined,
-  //       deleteGroupContact
-  //     );
-  //   } else if (data.function === "changeGroupName") {
-  //     route.params.name = data.groupCurrentName;
-  //     FetchApi(
-  //       `${GroupContactAPI.ChangeGroupName}/${route.params.id}`,
-  //       Method.PATCH,
-  //       ContentType.JSON,
-  //       { name: data.groupCurrentName },
-  //       changeGroupName
-  //     );
-  //     setGroupName(data.groupCurrentName);
-  //   }
-  // };
 
   const handleDeleteGroup = () => {
     setDialogDeleteGroupConfirmVisible(false);
@@ -116,11 +94,18 @@ const GroupContactDetail = ({ navigation, route }) => {
     );
   }
 
-  const deleteGroupContact = (data) => {
-    navigation.goBack();
+  const deleteGroupContact = (status, data) => {
+    authCtx.checkToken();
+    if(status && data){
+      navigation.goBack();
+    }
+    if(!status){
+      Alert.alert("", t("Something_Wrong"))
+    }
   };
 
   const handleChangeNameGroup = (value) => {
+    console
     setDialogChangGroupNameVisible(false);
     FetchApi(
       `${GroupContactAPI.ChangeGroupName}/${route.params.id}`,
@@ -129,11 +114,14 @@ const GroupContactDetail = ({ navigation, route }) => {
       value,
       changeGroupName
     );
-    setGroupName(value.group_name)
+    setInpuitGroupName(value)
   }
 
-  const changeGroupName = (data) => {
+  const changeGroupName = (status, data) => {
     authCtx.checkToken()
+    if(!status){
+      Alert.alert("", t("Something_Wrong"))
+    }
   };
 
   const handleSearch = (contactSearch) => {
@@ -184,7 +172,7 @@ const GroupContactDetail = ({ navigation, route }) => {
           theme={{ colors: { primary: "transparent" } }}
         >
           <Appbar.BackAction onPress={() => navigation.goBack()} />
-          <Appbar.Content title={groupName} />
+          <Appbar.Content title={inputGroupName.group_name} />
         </Appbar.Header>
         <View style={styles.header}>
           <Pressable style={styles.sectionStyle}>

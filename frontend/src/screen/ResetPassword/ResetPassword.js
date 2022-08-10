@@ -29,7 +29,8 @@ const ResetPassword = ({ navigation, route }) => {
   const { height } = useWindowDimensions();
   const { email, code } = route.params;
   const [isLoading, setIsLoading] = useState(false);
-
+  const [newPasswordIsSecureEntry, setNewPasswordIsSecureEntry] = useState(true);
+  const [reEnterNewPasswordIsSecureEntry, setReEnterNewPasswordIsSecureEntry] = useState(true);
   const onResetPassword = () => {
     setIsLoading(true);
     if (newPassword !== newPasswordReEnter) {
@@ -50,18 +51,24 @@ const ResetPassword = ({ navigation, route }) => {
     }
   };
 
-  const InputPasswordCodeAPICallback = (data) => {
+  const InputPasswordCodeAPICallback = (status, data) => {
     if (data.message == "Internet Error") {
       Alert.alert("", t("Loading_InternetError"));
-    } else if ( data.message == "U0006" ) {
-      Alert.alert(
-        "",
-        t("Screen_ResetPassword_Alert_PasswordFormat")
-      );
-    } else if (data.message == "U0008") {
-      // TODO
-    } else {
-      navigation.navigate("SignIn");
+    }
+    if (data){
+      if ( data.message == "U0006" ) {
+        Alert.alert(
+          "",
+          t("Screen_ResetPassword_Alert_PasswordFormat")
+        );
+      } else if (data.message == "U0008") {
+        // TODO
+      } else {
+        navigation.navigate("SignIn");
+      }
+    }
+    else if(!status){
+      Alert.alert("", t("Something_Wrong"))
     }
     setIsLoading(false);
   };
@@ -115,16 +122,18 @@ const ResetPassword = ({ navigation, route }) => {
             <CustomInputs
               value={newPassword}
               setValue={(text) => handleChange(text)}
-              icon={"close-circle"}
               label={t("Screen_ResetPassword_PlaceHolder_NewPassword")}
-              onpress={onClearCodePressed}
+              secureTextEntry={newPasswordIsSecureEntry}
+              icon={newPasswordIsSecureEntry ? "eye" : "eye-off"}
+              onpress={() => setNewPasswordIsSecureEntry(!newPasswordIsSecureEntry)}
             />
             <CustomInputs
               value={newPasswordReEnter}
               setValue={(text) => handleChangeReEnter(text)}
-              icon={"close-circle"}
               label={t("Screen_ResetPassword_PlaceHolder_CreateNewPassword")}
-              onpress={onClearCodePressedReEnter}
+              secureTextEntry={reEnterNewPasswordIsSecureEntry}
+              icon={reEnterNewPasswordIsSecureEntry ? "eye" : "eye-off"}
+              onpress={() => setReEnterNewPasswordIsSecureEntry(!reEnterNewPasswordIsSecureEntry)}
             />
             <CustomButtons
               text={t("Screen_ResetPassword_Button_label")}

@@ -1,4 +1,4 @@
-import React, { useState,  useEffect } from "react";
+import React, { useState,  useEffect, useContext } from "react";
 import {
     View,
     Text,
@@ -6,6 +6,7 @@ import {
     Image,
     ScrollView,
     Pressable,
+    Alert
 } from "react-native";
 import styles from "./styles";
 import {
@@ -24,12 +25,13 @@ import Loading from "../../components/customDialog/dialog/loadingDialog/LoadingD
 import { useIsFocused } from "@react-navigation/native";
 import { t } from "i18next";
 import { TouchableOpacity } from "react-native";
+import AuthContext from "../../store/AuthContext";
 
 const DeleteContactFromGroup = ({ navigation, route }) => {
     const [listContact, setListContact] = useState([]);
     const [listContactTotal, setListContactTotal] = useState([]);
     const [listSearch, setListSearch] = useState([]);
-
+    const authCtx = useContext(AuthContext)
     const [choosenItems, setChoosenItems] = useState(0);
     const [confirmDialogVisible, setConfirmDialogVisible] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
@@ -56,16 +58,22 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
         );
     }, [isFocus]);
 
-    const getGroupContactDetail = (data) => {
-        if (data.data.contacts.length > 0) {
-            let initListContact = []
-            data.data.contacts.map((item, index) => {
-                initListContact.push({ isChecked: false, contact: item })
-            })
-            setListContact(initListContact)
-            setListContactTotal(initListContact)
-            setListSearch([])
+    const getGroupContactDetail = (status, data) => {
+        authCtx.checkToken()
+        if(status && data){
+            if (data.data.contacts.length > 0) {
+                let initListContact = []
+                data.data.contacts.map((item, index) => {
+                    initListContact.push({ isChecked: false, contact: item })
+                })
+                setListContact(initListContact)
+                setListContactTotal(initListContact)
+                setListSearch([])
+            }
         }
+        if(!status){
+            Alert.alert("", t("Something_Wrong"))
+        }      
         setIsLoading(false)
     }
 
@@ -120,8 +128,13 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
         )
     }
 
-    const deleteContactsFromGroupAPICallBack = (data) => {
-        navigation.goBack()
+    const deleteContactsFromGroupAPICallBack = (status, data) => {
+        if(status && data){
+            navigation.goBack()
+        }
+        if(!status){
+            Alert.alert("", t("Something_Wrong"))
+        }       
     }
 
     const handleSearch = (contactSearch) => {

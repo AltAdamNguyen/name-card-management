@@ -50,11 +50,14 @@ const SearchContact = ({ navigation, route }) => {
         }
     }, []);
 
-    const getContact = (data) => {
+    const getContact = (status,data) => {
         authCtx.checkToken()
         if (data) {
             setListContact(data.data)
             setListFilter(data.data)
+        }
+        else if(!status){
+            Alert.alert("", t("Something_Wrong"))
         }
 
     }
@@ -93,11 +96,14 @@ const SearchContact = ({ navigation, route }) => {
         route.params && route.params.transfer && FetchApi(`${ContactAPI.SearchContactTransfer}?value=${value}`, Method.GET, ContentType.JSON, undefined, getContactSearch)
     }
 
-    const getContactSearch = (data) => {
+    const getContactSearch = (status, data) => {
         authCtx.checkToken()
         if (data) {
             setLoading(false)
             setListFilter(data.data)
+        }
+        else if(!status){
+            Alert.alert("", t("Something_Wrong"))
         }
     }
 
@@ -120,11 +126,14 @@ const SearchContact = ({ navigation, route }) => {
         FetchApi(`${ContactAPI.ReactiveContact}/${contactId}`, Method.PATCH, ContentType.JSON, null, getMessage)
     }
 
-    const getMessage = (data) => {
+    const getMessage = (status, data) => {
         authCtx.checkToken()
         if (data) {
             setVisible(false);
             FetchApi(`${ContactAPI.ListDeactive}`, Method.GET, ContentType.JSON, undefined, getContact)
+        }
+        else if(!status){
+            Alert.alert("", t("Something_Wrong"))
         }
 
     }
@@ -164,25 +173,21 @@ const SearchContact = ({ navigation, route }) => {
             getMessageTransfer)
     }
 
-    const getMessageTransfer = (data) => {
+    const getMessageTransfer = (status, data) => {
         authCtx.checkToken()
         if (data) {
             if (data.message === "C0018") {
                 Alert.alert(t("Screen_SearchContact_Alert_Error"), t("Screen_SearchContact_Alert_EmailNotFound"))
             }
             if (data.message === "Success") {
+                Alert.alert(t("Screen_SearchContact_Alert_Success"), t("Screen_SearchContact_Alert_TransferSuccess"))
                 setVisibleTransfer(false);
                 setListGroup([]);
                 FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
             }
         }
-        if (data.message === "C0018") {
-            Alert.alert(t("Screen_SearchContact_Alert_Error"), t("Screen_SearchContact_Alert_EmailNotFound"))
-        }
-        if (data.message === "Success") {
-            setVisibleTransfer(false);
-            setListGroup([]);
-            FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
+        else if(!status){
+            Alert.alert("", t("Something_Wrong"))
         }
     }
     const handleAddContactsToGroups = () => {
@@ -279,13 +284,6 @@ const SearchContact = ({ navigation, route }) => {
                                 <IconButton icon="arrow-left" size={26} onPress={() => navigation.goBack()} />
                                 <Text style={styles.header_title_left_label}>{t("Screen_SearchContact_Button_Selected")} ({listGroup.length})</Text>
                             </View>
-                            {/* <Button
-                            onPress={handleSelectAll}
-                            uppercase={false}
-                            color="#1980FF"
-                        >
-                            {t("Screen_SearchContact_Button_SelectAll")}
-                        </Button> */}
                         </View>
                     }
                     <View style={styles.sectionStyle}>

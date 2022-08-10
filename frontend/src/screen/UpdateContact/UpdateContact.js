@@ -63,13 +63,16 @@ const UpdateContact = ({ route, navigation }) => {
 
     const formInput = FormInput()
 
-    const getContact = (data) => {
+    const getContact = (status, data) => {
         authCtx.checkToken()
         if (data) {
             if (data.data) {
                 formRef.current.setValues(data.data)
                 setLoading(true)
             }
+        }
+        else if(!status){
+            Alert.alert("", t("Something_Wrong"))
         }
     }
 
@@ -81,7 +84,7 @@ const UpdateContact = ({ route, navigation }) => {
         route.params && route.params.addContact && FetchApi(ContactAPI.AddContact, Method.POST, ContentType.JSON, values, getMessage);
     }
 
-    const getMessage = (data) => {
+    const getMessage = (status, data) => {
         authCtx.checkToken()
         setIsLoading(false)
         if (data) {
@@ -109,21 +112,27 @@ const UpdateContact = ({ route, navigation }) => {
                 Alert.alert(t("Screen_UpdateContact_Alert_Title"), t("Screen_UpdateContact_Alert_Message"), [{ text: 'OK' }])
             }
         }
+        if(!status){
+            Alert.alert("", t("Something_Wrong"))
+        }
     }
 
     const handleDuplicateOther = () => {
         FetchApi(`${ContactAPI.RequestTransferContact}/${duplicateInfo.id}/${duplicateInfo.id_duplicate}`, Method.GET, ContentType.JSON, undefined, getMessageDuplaicate)
     }
 
-    const getMessageDuplaicate = (data) => {
+    const getMessageDuplaicate = (status, data) => {
         authCtx.checkToken()
-        if(data){
+        if(status && data){
             setDuplicateOther(false)
             navigation.dispatch(StackActions.popToTop());
             navigation.navigate("HomeSwap", {
                 screen: "ViewContact",
                 params: { idContact: duplicateInfo.id_duplicate },
             });
+        }
+        if(!status){
+            Alert.alert("", t("Something_Wrong"))
         }
 
     }

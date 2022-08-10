@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Pressable,
+  Alert
 } from "react-native";
 import styles from "./styles";
 import { useTranslation } from "react-i18next";
@@ -48,9 +49,9 @@ const AddContactToManyGroup = ({ route, navigation }) => {
     );
   };
 
-  const addGroupContact = (data) => {
+  const addGroupContact = (status, data) => {
     authCtx.checkToken()
-    if (data && data.message == "Success") {
+    if (status && data && data.message == "Success") {
       FetchApi(
         GroupContactAPI.ViewGroupContact,
         Method.GET,
@@ -58,6 +59,9 @@ const AddContactToManyGroup = ({ route, navigation }) => {
         undefined,
         getGroupContact
       );
+    }
+    if(!status){
+      Alert.alert("", t("Something_Wrong"))
     }
     setIsLoading(false);
   };
@@ -103,27 +107,32 @@ const AddContactToManyGroup = ({ route, navigation }) => {
     );
   }, [isFocus]);
 
-  const getGroupContact = (data) => {
-    if (data.data.length > 0) {
-      if (listGroupContactTotal.length > 0) {
-        setListGroupSearch([]);
-        setLisGroupContact([
-          ...listGroupContactTotal,
-          { isChecked: false, group: data.data[data.data.length - 1] },
-        ]);
-        setListGroupContactTotal([
-          ...listGroupContactTotal,
-          { isChecked: false, group: data.data[data.data.length - 1] },
-        ]);
-      } else {
-        let initListGroup = [];
-        data.data.map((item, index) => {
-          initListGroup.push({ isChecked: false, group: item });
-        });
-        setLisGroupContact(initListGroup);
-        setListGroupContactTotal(initListGroup);
+  const getGroupContact = (status, data) => {
+    if(status && data){
+      if (data.data.length > 0) {
+        if (listGroupContactTotal.length > 0) {
+          setListGroupSearch([]);
+          setLisGroupContact([
+            ...listGroupContactTotal,
+            { isChecked: false, group: data.data[data.data.length - 1] },
+          ]);
+          setListGroupContactTotal([
+            ...listGroupContactTotal,
+            { isChecked: false, group: data.data[data.data.length - 1] },
+          ]);
+        } else {
+          let initListGroup = [];
+          data.data.map((item, index) => {
+            initListGroup.push({ isChecked: false, group: item });
+          });
+          setLisGroupContact(initListGroup);
+          setListGroupContactTotal(initListGroup);
+        }
       }
     }
+    if(!status){
+      Alert.alert("", t("Something_Wrong"))
+    }  
     setIsLoading(false);
   };
 
@@ -155,8 +164,13 @@ const AddContactToManyGroup = ({ route, navigation }) => {
     }
   };
 
-  const addContactToManyGroupAPICallBack = (data) => {
-    navigation.goBack();
+  const addContactToManyGroupAPICallBack = (status, data) => {
+    if(status && data){
+      navigation.goBack();
+    }
+    if(!status){
+      Alert.alert("", t("Something_Wrong"))
+    }
   };
 
   const AddContactToManyGroup = () => {

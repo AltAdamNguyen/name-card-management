@@ -60,19 +60,25 @@ const ForgotPassword = ({ navigation }) => {
     );
   };
 
-  const ForgotPasswordAPICallback = (data) => {
+  const ForgotPasswordAPICallback = (status, data) => {
     if (user.email.trim() == "") {
       Alert.alert("", t("Screen_ForgotPassword_Alert_EmailEmpty"));
     } else if (data.message == "Internet Error") {
       Alert.alert("", t("Loading_InternetError"));
-    } else if (data.message == "C0018") {
-      Alert.alert("", t("Screen_ForgotPassword_Alert_UserNotFound"));
-    } else if (data.message == "U0004") {
-      Alert.alert("", t("Screen_ForgotPassword_Alert_RequestMustContainEmail"));
-    } else {
-      navigation.navigate("ResetPasswordCode", {
-        email: user.email,
-      });
+    }
+    if (data) {
+      if (data.message == "C0018") {
+        Alert.alert("", t("Screen_ForgotPassword_Alert_UserNotFound"));
+      } else if (data.message == "U0004") {
+        Alert.alert("", t("Screen_ForgotPassword_Alert_RequestMustContainEmail"));
+      } else {
+        navigation.navigate("ResetPasswordCode", {
+          email: user.email,
+        });
+      }
+    }
+    else if (!status) {
+      Alert.alert("", t("Something_Wrong"))
     }
     setIsLoading(false);
   };
@@ -107,13 +113,14 @@ const ForgotPassword = ({ navigation }) => {
               icon={"close-circle"}
               label={"Email"}
               onpress={onClearEmailPressed}
+              type={"email-address"}
             />
             <CustomButtons
               text={t("Screen_ForgotPassword_Button_ResetPassword")}
               onPress={onForgotPasswordPressed}
             />
           </View>
-          
+
         </SafeAreaView>
       </TouchableWithoutFeedback>
       <LoadingDialog onVisible={isLoading} />

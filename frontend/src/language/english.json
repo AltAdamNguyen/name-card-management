@@ -44,6 +44,7 @@
         "Screen_Home_Placeholder_Search": "Search contact",
         "Screen_Home_Text_Container_Title_LabelList": "Name Card",
         "Screen_Home_ModalFlag_Text_Classify": "Classify",
+        "Screen_Home_Empty_Contact": "No contact",
 
         "Screen_GroupContact_Placeholder_Search": "Search group",
         "Screen_GroupContact_Text_Container_Label_Title":"My group of contacts",
@@ -249,6 +250,8 @@
         "Screen_SearchContact_Button_AddToGroup": "Add To Group",
         "Screen_SearchContact_Alert_Error": "Error",
         "Screen_SearchContact_Alert_EmailNotFound": "Email not found",
+        "Screen_SearchContact_Alert_Success": "Success",
+        "Screen_SearchContact_Alert_TransferSuccess": "Transfer success",
 
         "Screen_Team_Input_Placeholder": "Search employees",
         "Screen_Team_Text_Selected": "Selected",
@@ -303,7 +306,9 @@
 
         "Validate_Form_AddGroup_NameGroup": "Group name is required",
 
-        "Validate_Form_Status_Reason": "Reason is required"
+        "Validate_Form_Status_Reason": "Reason is required",
+
+        "Something_Wrong": "Something wrong"
 
     }
 }

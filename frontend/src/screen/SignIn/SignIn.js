@@ -22,12 +22,6 @@ const SignIn = ({ navigation }) => {
   const [user, setUser] = useState({
     email: "",
     password: "",
-    // email: "anhnche141236@gmail.com",
-    // password: "Trung123@",
-    // email: "conganhnguyen33@gmail.com",
-    // password: "Trung123@"
-    // email: "person2@gmail.com",
-    // password: "Trung123@",
   });
   const [errorLoginText, setErrorLoginText] = useState({
     errorText: "",
@@ -48,7 +42,7 @@ const SignIn = ({ navigation }) => {
 
   useEffect(() => {
     setLocaleDefault(i18n.language === "en" ? 1 : 0);
-  } ,[i18n.language])
+  }, [i18n.language])
 
   const onSignInPressed = () => {
     setLoading(true);
@@ -61,22 +55,24 @@ const SignIn = ({ navigation }) => {
     );
   };
 
-  const getMessage = (data) => {
+  const getMessage = (status, data) => {
     setLoading(false);
-    if (data.message == "Internet Error") {
-      Alert.alert("", "Internet Error")
+    if (data) {
+      data.message === "U0001" &&
+        authCtx.onLogin(data.data.access_token, data.data.refresh_token)
+      data.message === "U0003" &&
+        Alert.alert(t("Screen_Login_Text_Error_U0003"))
+      data.message === "U0002" &&
+        Alert.alert(errorLoginText.errorText)
+
     }
-    else if (user.email == "" || user.password == "") {
+    else if (!status) {
+      Alert.alert("", t("Something_Wrong"))
+    }
+    if (user.email == "" || user.password == "") {
       Alert.alert(t("Screen_Login_Text_Error_Empty"))
       return;
     }
-    data.message === "U0001" &&
-      authCtx.onLogin(data.data.access_token, data.data.refresh_token)
-    data.message === "U0003" &&
-      Alert.alert(t("Screen_Login_Text_Error_U0003"))
-    data.message === "U0002" &&
-      Alert.alert(errorLoginText.errorText)
-
   };
 
   const handleChange = (name) => {

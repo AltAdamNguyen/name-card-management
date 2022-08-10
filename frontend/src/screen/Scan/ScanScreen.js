@@ -3,17 +3,15 @@ import { useEffect, useRef, useState } from 'react';
 import { Camera, FlashMode } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { ActivityIndicator, Button, Card, IconButton, Paragraph, Title } from 'react-native-paper';
-import { isEmpty } from 'lodash';
 import { useIsFocused } from '@react-navigation/native';
 import iconPath from '../../constants/iconPath';
-import { parseCard } from '../../validate/ParseVcard';
 import styles from './styles';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { t } from 'i18next';
+import vCard from 'vcf';
 
 const ScanScreen = ({ navigation }) => {
   const isFocused = useIsFocused();
-
   let cameraRef = useRef();
   const [hasCameraPermission, setHasCameraPermission] = useState();
   const [flashMode, setFlashMode] = useState(FlashMode.off);
@@ -79,56 +77,54 @@ const ScanScreen = ({ navigation }) => {
     }
   };
 
-  const handleScanQr = ( data ) => {
-    let card = parseCard(data)
-    if (isEmpty(card)) {
-      setStopScan(true)
-      Alert.alert(
-        t("Screeen_Scan_Alert_QR_Error_Title"),
-        t("Screeen_Scan_Alert_QR_Error_Message"), 
-      [{ text: t("Screeen_Scan_Alert_QR_Error_Button_Ok"),
-        onPress: () => {setStopScan(false)}
-    }]
-      )
-      setScanQr(true)
-    } else {
+  const handleScanQr = (data) => {
+    try {
+      var card = vCard().parse(data.replace(/\r?\n/g, "\r\n"))
       let contact = {
-        name: card.n ? card.n : card.fn,
-        job_title: card.title ? card.title : '',
-        company: card.org ? card.org : '',
-        phone: card.tel && card.tel.value ? card.tel.value.replace('+', '') : '',
-        email: card.email && card.email.value ? card.email.value : '',
+        name: card.data.fn ? card.data.fn._data : card.data.n ? card.data.n._data : '',
+        job_title: card.data.title ? card.data.title._data : '',
+        company: card.data.org ? card.data.org._data : '',
+        phone: card.data.tel ? card.data.tel.length ? card.data.tel[0]._data.replace(/[^\d]/g,'') : card.data.tel._data.replace(/[^\d]/g,'') : '',
+        email: card.data.email ? card.data.email.length ? card.data.email[0]._data : card.data.email._data : '',
         fax: '',
         note: '',
-        address: card.adr ? card.adr : '',
-        website: card.url ? card.url : '',
+        address: card.data.adr ? card.data.adr.length ? card.data.adr[0]._data : card.data.adr._data : '',
+        website: card.data.url ? card.data.url.length ? card.data.url[0]._data : card.data.url._data : '',
         img_url: 'https://ncmsystem.azurewebsites.net/Images/noImage.jpg',
       }
       navigation.navigate('HomeSwap', { screen: 'UpdateContact', params: { contact: contact } });
       setScanQr(!scanQr)
     }
+    catch (err) {
+      setStopScan(true)
+      Alert.alert(
+        t("Screeen_Scan_Alert_QR_Error_Title"),
+        t("Screeen_Scan_Alert_QR_Error_Message"),
+        [{
+          text: t("Screeen_Scan_Alert_QR_Error_Button_Ok"),
+          onPress: () => { setStopScan(false) }
+        }])      
+    }
   }
-
-  console.log(stopScan)
 
   return (
     <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <IconButton icon="close-circle" size={26} color="#fff" onPress={() => navigation.goBack()} />
-          <IconButton
-            icon={flashMode === FlashMode.on ? "flash" : "flash-off"}
-            size={26}
-            color="#fff"
-            onPress={() => setFlashMode(flashMode === FlashMode.off ? FlashMode.on : FlashMode.off)}
-          />
-        </View>
-      <View style={[styles.preview,{height: height}]}>
+      <View style={styles.header}>
+        <IconButton icon="close-circle" size={26} color="#fff" onPress={() => navigation.goBack()} />
+        <IconButton
+          icon={flashMode === FlashMode.on ? "flash" : "flash-off"}
+          size={26}
+          color="#fff"
+          onPress={() => setFlashMode(flashMode === FlashMode.off ? FlashMode.on : FlashMode.off)}
+        />
+      </View>
+      <View style={[styles.preview, { height: height }]}>
         {
           isFocused &&
           (scanQr ?
             <BarCodeScanner
               style={[styles.preview_camera, { height: height }]}
-              onBarCodeScanned={({data}) =>{ stopScan ? null: handleScanQr(data)}}
+              onBarCodeScanned={({ data }) => { stopScan ? null : handleScanQr(data) }}
             >
               <View style={styles.preview_overlay}>
                 <Image style={styles.preview_iconOverlay} source={iconPath.icQr} />
@@ -164,7 +160,7 @@ const ScanScreen = ({ navigation }) => {
             disabled={scanQr}
           />
           <IconButton
-            icon={scanQr ?  'camera' : 'qrcode-scan'}
+            icon={scanQr ? 'camera' : 'qrcode-scan'}
             size={30}
             color='#FFF'
             onPress={() => setScanQr(!scanQr)}

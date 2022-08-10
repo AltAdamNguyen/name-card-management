@@ -31,7 +31,9 @@ const Team = ({ navigation }) => {
     }, [])
 
     useEffect(() => {
+        if (authCtx.role !== 1) {
         FetchApi(TeamAPI.GetTeam, Method.GET, ContentType.JSON, undefined, getTeam)
+        }
     }, [isFocused]);
 
     useEffect(() => {
@@ -48,11 +50,14 @@ const Team = ({ navigation }) => {
         }
     }, [text])
 
-    const getTeam = (data) => {
+    const getTeam = (status, data) => {
         authCtx.checkToken()
         if (data) {
             setTeam(data.data);
             setSearchTeam(data.data)
+        }
+        else if(!status){
+            Alert.alert("", t("Something_Wrong"))
         }
         setLoading(false)
     }
@@ -72,10 +77,13 @@ const Team = ({ navigation }) => {
         FetchApi(`${TeamAPI.SearchMember}?value=${value}`, Method.GET, ContentType.JSON, undefined, getMember)
     }
 
-    const getMember = (data) => {
+    const getMember = (status, data) => {
         authCtx.checkToken()
-        if (data) {
+        if (sdata) {
             setSearchTeam(data.data)
+        }
+        else if(!status){
+            Alert.alert("", t("Something_Wrong"))
         }
     }
 
@@ -91,11 +99,16 @@ const Team = ({ navigation }) => {
         }
     }
 
-    const exportSuccess = (data) => {
+    const exportSuccess = (status, data) => {
         setLoading(false)
         authCtx.checkToken()
         if (data) {    
             Alert.alert(t("Screen_Team_Alet_Export_Success"), t("Screen_Team_Alet_Export_Success_Message"), [{ text: 'OK' }])
+            setListExport([])
+            setChecked(false)
+        }
+        else if(!status){
+            Alert.alert("", t("Something_Wrong"))
         }
     }
 

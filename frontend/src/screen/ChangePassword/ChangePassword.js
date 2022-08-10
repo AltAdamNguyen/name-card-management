@@ -47,7 +47,7 @@ const ChangePassword = ({ navigation }) => {
     dialogChangePasswordConfirmVisible,
     setDialogChangePasswordConfirmVisible,
   ] = useState(false);
-
+  const authCtx = useContext(AuthContext)
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [reEnterNewPassword, setReEnterNewPassword] = useState("");
@@ -87,25 +87,33 @@ const ChangePassword = ({ navigation }) => {
     setDialogChangePasswordConfirmVisible(false);
   };
 
-  const changePasswordAPICallBack = (data) => {
+  const changePasswordAPICallBack = (status, data) => {
+    console.log(data);
     setIsLoading(false);
-    if (data.message == "U0005") {
-      Alert.alert(
-        t("Screen_ChangePassword_Alert_Warning"),
-        t("Screen_ChangePassword_Alert_U0005")
-      );
-    } else if (data.message == "U0007") {
-      Alert.alert(
-        t("Screen_ChangePassword_Alert_Warning"),
-        t("Screen_ChangePassword_Alert_U0007")
-      );
-    } else if (data.message == "U0006") {
-      Alert.alert(
-        t("Screen_ChangePassword_Alert_Warning"),
-        t("Screen_ChangePassword_Alert_U0006")
-      );
-    } else if (data.message == "Change password success") {
-      navigation.goBack();
+    authCtx.checkToken()
+    if(status && data){
+      if (data.message == "U0005") {
+        Alert.alert(
+          t("Screen_ChangePassword_Alert_Warning"),
+          t("Screen_ChangePassword_Alert_U0005")
+        );
+      } else if (data.message == "U0007") {
+        Alert.alert(
+          t("Screen_ChangePassword_Alert_Warning"),
+          t("Screen_ChangePassword_Alert_U0007")
+        );
+      } else if (data.message == "U0006") {
+        Alert.alert(
+          t("Screen_ChangePassword_Alert_Warning"),
+          t("Screen_ChangePassword_Alert_U0006")
+        );
+      } else if (data.message == "Change password success") {
+        authCtx.handleToken(data.access_token, data.refresh_token)
+        navigation.goBack();
+      }
+    }
+    if(!status){
+      Alert.alert("", t("Something_Wrong"))
     }
   };
 

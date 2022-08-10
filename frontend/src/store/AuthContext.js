@@ -12,6 +12,7 @@ const AuthContext = React.createContext({
     onLogout: () => {},
     checkToken: () => {},
     language: () => {},
+    handleToken: () => {},
 });
 
 export const AuthProvider = ({ children }) => {
@@ -62,6 +63,11 @@ export const AuthProvider = ({ children }) => {
         }       
     }
 
+    const handleSaveToken = async(accessToken, refreshToken) => {
+        await SecureStore.setItemAsync('access_token',accessToken)
+        await SecureStore.setItemAsync('refresh_token',refreshToken)
+    }
+
     const handleLogout = async() => {
         setIsLogin(false); 
         setrole(0);
@@ -84,7 +90,9 @@ export const AuthProvider = ({ children }) => {
             onLogin: handleLogin,
             onLogout: handleLogout,
             checkToken: getToken,
-            language: handleLocale}}>
+            language: handleLocale,
+            handleToken: handleSaveToken,
+            }}>
             {children}
         </AuthContext.Provider>
     )

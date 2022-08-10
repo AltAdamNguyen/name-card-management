@@ -1,6 +1,6 @@
 //import liraries
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, SafeAreaView, Image, ScrollView, Pressable, Linking, Platform, Dimensions } from 'react-native';
+import { View, Text, SafeAreaView, Image, ScrollView, Pressable, Linking, Platform, Dimensions, Alert } from 'react-native';
 import { Appbar, IconButton, TouchableRipple } from 'react-native-paper';
 import { useIsFocused } from '@react-navigation/native';
 import * as Clipboard from 'expo-clipboard';
@@ -44,10 +44,13 @@ const ViewContact = ({ navigation, route }) => {
     const authCtx = useContext(AuthContext)
 
     const onSubmitStatus = (values) => {
+        const body = {
+            status: values.status,
+            reason_status: values.reason,
+        }
+        FetchApi(`${ContactAPI.SetStatus}/${route.params.idContact}`, Method.PATCH, ContentType.JSON, body, getFlag)
         setStatus(values)
-        FetchApi(`${ContactAPI.SetStatus}/${route.params.idContact}`, Method.PATCH, ContentType.JSON, values, getFlag)
         setModalStatusVisible(!modalStatusVisible)
-
     }
 
     const handlePressButtonFlag = (item) => {
@@ -56,8 +59,12 @@ const ViewContact = ({ navigation, route }) => {
         setFlag(item);
     }
 
-    const getFlag = (data) => {
+    const getFlag = (status, data) => {
+        console.log(status)
         authCtx.checkToken()
+        if(!status){
+            Alert.alert("", t("Something_Wrong"))
+        }
     }
     useEffect(() => {
         setLoading(true)
@@ -80,11 +87,14 @@ const ViewContact = ({ navigation, route }) => {
 
     }, [contact])
 
-    const getContact = (data) => {
+    const getContact = (status, data) => {
         authCtx.checkToken()
-        if(data){
+        if(status && data){
             setContact(data.data)
             setLoading(false)
+        }
+        if(!status){
+            Alert.alert("", t("Something_Wrong"))
         }
 
     }
@@ -97,10 +107,13 @@ const ViewContact = ({ navigation, route }) => {
         FetchApi(`${ContactAPI.DeactiveContact}/${route.params.idContact}`, Method.PATCH, ContentType.JSON, { reason_da: values.reason }, getMessage)
     }
 
-    const getMessage = (data) => {
+    const getMessage = (status, data) => {
         authCtx.checkToken()
-        if(data){
+        if(status && data){
             navigation.navigate("Bottom", { screen: "HomeScreen" })
+        }
+        if(!status){
+            Alert.alert("", t("Something_Wrong"))
         }
     }
 

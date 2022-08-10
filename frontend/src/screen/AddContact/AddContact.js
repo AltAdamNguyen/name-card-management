@@ -78,10 +78,10 @@ const AddContact = ({ contact, loading, navigation }) => {
     FetchApi(ContactAPI.AddContact, Method.POST, ContentType.JSON, values, getMessage);
   };
 
-  const getMessage = (data) => {
+  const getMessage = (status, data) => {
     setLoadingDialog(false);
     authCtx.checkToken()
-    if(data){
+    if(status && data){
       if (data.message === "D0001") {
         setDuplicate(true)
         setContactId(data.data.id)
@@ -98,6 +98,9 @@ const AddContact = ({ contact, loading, navigation }) => {
         })
       }
     }
+    if(!status){
+      Alert.alert("", t("Something_Wrong"))
+    }
   };
 
   const handleDuplicate = () => {
@@ -110,6 +113,10 @@ const AddContact = ({ contact, loading, navigation }) => {
 
   const handleDuplicateOther = () => {
     FetchApi(`${ContactAPI.RequestTransferContact}/${duplicateInfo.id}/${duplicateInfo.id_duplicate}`, Method.GET, ContentType.JSON, undefined, getMessageDuplaicate)
+  }
+
+  const getMessageDuplaicate = (status, data) => {
+    authCtx.checkToken()
   }
 
 

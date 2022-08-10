@@ -1,6 +1,6 @@
 //import liraries
 import React, { useState, useEffect, useContext, useCallback } from 'react';
-import { View, Text, SafeAreaView, Image, TouchableOpacity, Pressable, RefreshControl, FlatList, Platform } from 'react-native';
+import { View, Text, SafeAreaView, Image, TouchableOpacity, Pressable, RefreshControl, FlatList, Platform, Alert } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 import { IconButton, Searchbar, FAB, Card, Provider, ActivityIndicator } from 'react-native-paper';
 import styles from './styles';
@@ -69,17 +69,19 @@ const Home = ({ route, navigation }) => {
         FetchApi(`${ContactAPI.ViewContact}?sortBy=${sort}&flag=${flag}`, Method.GET, ContentType.JSON, undefined, getContactFilter)
     }, []);
 
-    const getContact = (data) => {
+    const getContact = (status,data) => {
         authCtx.checkToken()
-        if(data){
-            setLoading(false);
+        setLoading(false);
+        if( status && data){       
             if (data.data.length > 0) {
                 setListContact(data.data);
                 setListFilter(data.data);
                 setContContact(data.data.length);
             }
         }
-
+        if(!status){
+            Alert.alert("", t("Something_Wrong"))
+        }
     }
 
     const handlePressSort = (item) => {
@@ -100,7 +102,7 @@ const Home = ({ route, navigation }) => {
         setLoadMore(true);
     }
 
-    const getContactFilter = (data) => {
+    const getContactFilter = (status, data) => {
         authCtx.checkToken()
         if (data) {
             if (data.data) {
@@ -119,6 +121,11 @@ const Home = ({ route, navigation }) => {
             setLoading(false);
             setRefreshing(false);
         }
+        else if(!status){
+            Alert.alert("", t("Something_Wrong"))
+            setLoading(false);
+            setRefreshing(false);
+        }
 
     }
     const deleteFlag = () => {
@@ -126,13 +133,17 @@ const Home = ({ route, navigation }) => {
         setFlag('null')
         FetchApi(`${ContactAPI.ViewContact}?sortBy=${sort}`, Method.GET, ContentType.JSON, undefined, getContactFilter)
     }
-    const getContactLoadMore = (data) => {
-        if (data.data) {
+
+    const getContactLoadMore = (status, data) => {
+        if (status && data && data.data) {
             if (data.data.length > 0) {
                 setListFilter([...listFilter, ...data.data]);
                 setContContact(listFilter.length + data.data.length);
                 setPage(page + 1);
             }
+        }
+        if(!status){
+            Alert.alert("", t("Something_Wrong"))
         }
         setLoadMore(false);
     }
@@ -213,7 +224,7 @@ const Home = ({ route, navigation }) => {
     const EmptyList = () => {
         return (
             <View >
-                <Text style={styles.listContainer_label}>Không có danh thiếp</Text>
+                <Text style={styles.listContainer_label}>{t("Screen_Home_Empty_Contact")}</Text>
             </View>
         )
     }

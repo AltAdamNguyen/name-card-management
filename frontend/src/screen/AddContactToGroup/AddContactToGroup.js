@@ -6,7 +6,8 @@ import {
   Image,
   ScrollView,
   Pressable,
-  TouchableOpacity
+  TouchableOpacity,
+  Alert
 } from "react-native";
 import styles from "./styles";
 import { useTranslation } from "react-i18next";
@@ -44,15 +45,20 @@ const AddContactToGroup = ({ navigation, route }) => {
     );
   }, []);
 
-  const getContactCallBack = (data) => {
-    if (data.data.length > 0) {
-      let initListContact = [];
-      data.data.map((item) => {
-        initListContact.push({ isChecked: false, contact: item });
-      });
-      setListContact(initListContact);
-      setListContactTotal(initListContact);
+  const getContactCallBack = (status, data) => {
+    if(status && data){
+      if (data.data.length > 0) {
+        let initListContact = [];
+        data.data.map((item) => {
+          initListContact.push({ isChecked: false, contact: item });
+        });
+        setListContact(initListContact);
+        setListContactTotal(initListContact);
+      }
     }
+    if(!status){
+      Alert.alert("", t("Something_Wrong"))
+    }    
     setIsLoading(false);
   };
 
@@ -105,9 +111,14 @@ const AddContactToGroup = ({ navigation, route }) => {
     );
   };
 
-  const addContactsToGroupCallBack = (data) => {
+  const addContactsToGroupCallBack = (status, data) => {
+    if(status && data){
+      navigation.goBack()
+    }
+    if(!status){
+      Alert.alert("", t("Something_Wrong"))
+    }
     setConfirmDialogVisible(false);
-    navigation.goBack()
   };
 
   const handleSearch = (contactSearch) => {

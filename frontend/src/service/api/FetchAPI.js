@@ -12,14 +12,20 @@ export const FetchApiAuth = (url, method, contentType, param, callback) => {
             body: JSON.stringify(param),
         })
         .then((response) => {
-            return response.json()
-        })
-        .then((data) => {
-            callback(data)
-        })
+            if (response.ok) {
+                return response.json()
+                    .then((data) => {
+                        callback(true, data)
+                    })
+            }else {
+                return response.json()
+                    .then((data) => {
+                        callback(false, data)
+                    })
+            }         
+        })       
         .catch((error) => {
-            console.log(error)
-            callback({message : "Internet Error"})
+            callback(false,null)
         })
 }
 
@@ -76,34 +82,34 @@ export const FetchApi = async (url, method, contentType, param, callback) => {
                                 if (response.status === 200) {
                                     return response.json()
                                         .then((data) => {
-                                            callback(data)
+                                            callback(true, data)
                                         })
                                 }
                             }).catch((error) => {
-                                console.log(error)
+                                callback(false, null)
                             })
                         }
                         if(data === null) {
-                            callback(null)
+                            callback(false, null)
                         }
                     }).catch((err) => {
-                        console.log(err)
+                        callback(false, null)
                     })
             }
+            console.log(response)
             if (response.ok) {
                 return response.json()
                     .then((data) => {
-                        callback(data)
+                        callback(true, data)
                     })
             }else {
                 return response.json()
                     .then((data) => {
-                        callback(data)
+                        callback(false, data)
                     })
-            }
-            
+            }          
         })
         .catch((error) => {
-            callback({message : "Internet Error"})
+            callback(false,null)
         })
 }
