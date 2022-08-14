@@ -88,7 +88,7 @@ const Contact = ({ item, route, handleViewContact, checkListGroup, handleReActiv
                     </View>
                     <View style={styles.txtContact}>
                         <View style={[styles.title, { flexDirection: 'row', justifyContent: 'space-between' }]}>
-                            <Text style={styles.nameContact}>{item.name}</Text>
+                            <Text style={styles.nameContact} numberOfLines={1}>{item.name}</Text>
                             {!route.params && item.flag_id &&
                                 <Icon name="bookmark" size={24} color={listFlag[item.flag_id].color} />
                             }
@@ -108,7 +108,7 @@ const Contact = ({ item, route, handleViewContact, checkListGroup, handleReActiv
                                 <Icon name={listRequest[item.status_request].icon} size={24} color={listRequest[item.status_request].color} />
                             }
                         </View>
-                        <Text style={styles.titleContact}>{item.job_title}</Text>
+                        <Text style={styles.titleContact} numberOfLines={1}>{item.job_title}</Text>
                         <View style={styles.title}>
                             <Text numberOfLines={1} style={styles.companyContact}>{item.company}</Text>
                             <View style={{ alignItems: 'flex-end' }}>
