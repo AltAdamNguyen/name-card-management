@@ -15,7 +15,8 @@ import Loading from "../../components/customDialog/dialog/loadingDialog/LoadingD
 import {
   Searchbar,
   Provider,
-  FAB
+  FAB,
+  Snackbar
 } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { FetchApi } from "../../service/api/FetchAPI";
@@ -23,12 +24,14 @@ import { GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
 import { useIsFocused } from "@react-navigation/native";
 import ModalAddGroup from "../../components/groupcontact/ModalAddGroup"
 import AuthContext from "../../store/AuthContext";
+import { set } from "lodash";
 
 // create a component
-const GroupContact = ({ navigation }) => {
+const GroupContact = ({ navigation, route }) => {
   const [isLoading, setLoading] = useState(true);
   const [listGroupContact, setLisGroupContact] = useState([]);
   const [listGroupContactTotal, setListGroupContactTotal] = useState([]);
+  const [showSnacker, setShowSnacker] = useState();
   const { t, i18n } = useTranslation();
   const authCtx = useContext(AuthContext)
   const inputGroupName = {
@@ -58,12 +61,15 @@ const GroupContact = ({ navigation }) => {
         getGroupContact
       )
     }
-    if(!status){
+    if (!status) {
       Alert.alert("", t("Something_Wrong"))
     }
   }
 
   useEffect(() => {
+    if (route.params) {
+      setShowSnacker(route.params.isSuccess ? true : false)
+    }
     FetchApi(
       GroupContactAPI.ViewGroupContact,
       Method.GET,
@@ -85,13 +91,13 @@ const GroupContact = ({ navigation }) => {
 
   const getGroupContact = (status, data) => {
     authCtx.checkToken()
-    if(data){
+    if (data) {
       if (data.data.length > 0) {
         setLisGroupContact(data.data);
-        setListGroupContactTotal(data.data);       
+        setListGroupContactTotal(data.data);
       }
     }
-    if(!status){
+    if (!status) {
       Alert.alert("", t("Something_Wrong"))
     }
     setLoading(false);
@@ -153,7 +159,7 @@ const GroupContact = ({ navigation }) => {
                     key={index}
                   >
                     <View style={styles.container_listGroup_item}>
-                      <Text style={styles.container_listGroup_item_label} >
+                      <Text style={styles.container_listGroup_item_label} numberOfLines={1}>
                         {item.group_name}
                       </Text>
                       <Icon name="chevron-right" size={20} />
@@ -162,6 +168,13 @@ const GroupContact = ({ navigation }) => {
                 );
               })}
           </ScrollView>
+          <Snackbar
+            visible={showSnacker}
+            onDismiss={() => setShowSnacker(false)}
+            duration={3000}
+          >
+            Hey there! I'm a Snackbar.
+          </Snackbar>
         </View>
         <FAB style={styles.floatButton} icon="plus" size={24} color="#fff" onPress={() => setModalAddContactVisible(true)} />
       </SafeAreaView>
@@ -176,7 +189,7 @@ const GroupContact = ({ navigation }) => {
         cancel={t("ModalAddGroup_Button_Cancel")}
         submit={t("ModalAddGroup_Button_Confirm")}
       />
-      <Loading onVisible={isLoading}/>
+      <Loading onVisible={isLoading} />
     </Provider>
   );
 };

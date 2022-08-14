@@ -225,11 +225,11 @@ const GroupContactDetail = ({ navigation, route }) => {
                               },
                             ]}
                           >
-                            <Text style={styles.nameContact}>
+                            <Text style={styles.nameContact} numberOfLines={1}>
                               {item.contact_name}
                             </Text>
                           </View>
-                          <Text style={styles.titleContact}>
+                          <Text style={styles.titleContact} numberOfLines={1}>
                             {item.contact_jobtitle}
                           </Text>
                           <View style={styles.title}>

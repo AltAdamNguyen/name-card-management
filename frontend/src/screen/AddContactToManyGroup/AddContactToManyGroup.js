@@ -9,6 +9,7 @@ import {
   Pressable,
   Alert
 } from "react-native";
+import { StackActions } from "@react-navigation/native";
 import styles from "./styles";
 import { useTranslation } from "react-i18next";
 import Loading from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
@@ -166,7 +167,13 @@ const AddContactToManyGroup = ({ route, navigation }) => {
 
   const addContactToManyGroupAPICallBack = (status, data) => {
     if(status && data){
-      navigation.goBack();
+      if (route.params.isTeam) {
+        navigation.dispatch(StackActions.popToTop());
+        navigation.navigate("Bottom", { screen: "GroupContact", params: { isSuccess: true} })
+      }
+      else{
+        navigation.goBack();
+      }    
     }
     if(!status){
       Alert.alert("", t("Something_Wrong"))
@@ -262,7 +269,7 @@ const AddContactToManyGroup = ({ route, navigation }) => {
                         onClick={checkBoxOnClickCallBack}
                         isChecked={item.isChecked}
                       />
-                      <Text style={styles.container_listGroup_item_label}>
+                      <Text style={styles.container_listGroup_item_label} numberOfLines={1}>
                         {item.group.group_name}
                       </Text>
                     </View>

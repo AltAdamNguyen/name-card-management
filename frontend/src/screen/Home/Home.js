@@ -195,7 +195,7 @@ const Home = ({ route, navigation }) => {
                     </View>
                     <View style={styles.txtContact}>
                         <View style={[styles.title, { flexDirection: 'row', justifyContent: 'space-between' }]}>
-                            <Text style={styles.nameContact}>{item.name}</Text>
+                            <Text style={styles.nameContact} numberOfLines={1}>{item.name}</Text>
                             {item.flag !== null &&
                                 <Icon name="bookmark" size={24} color={listFlag[item.flag].color} />
                             }
@@ -207,7 +207,7 @@ const Home = ({ route, navigation }) => {
                             }
                         </View>
                         {!Boolean(item.status_request) && item.owner_id === item.createdBy &&
-                            <Text style={styles.titleContact}>{item.job_title}</Text>
+                            <Text style={styles.titleContact} numberOfLines={1}>{item.job_title}</Text>
                         }
                         <View style={styles.title}>
                             <Text numberOfLines={1} style={styles.companyContact}>{item.company}</Text>

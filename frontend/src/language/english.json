@@ -239,7 +239,7 @@
         "Screen_AddContactToManyGroup_ConfirmDialog_LeftButtonTitle": "Cancel",
         "Screen_AddContactToManyGroup_ConfirmDialog_RightButtonTitle": "Add",
         
-        "Screen_SearchContact_Input_Placeholder": "Search contact",
+        "Screen_SearchContact_Input_Placeholder": "Search contact by name, email, phone number, ...",
         "Screen_SearchContact_Text_NoContactFound": "No Contact Found",
         "Screen_SearchContact_Contact_Text_Reason": "Reason",
         "Screen_SearchContact_Button_AddGroup": "Add Group",
@@ -269,7 +269,7 @@
         "Screen_Scan_Alert_Button_Ok": "Ok",
         "Screen_Scan_Alert_Permission": "Requesting permissions camera",
         "Screeen_Scan_Alert_QR_Error_Title": "Error",
-        "Screeen_Scan_Alert_QR_Error_Message": "QR code is not valid. Please scan again.",
+        "Screeen_Scan_Alert_QR_Error_Message": "QR code is not valid. Please scan again",
         "Screeen_Scan_Alert_QR_Error_Button_Ok": "Ok",
         "Screen_Scan_Alert_Scan_Error_Title": "Error",
         "Screen_Scan_Alert_Scan_Error_Message": "Scan failed. Please take a photo again.",
@@ -296,6 +296,7 @@
         "Screen_ChangePassword_Alert_PasswordAndRePasswordMatch": "Password and Re-enter Password must be the same",
         "Screen_ChangePassword_Alert_Warning": "Warning",
 
+        "Validate_Form_AddContact_Name_Max_Lenght": "Name must be less than 255 characters",
         "Validate_Form_AddContact_Name": "Name is required",
         "Validate_Form_AddContact_Company": "Company is required",
         "Validate_Form_AddContact_Phone": "Phone is required",
@@ -304,6 +305,7 @@
         "Validate_Form_AddContact_Phone_Invalid": "Phone is invalid",
         "Validate_Form_AddContact_Fax_Invalid": "Fax is invalid",
 
+        "Validate_Form_AddGroup_Name_Max_Lenght": "Name must be less than 20 characters",
         "Validate_Form_AddGroup_NameGroup": "Group name is required",
 
         "Validate_Form_Status_Reason": "Reason is required",

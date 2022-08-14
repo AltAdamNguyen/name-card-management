@@ -91,12 +91,14 @@ const SearchContact = ({ navigation, route }) => {
     }, [text])
 
     const SearchApi = (value) => {
+        console.log(value)
         route.params && route.params.useid && FetchApi(`${ContactAPI.SearchContact}?value=${value}&userId=${route.params.useid}`, Method.GET, ContentType.JSON, undefined, getContactSearch)
         !route.params && FetchApi(`${ContactAPI.SearchContact}?value=${value}`, Method.GET, ContentType.JSON, undefined, getContactSearch)
         route.params && route.params.transfer && FetchApi(`${ContactAPI.SearchContactTransfer}?value=${value}`, Method.GET, ContentType.JSON, undefined, getContactSearch)
     }
 
     const getContactSearch = (status, data) => {
+        console.log(data)
         authCtx.checkToken()
         if (data) {
             setLoading(false)
@@ -197,7 +199,7 @@ const SearchContact = ({ navigation, route }) => {
         }
         navigation.navigate("HomeSwap", {
             screen: "AddContactToManyGroup",
-            params: { id: [...selectedContactIds], userId: route.params.useid }
+            params: { id: [...selectedContactIds], userId: route.params.useid, isTeam: true }
         });
     }
 

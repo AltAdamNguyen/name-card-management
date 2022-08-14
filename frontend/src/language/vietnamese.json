@@ -239,7 +239,7 @@
         "Screen_AddContactToManyGroup_ConfirmDialog_LeftButtonTitle": "Hủy",
         "Screen_AddContactToManyGroup_ConfirmDialog_RightButtonTitle": "Thêm",
 
-        "Screen_SearchContact_Input_Placeholder": "Tìm kiếm liên hệ",
+        "Screen_SearchContact_Input_Placeholder": "Tìm kiếm liên hệ theo tên, số điện thoại, email, ...",
         "Screen_SearchContact_Text_NoContactFound": "Không có liên hệ",
         "Screen_SearchContact_Contact_Text_Reason": "Lý do",
         "Screen_SearchContact_Button_AddGroup": "Thêm nhóm",
@@ -296,6 +296,7 @@
         "Screen_ChangePassword_Alert_PasswordAndRePasswordMatch": "Mật khẩu mới và nhập lại mật khẩu mới không giống nhau",
         "Screen_ChangePassword_Alert_Warning": "Cảnh báo",
 
+        "Validate_Form_AddContact_Name_Max_Lenght": "Tên không được vượt quá 255 kí tự",
         "Validate_Form_AddContact_Name": "Nhập tên",
         "Validate_Form_AddContact_Company": "Nhập công ty",
         "Validate_Form_AddContact_Phone": "Nhập số điện thoại",
@@ -304,6 +305,7 @@
         "Validate_Form_AddContact_Phone_Invalid": "Số điện thoại không hợp lệ",
         "Validate_Form_AddContact_Fax_Invalid": "Số fax không hợp lệ",
 
+        "Validate_Form_AddGroup_Name_Max_Lenght": "Tên không được vượt quá 20 kí tự",
         "Validate_Form_AddGroup_NameGroup": "Nhập tên nhóm",
 
         "Validate_Form_Status_Reason": "Nhập lý do",

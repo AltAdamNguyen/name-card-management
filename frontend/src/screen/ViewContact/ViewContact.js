@@ -148,7 +148,7 @@ const ViewContact = ({ navigation, route }) => {
                         <View style={{ marginTop: 10 }} />
                         <View style={styles.info}>
                             <View style={styles.info_title}>
-                                <Text style={styles.info_title_name}>{contact.name}</Text>
+                                <Text style={styles.info_title_name} numberOfLines={3}>{contact.name}</Text>
                                 {Boolean(contact.job_title) && <Text style={styles.info_title_job}><Text style={styles.info_title_job_name}>{t("Screen_ViewContact_Text_Label_JobTitle")} </Text>{contact.job_title}</Text>}
                                 <Text style={styles.info_title_job}><Text style={styles.info_title_job_name}>{t("Screen_ViewContact_Text_Label_Company")} </Text>{contact.company}</Text>
                             </View>

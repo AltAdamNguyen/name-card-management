@@ -11,6 +11,7 @@ const emailRegex = /^[a-zA-Z0-9\.]+@([\w]+\.)+[\w]{2,4}$/;
 
 const AddContactSchema = Yup.object().shape({
     name: Yup.string()
+        .max(255, "Validate_Form_AddContact_Name_Max_Lenght")
         .required("Validate_Form_AddContact_Name").nullable(),
     company: Yup.string()
         .required("Validate_Form_AddContact_Company").nullable(),

@@ -33,6 +33,11 @@ export const UserApis = {
     url: '/api/admin/search',
     method: 'GET',
     contextType: 'application/json',
+  },
+  exportUser: {
+    url: '/api/admin/user/export',
+    method: 'POST',
+    contextType: 'application/json',
   }
 };
 
@@ -108,6 +113,16 @@ export const ImportUserApis = {
   updateUserDetail: {
     url: '/api/admin/user/{0}',
     method: 'PUT',
+    contextType: 'application/json',
+  },
+  deleteAllUserImport: {
+    url: '/api/admin/user-imported',
+    method: 'DELETE',
+    contextType: 'application/json',
+  },
+  deleteUserImport: {
+    url: '/api/admin/user-imported/{0}',
+    method: 'DELETE',
     contextType: 'application/json',
   }
 };

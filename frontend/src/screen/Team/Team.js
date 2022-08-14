@@ -79,7 +79,7 @@ const Team = ({ navigation }) => {
 
     const getMember = (status, data) => {
         authCtx.checkToken()
-        if (sdata) {
+        if (data) {
             setSearchTeam(data.data)
         }
         else if(!status){

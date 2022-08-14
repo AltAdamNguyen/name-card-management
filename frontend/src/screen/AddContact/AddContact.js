@@ -2,7 +2,6 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { View, Image, Dimensions, Keyboard} from "react-native";
 import { Provider, Button } from "react-native-paper";
-
 import { StackActions } from "@react-navigation/native";
 import styles from "./styles";
 import { FetchApi } from "../../service/api/FetchAPI";
