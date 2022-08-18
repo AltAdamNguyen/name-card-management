@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   ScrollView,
   Pressable,
-  Alert
+  Alert,
+  Keyboard
 } from "react-native";
 import styles from "./styles";
 import { useTranslation } from "react-i18next";
@@ -25,6 +26,7 @@ import { useIsFocused } from "@react-navigation/native";
 import ModalAddGroup from "../../components/groupcontact/ModalAddGroup"
 import AuthContext from "../../store/AuthContext";
 import { set } from "lodash";
+import { TouchableWithoutFeedback } from "react-native-web";
 
 // create a component
 const GroupContact = ({ navigation, route }) => {
@@ -119,6 +121,7 @@ const GroupContact = ({ navigation, route }) => {
 
   return (
     <Provider style={styles.container_provider}>
+      <TouchableWithoutFeedback onPress={() =>  Keyboard.dismiss() }>
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <Pressable style={styles.sectionStyle}>
@@ -144,7 +147,7 @@ const GroupContact = ({ navigation, route }) => {
               <Text style={styles.listContainer_label}>{t("Screen_GroupContact_Text_Container_Label_NoGroupFound")}</Text>
             </View>
           )}
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
             {listGroupContact.length != 0 &&
               listGroupContact.map((item, index) => {
                 return (
@@ -168,16 +171,10 @@ const GroupContact = ({ navigation, route }) => {
                 );
               })}
           </ScrollView>
-          <Snackbar
-            visible={showSnacker}
-            onDismiss={() => setShowSnacker(false)}
-            duration={3000}
-          >
-            Hey there! I'm a Snackbar.
-          </Snackbar>
         </View>
         <FAB style={styles.floatButton} icon="plus" size={24} color="#fff" onPress={() => setModalAddContactVisible(true)} />
       </SafeAreaView>
+      </TouchableWithoutFeedback>
       <ModalAddGroup
         visible={modalAddContactVisible}
         value={inputGroupName}

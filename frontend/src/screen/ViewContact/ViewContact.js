@@ -144,7 +144,7 @@ const ViewContact = ({ navigation, route }) => {
 
                 }
                 {contact &&
-                    <ScrollView style={{ flex: 1, width: '100%' }}>
+                    <ScrollView style={{ flex: 1, width: '100%' }} showsVerticalScrollIndicator={false}>
                         <View style={{ marginTop: 10 }} />
                         <View style={styles.info}>
                             <View style={styles.info_title}>

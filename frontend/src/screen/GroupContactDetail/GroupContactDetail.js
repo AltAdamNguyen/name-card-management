@@ -7,11 +7,13 @@ import {
   TouchableOpacity,
   ScrollView,
   Pressable,
-  Alert
+  Alert,
+  TouchableWithoutFeedback,
+  Keyboard
 } from "react-native";
 import styles from "./styles";
 import { useTranslation } from "react-i18next";
-import { Searchbar, Appbar, Provider } from "react-native-paper";
+import { Searchbar, Appbar, Provider, HelperText } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { FormatDate } from "../../validate/FormatDate";
 import { FetchApi } from "../../service/api/FetchAPI";
@@ -27,11 +29,10 @@ const GroupContactDetail = ({ navigation, route }) => {
   const [listContactTotal, setListContactTotal] = useState([]);
   const [listContactSearch, setListContactSearch] = useState([]);
   const { t, i18n } = useTranslation();
-  const [inputGroupName, setInpuitGroupName] = useState ({
+  const [inputGroupName, setInpuitGroupName] = useState({
     group_name: route.params.name,
   })
-  const [groupName, setGroupName] = useState(route.params.name);
-  const authCtx = useContext(AuthContext);
+  const authCtx = useContext(AuthContext)
   const isFocus = useIsFocused();
   const [isLoading, setIsLoading] = useState(false);
   const [dialogDeleteGroupConfirmVisible, setDialogDeleteGroupConfirmVisible] = useState(false);
@@ -63,7 +64,7 @@ const GroupContactDetail = ({ navigation, route }) => {
   const getGroupContactDetail = (status, data) => {
     //Get Detail
     authCtx.checkToken()
-    if(status && data){
+    if (status && data) {
       if (data.message === "Success" && data.data.contacts.length > 0) {
         let initListContact = [];
         data.data.contacts.map((item, index) => {
@@ -76,7 +77,7 @@ const GroupContactDetail = ({ navigation, route }) => {
         setListContactTotal([]);
       }
     }
-    if(!status){
+    if (!status) {
       Alert.alert("", t("Something_Wrong"))
     }
     setListContactSearch([]);
@@ -96,10 +97,10 @@ const GroupContactDetail = ({ navigation, route }) => {
 
   const deleteGroupContact = (status, data) => {
     authCtx.checkToken();
-    if(status && data){
+    if (status && data) {
       navigation.goBack();
     }
-    if(!status){
+    if (!status) {
       Alert.alert("", t("Something_Wrong"))
     }
   };
@@ -119,7 +120,7 @@ const GroupContactDetail = ({ navigation, route }) => {
 
   const changeGroupName = (status, data) => {
     authCtx.checkToken()
-    if(!status){
+    if (!status) {
       Alert.alert("", t("Something_Wrong"))
     }
   };
@@ -152,7 +153,7 @@ const GroupContactDetail = ({ navigation, route }) => {
         } else if (
           listContactTotal[i].contact_phone != null &&
           listContactTotal[i].contact_phone.toLowerCase().includes(contactSearch.toLowerCase())
-        ){
+        ) {
           listSearchContactInGroup.push(listContactTotal[i]);
         }
       }
@@ -166,6 +167,7 @@ const GroupContactDetail = ({ navigation, route }) => {
 
   return (
     <Provider>
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <SafeAreaView style={styles.container}>
         <Appbar.Header
           statusBarHeight={1}
@@ -185,10 +187,13 @@ const GroupContactDetail = ({ navigation, route }) => {
               onChangeText={(text) => handleSearch(text)}
             />
           </Pressable>
+          <HelperText>
+            {t("Screen_SearchContact_Input_HelpText")}
+          </HelperText>
         </View>
         <View style={styles.contactsContainer}>
           <View style={styles.listContainer}>
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
               {listContact.length == 0 && listContactSearch.length == 0 && (
                 <View style={styles.listContainer_view}>
                   <Text style={styles.listContainer_label}>
@@ -311,29 +316,32 @@ const GroupContactDetail = ({ navigation, route }) => {
           </View>
         </View>
       </SafeAreaView>
+      </TouchableWithoutFeedback>
       <Loading onVisible={isLoading} />
       <View style={styles.footer}>
-        <Pressable
-          style={styles.footer_button}
-          onPress={() => {
-            navigation.navigate("GroupSwap", {
-              screen: "AddContactToGroup",
-              params: { id: route.params.id, type: "personal" },
-            });
-          }}
-        >
-          <Icon name="account-plus-outline" size={24} color="#828282" />
-          <Text style={styles.footer_button_label}>
-            {t("ModalGroupContactDetail_Label_AddContact")}
-          </Text>
-        </Pressable>
+        {authCtx.role !== 3 &&
+          <Pressable
+            style={styles.footer_button}
+            onPress={() => {
+              navigation.navigate("GroupSwap", {
+                screen: "AddContactToGroup",
+                params: { id: route.params.id, type: "personal" },
+              });
+            }}
+          >
+            <Icon name="account-plus-outline" size={24} color="#828282" />
+            <Text style={styles.footer_button_label}>
+              {t("ModalGroupContactDetail_Label_AddContact")}
+            </Text>
+          </Pressable>
+        }
         <Pressable
           style={styles.footer_button}
           onPress={() => {
             setDialogChangGroupNameVisible(true);
           }}
         >
-          <Icon name="swap-horizontal" size={24} color="#828282" />
+          <Icon name="pencil" size={24} color="#828282" />
           <Text style={styles.footer_button_label}>
             {t("ModalGroupContactDetail_Label_ChangeGroupName")}
           </Text>

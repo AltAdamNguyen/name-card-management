@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useCallback, useContext } from 'react';
 import { View, SafeAreaView, ScrollView, Text, Alert } from 'react-native';
 import styles from './styles';
-import { Searchbar, FAB, Provider, Button } from 'react-native-paper';
+import { Searchbar, FAB, Provider, Button, HelperText } from 'react-native-paper';
 import Tree from '../../components/team/Tree';
 import { useIsFocused } from '@react-navigation/native';
 import { FetchApi } from '../../service/api/FetchAPI';
@@ -128,6 +128,9 @@ const Team = ({ navigation }) => {
                             clearIcon="close-circle"
                             editable={authCtx.role !== 1}
                         />
+                        <HelperText>
+                            {t("Screen_Team_Input_HelpText")}
+                        </HelperText>
                     </View>}
                     {checked && <View style={styles.header_label}>
                         <Text style={styles.header_label_button}>{t("Screen_Team_Text_Selected")} ({listExport.length})</Text>
@@ -149,7 +152,7 @@ const Team = ({ navigation }) => {
                         <LoadingDialog onVisible={loading} />
                     }
                     {authCtx.role !== 1 &&
-                        < ScrollView >
+                        < ScrollView showsVerticalScrollIndicator={false}>
                             {searchTeam && searchTeam.map((item, index) => {
                                 return (
                                     <Tree

@@ -1,4 +1,4 @@
-import React, { useState,  useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
     View,
     Text,
@@ -15,6 +15,7 @@ import {
     Button,
     Provider,
     Portal,
+    HelperText,
 } from "react-native-paper";
 import { FormatDate } from '../../validate/FormatDate';
 import CustomCheckedBox from "../../components/groupcontact/checkBoxCustom/CustomCheckedBox";
@@ -60,7 +61,7 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
 
     const getGroupContactDetail = (status, data) => {
         authCtx.checkToken()
-        if(status && data){
+        if (status && data) {
             if (data.data.contacts.length > 0) {
                 let initListContact = []
                 data.data.contacts.map((item, index) => {
@@ -71,9 +72,9 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
                 setListSearch([])
             }
         }
-        if(!status){
+        if (!status) {
             Alert.alert("", t("Something_Wrong"))
-        }      
+        }
         setIsLoading(false)
     }
 
@@ -129,12 +130,12 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
     }
 
     const deleteContactsFromGroupAPICallBack = (status, data) => {
-        if(status && data){
+        if (status && data) {
             navigation.goBack()
         }
-        if(!status){
+        if (!status) {
             Alert.alert("", t("Something_Wrong"))
-        }       
+        }
     }
 
     const handleSearch = (contactSearch) => {
@@ -166,7 +167,7 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
                 <SafeAreaView style={styles.container}>
                     <Appbar.Header statusBarHeight={1} theme={{ colors: { primary: "transparent" } }}>
                         <Appbar.BackAction onPress={() => navigation.goBack()} />
-                        <Appbar.Content title={t("Screen_DeleteContactFromGroup_Appbar_Content_Title_Selected") + choosenItems} />
+                        <Appbar.Content title={choosenItems + t("Screen_DeleteContactFromGroup_Appbar_Content_Title_Selected")} />
 
                     </Appbar.Header>
                     <View style={styles.header}>
@@ -181,6 +182,9 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
                                 onChangeText={text => handleSearch(text)}
                             />
                         </Pressable>
+                        <HelperText>
+                            {t("Screen_AddContactToGroup_SearchBar_HelpText")}
+                        </HelperText>
                     </View>
                     <View style={styles.contactsContainer}>
                         <View style={styles.listContainer}>
@@ -202,31 +206,6 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
                                             <View style={styles.txtContact}>
                                                 <View style={[styles.title, { flexDirection: 'row', justifyContent: 'space-between' }]}>
                                                     <Text style={styles.nameContact}>{item.contact.contact_name}</Text>
-                                            </View>
-                                                <Text style={styles.titleContact}>{item.contact.contact_jobtitle}</Text>
-                                            <View style={styles.title}>
-                                                <Text numberOfLines={1} style={styles.companyContact}>{item.contact.contact_company}</Text>
-                                                <View style={{ alignItems: 'flex-end' }}>
-                                                    <Text style={styles.date}>{FormatDate(item.contact.contact_createdat)}</Text>
-                                                </View>
-                                            </View>
-                                        </View>
-                                    </View>
-                                    </TouchableOpacity>
-                                )
-                            })}
-                            <ScrollView>
-                                {listContact.length != 0 && listContact.map((item, index) => {
-                                    return (
-                                    <TouchableOpacity key={index} onPress = {() => checkBoxOnClickCallBack(item.contact.contact_id, !item.isChecked)}>
-                                        <View style={styles.item}>
-                                            <CustomCheckedBox id={item.contact.contact_id} onClick={checkBoxOnClickCallBack} isChecked={item.isChecked} />
-                                            <View style={styles.image}>
-                                                <Image style={styles.image} source={{ uri: item.contact.contact_imgurl }} />
-                                            </View>
-                                            <View style={styles.txtContact}>
-                                                <View style={[styles.title, { flexDirection: 'row', justifyContent: 'space-between' }]}>
-                                                    <Text style={styles.nameContact}>{item.contact.contact_name}</Text>
                                                 </View>
                                                 <Text style={styles.titleContact}>{item.contact.contact_jobtitle}</Text>
                                                 <View style={styles.title}>
@@ -238,6 +217,31 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
                                             </View>
                                         </View>
                                     </TouchableOpacity>
+                                )
+                            })}
+                            <ScrollView showsVerticalScrollIndicator={false}>
+                                {listContact.length != 0 && listContact.map((item, index) => {
+                                    return (
+                                        <TouchableOpacity key={index} onPress={() => checkBoxOnClickCallBack(item.contact.contact_id, !item.isChecked)}>
+                                            <View style={styles.item}>
+                                                <CustomCheckedBox id={item.contact.contact_id} onClick={checkBoxOnClickCallBack} isChecked={item.isChecked} />
+                                                <View style={styles.image}>
+                                                    <Image style={styles.image} source={{ uri: item.contact.contact_imgurl }} />
+                                                </View>
+                                                <View style={styles.txtContact}>
+                                                    <View style={[styles.title, { flexDirection: 'row', justifyContent: 'space-between' }]}>
+                                                        <Text style={styles.nameContact}>{item.contact.contact_name}</Text>
+                                                    </View>
+                                                    <Text style={styles.titleContact}>{item.contact.contact_jobtitle}</Text>
+                                                    <View style={styles.title}>
+                                                        <Text numberOfLines={1} style={styles.companyContact}>{item.contact.contact_company}</Text>
+                                                        <View style={{ alignItems: 'flex-end' }}>
+                                                            <Text style={styles.date}>{FormatDate(item.contact.contact_createdat)}</Text>
+                                                        </View>
+                                                    </View>
+                                                </View>
+                                            </View>
+                                        </TouchableOpacity>
                                     )
                                 })}
                             </ScrollView>

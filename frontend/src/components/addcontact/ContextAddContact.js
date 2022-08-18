@@ -9,54 +9,62 @@ export const FormInput = () => {
           title: t("Screen_AddContact_FormInput_Label_Name"),
           placeholder: t("Screen_AddContact_FormInput_Placeholder_Name"),
           icon: 'account',
+          
         },
         {
           name: "job_title",
           title: t("Screen_AddContact_FormInput_Label_JobTitle"),
           placeholder: t("Screen_AddContact_FormInput_Placeholder_JobTitle"),
-          icon: "briefcase"
+          icon: "briefcase",
         },
         {
           name: "company",
           title: t("Screen_AddContact_FormInput_Label_Company"),
           placeholder: t("Screen_AddContact_FormInput_Placeholder_Company"),
-          icon: "office-building"
+          icon: "office-building",
+
         },
         {
           name: "phone",
           title: t("Screen_AddContact_FormInput_Label_Phone"),
           placeholder: t("Screen_AddContact_FormInput_Placeholder_Phone"),
-          icon: "cellphone"
+          icon: "cellphone",
+          keyboardType: "phone-pad"
         },
         {
           name: "email",
           title: t("Screen_AddContact_FormInput_Label_Email"),
           placeholder: t("Screen_AddContact_FormInput_Placeholder_Email"),
-          icon: "email"
+          icon: "email",
+          keyboardType: "email-address"
         },
         {
           name: "fax",
           title: t("Screen_AddContact_FormInput_Label_Fax"),
           placeholder: t("Screen_AddContact_FormInput_Placeholder_Fax"),
-          icon: "fax"
+          icon: "fax",
+          keyboardType: "phone-pad"
         },
         {
           name: "address",
           title: t("Screen_AddContact_FormInput_Label_Address"),
           placeholder: t("Screen_AddContact_FormInput_Placeholder_Address"),
-          icon: "map-marker"
+          icon: "map-marker",
+          multiline: true,
         },
         {
           name: 'note',
           title: t("Screen_AddContact_FormInput_Label_Note"),
           placeholder: t("Screen_AddContact_FormInput_Placeholder_Note"),
-          icon: "text-box"
+          icon: "text-box",
+          multiline: true,
         },
         {
           name: "website",
           title: t("Screen_AddContact_FormInput_Label_Website"),
           placeholder: t("Screen_AddContact_FormInput_Placeholder_Website"),
-          icon: "web"
+          icon: "web",
+          keyboardType: "url"
         },
       ];
     return formInput;

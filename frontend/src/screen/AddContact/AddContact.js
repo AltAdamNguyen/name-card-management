@@ -149,7 +149,7 @@ const AddContact = ({ contact, loading, navigation }) => {
         {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => {
           return (
             <View style={styles.formInput}>
-              <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }} >
+              <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
                 {FormInput().map((item, index) => {
                   return (
                     <View key={index} style={styles.formInput_component}>

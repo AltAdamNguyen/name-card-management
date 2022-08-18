@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { View, Text, SafeAreaView, Alert, FlatList, TouchableWithoutFeedback, Keyboard } from 'react-native';
 
-import { Searchbar, Card, IconButton, Button, ActivityIndicator } from 'react-native-paper'
+import { Searchbar, Card, IconButton, Button, ActivityIndicator, HelperText } from 'react-native-paper'
 import debounce from 'lodash.debounce';
 import styles from '../Home/styles';
 import { FetchApi } from '../../service/api/FetchAPI';
@@ -51,6 +51,7 @@ const SearchContact = ({ navigation, route }) => {
     }, []);
 
     const getContact = (status,data) => {
+        console.log(data)
         authCtx.checkToken()
         if (data) {
             setListContact(data.data)
@@ -302,6 +303,9 @@ const SearchContact = ({ navigation, route }) => {
                             clearIcon="close-circle"
                             ref={textInputRef}
                         />
+                        <HelperText>
+                            {t("Screen_SearchContact_Input_HelpText")}
+                        </HelperText>
                     </View>
                     {visibleCheckBox && route.params && Boolean(route.params.useid) &&
                         <View style={styles.header_title}>

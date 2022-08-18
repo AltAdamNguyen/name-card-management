@@ -25,37 +25,43 @@ export const FormInput = () => {
             name: 'phone',
             title: t("Screen_UpdateContact_Input_Title_PhoneNumber"),
             placeholder: t("Screen_UpdateContact_Input_PlaceHolder_PhoneNumber"),
-            icon: "cellphone"
+            icon: "cellphone",
+            keyboardType: "phone-pad"
         },
         {
             name: 'email',
             title: t("Screen_UpdateContact_Input_Title_Email"),
             placeholder: t("Screen_UpdateContact_Input_PlaceHolder_Email"),
-            icon: "email"
+            icon: "email",
+            keyboardType: "email-address",
         },
         {
             name: 'fax',
             title: t("Screen_UpdateContact_Input_Title_Fax"),
             placeholder: t("Screen_UpdateContact_Input_PlaceHolder_Fax"),
-            icon: "fax"
+            icon: "fax",
+            keyboardType: "phone-pad"
         },
         {
             name: 'address',
             title: t("Screen_UpdateContact_Input_Title_Address"),
             placeholder: t("Screen_UpdateContact_Input_PlaceHolder_Address"),
-            icon: "map-marker"
+            icon: "map-marker",
+            multiline: true,
         },
         {
             name: 'note',
             title: t("Screen_UpdateContact_Input_Title_Note"),
             placeholder: t("Screen_UpdateContact_Input_PlaceHolder_Note"),
-            icon: "text-box"
+            icon: "text-box",
+            multiline: true,
         },
         {
             name: 'website',
             title: t("Screen_UpdateContact_Input_Title_Website"),
             placeholder: t("Screen_UpdateContact_Input_PlaceHolder_Website"),
-            icon: "web"
+            icon: "web",
+            keyboardType: "url"
         }
     ]
     return formInput;

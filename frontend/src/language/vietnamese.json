@@ -203,14 +203,15 @@
         "Screen_AddContact_Modal_DuplicateInfo_Submit": "Có",
 
         "Screen_AddContactToGroup_Appbar_Content_Title_Selected": " Đã chọn",
-        "Screen_AddContactToGroup_SearchBar_Placeholder": "Tìm kiếm liên hệ",
+        "Screen_AddContactToGroup_SearchBar_Placeholder": "Tìm liên hệ",
+        "Screen_AddContactToGroup_SearchBar_HelpText": "Tìm liên hệ theo tên, SĐT, email, công ty",
         "Screen_AddContactToGroup_ListContact_NoContactFound": "Không có liên hệ",
         "Screen_AddContactToGroup_Button_AddContact": "Thêm",
         "Screen_AddContactToGroup_ConfirmDialog_Label": "Bạn muốn thêm những liên hệ này vào nhóm không?",
         "Screen_AddContactToGroup_ConfirmDialog_LeftButtonTitle": "Hủy",
         "Screen_AddContactToGroup_ConfirmDialog_RightButtonTitle": "Thêm",
 
-        "Screen_DeleteContactFromGroup_Appbar_Content_Title_Selected": "Đã chọn ",
+        "Screen_DeleteContactFromGroup_Appbar_Content_Title_Selected": " Đã chọn",
         "Screen_DeleteContactFromGroup_SearchBar_Placeholder": "Tìm kiếm liên hệ",
         "Screen_DeleteContactFromGroup_ListContact_NoContactFound": "Không có liên hệ",
         "Screen_DeleteContactFromGroup_Button_DeleteContact": "Xóa",
@@ -239,7 +240,8 @@
         "Screen_AddContactToManyGroup_ConfirmDialog_LeftButtonTitle": "Hủy",
         "Screen_AddContactToManyGroup_ConfirmDialog_RightButtonTitle": "Thêm",
 
-        "Screen_SearchContact_Input_Placeholder": "Tìm kiếm liên hệ theo tên, số điện thoại, email, ...",
+        "Screen_SearchContact_Input_Placeholder": "Tìm kiếm liên hệ",
+        "Screen_SearchContact_Input_HelpText": "Tìm kiếm liên hệ theo tên, SĐT, email, công ty",
         "Screen_SearchContact_Text_NoContactFound": "Không có liên hệ",
         "Screen_SearchContact_Contact_Text_Reason": "Lý do",
         "Screen_SearchContact_Button_AddGroup": "Thêm nhóm",
@@ -254,6 +256,7 @@
         "Screen_SearchContact_Alert_TransferSuccess": "Chuyển liên hệ thành công",
 
         "Screen_Team_Input_Placeholder": "Tìm kiếm nhân viên",
+        "Screen_Team_Input_HelpText": "Tìm kiếm nhân viên theo tên, email",
         "Screen_Team_Text_Selected": "Đã chọn",
         "Screen_Team_Button_Eport": "Xuất",
         "Screen_Team_List_NoTeam": "Không có nhân viên",

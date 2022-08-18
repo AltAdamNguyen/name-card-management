@@ -17,6 +17,7 @@ import {
   Button,
   Provider,
   Portal,
+  HelperText,
 } from "react-native-paper";
 import { FormatDate } from "../../validate/FormatDate";
 import CustomCheckedBox from "../../components/groupcontact/checkBoxCustom/CustomCheckedBox";
@@ -186,6 +187,9 @@ const AddContactToGroup = ({ navigation, route }) => {
                 onChangeText={(text) => handleSearch(text)}
               />
             </Pressable>
+            <HelperText>
+              {t("Screen_AddContactToGroup_SearchBar_HelpText")}
+            </HelperText>
           </View>
           <View style={styles.contactsContainer}>
             <View style={styles.listContainer}>
@@ -199,8 +203,8 @@ const AddContactToGroup = ({ navigation, route }) => {
               {listSearch.length != 0 &&
                 listSearch.map((item, index) => {
                   return (
-                    <TouchableOpacity onPress={() => { checkBoxOnClickCallBack(item.contact.contact_id, !item.isChecked) }}>
-                      <View style={styles.item} key={index}>
+                    <TouchableOpacity onPress={() => { checkBoxOnClickCallBack(item.contact.contact_id, !item.isChecked) }} key={index}>
+                      <View style={styles.item}>
                         <CustomCheckedBox
                           id={item.contact.contact_id}
                           onClick={checkBoxOnClickCallBack}
@@ -244,7 +248,7 @@ const AddContactToGroup = ({ navigation, route }) => {
                     </TouchableOpacity>
                   );
                 })}
-              <ScrollView>
+              <ScrollView showsVerticalScrollIndicator={false}>
                 {listContact.length != 0 &&
                   listContact.map((item, index) => {
                     return (

@@ -176,7 +176,7 @@ const UpdateContact = ({ route, navigation }) => {
                 {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => {
                     return (
                         <View style={styles.formInput}>
-                            <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }} >
+                            <KeyboardAwareScrollView contentContainerStyle={{ flexGrow: 1 }} showsVerticalScrollIndicator={false}>
                                 {formInput.map((item, index) => {
                                     return (
                                         <View key={index} style={styles.formInput_component}>
@@ -193,7 +193,8 @@ const UpdateContact = ({ route, navigation }) => {
                                                             <TextInput
                                                                 placeholder={item.placeholder}
                                                                 value={values[item.name]}
-                                                                multiline={true}
+                                                                multiline={item.multiline}
+                                                                keyboardType={item.keyboardType}
                                                                 dense={true}
                                                                 style={styles.formInput_item_input}
                                                                 onChangeText={handleChange(item.name)}

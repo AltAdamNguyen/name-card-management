@@ -203,13 +203,14 @@
 
         "Screen_AddContactToGroup_Appbar_Content_Title_Selected": " Selected",
         "Screen_AddContactToGroup_SearchBar_Placeholder": "Find Contacts",
+        "Screen_AddContactToGroup_SearchBar_HelpText": "Find Contacts by name, email, phone number, company",
         "Screen_AddContactToGroup_ListContact_NoContactFound": "No Contact Found",
         "Screen_AddContactToGroup_Button_AddContact": "Add",
         "Screen_AddContactToGroup_ConfirmDialog_Label": "Do you want to add these contacts to the group?",
         "Screen_AddContactToGroup_ConfirmDialog_LeftButtonTitle": "Cancel",
         "Screen_AddContactToGroup_ConfirmDialog_RightButtonTitle": "Add",
 
-        "Screen_DeleteContactFromGroup_Appbar_Content_Title_Selected": "Selected ",
+        "Screen_DeleteContactFromGroup_Appbar_Content_Title_Selected": " Selected",
         "Screen_DeleteContactFromGroup_SearchBar_Placeholder": "Find Contacts",
         "Screen_DeleteContactFromGroup_ListContact_NoContactFound": "No Contact Found",
         "Screen_DeleteContactFromGroup_Button_DeleteContact": "Delete",
@@ -239,7 +240,8 @@
         "Screen_AddContactToManyGroup_ConfirmDialog_LeftButtonTitle": "Cancel",
         "Screen_AddContactToManyGroup_ConfirmDialog_RightButtonTitle": "Add",
         
-        "Screen_SearchContact_Input_Placeholder": "Search contact by name, email, phone number, ...",
+        "Screen_SearchContact_Input_Placeholder": "Search contact",
+        "Screen_SearchContact_Input_HelpText": "Search contact by name, email, phone number, company",
         "Screen_SearchContact_Text_NoContactFound": "No Contact Found",
         "Screen_SearchContact_Contact_Text_Reason": "Reason",
         "Screen_SearchContact_Button_AddGroup": "Add Group",
@@ -254,6 +256,7 @@
         "Screen_SearchContact_Alert_TransferSuccess": "Transfer success",
 
         "Screen_Team_Input_Placeholder": "Search employees",
+        "Screen_Team_Input_HelpText": "Search employees by name, email",
         "Screen_Team_Text_Selected": "Selected",
         "Screen_Team_Button_Eport": "Export",
         "Screen_Team_List_NoTeam": "No member",

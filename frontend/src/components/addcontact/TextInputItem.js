@@ -38,7 +38,8 @@ const TextInputItem = ({ item, handleChange, handleBlur, errors, touched, values
                     <TextInput
                         placeholder={item.placeholder}
                         value={values[item.name]}
-                        multiline={true}
+                        multiline={item.multiline}
+                        keyboardType={item.keyboardType}
                         dense={true}
                         style={styles.formInput_item_input}
                         onChangeText={handleChange(item.name)}
