@@ -39,16 +39,17 @@ const AddContact = ({ contact, loading, navigation }) => {
     img_url: "",
   });
   useEffect(() => {
+    console.log("contact", contact);
     if (contact && contact.data && formRef.current) {
       formRef.current.setValues({
-        name: contact.data.name,
-        job_title: contact.data.job_title,
-        company: contact.data.company,
-        phone: contact.data.phone,
-        email: contact.data.email,
-        fax: contact.data.fax,
-        address: contact.data.address,
-        website: contact.data.website,
+        name: contact.data.name ? contact.data.name : "",
+        job_title: contact.data.job_title ? contact.data.job_title : "",
+        company: contact.data.company ? contact.data.company : "",
+        phone: contact.data.phone ? contact.data.phone : "",
+        email: contact.data.email ? contact.data.email : "",
+        fax: contact.data.fax ? contact.data.fax : "",
+        address: contact.data.address ? contact.data.address : "",
+        website: contact.data.website ? contact.data.website : "",
         img_url: contact.data.img_url,
       });
     }
@@ -73,11 +74,13 @@ const AddContact = ({ contact, loading, navigation }) => {
   };
 
   const handleSubmit = (values) => {
+    console.log("values", values);
     setLoadingDialog(true);
     FetchApi(ContactAPI.AddContact, Method.POST, ContentType.JSON, values, getMessage);
   };
 
   const getMessage = (status, data) => {
+    console.log("data", data);
     setLoadingDialog(false);
     authCtx.checkToken()
     if(status && data){

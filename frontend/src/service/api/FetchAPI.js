@@ -49,9 +49,9 @@ const RefeshToken = async (refresh_token) => {
     if(response.ok) {
         let data = await response.json()
         await SecureStore.setItemAsync('access_token', data.access_token)
-    }
-    let data = await response.json()
-    return data
+        return data
+    }   
+    
 }
 
 export const FetchApi = async (url, method, contentType, param, callback) => {

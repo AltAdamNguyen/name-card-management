@@ -250,7 +250,7 @@ const AddContactToManyGroup = ({ route, navigation }) => {
               </Text>
             </View>
           )}
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
             {listGroupSearch.length != 0 &&
               listGroupSearch.map((item, index) => {
                 return (

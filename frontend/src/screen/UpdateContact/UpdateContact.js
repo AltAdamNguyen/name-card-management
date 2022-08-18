@@ -71,7 +71,7 @@ const UpdateContact = ({ route, navigation }) => {
                 setLoading(true)
             }
         }
-        else if(!status){
+        if(!status){
             Alert.alert("", t("Something_Wrong"))
         }
     }
