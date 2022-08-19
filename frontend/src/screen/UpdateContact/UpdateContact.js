@@ -65,14 +65,15 @@ const UpdateContact = ({ route, navigation }) => {
 
     const getContact = (status, data) => {
         authCtx.checkToken()
-        if (data) {
+        if(!status){
+            Alert.alert("", t("Something_Wrong"))
+            return
+        }
+        if (status && data) {
             if (data.data) {
                 formRef.current.setValues(data.data)
                 setLoading(true)
             }
-        }
-        if(!status){
-            Alert.alert("", t("Something_Wrong"))
         }
     }
 
@@ -91,14 +92,17 @@ const UpdateContact = ({ route, navigation }) => {
             if (data.message === "C0009") {
                 navigation.dispatch(StackActions.popToTop());
                 route.params && route.params.contact && navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: data.data.id, showFooter: true } })
+                return
             }
             if (data.message === "C0010") {
                 navigation.dispatch(StackActions.popToTop());
                 route.params && route.params.idContact && navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: route.params.idContact, showFooter: true } })
+                return
             }
             if (data.message === "D0001") {
                 setDuplicate(true)
                 setDuplicateInfo({ ...duplicateInfo, id: data.data.id })
+                return
             }
             if (data.message === "D0003") {
                 setDuplicateOther(true)
@@ -107,22 +111,34 @@ const UpdateContact = ({ route, navigation }) => {
                     id_duplicate: data.data.id_duplicate,
                     owner: data.data.user_name,
                 })
-            }
-            if (data.message === "D0005") {
-                Alert.alert(t("Screen_UpdateContact_Alert_Title"), t("Screen_UpdateContact_Alert_Message"), [{ text: 'OK' }])
+                return
             }
         }
         if(!status){
-            Alert.alert("", t("Something_Wrong"))
+            if(data){
+                if (data.message === "D0005") {
+                    Alert.alert("", t("Screen_UpdateContact_Alert_Message"), [{ text: 'OK' }])
+                    return
+                }
+            }
+            if(!data){
+                Alert.alert("", t("Something_Wrong"))
+                return
+            }
         }
     }
 
     const handleDuplicateOther = () => {
+        console.log(duplicateInfo)
         FetchApi(`${ContactAPI.RequestTransferContact}/${duplicateInfo.id}/${duplicateInfo.id_duplicate}`, Method.GET, ContentType.JSON, undefined, getMessageDuplaicate)
     }
 
     const getMessageDuplaicate = (status, data) => {
         authCtx.checkToken()
+        if(!status){
+            Alert.alert("", t("Something_Wrong"))
+            return
+        }
         if(status && data){
             setDuplicateOther(false)
             navigation.dispatch(StackActions.popToTop());
@@ -130,11 +146,8 @@ const UpdateContact = ({ route, navigation }) => {
                 screen: "ViewContact",
                 params: { idContact: duplicateInfo.id_duplicate },
             });
+            return
         }
-        if(!status){
-            Alert.alert("", t("Something_Wrong"))
-        }
-
     }
 
     const handleDuplicate = () => {

@@ -47,6 +47,11 @@ const AddContactToGroup = ({ navigation, route }) => {
   }, []);
 
   const getContactCallBack = (status, data) => {
+    setIsLoading(false);
+    if(!status){
+      Alert.alert("", t("Something_Wrong"))
+      return
+    }  
     if(status && data){
       if (data.data.length > 0) {
         let initListContact = [];
@@ -57,10 +62,6 @@ const AddContactToGroup = ({ navigation, route }) => {
         setListContactTotal(initListContact);
       }
     }
-    if(!status){
-      Alert.alert("", t("Something_Wrong"))
-    }    
-    setIsLoading(false);
   };
 
   const checkBoxOnClickCallBack = (id, check) => {
@@ -113,13 +114,14 @@ const AddContactToGroup = ({ navigation, route }) => {
   };
 
   const addContactsToGroupCallBack = (status, data) => {
+    setConfirmDialogVisible(false);
+    if(!status){
+      Alert.alert("", t("Something_Wrong"))
+      return
+    }
     if(status && data){
       navigation.goBack()
     }
-    if(!status){
-      Alert.alert("", t("Something_Wrong"))
-    }
-    setConfirmDialogVisible(false);
   };
 
   const handleSearch = (contactSearch) => {

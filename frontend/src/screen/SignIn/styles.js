@@ -43,8 +43,17 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     button_forgotPassword:{
-        width:'100%',
-        
+        width:'100%',  
+    },
+    text: {
+        fontWeight: 'bold',
+        color: 'white',
+        textAlign: 'center'
+    },
+    text_TERTIARY:{
+        color: '#2D9CDB',
+        fontSize: 12,
+        textAlign: 'right'
     }
 })
 

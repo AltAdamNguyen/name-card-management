@@ -30,6 +30,7 @@ export const FetchApiAuth = (url, method, contentType, param, callback) => {
 }
 
 const RefeshToken = async (refresh_token) => {
+    console.log("refesh token")
     let response = await fetch(`${BaseUrl}${AuthAPI.RefeshToken}`,
         {
             method: Method.POST,
@@ -41,6 +42,7 @@ const RefeshToken = async (refresh_token) => {
             })
         }
     )
+    console.log('response', response)
     if (!response.ok) {
         await SecureStore.deleteItemAsync('access_token')
         await SecureStore.deleteItemAsync('refresh_token')
@@ -48,7 +50,8 @@ const RefeshToken = async (refresh_token) => {
     }
     if(response.ok) {
         let data = await response.json()
-        await SecureStore.setItemAsync('access_token', data.access_token)
+        console.log('data', data)
+        await SecureStore.setItemAsync('access_token', data.data.access_token)
         return data
     }   
     
@@ -110,6 +113,7 @@ export const FetchApi = async (url, method, contentType, param, callback) => {
             }          
         })
         .catch((error) => {
+            console.log('error', error)
             callback(false,null)
         })
 }

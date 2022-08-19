@@ -50,17 +50,16 @@ const SearchContact = ({ navigation, route }) => {
         }
     }, []);
 
-    const getContact = (status,data) => {
-        console.log(data)
+    const getContact = (status, data) => {
         authCtx.checkToken()
-        if (data) {
+        if (!status) {
+            Alert.alert("", t("Something_Wrong"))
+            return
+        }
+        if (status && data) {
             setListContact(data.data)
             setListFilter(data.data)
         }
-        else if(!status){
-            Alert.alert("", t("Something_Wrong"))
-        }
-
     }
 
     useEffect(() => {
@@ -75,7 +74,7 @@ const SearchContact = ({ navigation, route }) => {
     }, [dataMore])
 
     useEffect(() => {
-        if(listContact.length){
+        if (listContact.length) {
             const searchTimeOut = setTimeout(() => {
                 if (text) {
                     setLoading(true);
@@ -84,7 +83,7 @@ const SearchContact = ({ navigation, route }) => {
                     setListFilter(listContact)
                 }
             }, 500);
-    
+
             return () => {
                 clearTimeout(searchTimeOut);
             }
@@ -99,14 +98,14 @@ const SearchContact = ({ navigation, route }) => {
     }
 
     const getContactSearch = (status, data) => {
-        console.log(data)
         authCtx.checkToken()
-        if (data) {
+        if (!status) {
+            Alert.alert("", t("Something_Wrong"))
+            return
+        }
+        if (status && data) {
             setLoading(false)
             setListFilter(data.data)
-        }
-        else if(!status){
-            Alert.alert("", t("Something_Wrong"))
         }
     }
 
@@ -131,14 +130,14 @@ const SearchContact = ({ navigation, route }) => {
 
     const getMessage = (status, data) => {
         authCtx.checkToken()
-        if (data) {
+        if (!status) {
+            Alert.alert("", t("Something_Wrong"))
+            return
+        }
+        if (status && data) {
             setVisible(false);
             FetchApi(`${ContactAPI.ListDeactive}`, Method.GET, ContentType.JSON, undefined, getContact)
         }
-        else if(!status){
-            Alert.alert("", t("Something_Wrong"))
-        }
-
     }
 
     const checkListGroup = (item, check) => {
@@ -178,19 +177,23 @@ const SearchContact = ({ navigation, route }) => {
 
     const getMessageTransfer = (status, data) => {
         authCtx.checkToken()
-        if (data) {
-            if (data.message === "C0018") {
-                Alert.alert(t("Screen_SearchContact_Alert_Error"), t("Screen_SearchContact_Alert_EmailNotFound"))
+        if(!status) {
+            if (data) {
+                if (data.message === "C0018") {
+                    Alert.alert("", t("Screen_SearchContact_Alert_EmailNotFound"))
+                    return
+                }
             }
-            if (data.message === "Success") {
-                Alert.alert(t("Screen_SearchContact_Alert_Success"), t("Screen_SearchContact_Alert_TransferSuccess"))
-                setVisibleTransfer(false);
-                setListGroup([]);
-                FetchApi(ContactAPI.ViewContact, Method.GET, ContentType.JSON, undefined, getContact)
+            if (!data) {
+                Alert.alert("", t("Something_Wrong"))
+                return
             }
         }
-        else if(!status){
-            Alert.alert("", t("Something_Wrong"))
+        if (status && data) {
+            Alert.alert(t("Screen_SearchContact_Alert_Success"), t("Screen_SearchContact_Alert_TransferSuccess"))
+            setVisibleTransfer(false);
+            setListGroup([]);
+            FetchApi(ContactAPI.ListTransferContact, Method.GET, ContentType.JSON, undefined, getContact)
         }
     }
     const handleAddContactsToGroups = () => {
@@ -340,8 +343,7 @@ const SearchContact = ({ navigation, route }) => {
                         </Card>
                     }
                     <FlatList
-                        style={{ width: '100%', }}
-                        contentContainerStyle={{ flexGrow: 1, justifyContent: listFilter && listFilter.length === 0 ? 'center' : 'flex-start' }}
+                        style={{ width: '100%' }}
                         data={listFilter}
                         renderItem={CardContact}
                         keyExtractor={(item) => item.id}

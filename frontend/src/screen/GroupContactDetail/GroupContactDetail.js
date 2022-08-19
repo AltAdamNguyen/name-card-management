@@ -77,8 +77,9 @@ const GroupContactDetail = ({ navigation, route }) => {
         setListContactTotal([]);
       }
     }
-    if (!status) {
+    if(!status) {
       Alert.alert("", t("Something_Wrong"))
+      return
     }
     setListContactSearch([]);
     setIsLoading(false);
@@ -97,11 +98,12 @@ const GroupContactDetail = ({ navigation, route }) => {
 
   const deleteGroupContact = (status, data) => {
     authCtx.checkToken();
+    if(!status) {
+      Alert.alert("", t("Something_Wrong"))
+      return
+    }
     if (status && data) {
       navigation.goBack();
-    }
-    if (!status) {
-      Alert.alert("", t("Something_Wrong"))
     }
   };
 
@@ -120,8 +122,9 @@ const GroupContactDetail = ({ navigation, route }) => {
 
   const changeGroupName = (status, data) => {
     authCtx.checkToken()
-    if (!status) {
+    if(!status) {
       Alert.alert("", t("Something_Wrong"))
+      return
     }
   };
 

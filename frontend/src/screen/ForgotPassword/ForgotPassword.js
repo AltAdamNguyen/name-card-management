@@ -61,26 +61,28 @@ const ForgotPassword = ({ navigation }) => {
   };
 
   const ForgotPasswordAPICallback = (status, data) => {
-    if (user.email.trim() == "") {
-      Alert.alert("", t("Screen_ForgotPassword_Alert_EmailEmpty"));
-    } else if (data.message == "Internet Error") {
-      Alert.alert("", t("Loading_InternetError"));
+    setIsLoading(false);
+    if(!status) {
+      if(data){
+        if (data.message == "U0004") {
+          Alert.alert("", t("Screen_ForgotPassword_Alert_EmailEmpty"));
+          return
+        }
+        if (data.message == "C0018") {
+          Alert.alert("", t("Screen_ForgotPassword_Alert_UserNotFound"));
+          return
+        }
+      }
+      if(!data){
+        Alert.alert("", t("Something_Wrong"))
+        return
+      }
     }
-    if (data) {
-      if (data.message == "C0018") {
-        Alert.alert("", t("Screen_ForgotPassword_Alert_UserNotFound"));
-      } else if (data.message == "U0004") {
-        Alert.alert("", t("Screen_ForgotPassword_Alert_RequestMustContainEmail"));
-      } else {
+    if (status && data) {
         navigation.navigate("ResetPasswordCode", {
           email: user.email,
         });
-      }
     }
-    else if (!status) {
-      Alert.alert("", t("Something_Wrong"))
-    }
-    setIsLoading(false);
   };
 
   return (

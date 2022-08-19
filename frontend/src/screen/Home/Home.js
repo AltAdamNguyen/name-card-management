@@ -72,15 +72,16 @@ const Home = ({ route, navigation }) => {
     const getContact = (status,data) => {
         authCtx.checkToken()
         setLoading(false);
+        if(!status){
+            Alert.alert("", t("Something_Wrong"))
+            return
+        }
         if( status && data){       
             if (data.data.length > 0) {
                 setListContact(data.data);
                 setListFilter(data.data);
                 setContContact(data.data.length);
             }
-        }
-        if(!status){
-            Alert.alert("", t("Something_Wrong"))
         }
     }
 
@@ -104,27 +105,32 @@ const Home = ({ route, navigation }) => {
 
     const getContactFilter = (status, data) => {
         authCtx.checkToken()
-        if (data) {
+        setLoading(false);
+        setRefreshing(false);
+        if(!status){
+            Alert.alert("", t("Something_Wrong"))
+            return
+        }
+        if (status && data) {
+            setPage(1)
             if (data.data) {
                 if (data.data.length > 0) {
                     setListFilter(data.data);
                     setContContact(data.data.length);
-                } else {
+                    return
+                }
+                if(data.data.length == 0){
                     setListFilter([]);
                     setContContact(0);
+                    return
                 }
-            } else {
+            }
+            if(!data.data){
                 setListFilter([]);
                 setContContact(0);
+                return
             }
-            setPage(1)
-            setLoading(false);
-            setRefreshing(false);
-        }
-        else if(!status){
-            Alert.alert("", t("Something_Wrong"))
-            setLoading(false);
-            setRefreshing(false);
+            
         }
 
     }
@@ -135,6 +141,11 @@ const Home = ({ route, navigation }) => {
     }
 
     const getContactLoadMore = (status, data) => {
+        setLoadMore(false);
+        if(!status){
+            Alert.alert("", t("Something_Wrong"))
+            return
+        }
         if (status && data && data.data) {
             if (data.data.length > 0) {
                 setListFilter([...listFilter, ...data.data]);
@@ -142,10 +153,6 @@ const Home = ({ route, navigation }) => {
                 setPage(page + 1);
             }
         }
-        if(!status){
-            Alert.alert("", t("Something_Wrong"))
-        }
-        setLoadMore(false);
     }
 
     const changeTextButtonFlag = (flag) => {

@@ -52,14 +52,14 @@ const Team = ({ navigation }) => {
 
     const getTeam = (status, data) => {
         authCtx.checkToken()
-        if (data) {
+        setLoading(false)
+        if(!status){
+            Alert.alert("", t("Something_Wrong"))
+        } 
+        if (status && data) {
             setTeam(data.data);
             setSearchTeam(data.data)
-        }
-        else if(!status){
-            Alert.alert("", t("Something_Wrong"))
-        }
-        setLoading(false)
+        }   
     }
 
     const checklistExport = (item, check) => {
@@ -79,11 +79,12 @@ const Team = ({ navigation }) => {
 
     const getMember = (status, data) => {
         authCtx.checkToken()
+        if(!status){
+            Alert.alert("", t("Something_Wrong"))
+            return
+        }
         if (data) {
             setSearchTeam(data.data)
-        }
-        else if(!status){
-            Alert.alert("", t("Something_Wrong"))
         }
     }
 
@@ -102,13 +103,14 @@ const Team = ({ navigation }) => {
     const exportSuccess = (status, data) => {
         setLoading(false)
         authCtx.checkToken()
+        if(!status){
+            Alert.alert("", t("Something_Wrong"))
+            return
+        }
         if (data) {    
             Alert.alert(t("Screen_Team_Alet_Export_Success"), t("Screen_Team_Alet_Export_Success_Message"), [{ text: 'OK' }])
             setListExport([])
             setChecked(false)
-        }
-        else if(!status){
-            Alert.alert("", t("Something_Wrong"))
         }
     }
 

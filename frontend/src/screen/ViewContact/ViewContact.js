@@ -60,10 +60,10 @@ const ViewContact = ({ navigation, route }) => {
     }
 
     const getFlag = (status, data) => {
-        console.log(status)
         authCtx.checkToken()
         if(!status){
             Alert.alert("", t("Something_Wrong"))
+            return
         }
     }
     useEffect(() => {
@@ -89,12 +89,13 @@ const ViewContact = ({ navigation, route }) => {
 
     const getContact = (status, data) => {
         authCtx.checkToken()
+        if(!status){
+            Alert.alert("", t("Something_Wrong"))
+            return
+        }
         if(status && data){
             setContact(data.data)
             setLoading(false)
-        }
-        if(!status){
-            Alert.alert("", t("Something_Wrong"))
         }
 
     }
@@ -109,11 +110,12 @@ const ViewContact = ({ navigation, route }) => {
 
     const getMessage = (status, data) => {
         authCtx.checkToken()
-        if(status && data){
-            navigation.navigate("Bottom", { screen: "HomeScreen" })
-        }
         if(!status){
             Alert.alert("", t("Something_Wrong"))
+            return
+        }
+        if(status && data){
+            navigation.navigate("Bottom", { screen: "HomeScreen" })
         }
     }
 

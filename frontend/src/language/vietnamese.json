@@ -20,6 +20,7 @@
         "Screen_ResetPasswordCode_Alert_IncorrectCode": "Không tìm thấy người dùng hoặc mã nhập sai",
 
         "Screen_ResetPassword_Alert_PasswordAndRePasswordMatch": "Mật khẩu mới và nhập lại mật khẩu mới không giống nhau",
+        "Screen_RestPassword_Alert_CodeExpired": "Mã đã hết hạn",
         "Screen_ResetPassword_Alert_PasswordFormat": "Mật khẩu mới phải có tối thiểu 8 kí tự, có ít nhất một chữ in thường, một chữ in hoa, một số và một kí tự đặc biệt",
         "Screen_ResetPassword_Label_CreateNewPassword": "Tạo mật khẩu mới",
         "Screen_ResetPassword_PlaceHolder_NewPassword": "Nhập mật khẩu mới",

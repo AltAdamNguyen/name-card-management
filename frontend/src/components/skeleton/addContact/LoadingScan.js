@@ -55,17 +55,22 @@ const SkeletonAddContact = ({ route, navigation }) => {
     }, [])
 
     const getData = (status, data) => {
-        if (data) {
+        if(!status){
+            Alert.alert("", t("Something_Wrong"))
+            return
+        }
+        if (status && data) {
             if (data.message === "Scan fail") {
-                Alert.alert(t("Screen_Scan_Alert_Scan_Error_Title"), t("Screen_Scan_Alert_Scan_Error_Message"), [{ text: t("Screen_Scan_Alert_Scan_Error_Button_Ok"), onPress: () => navigation.goBack() }])
+                Alert.alert(t("Screen_Scan_Alert_Scan_Error_Title"), 
+                t("Screen_Scan_Alert_Scan_Error_Message"), 
+                [{ text: t("Screen_Scan_Alert_Scan_Error_Button_Ok"), onPress: () => navigation.goBack() }])
+                return
             }
             if (data.message === "Success") {
                 setContact(data.data)
                 setVisible(true)
+                return
             }
-        }
-        else if(!status){
-            Alert.alert("", t("Something_Wrong"))
         }
     }
 

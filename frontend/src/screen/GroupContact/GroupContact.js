@@ -54,6 +54,10 @@ const GroupContact = ({ navigation, route }) => {
 
   const addGroupContact = (status, data) => {
     authCtx.checkToken()
+    if(!status) {
+      Alert.alert("", t("Something_Wrong"))
+      return
+    }
     if (status && data && data.message == "Success") {
       FetchApi(
         GroupContactAPI.ViewGroupContact,
@@ -62,9 +66,6 @@ const GroupContact = ({ navigation, route }) => {
         undefined,
         getGroupContact
       )
-    }
-    if (!status) {
-      Alert.alert("", t("Something_Wrong"))
     }
   }
 
@@ -93,16 +94,17 @@ const GroupContact = ({ navigation, route }) => {
 
   const getGroupContact = (status, data) => {
     authCtx.checkToken()
+    setLoading(false);
+    if(!status) {
+      Alert.alert("", t("Something_Wrong"))
+      return
+    }
     if (data) {
       if (data.data.length > 0) {
         setLisGroupContact(data.data);
         setListGroupContactTotal(data.data);
       }
     }
-    if (!status) {
-      Alert.alert("", t("Something_Wrong"))
-    }
-    setLoading(false);
   }
 
   const searchGroupHandle = (groupName) => {

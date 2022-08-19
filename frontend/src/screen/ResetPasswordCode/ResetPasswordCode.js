@@ -57,21 +57,26 @@ const ResetPasswordCode = ({ navigation, route }) => {
 
   const InputPasswordCodeAPICallback = (status, data) => {
     if (data) {
-      if (data.message == 'U0011') {
-        Alert.alert('', t("Screen_ResetPasswordCode_Alert_IncorrectCode"))
-      }
-      else if (data.message == 'U0008') {
-        // TODO
-      }
-      else {
-        navigation.navigate("ResetPassword", {
-          email: email,
-          code: code,
-        });
-      }
+      navigation.navigate("ResetPassword", {
+        email: email,
+        code: code,
+      });
     }
-    else if (!status) {
-      Alert.alert("", t("Something_Wrong"))
+    if(!status) {
+      if (data) {
+        if (data.message == 'U0011') {
+          Alert.alert('', t("Screen_ResetPasswordCode_Alert_IncorrectCode"))
+          return
+        }
+        if (data.message == 'U0008') {
+          Alert.alert("", t("Screen_RestPassword_Alert_CodeExpired"));
+          return
+        }
+      }
+      if (!data) {
+        Alert.alert("", t("Something_Wrong"))
+        return
+      }
     }
     setIsLoading(false)
   };

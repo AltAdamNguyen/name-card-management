@@ -21,6 +21,7 @@
         "Screen_ResetPasswordCode_Alert_IncorrectCode": "User not found or code is incorrect",
         
         "Screen_ResetPassword_Alert_PasswordAndRePasswordMatch": "Password and Re-enter Password must be the same",
+        "Screen_RestPassword_Alert_CodeExpired": "Code is expired",
         "Screen_ResetPassword_Alert_PasswordFormat": "New password must be at least 8 characters, contain at least one lowercase letter, one uppercase letter, one number and one special character",
         "Screen_ResetPassword_Label_CreateNewPassword": "Crete your new password",
         "Screen_ResetPassword_PlaceHolder_NewPassword": "Enter New Password",

@@ -11,7 +11,7 @@ import { FetchApiAuth } from "../../service/api/FetchAPI";
 import SwitchSelector from "react-native-switch-selector";
 import { AuthAPI, ContentType, Method } from "../../constants/ListAPI";
 import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
-import { Provider } from "react-native-paper";
+import { Provider, Button } from "react-native-paper";
 const options = [
   { label: "VN", value: "vn" },
   { label: "EN", value: "en" },
@@ -57,21 +57,25 @@ const SignIn = ({ navigation }) => {
 
   const getMessage = (status, data) => {
     setLoading(false);
-    if (data) {
-      data.message === "U0001" &&
-        authCtx.onLogin(data.data.access_token, data.data.refresh_token)
-      data.message === "U0003" &&
-        Alert.alert(t("Screen_Login_Text_Error_U0003"))
-      data.message === "U0002" &&
-        Alert.alert(errorLoginText.errorText)
-
+    if (status && data) {
+      authCtx.onLogin(data.data.access_token, data.data.refresh_token)
+      return
     }
-    else if (!status) {
-      Alert.alert("", t("Something_Wrong"))
-    }
-    if (user.email == "" || user.password == "") {
-      Alert.alert(t("Screen_Login_Text_Error_Empty"))
-      return;
+    if(!status) {
+      if(data){
+        if(data.message === "U0003"){
+          Alert.alert("",t("Screen_Login_Text_Error_U0003"))
+          return
+        }
+        if(data.message === "U0002"){
+          Alert.alert("",t("Screen_Login_Text_Error_U0002"))
+          return
+        }       
+      }
+      if(!data){
+        Alert.alert("", t("Something_Wrong"))
+        return
+      }
     }
   };
 
@@ -120,12 +124,12 @@ const SignIn = ({ navigation }) => {
               onpress={onVisibilityPasswordPressed}
             />
           </View>
+          <View style={{width: '85%', alignItems: 'flex-end'}}>
+            <Button uppercase={false} color='#1890FF' onPress={onForgotPasswordPressed} labelStyle={[styles.text, styles.text_TERTIARY]}>
+              {t("Screen_Login_Button_ForgotPassword")}
+            </Button>
+          </View>
 
-          <CustomButtons
-            text={t("Screen_Login_Button_ForgotPassword")}
-            onPress={onForgotPasswordPressed}
-            type="TERTIARY"
-          />
 
           <View style={styles.button_login}>
             <CustomButtons

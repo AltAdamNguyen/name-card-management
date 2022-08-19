@@ -67,10 +67,7 @@ const ChangePassword = ({ navigation }) => {
 
   const handleOnPressResetPassword = () => {
     if (newPassword !== reEnterNewPassword) {
-      Alert.alert(
-        t("Screen_ChangePassword_Alert_Warning"),
-        t("Screen_ChangePassword_Alert_PasswordAndRePasswordMatch")
-      );
+      Alert.alert("",t("Screen_ChangePassword_Alert_PasswordAndRePasswordMatch"));
       setIsLoading(false);
     } else {
       FetchApi(
@@ -88,33 +85,35 @@ const ChangePassword = ({ navigation }) => {
   };
 
   const changePasswordAPICallBack = (status, data) => {
-    console.log(data);
     setIsLoading(false);
     authCtx.checkToken()
-    if(status && data){
-      if (data.message == "U0005") {
-        Alert.alert(
-          t("Screen_ChangePassword_Alert_Warning"),
-          t("Screen_ChangePassword_Alert_U0005")
-        );
-      } else if (data.message == "U0007") {
-        Alert.alert(
-          t("Screen_ChangePassword_Alert_Warning"),
-          t("Screen_ChangePassword_Alert_U0007")
-        );
-      } else if (data.message == "U0006") {
-        Alert.alert(
-          t("Screen_ChangePassword_Alert_Warning"),
-          t("Screen_ChangePassword_Alert_U0006")
-        );
-      } else if (data.message == "Change password success") {
-        authCtx.handleToken(data.access_token, data.refresh_token)
-        navigation.goBack();
+    console.log("data", data);
+    console.log("status", status);
+    if(!status){
+      if(data){
+        if (data.message == "U0005") {
+          Alert.alert("",t("Screen_ChangePassword_Alert_U0005"));
+          return
+        }
+        if (data.message == "U0006") {
+          Alert.alert("",t("Screen_ChangePassword_Alert_U0006"));
+          return
+        }
+        if (data.message == "U0007") {
+          Alert.alert("",t("Screen_ChangePassword_Alert_U0007"));
+          return
+        }
+      }
+      if(!data){
+        Alert.alert("", t("Something_Wrong"))
+        return
       }
     }
-    if(!status){
-      Alert.alert("", t("Something_Wrong"))
+    if(status && data){
+      authCtx.handleToken(data.access_token, data.refresh_token)
+      navigation.goBack();
     }
+
   };
 
   return (

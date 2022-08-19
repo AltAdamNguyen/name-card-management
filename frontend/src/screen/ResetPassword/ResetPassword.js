@@ -1,6 +1,5 @@
 import {
   View,
-  StyleSheet,
   Alert,
   Image,
   useWindowDimensions,
@@ -9,16 +8,13 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import CustomInputs from "../../components/CustomInputs";
 import CustomButtons from "../../components/CustomButtons";
-import CustemHeaders from "../../components/CustomHeaders/CustemHeaders";
 import Logo_ForgotPassword from "../../asset/image/forgotPassword.png";
 import styles from "./styles";
-import i18next from "../../language/i18n";
-import AuthContext from "../../store/AuthContext";
 import { useTranslation } from "react-i18next";
-import { Searchbar, Appbar, Provider, Button } from "react-native-paper";
+import { Appbar, Provider } from "react-native-paper";
 import { UserAPI, ContentType, Method } from "../../constants/ListAPI";
 import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
 import { FetchApi } from "../../service/api/FetchAPI";
@@ -31,6 +27,7 @@ const ResetPassword = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [newPasswordIsSecureEntry, setNewPasswordIsSecureEntry] = useState(true);
   const [reEnterNewPasswordIsSecureEntry, setReEnterNewPasswordIsSecureEntry] = useState(true);
+  const { t, i18n } = useTranslation();
   const onResetPassword = () => {
     setIsLoading(true);
     if (newPassword !== newPasswordReEnter) {
@@ -52,37 +49,28 @@ const ResetPassword = ({ navigation, route }) => {
   };
 
   const InputPasswordCodeAPICallback = (status, data) => {
-    if (data.message == "Internet Error") {
-      Alert.alert("", t("Loading_InternetError"));
-    }
-    if (data){
-      if ( data.message == "U0006" ) {
-        Alert.alert(
-          "",
-          t("Screen_ResetPassword_Alert_PasswordFormat")
-        );
-      } else if (data.message == "U0008") {
-        // TODO
-      } else {
-        navigation.navigate("SignIn");
+    setIsLoading(false);
+    if(!status){
+      if (data){
+        if ( data.message == "U0006" ) {
+          Alert.alert("",t("Screen_ResetPassword_Alert_PasswordFormat"));
+          return
+        }
+        if ( data.message == "U0008" ) {
+          Alert.alert("",t("Screen_RestPassword_Alert_CodeExpired"));
+          return
+        }
+      }
+      if(!data){
+        Alert.alert("", t("Something_Wrong"))
+        return
       }
     }
-    else if(!status){
-      Alert.alert("", t("Something_Wrong"))
+    if (status && data){
+      navigation.navigate("SignIn");
     }
-    setIsLoading(false);
   };
 
-  const { t, i18n } = useTranslation();
-  const authCtx = useContext(AuthContext);
-
-  const onClearCodePressed = () => {
-    setNewPassword("");
-  };
-
-  const onClearCodePressedReEnter = () => {
-    setNewPasswordReEnter("");
-  };
 
   const handleChange = (name) => {
     setNewPassword(name);

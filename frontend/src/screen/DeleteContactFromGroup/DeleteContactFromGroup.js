@@ -61,6 +61,11 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
 
     const getGroupContactDetail = (status, data) => {
         authCtx.checkToken()
+        setIsLoading(false)
+        if(!status) {
+            Alert.alert("", t("Something_Wrong"))
+            return
+        }
         if (status && data) {
             if (data.data.contacts.length > 0) {
                 let initListContact = []
@@ -72,10 +77,6 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
                 setListSearch([])
             }
         }
-        if (!status) {
-            Alert.alert("", t("Something_Wrong"))
-        }
-        setIsLoading(false)
     }
 
     const checkBoxOnClickCallBack = (id, check) => {
@@ -130,11 +131,12 @@ const DeleteContactFromGroup = ({ navigation, route }) => {
     }
 
     const deleteContactsFromGroupAPICallBack = (status, data) => {
+        if(!status) {
+            Alert.alert("", t("Something_Wrong"))
+            return
+        }
         if (status && data) {
             navigation.goBack()
-        }
-        if (!status) {
-            Alert.alert("", t("Something_Wrong"))
         }
     }
 

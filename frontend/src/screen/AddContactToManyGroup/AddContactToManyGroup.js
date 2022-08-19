@@ -52,6 +52,11 @@ const AddContactToManyGroup = ({ route, navigation }) => {
 
   const addGroupContact = (status, data) => {
     authCtx.checkToken()
+    setIsLoading(false);
+    if(!status){
+      Alert.alert("", t("Something_Wrong"))
+      return
+    }
     if (status && data && data.message == "Success") {
       FetchApi(
         GroupContactAPI.ViewGroupContact,
@@ -61,10 +66,6 @@ const AddContactToManyGroup = ({ route, navigation }) => {
         getGroupContact
       );
     }
-    if(!status){
-      Alert.alert("", t("Something_Wrong"))
-    }
-    setIsLoading(false);
   };
 
   const searchGroupHandle = (groupName) => {
@@ -109,6 +110,11 @@ const AddContactToManyGroup = ({ route, navigation }) => {
   }, [isFocus]);
 
   const getGroupContact = (status, data) => {
+    setIsLoading(false);
+    if(!status){
+      Alert.alert("", t("Something_Wrong"))
+      return
+    }  
     if(status && data){
       if (data.data.length > 0) {
         if (listGroupContactTotal.length > 0) {
@@ -131,10 +137,6 @@ const AddContactToManyGroup = ({ route, navigation }) => {
         }
       }
     }
-    if(!status){
-      Alert.alert("", t("Something_Wrong"))
-    }  
-    setIsLoading(false);
   };
 
   const checkBoxOnClickCallBack = (id, check) => {
@@ -166,6 +168,10 @@ const AddContactToManyGroup = ({ route, navigation }) => {
   };
 
   const addContactToManyGroupAPICallBack = (status, data) => {
+    if(!status){
+      Alert.alert("", t("Something_Wrong"))
+      return
+    }
     if(status && data){
       if (route.params.isTeam) {
         navigation.dispatch(StackActions.popToTop());
@@ -174,9 +180,6 @@ const AddContactToManyGroup = ({ route, navigation }) => {
       else{
         navigation.goBack();
       }    
-    }
-    if(!status){
-      Alert.alert("", t("Something_Wrong"))
     }
   };
 

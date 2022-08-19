@@ -74,23 +74,27 @@ const AddContact = ({ contact, loading, navigation }) => {
   };
 
   const handleSubmit = (values) => {
-    console.log("values", values);
     setLoadingDialog(true);
     FetchApi(ContactAPI.AddContact, Method.POST, ContentType.JSON, values, getMessage);
   };
 
   const getMessage = (status, data) => {
-    console.log("data", data);
     setLoadingDialog(false);
     authCtx.checkToken()
+    if(!status){
+      Alert.alert("", t("Something_Wrong"))
+      return
+    }
     if(status && data){
       if (data.message === "D0001") {
         setDuplicate(true)
         setContactId(data.data.id)
+        return
       }
       if (data.message === "C0009") {
         navigation.dispatch(StackActions.popToTop());
         navigation.navigate('HomeSwap', { screen: 'ViewContact', params: { idContact: data.data.id, showFooter: true } })
+        return
       }
       if (data.message === "D0003") {
         setDuplicateOther(true)
@@ -98,10 +102,8 @@ const AddContact = ({ contact, loading, navigation }) => {
           id_duplicate: data.data.id_duplicate,
           owner: data.data.user_name,
         })
+        return
       }
-    }
-    if(!status){
-      Alert.alert("", t("Something_Wrong"))
     }
   };
 
