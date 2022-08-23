@@ -27,7 +27,7 @@ namespace NCMSystem.Controllers
         {
             int userId = ((JwtToken)Request.Properties["payload"]).Uid;
 
-            List<TeamResponse> listMember = null;
+            List<TeamResponse> listMember;
             try
             {
                 var mem = db.Database.SqlQuery<MemberTeam>("exec user_recurse @SuperBoss_id = " + userId).ToList();
@@ -37,6 +37,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -88,7 +89,7 @@ namespace NCMSystem.Controllers
             List<MemberContact> listCt = new List<MemberContact>();
             try
             {
-                var contact = db.contacts.Where(c => c.createdBy == id && c.isActive == true)
+                var contact = db.contacts.Where(c => c.owner_id == id && c.createdBy == id && c.isActive == true)
                     .OrderByDescending(x => x.create_date)
                     .Skip((page - 1) * pageSize)
                     .Take(pageSize).ToList();
@@ -114,6 +115,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()
@@ -146,7 +148,8 @@ namespace NCMSystem.Controllers
                     listMember.Add(new SearchResponse()
                     {
                         Id = a.Id,
-                        Name = a.Name
+                        Name = a.Name,
+                        Email = a.Email
                     });
                 }
             }
@@ -154,6 +157,7 @@ namespace NCMSystem.Controllers
             {
                 Log.Error(ex, "C0001");
                 Log.CloseAndFlush();
+                return Common.ResponseMessage.BadRequest("C0001");
             }
 
             return new ResponseMessageResult(new HttpResponseMessage()

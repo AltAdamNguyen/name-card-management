@@ -1,62 +1,86 @@
 //import liraries
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
   SafeAreaView,
-  Image,
   TouchableOpacity,
   ScrollView,
-  Modal,
-  TouchableWithoutFeedback,
-  TextInput,
   Pressable,
-  Platform,
+  Alert,
+  Keyboard
 } from "react-native";
 import styles from "./styles";
-import i18next from "../../language/i18n";
 import { useTranslation } from "react-i18next";
-import AuthContext from "../../store/AuthContext";
 import Loading from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
 import {
-  IconButton,
   Searchbar,
-  Portal,
-  Dialog,
-  RadioButton,
   Provider,
-  FAB
+  FAB,
+  Snackbar
 } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
 import { FetchApi } from "../../service/api/FetchAPI";
 import { GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
 import { useIsFocused } from "@react-navigation/native";
 import ModalAddGroup from "../../components/groupcontact/ModalAddGroup"
+import AuthContext from "../../store/AuthContext";
+import { set } from "lodash";
+import { TouchableWithoutFeedback } from "react-native-web";
+
 // create a component
-const GroupContact = ({ navigation }) => {
+const GroupContact = ({ navigation, route }) => {
   const [isLoading, setLoading] = useState(true);
   const [listGroupContact, setLisGroupContact] = useState([]);
   const [listGroupContactTotal, setListGroupContactTotal] = useState([]);
-  const authCtx = useContext(AuthContext);
+  const [showSnacker, setShowSnacker] = useState();
   const { t, i18n } = useTranslation();
+  const authCtx = useContext(AuthContext)
+  const inputGroupName = {
+    group_name: "",
+  }
   const isFocus = useIsFocused();
   const [modalAddContactVisible, setModalAddContactVisible] = useState(false);
-  const onAddNewGroupContactPressed = (groupName) => {
-    if(groupName.trim() == ""){
-      // alert("Group name cannot be empty")
-    }else{
-      setModalAddContactVisible(false);
-      FetchApi(
-        GroupContactAPI.AddGroupContact,
-        Method.POST,
-        ContentType.JSON,
-        { group_name: groupName },
-        addGroupContact
-      );
+  const onAddNewGroupContactPressed = (value) => {
+    setModalAddContactVisible(false);
+    FetchApi(
+      GroupContactAPI.AddGroupContact,
+      Method.POST,
+      ContentType.JSON,
+      value,
+      addGroupContact
+    )
+  }
+
+  const addGroupContact = (status, data) => {
+    authCtx.checkToken()
+    if(!status) {
+      Alert.alert("", t("Something_Wrong"))
+      return
     }
-   
-  };
+    if (status && data && data.message == "Success") {
+      FetchApi(
+        GroupContactAPI.ViewGroupContact,
+        Method.GET,
+        ContentType.JSON,
+        undefined,
+        getGroupContact
+      )
+    }
+  }
+
+  useEffect(() => {
+    if (route.params) {
+      setShowSnacker(route.params.isSuccess ? true : false)
+    }
+    FetchApi(
+      GroupContactAPI.ViewGroupContact,
+      Method.GET,
+      ContentType.JSON,
+      undefined,
+      getGroupContact
+    )
+  }, [])
 
   useEffect(() => {
     FetchApi(
@@ -65,14 +89,28 @@ const GroupContact = ({ navigation }) => {
       ContentType.JSON,
       undefined,
       getGroupContact
-    );
-  }, []);
+    )
+  }, [isFocus])
+
+  const getGroupContact = (status, data) => {
+    authCtx.checkToken()
+    setLoading(false);
+    if(!status) {
+      Alert.alert("", t("Something_Wrong"))
+      return
+    }
+    if (data) {
+      if (data.data.length > 0) {
+        setLisGroupContact(data.data);
+        setListGroupContactTotal(data.data);
+      }
+    }
+  }
 
   const searchGroupHandle = (groupName) => {
-    
     let listSearchGroup = [];
     if (groupName !== "") {
-      listGroupContactTotal.map((item, index) => {
+      listGroupContactTotal.map((item) => {
         if (item.group_name.toLowerCase().includes(groupName.toLowerCase())) {
           listSearchGroup.push(item);
         }
@@ -81,43 +119,11 @@ const GroupContact = ({ navigation }) => {
     } else {
       setLisGroupContact(listGroupContactTotal);
     }
-  };
-
-  useEffect(() => {
-    FetchApi(
-      GroupContactAPI.ViewGroupContact,
-      Method.GET,
-      ContentType.JSON,
-      undefined,
-      getGroupContact
-    );
-  }, [isFocus]);
-
-  const getGroupContact = (data) => {
-    if (data.data.length > 0) {
-      setLisGroupContact(data.data);
-      setListGroupContactTotal(data.data);
-      setLoading(false);
-    } else {
-      setLoading(false);
-    }
-  };
-
-  const addGroupContact = (data) => {
-    if (data.message == "Success") {
-      FetchApi(
-        GroupContactAPI.ViewGroupContact,
-        Method.GET,
-        ContentType.JSON,
-        undefined,
-        getGroupContact
-      );
-    } else {
-    }
-  };
+  }
 
   return (
     <Provider style={styles.container_provider}>
+      <TouchableWithoutFeedback onPress={() =>  Keyboard.dismiss() }>
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <Pressable style={styles.sectionStyle}>
@@ -140,10 +146,10 @@ const GroupContact = ({ navigation }) => {
         <View style={styles.container_listGroup}>
           {listGroupContact.length == 0 && (
             <View style={styles.listContainer_view}>
-              <Text style={styles.listContainer_label}>Không có nhóm</Text>
+              <Text style={styles.listContainer_label}>{t("Screen_GroupContact_Text_Container_Label_NoGroupFound")}</Text>
             </View>
           )}
-          <ScrollView>
+          <ScrollView showsVerticalScrollIndicator={false}>
             {listGroupContact.length != 0 &&
               listGroupContact.map((item, index) => {
                 return (
@@ -158,10 +164,10 @@ const GroupContact = ({ navigation }) => {
                     key={index}
                   >
                     <View style={styles.container_listGroup_item}>
-                      <Text style={styles.container_listGroup_item_label} >
+                      <Text style={styles.container_listGroup_item_label} numberOfLines={1}>
                         {item.group_name}
                       </Text>
-                      <Icon name="chevron-right" size={20}/>
+                      <Icon name="chevron-right" size={20} />
                     </View>
                   </TouchableOpacity>
                 );
@@ -170,16 +176,19 @@ const GroupContact = ({ navigation }) => {
         </View>
         <FAB style={styles.floatButton} icon="plus" size={24} color="#fff" onPress={() => setModalAddContactVisible(true)} />
       </SafeAreaView>
-      {/* <ModalAddGroupContact
-        label={t("ModalAddGroupContact_Placeholder_GroupName")}
-        confirmLabel={t("ModalAddGroupContact_Label_Confirm")}
-        onVisible={modalAddContactVisible}
-        onDismiss={() => setModalAddContactVisible(false)}
-        onPressCancel={() => setModalAddContactVisible(false)}
-        onPressConfirm={onAddNewGroupContactPressed}
-      /> */}
-      <ModalAddGroup visible={modalAddContactVisible}  onPressConfirm={onAddNewGroupContactPressed} onPressVisable={() => setModalAddContactVisible(!modalAddContactVisible)}/>
-      <Loading onVisible={isLoading ? true : false} />
+      </TouchableWithoutFeedback>
+      <ModalAddGroup
+        visible={modalAddContactVisible}
+        value={inputGroupName}
+        onPressSubmit={onAddNewGroupContactPressed}
+        onPressVisable={() => setModalAddContactVisible(!modalAddContactVisible)}
+        title={t("ModalAddGroup_Title")}
+        label={t("ModalAddGroup_Input_Title_GroupName")}
+        placeholder={t("ModalAddGroup_Input_Placeholder_GroupName")}
+        cancel={t("ModalAddGroup_Button_Cancel")}
+        submit={t("ModalAddGroup_Button_Confirm")}
+      />
+      <Loading onVisible={isLoading} />
     </Provider>
   );
 };

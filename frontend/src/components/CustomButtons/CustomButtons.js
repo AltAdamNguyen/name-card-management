@@ -3,7 +3,7 @@ import React from 'react'
 
 const CustomButtons = ({onPress, text, type = "PRIMARY"}) => {
   return (
-    <Pressable onPress={onPress} style={[styles.container, styles[`container_${type}`]]}>
+    <Pressable onPress={onPress} style={[type !== "TERTIARY" && styles.container, styles[`container_${type}`]]}>
       <Text style={[styles.text, styles[`text_${type}`]]}>{text}</Text>
     </Pressable>
   )

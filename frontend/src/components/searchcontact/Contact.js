@@ -5,6 +5,8 @@ import { Card, RadioButton, List } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { FormatDate } from '../../validate/FormatDate';
 import styles from '../../screen/Home/styles';
+import { t } from 'i18next';
+import { useTranslation } from 'react-i18next';
 const listFlag = {
     F0001: {
         name: 'very-important',
@@ -66,9 +68,9 @@ const listRequest = {
 }
 // create a component
 const Contact = ({ item, route, handleViewContact, checkListGroup, handleReActivateButton, listGroup = [], visibleCheckBox }) => {
-
+    const { t, i18n } =  useTranslation()
     return (
-        <Card mode='elevated' style={styles.card} elevation={2} onPress={() => handleViewContact(item)}>
+        <Card mode='elevated' style={styles.card} elevation={2} onPress={() => visibleCheckBox ? checkListGroup(item.id, !listGroup.includes(item.id)) : handleViewContact(item)}>
             <View>
                 <View style={styles.item}>
                     {visibleCheckBox &&
@@ -86,7 +88,7 @@ const Contact = ({ item, route, handleViewContact, checkListGroup, handleReActiv
                     </View>
                     <View style={styles.txtContact}>
                         <View style={[styles.title, { flexDirection: 'row', justifyContent: 'space-between' }]}>
-                            <Text style={styles.nameContact}>{item.name}</Text>
+                            <Text style={styles.nameContact} numberOfLines={1}>{item.name}</Text>
                             {!route.params && item.flag_id &&
                                 <Icon name="bookmark" size={24} color={listFlag[item.flag_id].color} />
                             }
@@ -106,7 +108,7 @@ const Contact = ({ item, route, handleViewContact, checkListGroup, handleReActiv
                                 <Icon name={listRequest[item.status_request].icon} size={24} color={listRequest[item.status_request].color} />
                             }
                         </View>
-                        <Text style={styles.titleContact}>{item.job_title}</Text>
+                        <Text style={styles.titleContact} numberOfLines={1}>{item.job_title}</Text>
                         <View style={styles.title}>
                             <Text numberOfLines={1} style={styles.companyContact}>{item.company}</Text>
                             <View style={{ alignItems: 'flex-end' }}>
@@ -117,7 +119,7 @@ const Contact = ({ item, route, handleViewContact, checkListGroup, handleReActiv
                 </View>
                 {route.params && route.params.deactive &&
                     <List.Accordion
-                        title="Lý do"
+                        title={t("Screen_SearchContact_Contact_Text_Reason")}
                         titleStyle={{ fontSize: 14 }}
                         theme={{ colors: { primary: '#1890FF' } }}
                         right={(props) => <Icon {...props} />}

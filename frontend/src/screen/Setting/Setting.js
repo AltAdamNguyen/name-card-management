@@ -4,15 +4,9 @@ import { Text, SafeAreaView, TouchableOpacity } from "react-native";
 import AuthContext from "../../store/AuthContext";
 import styles from "./styles";
 import { useTranslation } from "react-i18next";
-import { StackActions } from "@react-navigation/native";
 // import LoadingDialog from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
 import {
-  Button,
-  Paragraph,
-  Dialog,
-  Portal,
   Provider,
-  TextInput,
 } from "react-native-paper";
 // create a component
 const Setting = ({ navigation }) => {
@@ -36,7 +30,7 @@ const Setting = ({ navigation }) => {
         <Text style={styles.title}>{t("Screen_Setting_Button_Title")}</Text>
         <TouchableOpacity
           style={[styles.button, styles.mb20]}
-          onPress={onChangePasswordPressed}
+          onPress={() => onChangePasswordPressed()}
         >
           <Text style={styles.label}>
             {t("Screen_Setting_Button_ChangePassword")}
@@ -50,7 +44,4 @@ const Setting = ({ navigation }) => {
   );
 };
 
-// define your styles
-
-//make this component available to the app
 export default Setting;

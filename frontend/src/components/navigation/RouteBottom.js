@@ -6,10 +6,12 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import styles from '../../navigation/styles';
 import AuthContext from '../../store/AuthContext';
 import RouteMovingBetweenScanScreen from './RouteMovingBetweenScanScren';
+import { useTranslation } from 'react-i18next';
 const Tab = createBottomTabNavigator();
 
 const RouteNavigation = () => {
   const authCtx = useContext(AuthContext);
+  const { t, i18n } = useTranslation();
   return (
     <Tab.Navigator
       initialRouteName={authCtx.role === 3 ? "TeamScreen" : "HomeScreen"}
@@ -35,7 +37,7 @@ const RouteNavigation = () => {
               <View style={styles(focused).container}>
                 <Icon name="home" size={26} color={focused ? '#1890FF' : '#828282'} />
                 <Text style={styles(focused).label}>
-                  Trang chủ
+                  {t("Navigation_Bottom_Home")}
                 </Text>
               </View>
             )
@@ -51,7 +53,7 @@ const RouteNavigation = () => {
               <View style={styles(focused).container}>
                 <Icon name="credit-card-multiple" size={26} color={focused ? '#1890FF' : '#828282'} />
                 <Text style={styles(focused).label}>
-                  Nhóm
+                  {t("Navigation_Bottom_Group")}
                 </Text>
               </View>
             )
@@ -79,7 +81,7 @@ const RouteNavigation = () => {
               <View style={styles(focused).container}>
                 <Icon name="account-group" size={26} color={focused ? '#1890FF' : '#828282'} />
                 <Text style={styles(focused).label}>
-                  Đội
+                  {t("Navigation_Bottom_Team")}
                 </Text>
               </View>
             )
@@ -95,7 +97,7 @@ const RouteNavigation = () => {
               <View style={styles(focused).container}>
                 <Icon name="cog" size={26} color={focused ? '#1890FF' : '#828282'} />
                 <Text style={styles(focused).label}>
-                  Cài đặt
+                  {t("Navigation_Bottom_Setting")}
                 </Text>
               </View>
             )

@@ -65,8 +65,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminControllerTest.cs" />
     <Compile Include="ContactControllerTest.cs" />
     <Compile Include="GroupContactControllerTest.cs" />
+    <Compile Include="TeamControllerTest.cs" />
     <Compile Include="Token.cs" />
     <Compile Include="UserControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

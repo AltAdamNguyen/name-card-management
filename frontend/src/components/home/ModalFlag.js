@@ -22,8 +22,8 @@ const ModalFlag = ({ listItem, visible, onPress, onPressVisable }) => {
         onPress={onPressVisable}
       >
         <TouchableWithoutFeedback>
-          <Card elevation={5} style={styles.modalView}>
-            <Text style={{ fontSize: 20, fontWeight: "bold" }}>{t("Screen_Home_ModalFlag_Text_Classify")}</Text>
+          <Card elevation={3} style={styles.modalView}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 10 }}>{t("Screen_Home_ModalFlag_Text_Classify")}</Text>
             {listItem.map((item, index) => {
               return (
                 <Button
@@ -34,7 +34,7 @@ const ModalFlag = ({ listItem, visible, onPress, onPressVisable }) => {
                   style={{ width: "100%", alignItems: "flex-start" }}
                   uppercase={false}
                 >
-                  <Text style={{ color: "#000" }}>{item.title}</Text>
+                  <Text style={{ color: "#000", fontWeight: 'normal' }}>{item.title}</Text>
                 </Button>
               );
             })}

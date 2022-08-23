@@ -59,6 +59,7 @@ const ModalHome = ({ visible, onPressVisable, sort, onPressSort, onPressDeactive
                       mode="outlined"
                       style={{ alignItems: "flex-start" }}
                       onPress={() => onPressSort(item)}
+                      uppercase={false}
                     >
                       <Text style={{ fontSize: 12 }}>{item.title}</Text>
                     </Button>

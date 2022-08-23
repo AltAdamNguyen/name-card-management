@@ -6,14 +6,10 @@ import { Picker } from '@react-native-picker/picker';
 import styles from '../../../screen/ViewContact/styles';
 import { Formik } from 'formik';
 import StatusSchema from '../../../validate/ValidateFormStatus';
-import { useContext } from 'react';
-import i18next from "../../../language/i18n";
-import AuthContext from "../../../store/AuthContext";
 import { useTranslation } from "react-i18next";
 // create a component
 const ModalStatus = ({ listStatus, visible, onPressVisable, status, onPressSubmit }) => {
     const { t, i18n } = useTranslation();
-    const authCtx = useContext(AuthContext)
     return (
         <Modal
             animationType="fade"
@@ -35,7 +31,6 @@ const ModalStatus = ({ listStatus, visible, onPressVisable, status, onPressSubmi
                             {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => {
                                 return (
                                     <View style={{ width: '100%' }}>
-
                                         <Picker
                                             selectedValue={values.status}
                                             onValueChange={handleChange('status')}
@@ -47,8 +42,6 @@ const ModalStatus = ({ listStatus, visible, onPressVisable, status, onPressSubmi
                                                 )
                                             })}
                                         </Picker>
-
-
                                         <TextInput
                                             mode="outlined"
                                             label={t("ModalStatus_Label_Reason")}
@@ -60,7 +53,7 @@ const ModalStatus = ({ listStatus, visible, onPressVisable, status, onPressSubmi
                                             theme={{ roundness: 10, colors: { primary: '#1890FF', error: '#B22D1D' } }}
                                         />
                                         {errors['reason'] && touched['reason'] ? (
-                                            <Text style={{ color: '#B22D1D', fontSize: 12, }}>{errors['reason']}</Text>
+                                            <Text style={{ color: '#B22D1D', fontSize: 12, }}>{t(errors['reason'])}</Text>
                                         ) : null}
                                         <View style={styles.info_status_modalItem_button}>
                                             <Button
@@ -68,6 +61,7 @@ const ModalStatus = ({ listStatus, visible, onPressVisable, status, onPressSubmi
                                                 color="#F3F3F3"
                                                 style={{ borderRadius: 10, width: '40%' }}
                                                 onPress={onPressVisable}
+                                                uppercase={false}
                                             >
                                                 {t("ModalStatus_Button_Cancel")}
                                             </Button>
@@ -76,6 +70,7 @@ const ModalStatus = ({ listStatus, visible, onPressVisable, status, onPressSubmi
                                                 color="#1890FF"
                                                 style={{ borderRadius: 10, width: '40%' }}
                                                 onPress={handleSubmit}
+                                                uppercase={false}
                                             >
                                                 {t("ModalStatus_Button_Complete")}
                                             </Button>

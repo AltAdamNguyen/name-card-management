@@ -1,37 +1,36 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
   SafeAreaView,
   Image,
-  TouchableOpacity,
   ScrollView,
   Pressable,
+  TouchableOpacity,
+  Alert
 } from "react-native";
 import styles from "./styles";
-import i18next from "../../language/i18n";
 import { useTranslation } from "react-i18next";
-import AuthContext from "../../store/AuthContext";
 import {
   Searchbar,
   Appbar,
   Button,
   Provider,
   Portal,
+  HelperText,
 } from "react-native-paper";
 import { FormatDate } from "../../validate/FormatDate";
 import CustomCheckedBox from "../../components/groupcontact/checkBoxCustom/CustomCheckedBox";
 import { FetchApi } from "../../service/api/FetchAPI";
 import { GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
 import Loading from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
-import { t } from "i18next";
 import ConfirmDialog from "../../components/customDialog/dialog/confirmDialog/ConfirmDialog";
+
 const AddContactToGroup = ({ navigation, route }) => {
   const [listContact, setListContact] = useState([]);
   const [listContactTotal, setListContactTotal] = useState([]);
   const [listSearch, setListSearch] = useState([]);
-  const authCtx = useContext(AuthContext);
-
+  const { t, i18n } = useTranslation();
   const [choosenItems, setChoosenItems] = useState(0);
   const [confirmDialogVisible, setConfirmDialogVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -47,16 +46,22 @@ const AddContactToGroup = ({ navigation, route }) => {
     );
   }, []);
 
-  const getContactCallBack = (data) => {
-    if (data.data.length > 0) {
-      let initListContact = [];
-      data.data.map((item, index) => {
-        initListContact.push({ isChecked: false, contact: item });
-      });
-      setListContact(initListContact);
-      setListContactTotal(initListContact);
-    }
+  const getContactCallBack = (status, data) => {
     setIsLoading(false);
+    if(!status){
+      Alert.alert("", t("Something_Wrong"))
+      return
+    }  
+    if(status && data){
+      if (data.data.length > 0) {
+        let initListContact = [];
+        data.data.map((item) => {
+          initListContact.push({ isChecked: false, contact: item });
+        });
+        setListContact(initListContact);
+        setListContactTotal(initListContact);
+      }
+    }
   };
 
   const checkBoxOnClickCallBack = (id, check) => {
@@ -74,6 +79,18 @@ const AddContactToGroup = ({ navigation, route }) => {
     let index = newState.findIndex((el) => el.contact.contact_id === id);
     newState[index] = { ...newState[index], isChecked: check };
     setListContactTotal(newState);
+    if (listSearch.length == 0) {
+      let newState = [...listContact];
+      let index = newState.findIndex((el) => el.contact.contact_id === id);
+      newState[index] = { ...newState[index], isChecked: check };
+      setListContact(newState)
+    }
+    else {
+      let newState = [...listSearch];
+      let index = newState.findIndex((el) => el.contact.contact_id === id);
+      newState[index] = { ...newState[index], isChecked: check };
+      setListSearch(newState)
+    }
   };
 
   const addContactToGroup = () => {
@@ -96,10 +113,15 @@ const AddContactToGroup = ({ navigation, route }) => {
     );
   };
 
-  const addContactsToGroupCallBack = (data) => {
-    console.log(data);
+  const addContactsToGroupCallBack = (status, data) => {
     setConfirmDialogVisible(false);
-    navigation.goBack()
+    if(!status){
+      Alert.alert("", t("Something_Wrong"))
+      return
+    }
+    if(status && data){
+      navigation.goBack()
+    }
   };
 
   const handleSearch = (contactSearch) => {
@@ -167,6 +189,9 @@ const AddContactToGroup = ({ navigation, route }) => {
                 onChangeText={(text) => handleSearch(text)}
               />
             </Pressable>
+            <HelperText>
+              {t("Screen_AddContactToGroup_SearchBar_HelpText")}
+            </HelperText>
           </View>
           <View style={styles.contactsContainer}>
             <View style={styles.listContainer}>
@@ -180,54 +205,8 @@ const AddContactToGroup = ({ navigation, route }) => {
               {listSearch.length != 0 &&
                 listSearch.map((item, index) => {
                   return (
-                    <View style={styles.item} key={index}>
-                      <CustomCheckedBox
-                        id={item.contact.contact_id}
-                        onClick={checkBoxOnClickCallBack}
-                        isChecked={item.isChecked}
-                      />
-                      <View style={styles.image}>
-                        <Image
-                          style={styles.image}
-                          source={{ uri: item.contact.contact_imgurl }}
-                        />
-                      </View>
-                      <View style={styles.txtContact}>
-                        <View
-                          style={[
-                            styles.title,
-                            {
-                              flexDirection: "row",
-                              justifyContent: "space-between",
-                            },
-                          ]}
-                        >
-                          <Text style={styles.nameContact}>
-                            {item.contact.contact_name}
-                          </Text>
-                        </View>
-                        <Text style={styles.titleContact}>
-                          {item.contact.contact_jobtitle}
-                        </Text>
-                        <View style={styles.title}>
-                          <Text numberOfLines={1} style={styles.companyContact}>
-                            {item.contact.contact_company}
-                          </Text>
-                          <View style={{ alignItems: "flex-end" }}>
-                            <Text style={styles.date}>
-                              {FormatDate(item.contact.contact_createdat)}
-                            </Text>
-                          </View>
-                        </View>
-                      </View>
-                    </View>
-                  );
-                })}
-              <ScrollView>
-                {listContact.length != 0 &&
-                  listContact.map((item, index) => {
-                    return (
-                      <View style={styles.item} key={index}>
+                    <TouchableOpacity onPress={() => { checkBoxOnClickCallBack(item.contact.contact_id, !item.isChecked) }} key={index}>
+                      <View style={styles.item}>
                         <CustomCheckedBox
                           id={item.contact.contact_id}
                           onClick={checkBoxOnClickCallBack}
@@ -249,18 +228,15 @@ const AddContactToGroup = ({ navigation, route }) => {
                               },
                             ]}
                           >
-                            <Text style={styles.nameContact}>
+                            <Text style={styles.nameContact} numberOfLines={1}>
                               {item.contact.contact_name}
                             </Text>
                           </View>
-                          <Text style={styles.titleContact}>
+                          <Text style={styles.titleContact} numberOfLines={1}>
                             {item.contact.contact_jobtitle}
                           </Text>
                           <View style={styles.title}>
-                            <Text
-                              numberOfLines={1}
-                              style={styles.companyContact}
-                            >
+                            <Text numberOfLines={1} style={styles.companyContact}>
                               {item.contact.contact_company}
                             </Text>
                             <View style={{ alignItems: "flex-end" }}>
@@ -271,6 +247,59 @@ const AddContactToGroup = ({ navigation, route }) => {
                           </View>
                         </View>
                       </View>
+                    </TouchableOpacity>
+                  );
+                })}
+              <ScrollView showsVerticalScrollIndicator={false}>
+                {listContact.length != 0 &&
+                  listContact.map((item, index) => {
+                    return (
+                      <TouchableOpacity key={index} onPress={() => checkBoxOnClickCallBack(item.contact.contact_id, !item.isChecked)}>
+                        <View style={styles.item} >
+                          <CustomCheckedBox
+                            id={item.contact.contact_id}
+                            onClick={checkBoxOnClickCallBack}
+                            isChecked={item.isChecked}
+                          />
+                          <View style={styles.image}>
+                            <Image
+                              style={styles.image}
+                              source={{ uri: item.contact.contact_imgurl }}
+                            />
+                          </View>
+                          <View style={styles.txtContact}>
+                            <View
+                              style={[
+                                styles.title,
+                                {
+                                  flexDirection: "row",
+                                  justifyContent: "space-between",
+                                },
+                              ]}
+                            >
+                              <Text style={styles.nameContact}>
+                                {item.contact.contact_name}
+                              </Text>
+                            </View>
+                            <Text style={styles.titleContact}>
+                              {item.contact.contact_jobtitle}
+                            </Text>
+                            <View style={styles.title}>
+                              <Text
+                                numberOfLines={1}
+                                style={styles.companyContact}
+                              >
+                                {item.contact.contact_company}
+                              </Text>
+                              <View style={{ alignItems: "flex-end" }}>
+                                <Text style={styles.date}>
+                                  {FormatDate(item.contact.contact_createdat)}
+                                </Text>
+                              </View>
+                            </View>
+                          </View>
+                        </View>
+                      </TouchableOpacity>
                     );
                   })}
               </ScrollView>
@@ -288,6 +317,7 @@ const AddContactToGroup = ({ navigation, route }) => {
               onPress={() => {
                 setConfirmDialogVisible(true);
               }}
+              uppercase={false}
             >
               {t("Screen_AddContactToGroup_Button_AddContact")}
             </Button>
@@ -297,12 +327,12 @@ const AddContactToGroup = ({ navigation, route }) => {
             title={t("Screen_AddContactToGroup_ConfirmDialog_Label")}
             leftButtonTitle={t("Screen_AddContactToGroup_ConfirmDialog_LeftButtonTitle")}
             rightButtonTitle={t("Screen_AddContactToGroup_ConfirmDialog_RightButtonTitle")}
-            onPressVisable={() => {setConfirmDialogVisible(false)}}
+            onPressVisable={() => { setConfirmDialogVisible(false) }}
             onPressConfirm={addContactToGroup}
           />
         </SafeAreaView>
       </Portal>
-      <Loading onVisible={isLoading ? true : false} />
+      <Loading onVisible={isLoading} />
     </Provider>
   );
 };

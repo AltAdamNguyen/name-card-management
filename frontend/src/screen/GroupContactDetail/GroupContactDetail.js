@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -7,36 +7,36 @@ import {
   TouchableOpacity,
   ScrollView,
   Pressable,
+  Alert,
+  TouchableWithoutFeedback,
+  Keyboard
 } from "react-native";
 import styles from "./styles";
-import i18next from "../../language/i18n";
 import { useTranslation } from "react-i18next";
-import AuthContext from "../../store/AuthContext";
-import { Searchbar, Appbar, Provider, Button } from "react-native-paper";
+import { Searchbar, Appbar, Provider, HelperText } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { FormatDate } from "../../validate/FormatDate";
-
 import { FetchApi } from "../../service/api/FetchAPI";
 import { GroupContactAPI, ContentType, Method } from "../../constants/ListAPI";
-import { set } from "lodash";
 import { useIsFocused } from "@react-navigation/native";
 import Loading from "../../components/customDialog/dialog/loadingDialog/LoadingDialog";
 import ConfirmDialogg from "../../components/customDialog/dialog/confirmDialog/ConfirmDialog";
-import InputDialog from "../../components/customDialog/dialog/inputDialog/InputDialog";
+import ModalAddGroup from "../../components/groupcontact/ModalAddGroup";
+import AuthContext from "../../store/AuthContext";
 
 const GroupContactDetail = ({ navigation, route }) => {
   const [listContact, setListContact] = useState([]);
   const [listContactTotal, setListContactTotal] = useState([]);
   const [listContactSearch, setListContactSearch] = useState([]);
   const { t, i18n } = useTranslation();
-
+  const [inputGroupName, setInpuitGroupName] = useState({
+    group_name: route.params.name,
+  })
+  const authCtx = useContext(AuthContext)
   const isFocus = useIsFocused();
-  const [groupName, setGroupName] = useState(route.params.name);
   const [isLoading, setIsLoading] = useState(false);
-  const [dialogDeleteGroupConfirmVisible, setDialogDeleteGroupConfirmVisible] =
-    useState(false);
-  const [dialogChangeGroupNameVisible, setDialogChangGroupNameVisible] =
-    useState(false);
+  const [dialogDeleteGroupConfirmVisible, setDialogDeleteGroupConfirmVisible] = useState(false);
+  const [dialogChangeGroupNameVisible, setDialogChangGroupNameVisible] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
@@ -48,10 +48,6 @@ const GroupContactDetail = ({ navigation, route }) => {
       getGroupContactDetail
     );
   }, []);
-
-  const handleChange = (name) => {
-    setGroupName(name);
-  };
 
   useEffect(() => {
     setIsLoading(true);
@@ -65,58 +61,70 @@ const GroupContactDetail = ({ navigation, route }) => {
   }, [isFocus]);
 
   // API call back
-  const getGroupContactDetail = (data) => {
+  const getGroupContactDetail = (status, data) => {
     //Get Detail
-    if (data.message === "Success" && data.data.contacts.length > 0) {
-      let initListContact = [];
-      data.data.contacts.map((item, index) => {
-        initListContact.push(item);
-      });
-      setListContact(initListContact);
-      setListContactTotal(initListContact);
-    } else {
-      setListContact([]);
-      setListContactTotal([]);
+    authCtx.checkToken()
+    if (status && data) {
+      if (data.message === "Success" && data.data.contacts.length > 0) {
+        let initListContact = [];
+        data.data.contacts.map((item, index) => {
+          initListContact.push(item);
+        });
+        setListContact(initListContact);
+        setListContactTotal(initListContact);
+      } else {
+        setListContact([]);
+        setListContactTotal([]);
+      }
+    }
+    if(!status) {
+      Alert.alert("", t("Something_Wrong"))
+      return
     }
     setListContactSearch([]);
     setIsLoading(false);
   };
 
-  const deleteGroupContact = (data) => {
-    // Delete Group
-    navigation.goBack();
-  };
-
-  const changeGroupName = () => {
+  const handleDeleteGroup = () => {
+    setDialogDeleteGroupConfirmVisible(false);
     FetchApi(
-      `${GroupContactAPI.ViewGroupContactDetail}/${route.params.id}`,
-      Method.GET,
+      `${GroupContactAPI.DeleteGroupContact}/${route.params.id}`,
+      Method.DELETE,
       ContentType.JSON,
       undefined,
-      getGroupContactDetail
+      deleteGroupContact
     );
-  };
-  // end API call back
+  }
 
-  const onDataReturn = (data) => {
-    if (data.function === "delete") {
-      FetchApi(
-        `${GroupContactAPI.DeleteGroupContact}/${route.params.id}`,
-        Method.DELETE,
-        ContentType.JSON,
-        undefined,
-        deleteGroupContact
-      );
-    } else if (data.function === "changeGroupName") {
-      route.params.name = data.groupCurrentName;
-      FetchApi(
-        `${GroupContactAPI.ChangeGroupName}/${route.params.id}`,
-        Method.PATCH,
-        ContentType.JSON,
-        { name: data.groupCurrentName },
-        changeGroupName
-      );
-      setGroupName(data.groupCurrentName);
+  const deleteGroupContact = (status, data) => {
+    authCtx.checkToken();
+    if(!status) {
+      Alert.alert("", t("Something_Wrong"))
+      return
+    }
+    if (status && data) {
+      navigation.goBack();
+    }
+  };
+
+  const handleChangeNameGroup = (value) => {
+    console
+    setDialogChangGroupNameVisible(false);
+    FetchApi(
+      `${GroupContactAPI.ChangeGroupName}/${route.params.id}`,
+      Method.PATCH,
+      ContentType.JSON,
+      value,
+      changeGroupName
+    );
+    setInpuitGroupName(value)
+  }
+
+  const changeGroupName = (status, data) => {
+    authCtx.checkToken()
+    if(!status) {
+      Alert.alert("", t("Something_Wrong"))
+      return
     }
   };
 
@@ -145,6 +153,11 @@ const GroupContactDetail = ({ navigation, route }) => {
             .includes(contactSearch.toLowerCase())
         ) {
           listSearchContactInGroup.push(listContactTotal[i]);
+        } else if (
+          listContactTotal[i].contact_phone != null &&
+          listContactTotal[i].contact_phone.toLowerCase().includes(contactSearch.toLowerCase())
+        ) {
+          listSearchContactInGroup.push(listContactTotal[i]);
         }
       }
       setListContact([]);
@@ -157,18 +170,19 @@ const GroupContactDetail = ({ navigation, route }) => {
 
   return (
     <Provider>
+      <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <SafeAreaView style={styles.container}>
         <Appbar.Header
           statusBarHeight={1}
           theme={{ colors: { primary: "transparent" } }}
         >
           <Appbar.BackAction onPress={() => navigation.goBack()} />
-          <Appbar.Content title={route.params.name} />
+          <Appbar.Content title={inputGroupName.group_name} />
         </Appbar.Header>
         <View style={styles.header}>
           <Pressable style={styles.sectionStyle}>
             <Searchbar
-              placeholder="Find contacts"
+              placeholder={t("Screen_GroupContactDetail_PlaceHolder_SearchContact")}
               theme={{
                 roundness: 10,
                 colors: { primary: "#1890FF" },
@@ -176,10 +190,13 @@ const GroupContactDetail = ({ navigation, route }) => {
               onChangeText={(text) => handleSearch(text)}
             />
           </Pressable>
+          <HelperText>
+            {t("Screen_SearchContact_Input_HelpText")}
+          </HelperText>
         </View>
         <View style={styles.contactsContainer}>
           <View style={styles.listContainer}>
-            <ScrollView>
+            <ScrollView showsVerticalScrollIndicator={false}>
               {listContact.length == 0 && listContactSearch.length == 0 && (
                 <View style={styles.listContainer_view}>
                   <Text style={styles.listContainer_label}>
@@ -216,11 +233,11 @@ const GroupContactDetail = ({ navigation, route }) => {
                               },
                             ]}
                           >
-                            <Text style={styles.nameContact}>
+                            <Text style={styles.nameContact} numberOfLines={1}>
                               {item.contact_name}
                             </Text>
                           </View>
-                          <Text style={styles.titleContact}>
+                          <Text style={styles.titleContact} numberOfLines={1}>
                             {item.contact_jobtitle}
                           </Text>
                           <View style={styles.title}>
@@ -302,29 +319,32 @@ const GroupContactDetail = ({ navigation, route }) => {
           </View>
         </View>
       </SafeAreaView>
-      <Loading onVisible={isLoading ? true : false} />
+      </TouchableWithoutFeedback>
+      <Loading onVisible={isLoading} />
       <View style={styles.footer}>
-        <Pressable
-          style={styles.footer_button}
-          onPress={() => {
-            navigation.navigate("GroupSwap", {
-              screen: "AddContactToGroup",
-              params: { id: route.params.id, type: "personal" },
-            });
-          }}
-        >
-          <Icon name="account-plus-outline" size={24} color="#828282" />
-          <Text style={styles.footer_button_label}>
-            {t("ModalGroupContactDetail_Label_AddContact")}
-          </Text>
-        </Pressable>
+        {authCtx.role !== 3 &&
+          <Pressable
+            style={styles.footer_button}
+            onPress={() => {
+              navigation.navigate("GroupSwap", {
+                screen: "AddContactToGroup",
+                params: { id: route.params.id, type: "personal" },
+              });
+            }}
+          >
+            <Icon name="account-plus-outline" size={24} color="#828282" />
+            <Text style={styles.footer_button_label}>
+              {t("ModalGroupContactDetail_Label_AddContact")}
+            </Text>
+          </Pressable>
+        }
         <Pressable
           style={styles.footer_button}
           onPress={() => {
             setDialogChangGroupNameVisible(true);
           }}
         >
-          <Icon name="swap-horizontal" size={24} color="#828282" />
+          <Icon name="pencil" size={24} color="#828282" />
           <Text style={styles.footer_button_label}>
             {t("ModalGroupContactDetail_Label_ChangeGroupName")}
           </Text>
@@ -365,40 +385,21 @@ const GroupContactDetail = ({ navigation, route }) => {
       </View>
       <ConfirmDialogg
         visible={dialogDeleteGroupConfirmVisible}
-        title={"Bạn có chắc chắn muốn xóa nhóm này không?"}
-        leftButtonTitle={"Hủy"}
-        rightButtonTitle={"Xóa"}
-        onPressVisable={() => {
-          setDialogDeleteGroupConfirmVisible(false);
-        }}
-        onPressConfirm={() => {
-          setDialogDeleteGroupConfirmVisible(false);
-          onDataReturn({ function: "delete" });
-        }}
+        title={t("Screen_GroupContactDetail_ConfirmDialog_Title")}
+        leftButtonTitle={t("Screen_GroupContactDetail_ConfirmDialog_LeftButtonTitle")}
+        rightButtonTitle={t("Screen_GroupContactDetail_ConfirmDialog_RightButtonTitle")}
+        onPressVisable={() => setDialogDeleteGroupConfirmVisible(false)}
+        onPressConfirm={handleDeleteGroup}
       />
-      <InputDialog
+      <ModalAddGroup
         visible={dialogChangeGroupNameVisible}
-        title="Đổi tên nhóm"
-        label="Tên nhóm"
-        leftButtonTitle="Hủy"
-        rightButtonTitle="Đổi"
-        value={groupName}
-        setValue={(name) => handleChange(name)}
-        onPressVisable={() => {
-          handleChange(route.params.name);
-          setDialogChangGroupNameVisible(false);
-        }}
-        onPressConfirm={() => {
-          if (groupName == "") {
-            alert("group name cannot be empty");
-          } else {
-            setDialogChangGroupNameVisible(false);
-            onDataReturn({
-              function: "changeGroupName",
-              groupCurrentName: groupName,
-            });
-          }
-        }}
+        value={inputGroupName}
+        onPressSubmit={handleChangeNameGroup}
+        onPressVisable={() => setDialogChangGroupNameVisible(!dialogChangeGroupNameVisible)}
+        title={t("Screen_GroupContactDetail_InputDialog_Title")}
+        label={t("Screen_GroupContactDetail_InputDialog_Label")}
+        cancel={t("Screen_GroupContactDetail_InputDialog_LeftButtonTitle")}
+        submit={t("Screen_GroupContactDetail_InputDialog_RightButtonTitle")}
       />
     </Provider>
   );

@@ -4,10 +4,12 @@ import { manipulateAsync } from 'expo-image-manipulator';
 import { AddContact } from "../../../screen";
 import { FetchApi } from "../../../service/api/FetchAPI";
 import { Method, ContentType, ContactAPI } from "../../../constants/ListAPI";
+import { t } from 'i18next';
 
 const SkeletonAddContact = ({ route, navigation }) => {
     const [contact, setContact] = useState();
     const [visible, setVisible] = useState(false);
+
     const crop = async () => {
         const image = route.params.newPhoto
 
@@ -52,18 +54,26 @@ const SkeletonAddContact = ({ route, navigation }) => {
 
     }, [])
 
-    const getData = (data) => {
-        console.log(data)
-        if (data.message === "Scan fail") {
-            Alert.alert('Thông báo', 'Quét thất bại. Vui lòng chụp lại', [{ text: 'OK', onPress: () => navigation.goBack() }])
+    const getData = (status, data) => {
+        if(!status){
+            Alert.alert("", t("Something_Wrong"))
+            return
         }
-        if (data.message === "Success") {
-            setContact(data.data)
-            setVisible(true)
+        if (status && data) {
+            if (data.message === "Scan fail") {
+                Alert.alert(t("Screen_Scan_Alert_Scan_Error_Title"), 
+                t("Screen_Scan_Alert_Scan_Error_Message"), 
+                [{ text: t("Screen_Scan_Alert_Scan_Error_Button_Ok"), onPress: () => navigation.goBack() }])
+                return
+            }
+            if (data.message === "Success") {
+                setContact(data.data)
+                setVisible(true)
+                return
+            }
         }
     }
 
-    console.log("contact", contact)
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <AddContact contact={contact} loading={visible} navigation={navigation} />

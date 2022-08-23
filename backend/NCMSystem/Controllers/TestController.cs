@@ -17,6 +17,20 @@ namespace NCMSystem.Controllers
         private LogException _log = new LogException();
 
         [HttpGet]
+        [Route("api/test/get")]
+        public ResponseMessageResult UpTime()
+        {
+            return new ResponseMessageResult(new HttpResponseMessage()
+            {
+                StatusCode = System.Net.HttpStatusCode.OK,
+                Content = new StringContent(JsonConvert.SerializeObject(new CommonResponse()
+                {
+                    Message = "Success",
+                }), Encoding.UTF8, "application/json")
+            });
+        }
+
+        [HttpGet]
         [Route("api/test")]
         public ResponseMessageResult PatchFlag()
         {

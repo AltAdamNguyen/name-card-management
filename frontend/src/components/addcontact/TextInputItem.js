@@ -6,6 +6,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import styles from '../../screen/AddContact/styles';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { TextInput, RadioButton, Card } from "react-native-paper";
+import { t } from "i18next";
 // create a component
 const TextInputItem = ({ item, handleChange, handleBlur, errors, touched, values, listItem = [], onPressRadio }) => {
     const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
@@ -37,7 +38,8 @@ const TextInputItem = ({ item, handleChange, handleBlur, errors, touched, values
                     <TextInput
                         placeholder={item.placeholder}
                         value={values[item.name]}
-                        multiline={true}
+                        multiline={item.multiline}
+                        keyboardType={item.keyboardType}
                         dense={true}
                         style={styles.formInput_item_input}
                         onChangeText={handleChange(item.name)}
@@ -60,7 +62,7 @@ const TextInputItem = ({ item, handleChange, handleBlur, errors, touched, values
                     {errors[item.name] && touched[item.name] ? (
                         <View style={styles.formInput_item_error}>
                             <Text style={styles.formInput_item_error_label}>
-                                {errors[item.name]}
+                                {t(errors[item.name])}
                             </Text>
                         </View>
                     ) : null}

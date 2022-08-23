@@ -11,9 +11,6 @@ const styles = StyleSheet.create({
     error_text:{
         width:'85%',
         textAlign: 'right',
-        // alignItems:'center',
-        marginTop: '3%',
-        marginBottom: '3%',
     },  
     root: {
         alignItems: 'center',
@@ -35,12 +32,28 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: '2%',
     },
+    title_label: {
+        fontSize: 12
+    },
     SwitchSelector: {
         fontSize: 13
     },
     input:{
         width: '100%',
         alignItems: 'center'
+    },
+    button_forgotPassword:{
+        width:'100%',  
+    },
+    text: {
+        fontWeight: 'bold',
+        color: 'white',
+        textAlign: 'center'
+    },
+    text_TERTIARY:{
+        color: '#2D9CDB',
+        fontSize: 12,
+        textAlign: 'right'
     }
 })
 
